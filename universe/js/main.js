@@ -3079,7 +3079,35 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
     return cpos;
   };
   const lmcPos = clump(280.5, -32.9, 50, 1.6, 900, [0.80, 0.85, 1.0]);
-  const smcPos = clump(302.8, -44.3, 62, 1.1, 450, [0.82, 0.86, 1.0]);
+  const smcPos = clump(302.8, -44.3, 62, 1.1, 450, [0.82, 0.82, 1.0]);
+
+  // ---- the Orion Spur — the short arm segment the Sun actually lives in, arcing
+  // through (−8.2, 0, 0) between the Sagittarius and Perseus arms
+  for (let i = 0; i < 2600; i++) {
+    const t = Math.random();
+    const r = 7.6 + 2.2 * t;
+    const th = Math.PI - 0.10 + 0.34 * t + gauss() * 0.045;
+    const ro = r + gauss() * 0.16;
+    const x = ro * Math.cos(th), z = -ro * Math.sin(th), y = gauss() * 0.10;
+    const pick = Math.random();
+    if (pick < 0.07) push(x, y, z, 1.0, 0.58, 0.78, 0.10);        // star-forming knots
+    else if (pick < 0.5) push(x, y, z, 0.70, 0.80, 1.0, 0.045);   // young blue stars
+    else push(x, y, z, 1.0, 0.94, 0.84, 0.038);
+  }
+  // flocculent feathers — the short spurs that branch off every real spiral's arms
+  for (let f = 0; f < 10; f++) {
+    const th0 = ARMS[f % 4];
+    const u0 = 0.25 + Math.random() * 0.55;
+    const rb = ARM_R_MIN * Math.exp(u0 * Math.log(ARM_R_MAX / ARM_R_MIN));
+    const thb = th0 + u0 * (Math.log(ARM_R_MAX / ARM_R_MIN) / PITCH);
+    const fdir = Math.random() < 0.5 ? 1 : -1;
+    for (let i = 0; i < 550; i++) {
+      const t = Math.random();
+      const r = rb + t * (1.0 + Math.random() * 0.8);
+      const th = thb + fdir * t * 0.22 + gauss() * 0.03;
+      push(r * Math.cos(th), gauss() * 0.09, -r * Math.sin(th), 0.75, 0.83, 1.0, 0.036);
+    }
+  }
 
   const M = pts.length / 7;
   const pos = new Float32Array(M * 3), col = new Float32Array(M * 3), siz = new Float32Array(M);
@@ -3123,6 +3151,75 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
   const cloud = new THREE.Points(geo, mat);
   cloud.frustumCulled = false;
   galScene.add(cloud);
+
+  // ---- dust lanes — dark absorption clouds hugging each arm's INNER edge and
+  // threading the bar. Drawn with NORMAL blending after the stars, so they truly
+  // darken the light behind them — the detail every face-on spiral photo lives on.
+  {
+    const dpts = [];
+    for (const th0 of ARMS) {
+      for (let i = 0; i < 9000; i++) {
+        const u = Math.random();
+        const r = ARM_R_MIN * Math.exp(u * Math.log(ARM_R_MAX / ARM_R_MIN));
+        const th = th0 + u * (Math.log(ARM_R_MAX / ARM_R_MIN) / PITCH) + gauss() * 0.04;
+        const ro = r - 0.30 - Math.abs(gauss()) * 0.22;      // inner (concave) edge
+        dpts.push(ro * Math.cos(th), gauss() * 0.05, -ro * Math.sin(th),
+          0.16 + Math.random() * 0.14, 0.05 + Math.random() * 0.04);
+      }
+    }
+    // (no dust across the bar — face-on, the bulge reads as a clean glowing mass;
+    // flank dust carved an hourglass out of it and looked broken)
+    const DN = dpts.length / 5;
+    const dpos = new Float32Array(DN * 3), dop = new Float32Array(DN), dsz = new Float32Array(DN);
+    for (let i = 0; i < DN; i++) {
+      dpos[i * 3] = dpts[i * 5]; dpos[i * 3 + 1] = dpts[i * 5 + 1]; dpos[i * 3 + 2] = dpts[i * 5 + 2];
+      dop[i] = dpts[i * 5 + 3]; dsz[i] = dpts[i * 5 + 4];
+    }
+    const dgeo = new THREE.BufferGeometry();
+    dgeo.setAttribute('position', new THREE.BufferAttribute(dpos, 3));
+    dgeo.setAttribute('aO', new THREE.BufferAttribute(dop, 1));
+    dgeo.setAttribute('aS', new THREE.BufferAttribute(dsz, 1));
+    const dmat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.NormalBlending,
+      uniforms: { uPR: starUniforms.uPR },
+      vertexShader: `
+        uniform float uPR; attribute float aS; attribute float aO; varying float vA;
+        void main() {
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * mv;
+          gl_PointSize = clamp(aS * 1400.0 / max(0.5, -mv.z), 1.0, 12.0) * uPR;
+          vA = aO;
+        }`,
+      fragmentShader: `
+        varying float vA;
+        void main() {
+          vec2 uv = gl_PointCoord - 0.5;
+          float dd = length(uv) * 2.0;
+          if (dd > 1.0) discard;
+          float f = smoothstep(1.0, 0.15, dd);
+          gl_FragColor = vec4(0.045, 0.032, 0.028, vA * f);
+        }`,
+    });
+    const dust = new THREE.Points(dgeo, dmat);
+    dust.frustumCulled = false;
+    dust.renderOrder = 1;                                    // after the stars it shades
+    galScene.add(dust);
+  }
+  // ---- HII blooms — soft rose glows at the star-forming knots collected above
+  {
+    const bloomTex = makeDiscTexture('rgba(255,150,180,0.55)', 'rgba(255,90,120,0.10)', 0.4);
+    const step = Math.max(1, Math.ceil(hiiiPositions.length / 70));
+    for (let i = 0; i < hiiiPositions.length; i += step) {
+      const [x, y, z] = hiiiPositions[i];
+      const s = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: bloomTex, transparent: true, depthWrite: false,
+        blending: THREE.AdditiveBlending, opacity: 0.18 + Math.random() * 0.12 }));
+      s.position.set(x, y, z);
+      const sc = 0.3 + Math.random() * 0.3;
+      s.scale.set(sc, sc, 1);
+      galScene.add(s);
+    }
+  }
 
   // ------- large HII region glow sprites along the spiral arms -------
   // These give the galaxy the pink/magenta HII nebula glow seen in real galaxy photos.
@@ -3315,6 +3412,7 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
   galLabel('Sagittarius Arm', armPoint(Math.PI / 2, 9), '#8fb0e0').userData.hideBeyond = 140;
   galLabel('Perseus Arm', armPoint(Math.PI, 11), '#8fb0e0').userData.hideBeyond = 140;
   galLabel('Norma–Outer Arm', armPoint(Math.PI * 1.5, 12.5), '#8fb0e0').userData.hideBeyond = 140;
+  galLabel('Orion Spur', new THREE.Vector3(-9.3, 0.7, -1.6), '#9fc0e8', 10).userData.hideBeyond = 140;
   galLabel('Large Magellanic Cloud', lmcPos.clone().add(new THREE.Vector3(0, 2.2, 0)), '#a8c4e6');
   galLabel('Small Magellanic Cloud', smcPos.clone().add(new THREE.Vector3(0, 1.8, 0)), '#a8c4e6');
   galLabel('Andromeda Galaxy · 2.5 Mly', m31.position.clone().add(new THREE.Vector3(0, 26, 0)), '#e6cfa8', 12, false);
@@ -4752,11 +4850,11 @@ function showInfo(title, sub, rows, doc, pov, action) {
   infoRows.innerHTML = (doc ? `<div class="info-doc">${doc}</div>` : '') + rows
     .map(([k, v]) => `<div class="info-row"><span class="k">${k}</span><span>${v}</span></div>`)
     .join('') + (pov ? '<button id="info-pov" class="minibtn" style="margin-top:11px">👁  View from here</button>' : '')
-    + (action ? `<button id="info-action" class="minibtn" style="margin-top:11px">${action.label}</button>` : '')
+    + (action && action.label ? `<button id="info-action" class="minibtn" style="margin-top:11px">${action.label}</button>` : '')
   ;
   infocard.classList.add('open');
   if (pov) document.getElementById('info-pov').onclick = () => viewFromObject(pov);
-  if (action) document.getElementById('info-action').onclick = action.fn;
+  if (action && action.label) document.getElementById('info-action').onclick = action.fn;
 }
 // place the fly camera at an object so you see the universe from its vantage point
 function showSatInfo(s) {
@@ -5128,7 +5226,7 @@ function handleClick(cx, cy) {
     } else if (best && best.sat) {
       showSatInfo(best.sat);
     } else if (best && best.site) {
-      showInfo(best.site.name, 'Lunar surface — landing site', [], best.site.doc, { obj: best.site, surfaceBody: 'Moon' }, { lat: best.site.lat, lon: best.site.lon });
+      showInfo(best.site.name, 'Lunar surface — landing site', [], best.site.doc, { obj: best.site, surfaceBody: 'Moon' });
     } else if (best && best.moon) {
       const mo = best.moon;
       showInfo(mo.name, `Moon of ${mo.parent}`, [
@@ -5334,7 +5432,7 @@ function gotoTarget(t) {
     showSatInfo(t.sat);
   } else if (t.type === 'lunarsite') {
     jumpToPoint(solBodies.Moon.pos.clone(), displayRadius('Moon'), 'Earth');
-    showInfo(t.site.name, 'Lunar surface — landing site', [], t.site.doc, { obj: t.site, surfaceBody: 'Moon' }, { lat: t.site.lat, lon: t.site.lon });
+    showInfo(t.site.name, 'Lunar surface — landing site', [], t.site.doc, { obj: t.site, surfaceBody: 'Moon' });
   } else if (t.type === 'moon') {
     jumpToPoint(t.moon.world.clone(), 0.18, t.moon.parent);
     showInfo(t.moon.name, `Moon of ${t.moon.parent}`, [
