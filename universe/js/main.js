@@ -408,15 +408,15 @@ function buildMilkyWay() {
   const alp = new Float32Array(M);
   let k = 0;
   while (k < M) {
-    let l, b;
-    if (Math.random() < 0.42) {
-      l = (Math.random() - 0.5) * 2 * 120;                 // toward galactic center
-      l = l * Math.abs(l) / 120;                            // density peak at l=0
-    } else l = Math.random() * 360;
-    const dl = Math.min(Math.abs(((l % 360) + 540) % 360 - 180), 180); // 180=center? no:
-    const dctr = Math.min(Math.abs(((l % 360) + 360) % 360), 360 - Math.abs(((l % 360) + 360) % 360));
+    // smooth density in longitude — rejection-sample a gaussian bump toward the
+    // galactic centre over a uniform floor. (The old two-population sampler cut the
+    // centre-weighted component off hard at l=±120°, drawing a visible straight
+    // seam across the sky where the density stepped down.)
+    const l = Math.random() * 360;
+    const dctr = Math.min(l, 360 - l);                     // angular distance from the centre
+    if (Math.random() > 0.32 + 0.68 * Math.exp(-(dctr * dctr) / (2 * 62 * 62))) continue;
     const sigma = 5.5 + 9 * Math.exp(-(dctr * dctr) / (2 * 45 * 45));
-    b = (Math.random() + Math.random() + Math.random() + Math.random() - 2) / 2 * sigma * 2.2;
+    const b = (Math.random() + Math.random() + Math.random() + Math.random() - 2) / 2 * sigma * 2.2;
     if (Math.abs(b) > 35) continue;
     const v = eqToThree(galToEq(l, b)).multiplyScalar(R_SKY * 1.03);
     pos[k * 3] = v.x; pos[k * 3 + 1] = v.y; pos[k * 3 + 2] = v.z;
@@ -3099,10 +3099,12 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
   // hidden on close approach — the black hole fills the frame and the info card names it
   galLabel('Sgr A* · galactic centre', new THREE.Vector3(0, 1.2, 0), '#ffce8a', 12).userData.hideBelow = 7;
   galLabel('Sun · you are here', SUN_GAL.clone().setY(1.6), '#ffe9a8', 12);
-  galLabel('Scutum–Centaurus Arm', armPoint(0, 10.5), '#8fb0e0');
-  galLabel('Sagittarius Arm', armPoint(Math.PI / 2, 9), '#8fb0e0');
-  galLabel('Perseus Arm', armPoint(Math.PI, 11), '#8fb0e0');
-  galLabel('Norma–Outer Arm', armPoint(Math.PI * 1.5, 12.5), '#8fb0e0');
+  // arm labels only while the disc fills the view — zoomed to satellite scale they
+  // all collapse onto a thumbnail-sized disc and pile into an unreadable knot
+  galLabel('Scutum–Centaurus Arm', armPoint(0, 10.5), '#8fb0e0').userData.hideBeyond = 140;
+  galLabel('Sagittarius Arm', armPoint(Math.PI / 2, 9), '#8fb0e0').userData.hideBeyond = 140;
+  galLabel('Perseus Arm', armPoint(Math.PI, 11), '#8fb0e0').userData.hideBeyond = 140;
+  galLabel('Norma–Outer Arm', armPoint(Math.PI * 1.5, 12.5), '#8fb0e0').userData.hideBeyond = 140;
   galLabel('Large Magellanic Cloud', lmcPos.clone().add(new THREE.Vector3(0, 2.2, 0)), '#a8c4e6');
   galLabel('Small Magellanic Cloud', smcPos.clone().add(new THREE.Vector3(0, 1.8, 0)), '#a8c4e6');
   galLabel('Andromeda Galaxy · 2.5 Mly', m31.position.clone().add(new THREE.Vector3(0, 26, 0)), '#e6cfa8', 12, false);
@@ -3129,6 +3131,117 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
   sunRing.position.copy(SUN_GAL);
   galScene.add(sunRing);
   labelGroups.galaxy.push(sunRing);
+}
+
+// ---- the real galactic neighborhood — every named glow in the galaxy view is a
+// real galaxy at its true position (galactic l/b + distance). Fills the empty black
+// between the Milky Way and the cosmic web with the actual Local Group: the dwarf
+// satellites being pulled apart by our gravity, Andromeda's companions, and the
+// nearest neighbor groups. All clickable; most searchable (a few names are owned
+// by the sky-mode DSO catalog and stay search-exclusive there).
+// Fields: name, l°, b°, d(kpc), kind(sph|irr|spiral|len), [w,h,rot] sprite, search?,
+//         sub, rows, doc. kind 'none' = existing visual (M31 etc.), card only.
+const GALAXY_CAT = [
+  ['Sagittarius Dwarf', 5.6, -14.2, 26, 'sph', [5, 3.5, 0.3], true,
+    'Satellite being devoured by the Milky Way', [['Type', 'Dwarf spheroidal'], ['Distance', '85,000 ly'], ['Status', 'tidally disrupting']],
+    'The closest galaxy of all — so close the Milky Way is tearing it apart. Its stars are being pulled into a stream that loops around our entire galaxy, and its debris is scattered through the halo. Discovered only in 1994, hiding behind the galactic centre.'],
+  ['Sculptor Dwarf', 287.5, -83.2, 86, 'sph', [6, 5, 0], true,
+    'First dwarf galaxy ever found', [['Type', 'Dwarf spheroidal'], ['Distance', '280,000 ly'], ['Discovered', '1938, Shapley']],
+    'The first of the Milky Way\'s dwarf companions to be discovered — a diffuse ball of ancient stars with almost no gas, orbiting high above the galactic plane.'],
+  ['Draco Dwarf', 86.4, 34.7, 76, 'sph', [5, 4, 0.2], true,
+    'One of the darkest galaxies known', [['Type', 'Dwarf spheroidal'], ['Distance', '250,000 ly'], ['Dark matter', '~99% of its mass']],
+    'A wisp of a galaxy whose stars move far too fast for the matter you can see — one of the most dark-matter-dominated objects known, and a favorite laboratory for testing what dark matter is.'],
+  ['Fornax Dwarf', 237.1, -65.7, 147, 'sph', [8, 6, 0.4], true,
+    'A dwarf with its own star clusters', [['Type', 'Dwarf spheroidal'], ['Distance', '480,000 ly'], ['Globular clusters', '6 of its own']],
+    'Large for a dwarf — big enough to hold six globular clusters of its own. Why those clusters haven\'t spiraled into its centre is a long-standing puzzle about how dark matter is spread inside it.'],
+  ['Leo I', 226.0, 49.1, 254, 'sph', [6, 5, 0], true,
+    'The Milky Way\'s farthest satellite', [['Type', 'Dwarf spheroidal'], ['Distance', '830,000 ly'], ['Note', 'near the Milky Way\'s gravitational edge']],
+    'Right at the edge of the Milky Way\'s gravitational reach, and moving so fast it may not even be bound to us — a satellite on the verge of independence.'],
+  ['NGC 6822 · Barnard\'s Galaxy', 25.3, -18.4, 500, 'irr', [10, 8, 0.5], true,
+    'A lonely island of star formation', [['Type', 'Dwarf irregular'], ['Distance', '1.6 million ly'], ['Discovered', '1884, E.E. Barnard']],
+    'A free-floating member of the Local Group belonging to no one — not ours, not Andromeda\'s — quietly forming stars on its own. Hubble used it in 1925 as one of the first proofs that other galaxies lie beyond the Milky Way.'],
+  ['IC 10', 119.0, -3.3, 750, 'irr', [9, 7, 0.2], true,
+    'The Local Group\'s only starburst', [['Type', 'Dwarf irregular, starburst'], ['Distance', '2.4 million ly'], ['Note', 'hidden behind the Milky Way\'s dust']],
+    'The only galaxy in the Local Group caught in a violent burst of star formation — packed with young clusters and more Wolf-Rayet stars per square parsec than anywhere nearby. We see it dimly, through the dust of our own disc.'],
+  ['NGC 185', 120.8, -14.5, 620, 'sph', [7, 6, 0.3], false,
+    'Companion of Andromeda', [['Type', 'Dwarf elliptical'], ['Distance', '2.0 million ly'], ['Satellite of', 'Andromeda']],
+    'One of Andromeda\'s court of satellite galaxies, with a surprisingly active history of star formation for a small elliptical.'],
+  ['M32', 121.2, -22.0, 785, 'len', [5, 4, 0], true,
+    'Andromeda\'s compact companion', [['Type', 'Compact elliptical'], ['Distance', '2.6 million ly'], ['Note', 'possibly a stripped spiral core']],
+    'A strange, dense little galaxy hugging Andromeda — possibly the surviving core of a much larger spiral that Andromeda stripped bare in an ancient collision.'],
+  ['M110', 120.7, -21.1, 820, 'sph', [8, 5, 0.6], true,
+    'Andromeda\'s other bright companion', [['Type', 'Dwarf elliptical'], ['Distance', '2.7 million ly'], ['Satellite of', 'Andromeda']],
+    'The larger and more diffuse of Andromeda\'s two bright companions, visible in the same binocular field as M31 itself.'],
+  // — the nearest neighbor groups, beyond the Local Group —
+  ['Maffei 1', 135.9, -0.6, 2850, 'len', [16, 12, 0.1], true,
+    'The hidden giant next door', [['Type', 'Giant elliptical'], ['Distance', '9.3 million ly'], ['Discovered', '1967 — behind the Milky Way']],
+    'A giant elliptical galaxy that would be one of the brightest in our sky — if it weren\'t sitting almost exactly behind the Milky Way\'s disc. It hid behind our own dust until 1967.'],
+  ['NGC 300', 299.2, -79.4, 1900, 'spiral', [20, 15, 0.4], true,
+    'A quiet spiral toward Sculptor', [['Type', 'Spiral'], ['Distance', '6.2 million ly'], ['Group', 'Sculptor group outskirts']],
+    'A textbook quiet spiral, one of the nearest beyond the Local Group — close enough that its brightest individual stars can be studied one by one.'],
+  ['NGC 55', 332.7, -75.7, 2000, 'spiral', [18, 7, 0.9], true,
+    'An edge-on neighbor', [['Type', 'Magellanic spiral, edge-on'], ['Distance', '6.5 million ly'], ['Group', 'Sculptor group']],
+    'A galaxy much like the Large Magellanic Cloud, but seen almost perfectly edge-on — a bright sliver on the border of the Sculptor group.'],
+  ['NGC 253 · Sculptor Galaxy', 97.4, -88.0, 3500, 'spiral', [26, 9, 0.7], true,
+    'The Silver Coin', [['Type', 'Starburst spiral'], ['Distance', '11.4 million ly'], ['Group', 'Sculptor group']],
+    'The dusty "Silver Coin" — the brightest member of the Sculptor group and one of the great starburst galaxies, furiously converting gas into stars at its crowded centre.'],
+  ['M81 · Bode\'s Galaxy', 142.1, 40.9, 3630, 'spiral', [26, 16, 0.3], true,
+    'Grand-design spiral of the M81 group', [['Type', 'Grand-design spiral'], ['Distance', '11.8 million ly'], ['Companion', 'M82, locked in interaction']],
+    'A perfect grand-design spiral and anchor of the nearest big galaxy group. It is gravitationally tangled with the Cigar Galaxy beside it — their last close pass set M82 ablaze with star formation.'],
+  ['M82 · Cigar Galaxy', 141.4, 40.6, 3530, 'spiral', [16, 6, 1.0], false,
+    'Exploding with new stars', [['Type', 'Starburst, edge-on'], ['Distance', '11.5 million ly'], ['Cause', 'a close pass by M81']],
+    'Wrecked and glorious: its encounter with M81 ignited a starburst ten times our galaxy\'s rate, blowing towers of glowing gas out of its disc.'],
+  ['Centaurus A', 309.5, 19.4, 3800, 'len', [24, 18, 0.2], false,
+    'The nearest active galaxy', [['Type', 'Elliptical w/ dust lane'], ['Distance', '12.4 million ly'], ['Core', 'feeding supermassive black hole']],
+    'The nearest galaxy with an actively feeding central black hole, wearing a dramatic dust lane — the remains of a spiral galaxy it swallowed whole.'],
+  // existing visuals — cards for the members already drawn in the scene
+  ['Andromeda Galaxy', 121.2, -21.6, 778, 'none', null, false,
+    'The Local Group\'s other giant', [['Type', 'Spiral'], ['Distance', '2.5 million ly'], ['Future', 'merges with the Milky Way in ~4.5 billion yr']],
+    'Our twin and our destiny: the Local Group\'s largest galaxy, closing on the Milky Way at 110 km/s. In roughly 4.5 billion years the two will merge into a single giant elliptical.'],
+  ['Triangulum Galaxy', 133.6, -31.3, 870, 'none', null, false,
+    'The Local Group\'s third spiral', [['Type', 'Spiral'], ['Distance', '2.7 million ly'], ['Note', 'likely a distant companion of Andromeda']],
+    'The smallest of the Local Group\'s three spirals, rich in gas and busy forming stars — probably a far-flung companion of Andromeda.'],
+  ['Large Magellanic Cloud', 280.5, -32.9, 50, 'none', null, false,
+    'Our brightest satellite', [['Type', 'Magellanic irregular'], ['Distance', '163,000 ly'], ['Hosts', 'the Tarantula Nebula']],
+    'The Milky Way\'s brightest companion, home to the Tarantula Nebula — the most violent star-forming region in the Local Group — and site of Supernova 1987A.'],
+  ['Small Magellanic Cloud', 302.8, -44.3, 62, 'none', null, false,
+    'The LMC\'s little sibling', [['Type', 'Dwarf irregular'], ['Distance', '200,000 ly'], ['Note', 'trails the Magellanic Stream']],
+    'Together with the LMC it trails the Magellanic Stream, a river of hydrogen stripped out by the Milky Way\'s tides, wrapping half the sky.'],
+];
+const GALCAT_RT = [];
+{
+  const galDirC = (l, b) => new THREE.Vector3(
+    Math.cos(b * DEG) * Math.cos(l * DEG), Math.sin(b * DEG), -Math.cos(b * DEG) * Math.sin(l * DEG));
+  const sphTex = makeDiscTexture('rgba(238,236,248,0.8)', 'rgba(180,185,225,0.22)', 0.5);
+  const irrTex = makeDiscTexture('rgba(210,230,255,0.85)', 'rgba(150,180,235,0.25)', 0.42);
+  const spiTex = makeDiscTexture('rgba(255,242,222,0.9)', 'rgba(165,175,225,0.24)', 0.36);
+  const TEX = { sph: sphTex, irr: irrTex, spiral: spiTex, len: spiTex };
+  for (const [name, l, b, d, kind, spr, searchable, sub, rows, doc] of GALAXY_CAT) {
+    const pos = SUN_GAL.clone().addScaledVector(galDirC(l, b), d);
+    let sprite = null;
+    if (kind !== 'none') {
+      sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: TEX[kind], transparent: true, depthWrite: false,
+        blending: THREE.AdditiveBlending, rotation: spr[2] }));
+      sprite.position.copy(pos);
+      // distant members read ~1.5× their true extent (a physically honest dwarf is a
+      // couple of pixels at Local Group zoom); the Milky Way's own satellites are
+      // seen close-up and stay true-size, or they dwarf the disc itself
+      const boost = d < 300 ? 1.0 : 1.5;
+      sprite.scale.set(spr[0] * boost, spr[1] * boost, 1);
+      galScene.add(sprite);
+      const lab = makeTextSprite(name, { size: 9, color: '#b9c9e2', alpha: 0.8 });
+      lab.position.copy(pos).add(new THREE.Vector3(0, spr[1] * 1.1 + 1.5, 0));
+      lab.renderOrder = 9;
+      if (d < 300) lab.userData.near = true;    // dwarf labels only at Local-Group zoom
+      // Andromeda's court sits within ~30 kpc of M31 — their labels only untangle
+      // when you're zoomed into that corner of the Local Group
+      if (['IC 10', 'NGC 185', 'M32', 'M110'].includes(name)) lab.userData.hideBeyond = 700;
+      galScene.add(lab);
+      labelGroups.galaxy.push(lab);
+    }
+    GALCAT_RT.push({ name, pos, d, searchable, sub, rows, doc, sprite });
+  }
 }
 setLoad(0.95);
 
@@ -4599,6 +4712,17 @@ function handleClick(cx, cy) {
       selectSkyDir(new THREE.Vector3(dirs[bi * 3], dirs[bi * 3 + 1], dirs[bi * 3 + 2]));
       starInfo(bi);
     }
+  } else if (mode === 'galaxy') {
+    // every real galaxy in the scene is clickable
+    let best = null;
+    const v = new THREE.Vector3();
+    for (const G of GALCAT_RT) {
+      v.copy(G.pos).project(galCam);
+      if (v.z > 1) continue;
+      const px = Math.hypot((v.x - ndc.x) * innerWidth / 2, (v.y - ndc.y) * innerHeight / 2);
+      if (px < 20 && (!best || px < best.px)) best = { px, G };
+    }
+    if (best) showInfo(best.G.name, best.G.sub, best.G.rows, best.G.doc);
   } else if (mode === 'solar') {
     let best = null;
     const v = new THREE.Vector3();
@@ -4845,6 +4969,12 @@ const searchIndex = [];
   }
   for (const T of TNOS_RT) searchIndex.push({ label: T.name, type: 'tno', tno: T });
   for (const P of PROBES_RT) searchIndex.push({ label: P.name, type: 'probe', probe: P });
+  for (const G of GALCAT_RT) {
+    if (!G.searchable) continue;                     // DSO catalog owns some of these names
+    searchIndex.push({ label: G.name, type: 'galaxy', galaxy: G });
+    const short = G.name.split(' · ')[1];            // "NGC 6822 · Barnard's Galaxy" → both halves match
+    if (short) searchIndex.push({ label: short, type: 'galaxy', galaxy: G });
+  }
 }
 
 function gotoTarget(t) {
@@ -4914,6 +5044,13 @@ function gotoTarget(t) {
     updateProbes(time.jd);
     jumpToPoint(P.world.clone(), 3);
     showProbeInfo(P);
+  } else if (t.type === 'galaxy') {
+    const G = t.galaxy;
+    setFlyMode(false);
+    setMode('galaxy');
+    orbits.galaxy.target.copy(G.pos);
+    orbits.galaxy.r = Math.min(1500, Math.max(25, G.d * 0.45));
+    showInfo(G.name, G.sub, G.rows, G.doc);
   } else {
     const dso = DSOS[t.dsoIdx];
     frameSkyDir(dsoDirs[t.dsoIdx]);
@@ -4938,7 +5075,7 @@ function jumpTo(ra, dec) {
 const TYPE_LABEL = { sat: 'satellite', lunarsite: 'landing site', moon: 'moon', phenom: 'phenomenon',
   body: 'planet', star: 'star', constellation: 'constellation', 'black hole': 'black hole',
   megastructure: 'megastructure', asteroid: 'asteroid', comet: 'comet', tno: 'dwarf planet',
-  probe: 'spacecraft', exo: 'exoplanet system' };
+  probe: 'spacecraft', galaxy: 'galaxy', exo: 'exoplanet system' };
 // the Sun and Moon share the generic 'body' search type with the planets — name them properly
 const BODY_TYPE_OVERRIDE = { Sun: 'star', Moon: 'moon', Earth: 'planet' };
 function renderSearch(items) {
@@ -5139,7 +5276,13 @@ function flyToDeep(x, y, z, lookOut) {
 // minimap locator (locName). Navigation is via the minimap scale ladder, flying, and search.
 function currentScaleName() {
   if (mode === 'deep') { const d = deep.pos.length(); return d < 80 ? 'Solar Neighbourhood' : d < 4000 ? 'Interstellar Space' : 'Milky Way'; }
-  if (mode === 'solar') { const r = orbits.solar.r; return r < 30 ? 'Inner System' : r < 600 ? 'Solar System' : 'Outer System'; }
+  if (mode === 'solar') {
+    // name by wherever is "bigger": the view radius, or the camera's actual
+    // heliocentric distance — so following Voyager 1 at 167 AU reads Outer System
+    // even though the orbit radius around it is small
+    const effAU = Math.max(orbits.solar.r / AUU, camFor('solar').position.length() / AUU);
+    return effAU < 1.5 ? 'Inner System' : effAU < 30 ? 'Solar System' : 'Outer System';
+  }
   if (mode === 'neighborhood') return 'Interstellar Space';
   if (mode === 'galaxy') return 'Milky Way';
   if (mode === 'cosmic') return 'Cosmic Web';
@@ -5634,8 +5777,11 @@ function animate(now) {
       const gr = orbits.galaxy.r;
       const showNear = gr < 350;
       for (const sp of labelGroups.galaxy) {
-        if (sp.userData.near) sp.visible = showNear && !(sp.userData.hideBelow && gr < sp.userData.hideBelow);
-        else if (sp.userData.far) sp.visible = !showNear;
+        if (sp.userData.near) {
+          sp.visible = showNear && !(sp.userData.hideBelow && gr < sp.userData.hideBelow)
+            && !(sp.userData.hideBeyond && gr >= sp.userData.hideBeyond);
+        } else if (sp.userData.far) sp.visible = !showNear;
+        else if (sp.userData.hideBeyond) sp.visible = gr < sp.userData.hideBeyond;
       }
       galScene.userData.mwFar.material.opacity = THREE.MathUtils.smoothstep(gr, 150, 600) * 0.9;
       // the accretion disk holds a fixed frame — the swirl animation read as
@@ -5686,7 +5832,7 @@ window.U = {
   skyGroup, horizon, buildArt, solBodies, applyZoom,
   STARS, handleClick, starInfo, fly, setFlyMode, flyToObject, EXO, exoDirs, skyCam, get flyMode() { return flyMode; },
   applyFlyCam, heldKeys, mouseNDC, MOONS_RT, SATS_RT, LUNAR_RT, ASTEROIDS_RT, COMETS_RT, updateComets,
-  TNOS_RT, updateTNOs, PROBES_RT, updateProbes, helioMesh, showProbeInfo, viewFromObject,
+  TNOS_RT, updateTNOs, PROBES_RT, updateProbes, helioMesh, showProbeInfo, viewFromObject, GALCAT_RT,
   deep, deepScene, deepCam, get mode() { return mode; },
   get thirdPerson() { return thirdPerson; },
   exitRideAlong, get rideAlong() { return rideAlong; },
