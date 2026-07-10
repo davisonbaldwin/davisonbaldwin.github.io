@@ -695,6 +695,104 @@ function phenomInfo(idx) {
   showInfo(ph.name, ph.id, rows, ph.doc);
 }
 
+// ---------------------------------------------------------------- historical supernovae
+// The great naked-eye supernovae as sky TRANSIENTS: scrub the clock to 1054 and a
+// new star blazes beside ζ Tauri, outshining Venus, then fades over months on a
+// simplified light curve (linear-in-magnitude rise and decline). Positions are the
+// real remnant coordinates; the ephemeris upgrade (year 1000–3000) exists for this.
+// Fields: name, RA°, Dec°, peakJD, peak mag, days to fade 8 mag, watch label, sub, rows, doc.
+const SUPERNOVAE = [
+  ['SN 1006', 225.7, -41.95, 2088580.5, -7.5, 520, 'spring 1006',
+    'The brightest star event in recorded history', [['Peak brightness', 'mag −7.5 — a quarter Moon'], ['Visible', '~18 months to the naked eye'], ['Recorded in', 'China, Egypt, Iraq, Japan, Switzerland'], ['Type', 'Ia — white dwarf detonation']],
+    'The brightest stellar event humans have ever recorded — bright enough to read by at night, seen low in the southern sky by chroniclers across three continents. A monk in Switzerland wrote that it "dazzled the eyes." Its shattered remains still glow in Lupus.'],
+  ['SN 1054 · Crab Supernova', 83.63, 22.01, 2106216.5, -6.0, 650, 'July 1054',
+    'The guest star that built the Crab Nebula', [['Peak brightness', 'mag −6 — brighter than Venus'], ['Daylight visibility', '23 days'], ['Naked-eye', '~650 nights'], ['Remnant', 'Crab Nebula + pulsar (M1)']],
+    'Chinese astronomers logged a "guest star" beside ζ Tauri, visible in broad daylight for 23 days. Nine centuries later we watch its debris still expanding — the Crab Nebula — with a city-sized pulsar spinning 30 times a second at its heart.'],
+  ['SN 1572 · Tycho\'s Supernova', 6.34, 64.13, 2295528.5, -4.0, 480, 'November 1572',
+    'The star that broke the immutable heavens', [['Peak brightness', 'mag −4 — like Venus'], ['Observed by', 'Tycho Brahe'], ['Consequence', 'proved the heavens change'], ['Type', 'Ia']],
+    'When a new star appeared in Cassiopeia, Tycho Brahe measured it obsessively and proved it lay far beyond the Moon — shattering two thousand years of doctrine that the heavens never change, and helping clear the way for the scientific revolution.'],
+  ['SN 1604 · Kepler\'s Supernova', 262.66, -21.48, 2307232.5, -2.5, 400, 'October 1604',
+    'The Milky Way\'s last naked-eye supernova', [['Peak brightness', 'mag −2.5 — like Jupiter'], ['Observed by', 'Johannes Kepler, for a year'], ['Note', 'none seen in our galaxy since'], ['Type', 'Ia']],
+    'Kepler tracked it for a full year from Prague. No one has seen a supernova inside the Milky Way with the naked eye since — we are four centuries overdue, and somewhere in the galaxy the next one is already on its way.'],
+  ['SN 1987A', 83.87, -69.27, 2446846.5, 2.9, 300, 'February 1987',
+    'The supernova that opened neutrino astronomy', [['Peak brightness', 'mag +2.9 — naked-eye from the south'], ['Host', 'Large Magellanic Cloud'], ['First light', 'Feb 23, 1987'], ['Neutrinos', 'detected 3 hours before the light']],
+    'The nearest supernova in four centuries, in the Large Magellanic Cloud. Underground detectors caught a burst of neutrinos hours before telescopes saw anything — the moment neutrino astronomy was born, and proof of how a star\'s core collapses.'],
+];
+// starburst texture: brilliant core + four diffraction rays
+function makeSupernovaTexture() {
+  const s = 256, cv = document.createElement('canvas');
+  cv.width = cv.height = s;
+  const ctx = cv.getContext('2d'), c = s / 2;
+  const core = ctx.createRadialGradient(c, c, 0, c, c, c * 0.5);
+  core.addColorStop(0, 'rgba(255,255,255,1)');
+  core.addColorStop(0.25, 'rgba(235,240,255,0.8)');
+  core.addColorStop(1, 'rgba(180,200,255,0)');
+  ctx.fillStyle = core;
+  ctx.fillRect(0, 0, s, s);
+  for (const ang of [0, Math.PI / 2]) {                    // two crossed rays
+    ctx.save();
+    ctx.translate(c, c); ctx.rotate(ang);
+    const ray = ctx.createLinearGradient(-c, 0, c, 0);
+    ray.addColorStop(0, 'rgba(220,230,255,0)');
+    ray.addColorStop(0.5, 'rgba(255,255,255,0.9)');
+    ray.addColorStop(1, 'rgba(220,230,255,0)');
+    ctx.fillStyle = ray;
+    ctx.fillRect(-c, -s * 0.012, s, s * 0.024);
+    ctx.restore();
+  }
+  return new THREE.CanvasTexture(cv);
+}
+const SUPERNOVAE_RT = [];
+{
+  const snTex = makeSupernovaTexture();
+  const haloTex = makeDiscTexture('rgba(235,240,255,0.55)', 'rgba(170,190,240,0.12)', 0.4);
+  for (const [name, ra, dec, peakJd, peakMag, fadeDays, watchLabel, sub, rows, doc] of SUPERNOVAE) {
+    const dir = dirVec(ra, dec);
+    const pos = dir.clone().multiplyScalar(R_SKY * 0.96);
+    const core = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: snTex, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
+    const halo = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: haloTex, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending }));
+    core.position.copy(pos); halo.position.copy(pos);
+    core.visible = halo.visible = false;
+    skyGroup.add(halo, core);
+    SUPERNOVAE_RT.push({ name, ra, dec, dir, peakJd, peakMag, fadeDays, watchLabel, sub, rows, doc, core, halo, mag: 99 });
+  }
+}
+// current apparent magnitude on the simplified light curve (99 = invisible)
+function snMagAt(S, jd) {
+  const t = jd - S.peakJd;
+  if (t < -18 || t > S.fadeDays) return 99;
+  return t < 0 ? S.peakMag + (-t / 18) * 8 : S.peakMag + (t / S.fadeDays) * 8;
+}
+function updateSupernovae(jd) {
+  for (const S of SUPERNOVAE_RT) {
+    const m = S.mag = snMagAt(S, jd);
+    const on = m < 6.2;
+    S.core.visible = S.halo.visible = on;
+    if (!on) continue;
+    const scale = 15 * Math.pow(10, -0.09 * m);            // mag −7.5 → ~70 units, +3 → ~8
+    const a = Math.min(1, (6.2 - m) / 3);
+    S.core.scale.set(scale, scale, 1);
+    S.core.material.opacity = a;
+    S.halo.scale.set(scale * 2.4, scale * 2.4, 1);
+    S.halo.material.opacity = a * 0.3;
+  }
+}
+// card with a time-travel action: rewind to just before first light and let it blaze
+function showSupernovaInfo(S) {
+  showInfo(S.name, S.sub, S.rows, S.doc, null, {
+    label: `⏱  Watch it explode (${S.watchLabel})`,
+    fn: () => {
+      time.jd = clampJD(S.peakJd - 22);
+      time.speedIdx = 9;                                   // 7 days/second: rise in ~3s, months of fade
+      time.running = true;
+      refreshTimeUI();
+      frameSkyDir(S.dir);
+    },
+  });
+}
+
 // ---------------------------------------------------------------- exoplanets
 // Every confirmed exoplanet system (NASA Exoplanet Archive), one soft glow per host star at
 // its real sky position. A single Points cloud keeps ~4,700 systems cheap; click-picking +
@@ -2788,6 +2886,35 @@ const neiStarLabels = [];
     neiScene.add(rl);
     labelGroups.neighborhood.push(rl);
   }
+
+  // ---- Oort cloud — at its TRUE scale this is a neighborhood-scene object, not a
+  // solar-system one: 2,000–100,000 AU is 0.01–0.5 parsecs, a quarter of the way to
+  // Alpha Centauri. A faint icy haze around the Sun, visible only when zoomed close
+  // (any farther out and 3,000 additive points would pile into a false bright dot).
+  {
+    const N = 3200, pos = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) {
+      const r = 0.01 + 0.47 * Math.pow(Math.random(), 1.7);   // denser toward the inner cloud
+      const th = Math.random() * 2 * Math.PI, z = Math.random() * 2 - 1;
+      const s = Math.sqrt(1 - z * z);
+      pos[i * 3] = r * s * Math.cos(th); pos[i * 3 + 1] = r * z; pos[i * 3 + 2] = r * s * Math.sin(th);
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const oort = new THREE.Points(g, new THREE.PointsMaterial({
+      color: 0xcfe2f0, size: 1.6, sizeAttenuation: false, transparent: true, opacity: 0.3,
+      depthWrite: false, blending: THREE.AdditiveBlending }));
+    oort.frustumCulled = false;
+    const oortLab = makeTextSprite('Oort Cloud', { size: 9.5, color: '#a9c4d8', alpha: 0.85 });
+    oortLab.position.set(0, 0.4, 0);
+    oortLab.renderOrder = 9;
+    const grp = new THREE.Group();
+    grp.add(oort, oortLab);
+    grp.visible = false;                                   // gated by zoom in animate
+    neiScene.add(grp);
+    neiScene.userData.oort = grp;
+    labelGroups.neighborhood.push(oortLab);
+  }
   const gcLab = makeTextSprite('→ galactic centre', { size: 11, color: '#c8a87f', alpha: 0.85 });
   gcLab.position.copy(eqToThree(galToEq(0, 0)).multiplyScalar(120));
   neiScene.add(gcLab);
@@ -4461,6 +4588,10 @@ const SPEEDS = [
   [604800, '7 d/s'], [2592000, '30 d/s'], [31557600, '1 yr/s'], [315576000, '10 yr/s'],
 ];
 const time = { jd: jdFromDate(new Date()), speedIdx: 5, running: true };
+// the ephemeris (JPL long-term Keplerian elements) is valid 3000 BC – 3000 AD; the
+// clock stops at year 1000 / 3000 so every planet position on screen stays honest
+const JD_MIN = 2086307.5, JD_MAX = 2816787.5;   // 1000-01-01 … 3000-01-01
+const clampJD = (jd) => Math.min(JD_MAX, Math.max(JD_MIN, jd));
 const speedLabel = document.getElementById('speed-label');
 const dateLabel = document.getElementById('date-label');
 const dateInput = document.getElementById('date-input');
@@ -4490,7 +4621,7 @@ dateLabel.onclick = () => {
 };
 dateInput.onchange = () => {
   const dt = new Date(dateInput.value);
-  if (!isNaN(dt)) { time.jd = jdFromDate(dt); refreshTimeUI(); }
+  if (!isNaN(dt)) { time.jd = clampJD(jdFromDate(dt)); refreshTimeUI(); }
 };
 
 // ---------------------------------------------------------------- info panel
@@ -4674,6 +4805,16 @@ function handleClick(cx, cy) {
         showInfo(name, `${id} · ${type}`, [['Distance', distStr], ['Type', type]]);
         return;
       }
+    }
+    // an erupting historical supernova is the brightest thing in the sky — pick it first
+    {
+      let bs = null;
+      for (const S of SUPERNOVAE_RT) {
+        if (S.mag > 6) continue;                          // only while actually shining
+        const dot = S.dir.dot(rd);
+        if (dot > Math.cos(1.2 * DEG) && (!bs || dot > bs.dot)) bs = { S, dot };
+      }
+      if (bs) { selectSkyDir(bs.S.dir); showSupernovaInfo(bs.S); return; }
     }
     // phenomena (pulsars, black holes, quasars, …) — pick the closest within threshold
     if (phenomGroup.visible) {
@@ -4975,6 +5116,12 @@ const searchIndex = [];
     const short = G.name.split(' · ')[1];            // "NGC 6822 · Barnard's Galaxy" → both halves match
     if (short) searchIndex.push({ label: short, type: 'galaxy', galaxy: G });
   }
+  for (const S of SUPERNOVAE_RT) {
+    searchIndex.push({ label: S.name, type: 'sn', sn: S });
+    const short = S.name.split(' · ')[1];
+    if (short) searchIndex.push({ label: short, type: 'sn', sn: S });
+  }
+  searchIndex.push({ label: 'Oort Cloud', type: 'oort' });
 }
 
 function gotoTarget(t) {
@@ -5051,6 +5198,18 @@ function gotoTarget(t) {
     orbits.galaxy.target.copy(G.pos);
     orbits.galaxy.r = Math.min(1500, Math.max(25, G.d * 0.45));
     showInfo(G.name, G.sub, G.rows, G.doc);
+  } else if (t.type === 'sn') {
+    frameSkyDir(t.sn.dir);
+    showSupernovaInfo(t.sn);
+  } else if (t.type === 'oort') {
+    setFlyMode(false);
+    setMode('neighborhood');
+    orbits.neighborhood.target.set(0, 0, 0);
+    orbits.neighborhood.r = 2.2;
+    showInfo('Oort Cloud', 'The Sun\'s comet reservoir · 0.01–0.5 parsecs',
+      [['True extent', '2,000 – 100,000 AU'], ['Contents', 'trillions of icy bodies'],
+       ['Sends us', 'the long-period comets'], ['Directly observed', 'never — inferred from comets']],
+      'The Sun\'s deep-freeze: a spherical cloud of icy debris left over from planet formation, reaching a quarter of the way to Alpha Centauri. Every long-period comet — Hale-Bopp, NEOWISE — is an Oort cloud body nudged sunward by a passing star or the galaxy\'s tide. No telescope has ever seen it directly; we know it only by the comets it sends.');
   } else {
     const dso = DSOS[t.dsoIdx];
     frameSkyDir(dsoDirs[t.dsoIdx]);
@@ -5075,7 +5234,8 @@ function jumpTo(ra, dec) {
 const TYPE_LABEL = { sat: 'satellite', lunarsite: 'landing site', moon: 'moon', phenom: 'phenomenon',
   body: 'planet', star: 'star', constellation: 'constellation', 'black hole': 'black hole',
   megastructure: 'megastructure', asteroid: 'asteroid', comet: 'comet', tno: 'dwarf planet',
-  probe: 'spacecraft', galaxy: 'galaxy', exo: 'exoplanet system' };
+  probe: 'spacecraft', galaxy: 'galaxy', sn: 'supernova', oort: 'comet reservoir',
+  exo: 'exoplanet system' };
 // the Sun and Moon share the generic 'body' search type with the planets — name them properly
 const BODY_TYPE_OVERRIDE = { Sun: 'star', Moon: 'moon', Earth: 'planet' };
 function renderSearch(items) {
@@ -5719,7 +5879,7 @@ function animate(now) {
   lastT = now;
 
   if (time.running) {
-    time.jd += SPEEDS[time.speedIdx][0] * dt / 86400;
+    time.jd = clampJD(time.jd + SPEEDS[time.speedIdx][0] * dt / 86400);
   }
   starUniforms.uTime.value = now / 1000;
   applyHeldKeys(dt);
@@ -5772,6 +5932,8 @@ function animate(now) {
           l.visible = l.userData.tier === 1 ? state >= 1 : state === 2;
         }
       }
+      // Oort cloud only at close zoom — farther out its points stack into a false dot
+      neiScene.userData.oort.visible = r < 12;
     }
     if (mode === 'galaxy') {
       const gr = orbits.galaxy.r;
@@ -5797,6 +5959,7 @@ function animate(now) {
   }
 
   updateScalebar();
+  updateSupernovae(time.jd);  // historical transients follow the sim clock
   updateEarthPointer();       // homing arrow to Earth (when enabled)
   drawLocator();              // refresh the "you are here" minimap
   const ds = fmtDate(time.jd);                          // only touch the DOM when the text changes
@@ -5833,6 +5996,7 @@ window.U = {
   STARS, handleClick, starInfo, fly, setFlyMode, flyToObject, EXO, exoDirs, skyCam, get flyMode() { return flyMode; },
   applyFlyCam, heldKeys, mouseNDC, MOONS_RT, SATS_RT, LUNAR_RT, ASTEROIDS_RT, COMETS_RT, updateComets,
   TNOS_RT, updateTNOs, PROBES_RT, updateProbes, helioMesh, showProbeInfo, viewFromObject, GALCAT_RT,
+  SUPERNOVAE_RT, updateSupernovae, showSupernovaInfo,
   deep, deepScene, deepCam, get mode() { return mode; },
   get thirdPerson() { return thirdPerson; },
   exitRideAlong, get rideAlong() { return rideAlong; },
@@ -5861,7 +6025,7 @@ window.U = {
       text: 'Eight planets moving at their real positions for today’s date, computed from NASA orbital elements. Drag to look around; scroll to zoom.' },
     { mode: 'solar', r0: 60, r1: 90, phi: 1.05, timeIdx: 9, hi: '#timebar',
       title: 'You are watching the future',
-      text: 'The clock is running at a week per second — press ▶▶ for faster futures, ◀◀ to rewind into the past, ❚❚ to freeze a moment. Click the date to jump anywhere from 1800 to 2050. Every planet follows its real orbit the whole way.' },
+      text: 'The clock is running at a week per second — press ▶▶ for faster futures, ◀◀ to rewind into the past, ❚❚ to freeze a moment. Click the date to jump anywhere from the year 1000 to 3000 — try 1054, when a supernova outshone Venus. Every planet follows its real orbit the whole way.' },
     { mode: 'solar', follow: 'Earth', r0: 2.2, r1: 5.5, phi: 1.2,
       title: 'Ride along with a satellite',
       text: 'Home, up close — the ISS, Hubble, JWST, GPS, and more, all in motion around Earth. Click any satellite and choose “View from here” to ride in its seat. The Moon carries the Apollo landing sites, clickable too.' },
