@@ -4725,6 +4725,40 @@ function viewFromObject(pov) {
   banner.innerHTML = `👁 Viewing from <b style="color:#d6e2f5">${rideAlong.label}</b> &nbsp;·&nbsp; <span style="cursor:pointer;color:#7fb4ff" onclick="window.U&&window.U.exitRideAlong()">✕ Exit</span>`;
 }
 
+// ---- star ↔ exoplanet-archive cross-reference, so clicking Proxima Centauri or
+// tau Ceti in ANY view shows its real planets. The archive names hosts with
+// abbreviations ("Proxima Cen", "eps Eri", "HD 209458"), so match on normalized
+// forms of the star's proper name, Bayer designation, and catalog ids.
+let exoByStar = null;
+const GREEK_ABBR = { alf: 'alpha', bet: 'beta', gam: 'gamma', del: 'delta', eps: 'epsilon',
+  zet: 'zeta', tet: 'theta', the: 'theta', iot: 'iota', kap: 'kappa', lam: 'lambda',
+  ksi: 'xi', omi: 'omicron', sig: 'sigma', ups: 'upsilon', ome: 'omega' };
+const GREEK_SYM = { 'α': 'alpha', 'β': 'beta', 'γ': 'gamma', 'δ': 'delta', 'ε': 'epsilon',
+  'ζ': 'zeta', 'η': 'eta', 'θ': 'theta', 'ι': 'iota', 'κ': 'kappa', 'λ': 'lambda', 'μ': 'mu',
+  'ν': 'nu', 'ξ': 'xi', 'ο': 'omicron', 'π': 'pi', 'ρ': 'rho', 'σ': 'sigma', 'τ': 'tau',
+  'υ': 'upsilon', 'φ': 'phi', 'χ': 'chi', 'ψ': 'psi', 'ω': 'omega' };
+function normStarName(s) {
+  return s.toLowerCase()
+    .replace(/[αβγδεζηθικλμνξοπρστυφχψω]/g, (ch) => GREEK_SYM[ch])
+    .replace(/[^a-z0-9 ]/g, '')
+    .split(/\s+/).map((w) => GREEK_ABBR[w] || w).join('');
+}
+function exoForStar(names) {
+  if (!exoByStar) {
+    exoByStar = new Map();
+    EXO.forEach((s, idx) => exoByStar.set(normStarName(s.h), idx));
+  }
+  const cands = names.filter(Boolean).map(normStarName).filter((c) => c.length >= 3);
+  for (const c of cands) if (exoByStar.has(c)) return exoByStar.get(c);
+  // archive hosts are often truncations of the proper name ("Proxima Cen")
+  for (const c of cands) {
+    for (const [h, idx] of exoByStar) {
+      if (h.length >= 5 && (c.startsWith(h) || h.startsWith(c))) return idx;
+    }
+  }
+  return -1;
+}
+
 function starInfo(i) {
   const catIds = [];                       // HD / HIP catalog designations, if any
   if (STARS.hd && STARS.hd[i]) catIds.push('HD ' + STARS.hd[i]);
@@ -4748,7 +4782,22 @@ function starInfo(i) {
   rows.push(['Color index B−V', STARS.ci[i].toFixed(2)]);
   rows.push(['RA / Dec', `${(STARS.ra[i] / 15).toFixed(2)}h / ${STARS.dec[i].toFixed(1)}°`]);
   if (conAbbr && conFull[conAbbr]) rows.push(['Constellation', conFull[conAbbr]]);
-  showInfo(name, desig || (conAbbr ? `Star in ${conFull[conAbbr] || conAbbr}` : 'Star'), rows);
+  // real planetary system, if the NASA archive knows one for this star
+  const exoIdx = exoForStar([STARS.names[i], STARS.desig[i], ...catIds]);
+  let action = null;
+  if (exoIdx >= 0) {
+    const sys = EXO[exoIdx];
+    rows.push(['Known planets', String(sys.p.length)]);
+    for (const pl of sys.p.slice(0, 3)) {
+      const bits = [];
+      if (pl.r != null) bits.push(pl.r + ' R⊕');
+      if (pl.pr != null) bits.push(pl.pr + ' d');
+      rows.push(['· ' + (pl.n.replace(sys.h, '').trim() || pl.n), bits.join(' · ') || 'confirmed']);
+    }
+    action = { label: '🪐  View the planetary system', fn: () => exoInfo(exoIdx) };
+  }
+  showInfo(name, desig || (conAbbr ? `Star in ${conFull[conAbbr] || conAbbr}` : 'Star'), rows,
+    null, null, action);
 }
 
 function bodyInfo(name, jd) {
@@ -5359,8 +5408,13 @@ function updateScalebar() {
     const glyPerUnit = 46.5 / COS_CMB_R;                  // shell ≈ observable-universe radius
     const gly = 2 * orbits.cosmic.r * glyPerUnit;
     const atShell = orbits.cosmic.r > 78;
+    // look-back time: quote a number only in the near regime where light-travel time ≈
+    // distance (within a few %); farther out cosmic expansion breaks that equality
+    const lookback = gly / 2 < 2
+      ? ` · seeing <b>${gly / 2 < 1 ? Math.round(gly * 500) + ' million' : (gly / 2).toFixed(1) + ' billion'} years</b> into the past`
+      : '';
     setScale(`view ≈ <b>${gly < 10 ? gly.toFixed(1) : Math.round(gly)} billion ly</b> across · ` +
-      (atShell ? 'at the <b>edge of the observable universe</b>' : 'cosmic web of galaxy clusters &amp; voids'));
+      (atShell ? 'at the <b>edge of the observable universe</b>' : 'cosmic web of galaxy clusters &amp; voids') + lookback);
   }
 }
 
