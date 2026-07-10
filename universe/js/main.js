@@ -765,6 +765,7 @@ function snMagAt(S, jd) {
   if (t < -18 || t > S.fadeDays) return 99;
   return t < 0 ? S.peakMag + (-t / 18) * 8 : S.peakMag + (t / S.fadeDays) * 8;
 }
+let snWatch = null;   // active "watch it explode" session: { S, seen }
 function updateSupernovae(jd) {
   for (const S of SUPERNOVAE_RT) {
     const m = S.mag = snMagAt(S, jd);
@@ -778,6 +779,16 @@ function updateSupernovae(jd) {
     S.halo.scale.set(scale * 2.4, scale * 2.4, 1);
     S.halo.material.opacity = a * 0.3;
   }
+  // the "watch it explode" show borrows the clock at 7 d/s; hand it back at real
+  // time once the star has flared AND faded — never leave the universe racing
+  if (snWatch) {
+    const m = snWatch.S.mag;
+    if (!snWatch.seen && m < 6) snWatch.seen = true;
+    else if (snWatch.seen && m > 6.2) {
+      if (time.speedIdx === 9) { time.speedIdx = 5; refreshTimeUI(); }   // unless the user took over
+      snWatch = null;
+    }
+  }
 }
 // card with a time-travel action: rewind to just before first light and let it blaze
 function showSupernovaInfo(S) {
@@ -787,6 +798,7 @@ function showSupernovaInfo(S) {
       time.jd = clampJD(S.peakJd - 22);
       time.speedIdx = 9;                                   // 7 days/second: rise in ~3s, months of fade
       time.running = true;
+      snWatch = { S, seen: false };                        // clock returns to real time after the fade
       refreshTimeUI();
       frameSkyDir(S.dir);
     },
@@ -4940,7 +4952,7 @@ function handleClick(cx, cy) {
         v.copy(s.world).project(solCam);
         if (v.z > 1) continue;
         const px = Math.hypot((v.x - ndc.x) * innerWidth / 2, (v.y - ndc.y) * innerHeight / 2);
-        if (px < 18 && (!best || px < best.px)) best = { px, sat: s };
+        if (px < 24 && (!best || px < best.px)) best = { px, sat: s };
       }
       for (const s of LUNAR_RT) {
         v.copy(s.world).project(solCam);
@@ -5026,6 +5038,28 @@ function handleClick(cx, cy) {
       orbits.solar.follow = best.name === 'Sun' ? null : best.name;
       if (best.name === 'Sun') orbits.solar.target.set(0, 0, 0);
     } else {
+      // clicking inside Earth's satellite swarm must not fall through to a background
+      // star — the swarm dots look clickable, so snap to the nearest named satellite
+      if (satsVisible && orbits.solar.r < 60 && solBodies.Earth) {
+        const ep = new THREE.Vector3().copy(solBodies.Earth.pos).project(solCam);
+        if (ep.z <= 1) {
+          const epx = Math.hypot((ep.x - ndc.x) * innerWidth / 2, (ep.y - ndc.y) * innerHeight / 2);
+          let shellPx = 0, nearSat = null, nsPx = 70;
+          const sv = new THREE.Vector3();
+          for (const s of SATS_RT) {
+            if (s.shell === 'deep') continue;              // JWST orbits far outside the swarm
+            sv.copy(s.world).project(solCam);
+            if (sv.z > 1) continue;
+            shellPx = Math.max(shellPx, Math.hypot((sv.x - ep.x) * innerWidth / 2, (sv.y - ep.y) * innerHeight / 2));
+            const cpx = Math.hypot((sv.x - ndc.x) * innerWidth / 2, (sv.y - ndc.y) * innerHeight / 2);
+            if (cpx < nsPx) { nsPx = cpx; nearSat = s; }
+          }
+          if (epx < shellPx * 1.15) {
+            if (nearSat) showSatInfo(nearSat);
+            return;                                        // inside the cloud: never a star card
+          }
+        }
+      }
       // empty space → pick the brightest catalog star along the ray against the
       // backdrop starfield (replaces the old ground "Sky" view's star picking)
       const bi = pickBackdropStar(solCam);
