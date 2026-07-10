@@ -3175,8 +3175,22 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
   // centre (no separate screen): event-horizon shadow, doppler accretion disk, photon ring.
   {
     const RS = 0.5;
-    const shadow = new THREE.Mesh(new THREE.SphereGeometry(RS, 96, 64), new THREE.MeshBasicMaterial({ color: 0x000000 }));
+    // the shadow must actually occlude: the galaxy's additive star points ignore the
+    // depth buffer, so a plain black sphere lets them shine through. Drawing the
+    // shadow AFTER the particles (depthTest off, depth still written) paints true
+    // black over everything behind it, while the disk/arcs draw later on top.
+    // (transparent:true is load-bearing — it puts the shadow in the TRANSPARENT render
+    // queue, which draws after the additive particles; an opaque mesh always draws
+    // first and the stars paint right over the black)
+    const shadow = new THREE.Mesh(new THREE.SphereGeometry(RS, 96, 64),
+      new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 1,
+        depthTest: false, depthWrite: true }));
+    shadow.renderOrder = 4;
     galBH.add(shadow);
+    // accretion disk v2 — static (per the design call: no motion), but detailed:
+    // an ISCO gap off the shadow, a white-hot inner rim, a temperature gradient
+    // falling to ember red, frozen filamentary turbulence sheared along the flow,
+    // and strong one-sided relativistic beaming. uTime stays as a fixed phase seed.
     const diskMat = new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
       uniforms: { uTime: { value: 0 } },
@@ -3186,25 +3200,82 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
         void main(){
           float r = length(vP.xy);
           float ang = atan(vP.y, vP.x);
-          float t = clamp((r - ${(RS * 1.25).toFixed(3)}) / ${(RS * 3.4).toFixed(3)}, 0.0, 1.0);
-          float swirl = 0.55 + 0.45 * sin(ang * 3.0 - uTime * 2.2 + r * 5.0);
-          float dopp = 0.45 + 0.7 * cos(ang - 1.5708);     // relativistic beaming, brighter approaching side
-          vec3 hot = mix(vec3(1.0,0.96,0.86), vec3(1.0,0.42,0.12), t);
-          float a = (1.0 - t) * swirl * dopp;
-          gl_FragColor = vec4(hot * (0.45 + dopp * 0.8), a * 0.8);
+          float inR = ${(RS * 1.45).toFixed(3)};
+          float t = clamp((r - inR) / ${(RS * 3.1).toFixed(3)}, 0.0, 1.0);
+          // frozen turbulence: three shear-stretched harmonics + fine grain, phase-seeded
+          float f = 0.62
+            + 0.20 * sin(ang * 7.0  + r * 26.0 - uTime)
+            + 0.13 * sin(ang * 13.0 - r * 46.0 + uTime * 1.7)
+            + 0.09 * sin(ang * 23.0 + r * 74.0 + uTime * 0.6);
+          float grain = 0.92 + 0.08 * sin(r * 210.0 + ang * 41.0);
+          // relativistic beaming — approaching side blazes, receding side fades
+          float dopp = 0.30 + 0.85 * pow(0.5 + 0.5 * cos(ang - 1.5708), 1.6);
+          // temperature ramp: white-hot inner → amber → ember red at the fringe
+          vec3 hot = mix(mix(vec3(1.0, 0.98, 0.94), vec3(1.0, 0.70, 0.30), smoothstep(0.0, 0.45, t)),
+                         vec3(0.82, 0.26, 0.07), smoothstep(0.45, 1.0, t));
+          // blazing inner rim at the ISCO edge
+          float rim = smoothstep(0.10, 0.0, (r - inR) / ${RS.toFixed(3)}) * 0.9;
+          float a = ((1.0 - t) * f * grain * dopp + rim * dopp) * 0.85;
+          vec3 col = hot * (0.40 + dopp * 0.95) + vec3(1.0, 0.97, 0.9) * rim * 0.8;
+          gl_FragColor = vec4(col, a);
         }`,
     });
-    const disk = new THREE.Mesh(new THREE.RingGeometry(RS * 1.25, RS * 4.6, 120, 8), diskMat);
+    const disk = new THREE.Mesh(new THREE.RingGeometry(RS * 1.45, RS * 4.6, 160, 24), diskMat);
     disk.rotation.x = Math.PI / 2 - 0.4;
+    disk.renderOrder = 5;
     galBH.add(disk);
     galBH.userData.disk = diskMat;
+    // the lensed ring — light from the disk behind the hole, bent over and under the
+    // shadow (the EHT / Interstellar signature). Static geometry tilted with the disk.
+    const lensMat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
+      vertexShader: `
+        varying vec3 vP; varying vec3 vQ; varying vec3 vC;
+        void main(){
+          vP = position;
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          vQ = mv.xyz;                                   // fragment, view space
+          vC = (modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;   // hole centre, view space
+          gl_Position = projectionMatrix * mv;
+        }`,
+      fragmentShader: `
+        varying vec3 vP; varying vec3 vQ; varying vec3 vC;
+        void main(){
+          float r = length(vP.xy);
+          float ang = atan(vP.y, vP.x);
+          float band = smoothstep(${(RS * 1.03).toFixed(3)}, ${(RS * 1.08).toFixed(3)}, r)
+                     * (1.0 - smoothstep(${(RS * 1.13).toFixed(3)}, ${(RS * 1.24).toFixed(3)}, r));
+          // keep only the over/under arcs — the ring's side segments would cross the
+          // shadow's face as a grey band when seen from near the disk plane
+          float arc = pow(abs(vP.y) / max(r, 0.001), 1.6);
+          // lensed images exist only OUTSIDE the silhouette: cut any fragment whose
+          // sight line passes closer to the hole than the shadow's edge
+          float edge = asin(min(1.0, ${RS.toFixed(3)} / length(vC)));
+          float off = acos(clamp(dot(normalize(vQ), normalize(vC)), -1.0, 1.0));
+          float outside = smoothstep(0.98, 1.12, off / max(edge, 0.0001));
+          // upper image of the far side is the brighter one; a touch of beaming left–right
+          float updown = 0.55 + 0.45 * sin(ang);
+          float dopp = 0.55 + 0.45 * cos(ang - 1.5708);
+          vec3 col = mix(vec3(1.0, 0.86, 0.58), vec3(1.0, 0.96, 0.88), updown);
+          gl_FragColor = vec4(col * (0.55 + 0.65 * dopp), band * arc * updown * dopp * outside * 0.85);
+        }`,
+    });
+    const lens = new THREE.Mesh(new THREE.RingGeometry(RS * 1.0, RS * 1.28, 128, 1), lensMat);
+    lens.rotation.x = -0.4;                 // stands perpendicular to the disk, sharing its tilt
+    lens.renderOrder = 6;
+    galBH.add(lens);
     const photon = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: makeRingTexture('#ffe6b8'), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
-    photon.scale.set(RS * 2.5, RS * 2.5, 1); galBH.add(photon);
+      map: makeRingTexture('#ffe6b8'), transparent: true, depthWrite: false,
+      depthTest: false, blending: THREE.AdditiveBlending }));
+    photon.scale.set(RS * 2.3, RS * 2.3, 1);
+    photon.renderOrder = 7;
+    galBH.add(photon);
     const halo = new THREE.Sprite(new THREE.SpriteMaterial({
       map: makeDiscTexture('rgba(255,205,150,0.4)', 'rgba(255,110,40,0.0)', 0.22),
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
-    halo.scale.set(RS * 7, RS * 7, 1); galBH.add(halo);
+    halo.scale.set(RS * 7, RS * 7, 1);
+    halo.renderOrder = 3;                   // ambient glow behind the shadow, not over it
+    galBH.add(halo);
     galScene.add(galBH);
   }
 
