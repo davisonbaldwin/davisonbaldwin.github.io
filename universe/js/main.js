@@ -1111,8 +1111,8 @@ let earthFx = null;                          // { uSunDir, clouds } for the hero
       node.add(clouds);
       earthFx.clouds = clouds;
     }
-    if (name === 'Saturn') {
-      const inner = rd * 1.24, outer = rd * 2.27;
+    const addRing = (innerMul, outerMul, tex) => {
+      const inner = rd * innerMul, outer = rd * outerMul;
       const ringGeo = new THREE.RingGeometry(inner, outer, 96);
       const rp = ringGeo.attributes.position, ruv = ringGeo.attributes.uv;
       for (let k = 0; k < rp.count; k++) {
@@ -1120,12 +1120,37 @@ let earthFx = null;                          // { uSunDir, clouds } for the hero
         ruv.setXY(k, (rr - inner) / (outer - inner), 0.5);
       }
       ruv.needsUpdate = true;
-      const ringTex = planetTex('8k_saturn_ring_alpha.png');
       const ring = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({
-        map: ringTex, side: THREE.DoubleSide, transparent: true, depthWrite: false,
+        map: tex, side: THREE.DoubleSide, transparent: true, depthWrite: false,
       }));
       ring.rotation.x = Math.PI / 2;
       node.add(ring);
+    };
+    if (name === 'Saturn') addRing(1.24, 2.27, planetTex('8k_saturn_ring_alpha.png'));
+    // the ice giants have real ring systems too — narrow, dark, and (at Uranus)
+    // nearly pole-on thanks to the 98° axial tilt. Bands at true radii, kept faint.
+    if (name === 'Uranus' || name === 'Neptune') {
+      const bands = name === 'Uranus'
+        // t across 1.60–2.06 R: the nine narrow rings, ε by far the brightest
+        ? { span: [1.60, 2.06], rows: [[1.637, 0.005, 0.14], [1.652, 0.005, 0.12], [1.666, 0.005, 0.12],
+            [1.750, 0.006, 0.16], [1.786, 0.006, 0.14], [1.834, 0.006, 0.18], [1.863, 0.006, 0.16],
+            [1.900, 0.007, 0.18], [2.006, 0.014, 0.5]], tint: [214, 220, 228] }
+        // Galle (broad, whisper-faint), Le Verrier, Lassell sheet, Adams
+        : { span: [1.65, 2.60], rows: [[1.69, 0.09, 0.05], [2.15, 0.007, 0.15], [2.30, 0.28, 0.035],
+            [2.54, 0.008, 0.19]], tint: [206, 214, 224] };
+      const cv = document.createElement('canvas'); cv.width = 512; cv.height = 4;
+      const ctx = cv.getContext('2d');
+      const [s0, s1] = bands.span, [tr, tg, tb] = bands.tint;
+      for (const [radR, widR, a] of bands.rows) {
+        const x = ((radR - s0) / (s1 - s0)) * 512, w = Math.max(1.5, (widR / (s1 - s0)) * 512);
+        const g = ctx.createLinearGradient(x - w, 0, x + w, 0);
+        g.addColorStop(0, `rgba(${tr},${tg},${tb},0)`);
+        g.addColorStop(0.5, `rgba(${tr},${tg},${tb},${a})`);
+        g.addColorStop(1, `rgba(${tr},${tg},${tb},0)`);
+        ctx.fillStyle = g;
+        ctx.fillRect(x - w, 0, w * 2, 4);
+      }
+      addRing(bands.span[0], bands.span[1], new THREE.CanvasTexture(cv));
     }
     const lab = makeTextSprite(name, { size: 11, color: PLANET_COLOR[name] });
     lab.center.set(0.5, 2.0);
@@ -2314,6 +2339,138 @@ function updateTNOs(jd) {
   }
 }
 
+// ---- deep-space probes — the five spacecraft leaving the solar system, at their
+// real distances along their real outbound directions. Distances follow the sim
+// clock (linear cruise from a 2026-07-10 anchor), so rewinding to 1990 puts
+// Voyager 1 near 40 AU — where it took the Pale Blue Dot photograph. Each card's
+// "View from here" looks back at the Sun from the probe: a star among stars.
+// Fields: name, RA°, Dec° (J2000 outbound dir), r(AU @ 2026-07-10), speed AU/yr,
+// launch JD, sub, rows, doc.
+const PROBES = [
+  ['Voyager 1', 262.0, 12.4, 167.3, 3.57, 2443391.5,
+    'The most distant human-made object', [['Launched', 'Sep 5, 1977'], ['Speed', '3.57 AU/year'], ['Heliopause crossed', 'Aug 2012'], ['Carries', 'the Golden Record']],
+    'Farther from home than anything humanity has ever built, and still calling back daily on a 23-watt radio. It photographed the Pale Blue Dot from 40 AU in 1990, crossed into interstellar space in 2012, and carries a gold-plated record of Earth\'s sounds — greetings in 55 languages, whale song, Chuck Berry.'],
+  ['Voyager 2', 302.1, -58.9, 139.8, 3.16, 2443375.5,
+    'The only visitor to Uranus & Neptune', [['Launched', 'Aug 20, 1977'], ['Speed', '3.16 AU/year'], ['Heliopause crossed', 'Nov 2018'], ['Grand Tour', 'Jupiter · Saturn · Uranus · Neptune']],
+    'The only spacecraft ever to visit all four giant planets, riding a planetary alignment that occurs once every 176 years. Everything we know of Uranus and Neptune up close, Voyager 2 saw. It followed its twin into interstellar space in 2018, headed south out of the solar system.'],
+  ['Pioneer 10', 78.2, 26.1, 137.3, 2.52, 2441379.5,
+    'First through the asteroid belt', [['Launched', 'Mar 2, 1972'], ['First flyby of', 'Jupiter (1973)'], ['Last contact', 'Jan 2003'], ['Headed toward', 'Aldebaran (~2 million years)']],
+    'The trailblazer: first spacecraft through the asteroid belt and first past Jupiter, proving the outer solar system could be reached at all. Its signal faded to silence in 2003. It coasts on, silent, toward the star Aldebaran — arriving in roughly two million years, carrying its famous plaque.'],
+  ['Pioneer 11', 282.5, -8.9, 117.0, 2.37, 2441778.5,
+    'First spacecraft past Saturn', [['Launched', 'Apr 6, 1973'], ['First flyby of', 'Saturn (1979)'], ['Last contact', 'Nov 1995'], ['Carries', 'the Pioneer plaque']],
+    'It threaded Saturn\'s rings in 1979 — the first spacecraft ever to see the ringed planet up close — scouting the path the Voyagers would follow. Silent since 1995, it drifts outward toward the constellation Aquila.'],
+  ['New Horizons', 293.7, -20.5, 61.8, 2.94, 2453754.5,
+    'Pluto\'s first and only visitor', [['Launched', 'Jan 19, 2006'], ['Pluto flyby', 'Jul 14, 2015'], ['Arrokoth flyby', 'Jan 1, 2019'], ['Status', 'active in the Kuiper belt']],
+    'The fastest launch in history — past the Moon in nine hours. In 2015 it turned Pluto from a fuzzy dot into a world with a heart-shaped glacier, then flew past Arrokoth, the most distant object ever explored. Still awake, still exploring the Kuiper belt.'],
+];
+const PROBES_RT = [];
+let probesVisible = true;
+const probeGroup = new THREE.Group();
+solScene.add(probeGroup);
+{
+  // equatorial (RA/Dec) → ecliptic unit direction, in the scene's ecliptic frame
+  const eps = 23.4393 * DEG, ce = Math.cos(eps), se = Math.sin(eps);
+  const eqToEclDir = (raDeg, decDeg) => {
+    const ra = raDeg * DEG, de = decDeg * DEG;
+    const x = Math.cos(de) * Math.cos(ra), y = Math.cos(de) * Math.sin(ra), z = Math.sin(de);
+    return eclToThree({ x, y: y * ce + z * se, z: -y * se + z * ce }).normalize();
+  };
+  const probeTex = makeDiscTexture('rgba(255,250,240,1.0)', 'rgba(205,212,230,0.4)', 0.45);
+  for (const [name, ra, dec, r0, v, launchJd, sub, rows, doc] of PROBES) {
+    const dir = eqToEclDir(ra, dec);
+    const mark = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: probeTex, color: 0xf4eeda, transparent: true, opacity: 0.95,
+      depthTest: true, depthWrite: false, sizeAttenuation: false, blending: THREE.AdditiveBlending }));
+    mark.scale.set(0.012, 0.012, 1);
+    mark.userData.noLabelScale = true;
+    probeGroup.add(mark);
+    const lab = makeTextSprite(name, { size: 8.5, color: '#e8e2cf', alpha: 0.85 });
+    lab.center.set(0.5, 1.8); lab.renderOrder = 9;
+    probeGroup.add(lab);
+    labelGroups.solar.push(lab);
+    // outbound trail — the interstellar-cruise leg behind the probe
+    const tg = new THREE.BufferGeometry().setFromPoints([
+      dir.clone().multiplyScalar(7 * AUU), dir.clone().multiplyScalar(r0 * AUU)]);
+    const trail = new THREE.Line(tg, new THREE.LineBasicMaterial({
+      color: 0xcfc6a6, transparent: true, opacity: 0.1 }));
+    probeGroup.add(trail);
+    PROBES_RT.push({ name, dir, r0, v, launchJd, sub, rows, doc, mark, lab, trail,
+      world: new THREE.Vector3(), rAU: r0 });
+  }
+}
+function updateProbes(jd) {
+  const showLab = probesVisible && orbits.solar.r > 260;
+  for (const P of PROBES_RT) {
+    P.rAU = P.r0 + P.v * (jd - 2461231.5) / 365.25;
+    // hide during the early planetary-flyby years — the straight cruise model only
+    // holds once the probe is well past the giant planets
+    const on = jd > P.launchJd + 900 && P.rAU > 7;
+    P.mark.visible = on; P.trail.visible = on;
+    P.lab.visible = on && showLab;
+    if (!on) continue;
+    P.world.copy(P.dir).multiplyScalar(P.rAU * AUU);
+    P.mark.position.copy(P.world);
+    P.lab.position.copy(P.world);
+    const pos = P.trail.geometry.attributes.position;
+    pos.setXYZ(1, P.world.x, P.world.y, P.world.z);
+    pos.needsUpdate = true;
+  }
+}
+// probe card with live distance + signal time, and a look back at the Sun
+function showProbeInfo(P) {
+  const au = P.rAU;
+  const lightMin = au * 8.3168;
+  const lightStr = lightMin >= 90 ? `${(lightMin / 60).toFixed(1)} hours` : `${Math.round(lightMin)} minutes`;
+  const rows = [['Distance from the Sun', `${au.toFixed(1)} AU`], ['One-way signal time', lightStr], ...P.rows];
+  showInfo(P.name, P.sub, rows, P.doc, { obj: P });
+}
+
+// ---- heliosphere — the boundary where the Sun's wind gives way to interstellar
+// space, at its real ~123 AU. Fades in only at outer-system zoom so it never
+// pollutes the planetary view; both Voyagers sit outside it, which is the story.
+const helioMesh = (() => {
+  const mat = new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    side: THREE.DoubleSide,
+    uniforms: { uFade: { value: 0 } },
+    vertexShader: `
+      varying vec3 vN; varying vec3 vV;
+      void main(){
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        vN = normalize(normalMatrix * normal);
+        vV = normalize(-mv.xyz);
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: `
+      varying vec3 vN; varying vec3 vV; uniform float uFade;
+      void main(){
+        float f = 1.0 - abs(dot(normalize(vN), normalize(vV)));
+        float rim = pow(f, 2.6);
+        float a = (rim * 0.42 + 0.015) * uFade;
+        vec3 col = mix(vec3(0.16, 0.30, 0.44), vec3(0.42, 0.72, 0.92), rim);
+        gl_FragColor = vec4(col, a);
+      }`,
+  });
+  const mesh = new THREE.Mesh(new THREE.SphereGeometry(123 * AUU, 96, 64), mat);
+  mesh.scale.set(1.0, 0.94, 1.0);          // gently flattened — the wind bubble isn't a perfect sphere
+  solScene.add(mesh);
+  const lab = makeTextSprite('Heliopause — edge of the solar wind', { size: 10, color: '#9fc8e0', alpha: 0.8 });
+  lab.position.set(0, 123 * AUU * 0.32, -123 * AUU * 0.92);
+  lab.renderOrder = 9;
+  solScene.add(lab);
+  labelGroups.solar.push(lab);
+  mesh.userData.lab = lab;
+  return mesh;
+})();
+let helioVisible = true;
+function updateHeliosphere() {
+  const r = orbits.solar.r;
+  const fade = helioVisible ? THREE.MathUtils.smoothstep(r, 500, 1500) : 0;
+  helioMesh.material.uniforms.uFade.value = fade;
+  helioMesh.visible = fade > 0.005;
+  helioMesh.userData.lab.visible = helioVisible && fade > 0.35;
+}
+
 // info card for a comet, with a time-travel action to its best show — the card
 // teaches the time controls the same way the Sgr A* card teaches deep flight
 function showCometInfo(C) {
@@ -2420,6 +2577,8 @@ function updateSolarBodies(jd) {
   updateNamedAsteroids(jd);
   updateComets(jd);
   updateTNOs(jd);
+  updateProbes(jd);
+  updateHeliosphere();
   updateLunarSites();
   const nearEarth = orbits.solar.follow === 'Earth' && orbits.solar.r < 6;
   const nearMoon = orbits.solar.follow === 'Moon' && orbits.solar.r < 6;
@@ -4515,7 +4674,18 @@ function handleClick(cx, cy) {
         if (px < 16 && (!best || px < best.px)) best = { px, tno: T };
       }
     }
-    if (best && best.comet) {
+    if (probesVisible) {
+      for (const P of PROBES_RT) {
+        if (!P.mark.visible) continue;
+        v.copy(P.world).project(solCam);
+        if (v.z > 1) continue;
+        const px = Math.hypot((v.x - ndc.x) * innerWidth / 2, (v.y - ndc.y) * innerHeight / 2);
+        if (px < 16 && (!best || px < best.px)) best = { px, probe: P };
+      }
+    }
+    if (best && best.probe) {
+      showProbeInfo(best.probe);
+    } else if (best && best.comet) {
       showCometInfo(best.comet);
     } else if (best && best.tno) {
       const T = best.tno;
@@ -4674,6 +4844,7 @@ const searchIndex = [];
     if (short !== C.name) searchIndex.push({ label: short, type: 'comet', comet: C });
   }
   for (const T of TNOS_RT) searchIndex.push({ label: T.name, type: 'tno', tno: T });
+  for (const P of PROBES_RT) searchIndex.push({ label: P.name, type: 'probe', probe: P });
 }
 
 function gotoTarget(t) {
@@ -4738,6 +4909,11 @@ function gotoTarget(t) {
     updateTNOs(time.jd);
     jumpToPoint(T.world.clone(), 5);
     showInfo(T.name, T.sub, T.rows, T.doc, { obj: T });
+  } else if (t.type === 'probe') {
+    const P = t.probe;
+    updateProbes(time.jd);
+    jumpToPoint(P.world.clone(), 3);
+    showProbeInfo(P);
   } else {
     const dso = DSOS[t.dsoIdx];
     frameSkyDir(dsoDirs[t.dsoIdx]);
@@ -4762,7 +4938,7 @@ function jumpTo(ra, dec) {
 const TYPE_LABEL = { sat: 'satellite', lunarsite: 'landing site', moon: 'moon', phenom: 'phenomenon',
   body: 'planet', star: 'star', constellation: 'constellation', 'black hole': 'black hole',
   megastructure: 'megastructure', asteroid: 'asteroid', comet: 'comet', tno: 'dwarf planet',
-  exo: 'exoplanet system' };
+  probe: 'spacecraft', exo: 'exoplanet system' };
 // the Sun and Moon share the generic 'body' search type with the planets — name them properly
 const BODY_TYPE_OVERRIDE = { Sun: 'star', Moon: 'moon', Earth: 'planet' };
 function renderSearch(items) {
@@ -5217,6 +5393,11 @@ bind('ck-tnos', (el) => {
   tnosVisible = el.checked;
   tnoGroup.visible = el.checked;
 });
+bind('ck-probes', (el) => {
+  probesVisible = el.checked;
+  probeGroup.visible = el.checked;
+});
+bind('ck-helio', (el) => { helioVisible = el.checked; });
 // hideable UI panels: minimap (#locator) + spaceship controls (#fly-hud)
 const locatorEl = document.getElementById('locator');
 const timebarEl = document.getElementById('timebar');
@@ -5293,12 +5474,14 @@ const PRESET_BASE = {
   'ck-twinkle': !matchMedia('(prefers-reduced-motion: reduce)').matches,  // a11y: calm sky by default
   'ck-phenom': true, 'ck-mega': false, 'ck-grav': false, 'ck-dm': false,
   'ck-orbits': true, 'ck-belts': true, 'ck-asteroids': false, 'ck-asteroid-names': false,
-  'ck-comets': true, 'ck-tnos': true, 'ck-moons': true, 'ck-sats': true, 'ck-plabels': true,
+  'ck-comets': true, 'ck-tnos': true, 'ck-probes': true, 'ck-helio': true,
+  'ck-moons': true, 'ck-sats': true, 'ck-plabels': true,
 };
 const PRESETS = {
   essentials: {},
   clean: { 'ck-lines': false, 'ck-labels': false, 'ck-names': false, 'ck-dso': false,
-    'ck-phenom': false, 'ck-sats': false, 'ck-orbits': false, 'ck-belts': true },
+    'ck-phenom': false, 'ck-sats': false, 'ck-orbits': false, 'ck-belts': true,
+    'ck-probes': false, 'ck-helio': false },
   everything: { 'ck-art': true, 'ck-exo': true, 'ck-grid': true, 'ck-mega': true,
     'ck-grav': true, 'ck-dm': true, 'ck-asteroids': true, 'ck-asteroid-names': true },
 };
@@ -5503,7 +5686,7 @@ window.U = {
   skyGroup, horizon, buildArt, solBodies, applyZoom,
   STARS, handleClick, starInfo, fly, setFlyMode, flyToObject, EXO, exoDirs, skyCam, get flyMode() { return flyMode; },
   applyFlyCam, heldKeys, mouseNDC, MOONS_RT, SATS_RT, LUNAR_RT, ASTEROIDS_RT, COMETS_RT, updateComets,
-  TNOS_RT, updateTNOs,
+  TNOS_RT, updateTNOs, PROBES_RT, updateProbes, helioMesh, showProbeInfo, viewFromObject,
   deep, deepScene, deepCam, get mode() { return mode; },
   get thirdPerson() { return thirdPerson; },
   exitRideAlong, get rideAlong() { return rideAlong; },
