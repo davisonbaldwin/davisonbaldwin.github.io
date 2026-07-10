@@ -2615,6 +2615,11 @@ backdrop.add(solStars);
 const solMilkyWay = buildMilkyWay();
 solMilkyWay.scale.setScalar(solStarsScale);
 solMilkyWay.renderOrder = -1;
+// the sky-dome build skips depth testing (nothing occludes it there), but in the
+// solar scene the ship and planets must block the band — else its stars shine
+// straight through hulls and night sides (each build gets fresh materials, so this
+// doesn't touch the sky copy)
+solMilkyWay.traverse((o) => { if (o.material) o.material.depthTest = true; });
 backdrop.add(solMilkyWay);
 solScene.add(backdrop);
 
