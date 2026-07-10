@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Universe — Interactive Model</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23060a14'/%3E%3Ctext x='50' y='72' font-size='64' text-anchor='middle' fill='%237fb4ff'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #04060c;
+    --card: rgba(13, 20, 34, 0.82);
+    --border: rgba(120, 160, 220, 0.18);
+    --text: #d6e2f5;
+    --dim: #8aa0c0;
+    --accent: #7fb4ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; background: var(--bg);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--text); }
+  #canvas-host { position: fixed; inset: 0; touch-action: none;
+    -webkit-user-select: none; user-select: none; }
+  canvas { display: block; }
+
+  .card { background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; backdrop-filter: blur(12px); }
+
+  #topbar { position: fixed; top: 14px; left: 16px; display: flex; gap: 10px;
+    align-items: center; z-index: 10; }
+  #title { font-size: 15px; font-weight: 700; letter-spacing: 3.5px; padding: 9px 14px;
+    cursor: pointer; user-select: none; }
+  #title:hover { background: rgba(127,180,255,0.12); }
+  #title span { color: var(--accent); }
+  #title-caret { color: var(--dim); font-size: 10px; letter-spacing: 0; margin-left: 5px;
+    display: inline-block; transition: transform 0.2s; }
+  #title.open #title-caret { transform: rotate(180deg); }
+  .tabs { display: flex; padding: 4px; gap: 2px; }
+  .tab { border: 0; background: transparent; color: var(--dim); font-size: 12.5px;
+    padding: 6px 12px; border-radius: 7px; cursor: pointer; font-family: inherit; }
+  .tab.active { background: rgba(127, 180, 255, 0.16); color: var(--text); }
+  .tab:hover:not(.active) { color: var(--text); }
+
+  #searchbox { position: fixed; top: 14px; right: 16px; z-index: 10; width: 260px; }
+  #search { width: 100%; padding: 9px 13px; background: var(--card);
+    border: 1px solid var(--border); border-radius: 10px; color: var(--text);
+    font-size: 13px; outline: none; font-family: inherit; backdrop-filter: blur(12px); }
+  #search:focus { border-color: rgba(127, 180, 255, 0.5); }
+  #search-results { margin-top: 6px; overflow: hidden; display: none; }
+  #search-results.open { display: block; }
+  .sr-item { padding: 8px 13px; font-size: 13px; cursor: pointer; display: flex;
+    justify-content: space-between; gap: 10px; }
+  .sr-item:hover, .sr-item.sel { background: rgba(127, 180, 255, 0.13); }
+  .sr-empty { padding: 10px 13px; font-size: 12px; color: var(--dim); }
+  .kbd-note { padding: 8px 2px 2px; font-size: 10px; color: var(--dim);
+    letter-spacing: 0.04em; line-height: 1.8; }
+  .kbd-note b { color: var(--text); font-weight: 500; }
+  .credits { padding: 10px 2px 4px; margin-top: 6px; border-top: 1px solid var(--border);
+    font-size: 9.5px; color: var(--dim); line-height: 1.7; letter-spacing: 0.02em; }
+  .credits a { color: var(--dim); }
+  .credits a:hover { color: var(--text); }
+  .sr-type { color: var(--dim); font-size: 11px; }
+
+  /* Controls panel — a dropdown opened from the UNIVERSE title (upper-left) */
+  #panel { position: fixed; left: 16px; top: 60px; z-index: 14; width: 218px;
+    padding: 10px 14px 12px; font-size: 12.5px; max-height: calc(100vh - 92px); overflow-y: auto;
+    display: none; }
+  #panel.open { display: block; }
+  /* Locator minimap — "you are here" across the scales of the universe */
+  #locator { position: fixed; left: 16px; top: 70px; z-index: 9; width: 196px; padding: 9px 10px 8px; }
+  #loc-head { display: flex; justify-content: space-between; align-items: baseline; }
+  /* small dismiss button shared by hideable panels */
+  .panel-x { margin-left: 8px; padding: 0 4px; background: none; border: none; cursor: pointer;
+    color: var(--dim); font-size: 11px; line-height: 1; opacity: 0.55; transition: opacity 0.15s; }
+  .panel-x:hover { opacity: 1; color: var(--text); }
+  .fh-title { position: relative; }
+  .fh-title .panel-x { position: absolute; right: -2px; top: -1px; }
+  #loc-name { font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0.4px; }
+  #loc-dist { font-size: 10px; color: var(--dim); font-variant-numeric: tabular-nums; }
+  #loc-canvas { width: 196px; height: 196px; display: block; margin: 7px 0 7px; border-radius: 9px;
+    background: radial-gradient(circle at 50% 50%, rgba(20,30,52,0.55), rgba(6,9,16,0.65)); }
+  #loc-ladder { display: flex; gap: 3px; }
+  .loc-step { flex: 1; font-size: 8.5px; text-align: center; padding: 3px 0; border-radius: 5px;
+    color: var(--dim); background: rgba(255,255,255,0.045); letter-spacing: 0.2px;
+    cursor: pointer; transition: background 0.15s, color 0.15s; }
+  .loc-step:hover { color: var(--text); background: rgba(127,180,255,0.16); }
+  .loc-step.active { color: var(--text); background: rgba(127,180,255,0.24); }
+  /* "More ▾" dropdown for the larger scales (Galaxy / Cosmos) */
+  #loc-more-menu { display: none; position: absolute; right: 10px; bottom: 34px; z-index: 11;
+    background: rgba(13,20,34,0.96); border: 1px solid rgba(120,160,220,0.18); border-radius: 8px;
+    padding: 4px; backdrop-filter: blur(12px); box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
+  #loc-more-menu.open { display: block; }
+  .loc-more-item { font-size: 10.5px; color: var(--dim); padding: 6px 14px; border-radius: 5px;
+    cursor: pointer; white-space: nowrap; }
+  .loc-more-item:hover { color: var(--text); background: rgba(127,180,255,0.16); }
+  /* preset buttons — one-tap curated layer combinations */
+  #panel-presets { display: flex; gap: 4px; margin-bottom: 8px; }
+  .preset-btn { flex: 1; background: rgba(127,180,255,0.07); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--dim); padding: 5px 0; font-size: 10.5px; cursor: pointer;
+    font-family: inherit; }
+  .preset-btn:hover { color: var(--text); border-color: rgba(127,180,255,0.4); }
+  .preset-btn.active { background: rgba(127,180,255,0.22); color: var(--text);
+    border-color: rgba(127,180,255,0.55); }
+  /* collapsible sections keep the long layer list scannable */
+  .sect { border-top: 1px solid rgba(120,160,220,0.1); }
+  .sect-head { display: flex; justify-content: space-between; align-items: center; width: 100%;
+    background: none; border: 0; color: var(--dim); font-family: inherit; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 1.5px; padding: 8px 0; cursor: pointer;
+    text-align: left; }
+  .sect-head:hover { color: var(--text); }
+  .sect-caret { font-size: 9px; letter-spacing: 0; transition: transform 0.15s; }
+  .sect.closed .sect-caret { transform: rotate(-90deg); }
+  .sect-body { padding-bottom: 8px; }
+  .sect.closed .sect-body { display: none; }
+  .sub-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px;
+    color: var(--dim); margin: 8px 0 4px; }
+  #panel-body { margin-top: 0; }
+  .row { display: flex; align-items: center; justify-content: space-between;
+    padding: 3px 0; gap: 8px; }
+  .row label { cursor: pointer; flex: 1; }
+  input[type="checkbox"] { accent-color: var(--accent); cursor: pointer; }
+  input[type="range"] { accent-color: var(--accent); width: 100px; }
+  .coord { width: 80px; background: rgba(127,180,255,0.08); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text); padding: 3px 7px; font-size: 12px; font-family: inherit; }
+  .spec-btn { flex: 1; min-width: 48px; background: rgba(127,180,255,0.07); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--dim); padding: 4px 0; font-size: 11px; cursor: pointer;
+    font-family: inherit; }
+  .spec-btn:hover { color: var(--text); border-color: rgba(127,180,255,0.4); }
+  .spec-btn.active { background: rgba(127,180,255,0.22); color: var(--text); border-color: rgba(127,180,255,0.55); }
+  #timebar { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+    z-index: 10; display: flex; align-items: center; gap: 2px; padding: 6px 9px; }
+  .tbtn { border: 0; background: transparent; color: var(--text); cursor: pointer;
+    font-size: 14px; padding: 4px 7px; border-radius: 7px; font-family: inherit; }
+  .tbtn:hover { background: rgba(127, 180, 255, 0.14); }
+  #speed-label { font-size: 11px; color: var(--accent); min-width: 68px; text-align: center; }
+  #date-label { font-size: 11.5px; padding: 0 8px; min-width: 166px; text-align: center;
+    cursor: pointer; border-left: 1px solid var(--border); }
+  #date-label:hover { color: var(--accent); }
+  #date-input { position: fixed; opacity: 0; pointer-events: none; }
+
+  #infocard { position: fixed; right: 16px; top: 70px; z-index: 9; width: 260px;
+    padding: 16px; display: none; }
+  #infocard.open { display: block; }
+  #info-name { font-size: 17px; font-weight: 650; }
+  #info-sub { font-size: 12px; color: var(--accent); margin: 2px 0 10px; }
+  .info-row { display: flex; justify-content: space-between; font-size: 12.5px;
+    padding: 4px 0; border-top: 1px solid rgba(120,160,220,0.1); }
+  .info-row .k { color: var(--dim); }
+  .info-doc { font-size: 12.5px; line-height: 1.5; color: var(--text); opacity: 0.9;
+    margin: 2px 0 10px; }
+  #info-close { position: absolute; top: 8px; right: 10px; background: none; border: 0;
+    color: var(--dim); font-size: 16px; cursor: pointer; }
+  .minibtn { display: block; width: 100%; font-family: inherit; font-size: 12.5px;
+    padding: 8px 12px; border-radius: 6px; cursor: pointer; color: var(--text);
+    background: rgba(127,180,255,0.13); border: 1px solid rgba(127,180,255,0.4); }
+  .minibtn:hover { background: rgba(127,180,255,0.24); border-color: rgba(127,180,255,0.6); }
+
+  #fly-hud { position: fixed; left: 16px; bottom: 56px; z-index: 9; padding: 11px 14px;
+    display: none; }
+  #fly-hud.show { display: block; }
+  #fh-throttle { display: flex; align-items: center; gap: 8px; margin-bottom: 9px;
+    padding-bottom: 9px; border-bottom: 1px solid var(--border); }
+  #fh-throttle .fh-tlabel { font-size: 10px; letter-spacing: 1.5px; color: var(--dim); }
+  #fh-throttle #fh-speed { color: var(--accent); font-weight: 700; font-size: 14px; min-width: 44px; text-align: center; }
+  #fh-slower, #fh-faster { font-family: inherit; font-size: 16px; line-height: 1; cursor: pointer;
+    color: var(--text); background: rgba(127,180,255,0.16); border: 1px solid var(--border);
+    border-radius: 6px; width: 26px; height: 26px; }
+  #fh-slower:hover, #fh-faster:hover { background: rgba(127,180,255,0.32); }
+  .fh-title { font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    color: var(--accent); margin-bottom: 8px; }
+  .fh-grid { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px;
+    font-size: 12px; color: var(--dim); align-items: center; }
+  .fh-grid b { display: inline-block; min-width: 16px; text-align: center;
+    color: var(--text); background: rgba(127,180,255,0.14); border-radius: 4px;
+    padding: 1px 5px; margin: 0 1px; font-weight: 600; }
+  #crosshair { position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%);
+    width: 26px; height: 26px; z-index: 7; display: none; pointer-events: none; }
+  #crosshair.show { display: block; }
+  /* homing pointer to Earth — arrow + distance, positioned each frame by JS */
+  #earth-ptr { position: fixed; z-index: 9; display: none; pointer-events: none;
+    transform: translate(-50%,-50%); text-align: center; }
+  #ep-arrow { width: 0; height: 0; margin: 0 auto;
+    border-left: 9px solid transparent; border-right: 9px solid transparent;
+    border-bottom: 16px solid #5fbcff;                 /* triangle points up by default */
+    filter: drop-shadow(0 0 4px rgba(95,188,255,0.7)); }
+  #ep-dist { margin-top: 3px; font-size: 11px; font-weight: 600; color: #cfe6ff;
+    white-space: nowrap; text-shadow: 0 0 4px rgba(0,0,0,0.9); letter-spacing: 0.3px; }
+  #fly-arm { position: fixed; left: 50%; top: calc(50% + 26px); transform: translateX(-50%);
+    z-index: 8; display: none; font-size: 12px; color: var(--accent); white-space: nowrap;
+    background: rgba(13,20,34,0.7); padding: 4px 10px; border-radius: 6px; pointer-events: none; }
+  #fly-arm.show { display: block; }
+  #crosshair::before, #crosshair::after { content: ""; position: absolute;
+    background: rgba(127,180,255,0.5); }
+  #crosshair::before { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
+  #crosshair::after { top: 50%; left: 0; height: 1px; width: 100%; transform: translateY(-50%); }
+  #scalebar { position: fixed; bottom: 16px; right: 16px; z-index: 8; font-size: 10px;
+    color: var(--dim); padding: 6px 10px; text-align: right; max-width: 30vw; }
+  #scalebar b { color: var(--accent); font-weight: 600; }
+  /* narrow windows: lift the scale readout clear of the centred time bar */
+  @media (max-width: 960px) {
+    #scalebar { bottom: 64px; max-width: 44vw; }
+  }
+  /* the tour caption takes the same corner — let it speak */
+  body.touring #scalebar { opacity: 0; transition: opacity 0.3s; }
+  /* transition veil — briefly dims to mask the scale hand-off jump */
+  #fade { position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: 0;
+    background: radial-gradient(ellipse at center, #0a1020 0%, #04060c 70%); }
+
+  /* ---- first-run welcome + guided tour ---- */
+  #tour-btn { font-size: 12px; color: var(--dim); padding: 9px 13px; cursor: pointer;
+    font-family: inherit; }
+  #tour-btn:hover { color: var(--text); background: rgba(127,180,255,0.12); }
+  #welcome { position: fixed; inset: 0; z-index: 60; display: none; align-items: center;
+    justify-content: center; background: radial-gradient(ellipse at center,
+    rgba(4,6,12,0.25) 0%, rgba(4,6,12,0.72) 100%); }
+  #welcome.show { display: flex; }
+  #welcome-card { width: min(400px, calc(100vw - 48px)); padding: 28px 30px 20px;
+    text-align: center; }
+  .w-title { font-size: 22px; font-weight: 700; letter-spacing: 6px; margin-bottom: 12px; }
+  .w-title span { color: var(--accent); }
+  #welcome-card p { font-size: 13.5px; line-height: 1.55; color: var(--text); opacity: 0.9;
+    margin-bottom: 18px; }
+  .w-btns { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .w-btns button { font-family: inherit; border-radius: 8px; cursor: pointer; padding: 11px 0;
+    font-size: 13.5px; }
+  #w-tour { background: rgba(127,180,255,0.22); border: 1px solid rgba(127,180,255,0.55);
+    color: var(--text); font-weight: 600; }
+  #w-tour:hover { background: rgba(127,180,255,0.32); }
+  #w-tour span { font-weight: 400; font-size: 11px; color: var(--dim); margin-left: 8px; }
+  #w-skip { background: transparent; border: 1px solid var(--border); color: var(--dim); }
+  #w-skip:hover { color: var(--text); border-color: rgba(127,180,255,0.4); }
+  .w-hint { font-size: 11px; color: var(--dim); letter-spacing: 0.3px; }
+  /* the tour points at real UI — a soft accent ring on the piece being taught */
+  .tour-hi { outline: 2px solid rgba(127, 180, 255, 0.85); outline-offset: 3px;
+    box-shadow: 0 0 22px rgba(127, 180, 255, 0.35); }
+  #tour { position: fixed; left: 50%; bottom: 76px; transform: translateX(-50%);
+    z-index: 12; width: min(440px, calc(100vw - 32px)); padding: 14px 16px 12px;
+    display: none; }
+  #tour.show { display: block; }
+  #t-title { font-size: 13px; font-weight: 700; letter-spacing: 1px; color: var(--accent);
+    margin-bottom: 5px; }
+  #t-text { font-size: 12.5px; line-height: 1.5; color: var(--text); opacity: 0.92;
+    margin-bottom: 10px; }
+  #t-foot { display: flex; justify-content: space-between; align-items: center; }
+  #t-dots { display: flex; gap: 5px; }
+  .t-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(127,180,255,0.25); }
+  .t-dot.on { background: var(--accent); }
+  #t-btns { display: flex; gap: 6px; }
+  #t-btns button { font-family: inherit; border-radius: 6px; cursor: pointer; padding: 6px 12px;
+    font-size: 12px; }
+  #t-end { background: transparent; border: 1px solid var(--border); color: var(--dim); }
+  #t-end:hover { color: var(--text); }
+  #t-next { background: rgba(127,180,255,0.22); border: 1px solid rgba(127,180,255,0.55);
+    color: var(--text); font-weight: 600; }
+  #t-next:hover { background: rgba(127,180,255,0.32); }
+  #hints { position: fixed; left: 50%; bottom: 76px; transform: translateX(-50%); z-index: 9;
+    display: none; gap: 8px; opacity: 0; transition: opacity 0.8s; pointer-events: none; }
+  #hints.show { display: flex; opacity: 1; }
+  #hints.fade { opacity: 0; }
+  .hint-chip { background: var(--card); border: 1px solid var(--border); border-radius: 999px;
+    backdrop-filter: blur(12px); font-size: 11.5px; color: var(--text); padding: 7px 14px;
+    white-space: nowrap; }
+  @media (max-width: 700px) { #hints { flex-direction: column; align-items: center; } }
+
+  /* ---- phones: stack the chrome so nothing collides (notch-safe) ---- */
+  @media (max-width: 640px) {
+    #searchbox { top: calc(58px + env(safe-area-inset-top, 0px)); left: 12px; right: 12px; width: auto; }
+    #topbar { top: calc(10px + env(safe-area-inset-top, 0px)); left: 12px; }
+    #locator { top: calc(108px + env(safe-area-inset-top, 0px)); left: 12px; width: 152px; padding: 7px 8px 6px; }
+    #loc-canvas { width: 136px; height: 136px; margin: 5px 0; }
+    #loc-name { font-size: 10px; }
+    #panel { top: calc(108px + env(safe-area-inset-top, 0px)); left: 12px; width: min(240px, calc(100vw - 24px));
+      max-height: calc(100vh - 130px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); }
+    #timebar { bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding: 4px 6px; gap: 0; max-width: calc(100vw - 20px); }
+    .tbtn { font-size: 12px; padding: 3px 5px; }
+    #speed-label { min-width: 46px; font-size: 10px; }
+    #date-label { min-width: 0; font-size: 10px; padding: 0 5px; white-space: nowrap; }
+    #scalebar { bottom: calc(54px + env(safe-area-inset-bottom, 0px)); font-size: 9px; max-width: 60vw; }
+    #fly-hud { left: 12px; bottom: calc(48px + env(safe-area-inset-bottom, 0px)); }
+    #tour { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+    #infocard { right: 12px; left: 12px; top: auto;
+      bottom: calc(58px + env(safe-area-inset-bottom, 0px)); width: auto; }
+    #hints { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+  }
+  /* ---- touch devices: no keyboard, no mouse — hide what depends on them ---- */
+  @media (hover: none) and (pointer: coarse) {
+    .kbd-note { display: none; }
+    #panel .row:has(#ck-flyhud) { display: none; }
+    #fly-hud { display: none !important; }
+    /* fingers need bigger targets than cursors */
+    .loc-step, .loc-more-item { padding: 6px 10px; }
+    .tbtn { padding: 7px 9px; font-size: 14px; }
+    .panel-x, #info-close { padding: 6px 9px; font-size: 14px; }
+    #panel .row { min-height: 34px; }
+    #panel input[type="checkbox"] { width: 17px; height: 17px; }
+    /* iOS zooms the page when a focused input's font is under 16px */
+    #search { font-size: 16px; }
+    #date-input { font-size: 16px; }
+  }
+
+  #loader { position: fixed; inset: 0; display: flex; flex-direction: column; gap: 14px;
+    align-items: center; justify-content: center; background: var(--bg); z-index: 100;
+    transition: opacity 0.6s; }
+  #loader.done { opacity: 0; pointer-events: none; }
+  #loader .t { letter-spacing: 4px; font-size: 14px; color: var(--dim); }
+  #loader .bar { width: 220px; height: 2px; background: rgba(127,180,255,0.15); border-radius: 2px; }
+  #loader .fill { height: 100%; width: 0%; background: var(--accent); border-radius: 2px;
+    transition: width 0.3s; }
+</style>
+</head>
+<body>
+<div id="canvas-host"></div>
+
+<div id="topbar">
+  <div id="title" class="card">UNIVER<span>SE</span><span id="title-caret">▾</span></div>
+  <button id="tour-btn" class="card" title="Replay the guided tour">✦ Tour</button>
+</div>
+
+<div id="locator" class="card">
+  <div id="loc-head"><span id="loc-name">Solar System</span><span id="loc-dist"></span><button class="panel-x" id="loc-x" title="Hide minimap">✕</button></div>
+  <canvas id="loc-canvas" width="372" height="372"></canvas>
+  <div id="loc-ladder">
+    <div class="loc-step" data-scale="sky">Sky</div>
+    <div class="loc-step" data-scale="solar">Solar</div>
+    <div class="loc-step" data-scale="neighborhood">Stars</div>
+    <div class="loc-step" data-scale="more">More ▾</div>
+  </div>
+  <div id="loc-more-menu">
+    <div class="loc-more-item" data-scale="galaxy">Milky Way Galaxy</div>
+    <div class="loc-more-item" data-scale="cosmic">Cosmic Web</div>
+  </div>
+</div>
+
+<div id="searchbox">
+  <input id="search" type="text" placeholder="Search stars, planets, constellations…" autocomplete="off">
+  <div id="search-results" class="card"></div>
+</div>
+
+<div id="panel" class="card">
+  <div id="panel-presets">
+    <button class="preset-btn" data-preset="essentials" title="The default balanced view">Essentials</button>
+    <button class="preset-btn" data-preset="clean" title="Just the universe — labels and overlays off">Clean view</button>
+    <button class="preset-btn" data-preset="everything" title="Every layer on">Everything</button>
+  </div>
+  <div id="panel-body">
+
+  <div class="sect" data-sect="sky">
+  <button class="sect-head" type="button">Sky &amp; Stars<span class="sect-caret">▾</span></button>
+  <div class="sect-body">
+  <div class="row"><label for="ck-lines">Constellation lines</label><input type="checkbox" id="ck-lines" checked></div>
+  <div class="row"><label for="ck-art">Constellation art</label><input type="checkbox" id="ck-art"></div>
+  <div class="row"><label for="ck-labels">Constellation names</label><input type="checkbox" id="ck-labels" checked></div>
+  <div class="row"><label for="ck-names">Star names</label><input type="checkbox" id="ck-names" checked></div>
+  <div class="row"><label for="ck-planets">Planets, Sun &amp; Moon</label><input type="checkbox" id="ck-planets" checked></div>
+  <div class="row"><label for="ck-dso">Deep-sky objects</label><input type="checkbox" id="ck-dso" checked></div>
+  <div class="row"><label for="ck-exo">Exoplanet systems</label><input type="checkbox" id="ck-exo"></div>
+  <div class="row"><label for="ck-mw">Milky Way</label><input type="checkbox" id="ck-mw" checked></div>
+  <div class="row"><label for="ck-grid">Equatorial grid</label><input type="checkbox" id="ck-grid"></div>
+  <div class="row"><label for="ck-twinkle">Twinkle</label><input type="checkbox" id="ck-twinkle" checked></div>
+  <div class="row"><label>Mag limit</label><input type="range" id="rg-mag" min="3" max="14" step="0.1" value="6.8"></div>
+  <div class="row"><label>Brightness</label><input type="range" id="rg-size" min="0.6" max="3" step="0.05" value="1.7"></div>
+  <div class="sub-label">EM Spectrum</div>
+  <div class="row" style="flex-wrap:wrap;gap:4px">
+    <button class="spec-btn active" onclick="window.U&&window.U.setSpectrum(0)" title="Visible light — normal B–V star colours">Visible</button>
+    <button class="spec-btn" onclick="window.U&&window.U.setSpectrum(1)" title="X-ray — hot blue stars dominate">X-ray</button>
+    <button class="spec-btn" onclick="window.U&&window.U.setSpectrum(2)" title="Infrared — cool red stars dominate">IR</button>
+    <button class="spec-btn" onclick="window.U&&window.U.setSpectrum(3)" title="Radio — non-thermal emission, flat brightness">Radio</button>
+  </div>
+  </div>
+  </div>
+
+  <div class="sect" data-sect="solar">
+  <button class="sect-head" type="button">Solar System<span class="sect-caret">▾</span></button>
+  <div class="sect-body">
+  <div class="row"><label for="ck-orbits">Orbit paths</label><input type="checkbox" id="ck-orbits" checked></div>
+  <div class="row"><label for="ck-belts">Asteroid &amp; Kuiper belts</label><input type="checkbox" id="ck-belts" checked></div>
+  <div class="row"><label for="ck-asteroids">Named asteroids</label><input type="checkbox" id="ck-asteroids"></div>
+  <div class="row"><label for="ck-asteroid-names">Asteroid names</label><input type="checkbox" id="ck-asteroid-names"></div>
+  <div class="row"><label for="ck-comets">Comets &amp; their tails</label><input type="checkbox" id="ck-comets" checked></div>
+  <div class="row"><label for="ck-tnos">Dwarf planets beyond Neptune</label><input type="checkbox" id="ck-tnos" checked></div>
+  <div class="row"><label for="ck-moons">Moons &amp; their orbits</label><input type="checkbox" id="ck-moons" checked></div>
+  <div class="row"><label for="ck-sats">Satellites &amp; landing sites</label><input type="checkbox" id="ck-sats" checked></div>
+  <div class="row"><label for="ck-plabels">Planet labels</label><input type="checkbox" id="ck-plabels" checked></div>
+  <div class="row"><label for="ck-earthptr">Point to Earth</label><input type="checkbox" id="ck-earthptr"></div>
+  </div>
+  </div>
+
+  <div class="sect" data-sect="phenom">
+  <button class="sect-head" type="button">Phenomena<span class="sect-caret">▾</span></button>
+  <div class="sect-body">
+  <div class="row"><label for="ck-phenom">Exotic objects</label><input type="checkbox" id="ck-phenom" checked></div>
+  <div id="phenom-cats"></div>
+  </div>
+  </div>
+
+  <div class="sect" data-sect="advanced">
+  <button class="sect-head" type="button">Sci-Fi &amp; Physics<span class="sect-caret">▾</span></button>
+  <div class="sect-body">
+  <div class="row"><label for="ck-mega">Megastructures</label><input type="checkbox" id="ck-mega"></div>
+  <div id="mega-items" style="display:none">
+  <div class="row"><label for="ck-mega-dyson" style="color:#ffcc44">☀ Dyson Sphere</label><input type="checkbox" id="ck-mega-dyson" checked></div>
+  <div class="row"><label for="ck-mega-sail" style="color:#d4e8ff">◇ Solar Sail</label><input type="checkbox" id="ck-mega-sail" checked></div>
+  <div class="row"><label for="ck-mega-oneill" style="color:#8899bb">⬡ O'Neill Cylinder</label><input type="checkbox" id="ck-mega-oneill" checked></div>
+  <div class="row"><label for="ck-mega-elev" style="color:#88ccff">| Space Elevator</label><input type="checkbox" id="ck-mega-elev" checked></div>
+  <div class="row"><label for="ck-mega-warp" style="color:#9955ff">◎ Alcubierre Warp</label><input type="checkbox" id="ck-mega-warp" checked></div>
+  <div class="row"><label for="ck-mega-gen" style="color:#7788aa">⯈ Generation Ship</label><input type="checkbox" id="ck-mega-gen" checked></div>
+  </div>
+  <div class="row"><label for="ck-grav">Spacetime curvature grid</label><input type="checkbox" id="ck-grav"></div>
+  <div class="row"><label for="ck-dm">Dark matter halo</label><input type="checkbox" id="ck-dm"></div>
+  </div>
+  </div>
+
+  <div class="sect" data-sect="interface">
+  <button class="sect-head" type="button">Interface<span class="sect-caret">▾</span></button>
+  <div class="sect-body">
+  <div class="row"><label for="ck-minimap">Minimap</label><input type="checkbox" id="ck-minimap" checked></div>
+  <div class="row"><label for="ck-flyhud">Spaceship controls</label><input type="checkbox" id="ck-flyhud"></div>
+  <div class="row"><label for="ck-timebar">Time controls</label><input type="checkbox" id="ck-timebar" checked></div>
+  <div class="kbd-note">Keyboard — <b>/</b> search &nbsp; <b>F</b> fly &nbsp; <b>V</b> 1st/3rd person &nbsp; <b>Space</b> cruise &nbsp; <b>+ −</b> speed &nbsp; <b>Esc</b> home</div>
+  </div>
+  </div>
+
+  <div class="credits">Data &amp; imagery: HYG v4.0 star catalog — David Nash / Astronexus
+    (<a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>) ·
+    NASA / JPL ephemerides &amp; data · planet textures —
+    <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener">Solar System Scope</a>
+    (<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>) ·
+    constellation art — Johan Meuris, Free Art License (via Stellarium) · built with three.js</div>
+
+  </div>
+</div>
+
+<div id="timebar" class="card">
+  <button class="tbtn" id="bt-now" title="Jump to now">⌂</button>
+  <button class="tbtn" id="bt-slower" title="Slower / reverse">◀◀</button>
+  <button class="tbtn" id="bt-play" title="Play / pause">❚❚</button>
+  <button class="tbtn" id="bt-faster" title="Faster">▶▶</button>
+  <div id="speed-label">real time</div>
+  <div id="date-label" title="Click to set date">—</div>
+  <input type="datetime-local" id="date-input">
+  <button class="panel-x" id="tb-x" title="Hide time controls">✕</button>
+</div>
+
+<div id="infocard" class="card">
+  <button id="info-close">✕</button>
+  <div id="info-name">—</div>
+  <div id="info-sub">—</div>
+  <div id="info-rows"></div>
+</div>
+
+<div id="fly-hud" class="card">
+  <div class="fh-title">🚀 SPACESHIP CONTROLS<button class="panel-x" id="fh-x" title="Hide spaceship controls">✕</button></div>
+  <div id="fh-throttle">
+    <span class="fh-tlabel">SPEED</span>
+    <button id="fh-slower" title="Slower (−)">−</button>
+    <span id="fh-speed">1.0×</span>
+    <button id="fh-faster" title="Faster (+)">+</button>
+  </div>
+  <div class="fh-grid">
+    <span><b>Space</b></span><span id="fh-cruise">cruise (hands-free)</span>
+    <span><b>hold mouse</b></span><span>thrust forward</span>
+    <span><b>move mouse</b></span><span>steer</span>
+    <span><b>+ −</b></span><span>speed (or scroll)</span>
+    <span><b>Shift</b></span><span>boost ×4</span>
+    <span><b>V</b></span><span id="fh-view">1st / 3rd person</span>
+    <span><b>F</b></span><span>exit flight</span>
+  </div>
+</div>
+<div id="crosshair"></div>
+<div id="earth-ptr"><div id="ep-arrow"></div><div id="ep-dist"></div></div>
+<div id="fly-arm">move the cursor to the centre to take the controls</div>
+<div id="fade"></div>
+
+<div id="scalebar" class="card"></div>
+
+<!-- first-run welcome + guided tour -->
+<div id="welcome">
+  <div id="welcome-card" class="card">
+    <div class="w-title">UNIVER<span>SE</span></div>
+    <p>A real-data model of everything — from tonight's sky over Earth to the edge of the observable universe.</p>
+    <div class="w-btns">
+      <button id="w-tour">Take the tour<span>9 stops · skip any time</span></button>
+      <button id="w-skip">Explore on my own</button>
+    </div>
+    <div class="w-hint">drag to orbit &nbsp;·&nbsp; scroll to zoom &nbsp;·&nbsp; click anything</div>
+  </div>
+</div>
+<div id="tour" class="card">
+  <div id="t-title">—</div>
+  <div id="t-text">—</div>
+  <div id="t-foot">
+    <div id="t-dots"></div>
+    <div id="t-btns">
+      <button id="t-end">End tour</button>
+      <button id="t-next">Next →</button>
+    </div>
+  </div>
+</div>
+<div id="hints">
+  <div class="hint-chip">🖱 drag to orbit · scroll to zoom</div>
+  <div class="hint-chip">✦ click any star or planet</div>
+  <div class="hint-chip">⌕ press / to search</div>
+</div>
+
+<div id="loader">
+  <div class="t">B U I L D I N G&nbsp;&nbsp;U N I V E R S E</div>
+  <div class="bar"><div class="fill" id="load-fill"></div></div>
+</div>
+
+<script type="module" src="js/main.js?v=2"></script>
+</body>
+</html>
