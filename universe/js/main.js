@@ -286,8 +286,8 @@ setLoad(0.45);
 
 // ---------------------------------------------------------------- star shaders
 const starUniforms = {
-  uMagLimit: { value: 6.8 },
-  uSizeScale: { value: 1.5 },
+  uMagLimit: { value: 14 },     // full catalog by default — dim it down if you want naked-eye realism
+  uSizeScale: { value: 3 },
   uTime: { value: 0 },
   uTwinkle: { value: 1 },
   uPR: { value: Math.min(devicePixelRatio, MAX_PIXEL_RATIO) },
@@ -5706,6 +5706,11 @@ function drawLocator() {
 // restore persisted panel settings before the binds below apply them to the scene
 try {
   const savedPanel = JSON.parse(localStorage.getItem('universe-panel') || '{}');
+  // one-time migration: the star sliders' defaults moved to full (mag 14 / brightness 3)
+  // so every star is visible and clickable out of the box. Stored values that exactly
+  // match the OLD defaults were almost certainly inherited, not chosen — upgrade them.
+  if (+savedPanel['rg-mag'] === 6.8) delete savedPanel['rg-mag'];
+  if (+savedPanel['rg-size'] === 1.7) delete savedPanel['rg-size'];
   for (const [id, v] of Object.entries(savedPanel)) {
     const el = document.getElementById(id);
     if (!el) continue;
