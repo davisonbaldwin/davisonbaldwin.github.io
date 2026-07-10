@@ -3773,6 +3773,38 @@ function returnHomeFromDeep() {
   setFlyMode(false);                 // drag-to-look orbit of the system
   flyShowToggle();
 }
+// F in deep space means what it means everywhere else: stop flying, RIGHT HERE —
+// not a surprise teleport back to the solar system (that's Escape / the Sun beacon).
+// Deep coords are Sun-centred parsecs on galactic axes (x → galactic centre), which is
+// the galaxy scene's frame; the neighborhood scene uses equatorial axes, so rotate.
+const DEEP_TO_NEI = new THREE.Matrix4().makeBasis(
+  eqToThree(galToEq(0, 0)), eqToThree(galToEq(0, 90)), eqToThree(galToEq(270, 0)));
+function exitDeepInPlace() {
+  crossDissolve();
+  const d = deep.pos.length();
+  if (d < 1200) {                    // within the real star catalog's reach → stars view
+    // stars view, orbiting the Sun from your true distance & direction
+    const p = deep.pos.clone().applyMatrix4(DEEP_TO_NEI);
+    setMode('neighborhood', true);
+    const o = orbits.neighborhood;
+    o.follow = null;
+    o.target.set(0, 0, 0);
+    o.r = Math.max(2, d);
+    const dir = d > 1 ? p.normalize() : new THREE.Vector3(0.3, 0.3, 1).normalize();
+    o.phi = Math.acos(Math.max(-1, Math.min(1, dir.y)));
+    o.theta = Math.atan2(dir.z, dir.x);
+  } else {
+    // too far out for the stars view — drop into the galaxy map at your position
+    setMode('galaxy', true);
+    const o = orbits.galaxy;
+    o.follow = null;
+    o.target.copy(SUN_GAL).addScaledVector(deep.pos, 0.001);   // pc → kpc, same axes
+    o.r = 25;
+    o.phi = 1.05;
+  }
+  setFlyMode(false);
+  flyShowToggle();
+}
 
 // Deterministic per-chunk RNG so flying back regenerates the same stars (free persistence).
 function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
@@ -5922,7 +5954,7 @@ addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT') return;
   // (mode keys 1–6 removed — it's one continuous window now; use Travel / search / flying)
   if (e.key === 'f' || e.key === 'F') {
-    if (mode === 'deep') { e.preventDefault(); returnHomeFromDeep(); }   // exit deep flight → back to the system
+    if (mode === 'deep') { e.preventDefault(); exitDeepInPlace(); }      // stop flying, stay here
     else if (FLY_MODES.has(mode)) { e.preventDefault(); setFlyMode(!flyMode); }
   }
   if (e.key === 'Escape') {                              // always-available bail-out
