@@ -13,6 +13,25 @@
 <meta property="og:url" content="https://davisonbaldwin.github.io/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%E2%9C%B6%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css?v=2">
+<style>
+  /* --- the machine of worlds: three generative slices in a clockwork gear ring --- */
+  .landing-planet { perspective: 1000px; }
+  .landing-planet svg { transition: transform .55s cubic-bezier(.22,.61,.36,1); will-change: transform; }
+  #planet-body { transform-origin: 250px 250px; animation: coalesce 1s cubic-bezier(.22,.61,.36,1) both; }
+  #rim-ring { stroke-dasharray: 1320; stroke-dashoffset: 1320; animation: draw-rim 1.3s ease-out .15s forwards; }
+  .stock-num { font-family: Menlo, Consolas, monospace; fill: #ffb454; }
+  .gear { fill: none; stroke: rgba(216,226,242,0.20); stroke-width: 1.2; stroke-linejoin: round; }
+  #gearing { pointer-events: none; }
+
+  @keyframes coalesce { from { opacity: 0; transform: scale(.93); } to { opacity: 1; transform: scale(1); } }
+  @keyframes draw-rim { to { stroke-dashoffset: 0; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    #planet-body, #rim-ring { animation: none !important; }
+    .landing-planet svg { transition: none; }
+    #rim-ring { stroke-dashoffset: 0; }
+  }
+</style>
 </head>
 <body>
 
@@ -24,7 +43,7 @@
   <span class="tagline">PRODUCT DESIGN PORTFOLIO</span>
   <nav>
     <a href="rooms.html">The worlds</a>
-    <a href="davis-baldwin-resume.pdf" target="_blank" rel="noopener">Resume</a>
+    <a href="resume.html">Resume</a>
     <a href="mailto:davison.baldwin@gmail.com">Contact</a>
   </nav>
 </header>
@@ -55,46 +74,49 @@
           <stop offset="70%" stop-color="rgba(0,0,0,0)"/>
           <stop offset="100%" stop-color="rgba(0,0,0,0.45)"/>
         </radialGradient>
+        <radialGradient id="gearMetal" cx="0.34" cy="0.28" r="0.92">
+          <stop offset="0" stop-color="#9aa1b3"/>
+          <stop offset="0.42" stop-color="#525a6e"/>
+          <stop offset="1" stop-color="#2a3039"/>
+        </radialGradient>
       </defs>
 
-      <!-- 01 Universe: starfield -->
+      <g id="planet-body">
+      <!-- 01 Universe: a generative starfield -->
       <a href="studies/universe.html"><g class="slice"><title>01 · Universe</title>
         <g clip-path="url(#s1)">
           <rect x="0" y="0" width="500" height="500" fill="#05070d"/>
-          <circle cx="290" cy="110" r="2.2" fill="#ffd9a8"/>
-          <circle cx="322" cy="160" r="1.6" fill="#d8e2f2"/>
-          <circle cx="270" cy="185" r="1.3" fill="#d8e2f2"/>
-          <circle cx="350" cy="120" r="1.4" fill="#7fb4ff"/>
-          <circle cx="305" cy="70" r="1.2" fill="#d8e2f2"/>
-          <circle cx="395" cy="250" r="1.5" fill="#d8e2f2"/>
-          <circle cx="365" cy="300" r="1.2" fill="#7fb4ff"/>
+          <g id="uni-fx"></g>
         </g></g></a>
-      <!-- 02 Stock Evaluator: amber terminal, a line going up -->
+      <!-- 02 Stock Evaluator: financial numbers raining down -->
       <a href="studies/stock-evaluator.html"><g class="slice"><title>02 · Stock Evaluator</title>
         <g clip-path="url(#s2)">
           <rect x="0" y="0" width="500" height="500" fill="#15130d"/>
-          <polyline points="185,415 240,398 270,405 315,372 350,345" fill="none" stroke="#ffb454" stroke-width="3" stroke-opacity="0.85"/>
-          <line x1="200" y1="390" x2="340" y2="390" stroke="#ede3cf" stroke-opacity="0.14" stroke-width="1"/>
-          <line x1="195" y1="420" x2="330" y2="420" stroke="#ede3cf" stroke-opacity="0.10" stroke-width="1"/>
+          <g id="stock-nums"></g>
         </g></g></a>
-      <!-- 03 Music Technology: dusk light into dark, one warm point rippling sound -->
+      <!-- 03 Music Technology: sound generated live from the core -->
       <a href="studies/music-technology.html"><g class="slice"><title>03 · Music Technology</title>
         <g clip-path="url(#s3)">
           <rect x="36" y="36" width="220" height="326" fill="url(#gasj)"/>
-          <circle cx="110" cy="290" r="10" fill="#e8a020" opacity="0.9"/>
-          <circle cx="110" cy="290" r="34" fill="none" stroke="#d9a96a" stroke-opacity="0.30" stroke-width="1.5"/>
-          <circle cx="110" cy="290" r="52" fill="none" stroke="#d9a96a" stroke-opacity="0.20" stroke-width="1.5"/>
-          <circle cx="110" cy="290" r="70" fill="none" stroke="#d9a96a" stroke-opacity="0.12" stroke-width="1.5"/>
+          <g id="mus-fx"></g>
         </g></g></a>
 
-      <!-- slice seams + rim shading + outline -->
-      <g stroke="rgba(216,226,242,0.14)" stroke-width="1">
+      <!-- the seams, rendered as drive shafts: a rod with a lit core -->
+      <g stroke="#4a5261" stroke-width="2.4" stroke-opacity="0.5">
+        <line x1="250" y1="250" x2="250" y2="40"/>
+        <line x1="250" y1="250" x2="431.9" y2="355"/>
+        <line x1="250" y1="250" x2="68.1" y2="355"/>
+      </g>
+      <g stroke="#aeb6c6" stroke-width="0.7" stroke-opacity="0.4">
         <line x1="250" y1="250" x2="250" y2="40"/>
         <line x1="250" y1="250" x2="431.9" y2="355"/>
         <line x1="250" y1="250" x2="68.1" y2="355"/>
       </g>
       <circle cx="250" cy="250" r="210" fill="url(#rim)" pointer-events="none"/>
-      <circle cx="250" cy="250" r="210" fill="none" stroke="rgba(216,226,242,0.35)" stroke-width="1.5"/>
+      <circle id="rim-ring" cx="250" cy="250" r="210" fill="none" stroke="rgba(216,226,242,0.30)" stroke-width="1.2"/>
+      <!-- clockwork: a slow toothed ring around the planet + gears driving each seam -->
+      <g id="gearing"></g>
+      </g>
     </svg>
     <div class="planet-caption" id="planet-caption">THREE WORLDS, ONE PLANET · ENTER ANY SLICE</div>
   </div>
@@ -104,7 +126,7 @@
   <div class="eyebrow">ABOUT</div>
   <p>I design and build products end to end.</p>
   <p class="about-links">
-    <a href="davis-baldwin-resume.pdf" target="_blank" rel="noopener">Resume</a> ·
+    <a href="resume.html">Resume</a> ·
     <a href="mailto:davison.baldwin@gmail.com">davison.baldwin@gmail.com</a>
   </p>
 </section>
@@ -124,6 +146,166 @@
     a.addEventListener('focusin', show);
     a.addEventListener('focusout', hide);
   });
+
+  // cursor parallax — the planet tilts a few degrees toward the pointer (a hint of depth)
+  (() => {
+    const wrap = document.querySelector('.landing-planet');
+    const svg = wrap && wrap.querySelector('svg');
+    if (!svg) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches || matchMedia('(hover: none)').matches) return;
+    let raf = 0;
+    wrap.addEventListener('pointermove', (e) => {
+      const r = wrap.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        svg.style.transform = `rotateY(${(x * 7).toFixed(2)}deg) rotateX(${(-y * 7).toFixed(2)}deg)`;
+      });
+    });
+    wrap.addEventListener('pointerleave', () => { svg.style.transform = ''; });
+  })();
+
+  // generative motion — every system is driven per frame, so nothing ever repeats:
+  //   Universe : a drifting, twinkling starfield with the odd shooting star
+  //   Stock    : financial numbers raining down
+  //   Music    : sound rings + rising motes emanating from a pulsing core
+  //   Clockwork: a slow toothed ring around the planet, gears driving each seam
+  (() => {
+    const NS = 'http://www.w3.org/2000/svg';
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    const mk = (name, a) => { const e = document.createElementNS(NS, name); for (const k in a) e.setAttribute(k, a[k]); return e; };
+
+    // ================= clockwork: an orrery of graduated rings + dials on shafts =================
+    const gearing = document.getElementById('gearing');
+    const gears = [];   // rotating groups; the animate loop advances each by dir*speed
+    const GRAY = '#5a6376', GRAY2 = '#3a4150', TICK = '#6b7488', BRASS = '#c9b48a';
+    function addSpinner(g, cx, cy, dir, speed) {
+      const o = { g, cx, cy, dir, speed, a: rnd(0, 6.28) };
+      o.place = () => g.setAttribute('transform', `translate(${cx},${cy}) rotate(${(o.a * 57.2958).toFixed(2)})`);
+      o.place(); gears.push(o);
+    }
+    function ticks(rot, n, r1, r2, major) {
+      for (let i = 0; i < n; i++) { const a = i * 2 * Math.PI / n, big = major && i % major === 0, ri = big ? r1 - 3 : r1;
+        rot.appendChild(mk('line', { x1: (Math.cos(a) * ri).toFixed(1), y1: (Math.sin(a) * ri).toFixed(1), x2: (Math.cos(a) * r2).toFixed(1), y2: (Math.sin(a) * r2).toFixed(1), stroke: TICK, 'stroke-width': big ? 1 : 0.6, opacity: big ? 0.85 : 0.55 })); }
+    }
+    function dial(cx, cy, R, dir, speed) {   // a small orrery dial mounted at a shaft's rim end
+      const frame = mk('g', { transform: `translate(${cx},${cy})` });
+      frame.appendChild(mk('circle', { r: R, fill: 'none', stroke: GRAY, 'stroke-width': 1.2 }));
+      frame.appendChild(mk('circle', { r: (R * 0.66).toFixed(1), fill: 'none', stroke: GRAY2, 'stroke-width': 0.8 }));
+      gearing.appendChild(frame);
+      const rot = mk('g', {});
+      ticks(rot, 16, R * 0.66, R * 0.9, 4);
+      rot.appendChild(mk('circle', { cx: (R * 0.78).toFixed(1), cy: 0, r: 2, fill: BRASS }));   // a planet riding the ring
+      gearing.appendChild(rot); addSpinner(rot, cx, cy, dir, speed);
+      frame.appendChild(mk('circle', { r: (R * 0.13).toFixed(1), fill: BRASS, 'fill-opacity': 0.9 }));
+    }
+    if (gearing) {
+      // outer graduated bezel — sweeps slowly around the whole planet
+      const bez = mk('g', {});
+      bez.appendChild(mk('circle', { r: 231, fill: 'none', stroke: GRAY, 'stroke-width': 1.3 }));
+      bez.appendChild(mk('circle', { r: 216, fill: 'none', stroke: GRAY2, 'stroke-width': 1 }));
+      ticks(bez, 90, 220, 229, 5);
+      gearing.appendChild(bez); addSpinner(bez, 250, 250, 1, 0.05);
+      // a dial where each shaft (seam) reaches the rim
+      dial(250, 40, 22, -1, 0.32);
+      dial(431.9, 355, 22, 1, 0.28);
+      dial(68.1, 355, 22, -1, 0.3);
+      // the central hub the shafts converge on, with a slow driving arm
+      const hf = mk('g', { transform: 'translate(250,250)' });
+      hf.appendChild(mk('circle', { r: 24, fill: 'none', stroke: GRAY, 'stroke-width': 1.2 }));
+      hf.appendChild(mk('circle', { r: 15, fill: 'none', stroke: GRAY2, 'stroke-width': 0.8 }));
+      gearing.appendChild(hf);
+      const hr = mk('g', {});
+      ticks(hr, 24, 15, 22, 6);
+      hr.appendChild(mk('line', { x1: 0, y1: 0, x2: 20, y2: 0, stroke: BRASS, 'stroke-width': 1.6, 'stroke-linecap': 'round', opacity: 0.85 }));
+      gearing.appendChild(hr); addSpinner(hr, 250, 250, -1, 0.12);
+      hf.appendChild(mk('circle', { r: 5, fill: BRASS }));
+      hf.appendChild(mk('circle', { r: 2, fill: '#0b0d12' }));
+    }
+
+    // ================= Universe: starfield =================
+    const uni = document.getElementById('uni-fx');
+    const COLORS = ['#d8e2f2', '#ffd9a8', '#7fb4ff'];
+    const stars = [];
+    if (uni) for (let i = 0; i < 34; i++) {
+      const el = mk('circle', { fill: COLORS[Math.floor(Math.random() * 3)] }); uni.appendChild(el);
+      stars.push({ el, x: rnd(258, 462), y: rnd(50, 348), r: rnd(0.5, 2), ph: rnd(0, 6.28), phs: rnd(0.6, 1.6), vx: rnd(-4, 4) * 0.04, vy: rnd(-4, 4) * 0.04 });
+    }
+    const shoot = uni ? { el: mk('line', { stroke: '#eaf1ff', 'stroke-width': 1.6, 'stroke-linecap': 'round', opacity: 0 }), on: false, x: 0, y: 0, vx: 0, vy: 0, life: 0 } : null;
+    if (shoot) uni.appendChild(shoot.el);
+    let shootCd = rnd(2, 5);
+
+    // ================= Music: rings, motes, core =================
+    const mus = document.getElementById('mus-fx');
+    if (mus) [34, 52, 70].forEach((r, i) => mus.appendChild(mk('circle', { cx: 110, cy: 290, r, fill: 'none', stroke: '#d9a96a', 'stroke-opacity': (0.26 - i * 0.08).toFixed(2), 'stroke-width': 1.5 })));
+    const rings = [];
+    if (mus) for (let i = 0; i < 4; i++) { const el = mk('circle', { cx: 110, cy: 290, r: 8, fill: 'none', stroke: '#e8a020', 'stroke-width': 1.6, opacity: 0 }); mus.appendChild(el); rings.push({ el, t: -i * 0.85 }); }
+    const motes = [];
+    if (mus) for (let i = 0; i < 6; i++) { const el = mk('circle', { r: rnd(1, 2).toFixed(1), fill: '#f0c27a', opacity: 0 }); mus.appendChild(el); motes.push({ el, x: 110, y: 290, vy: 0, life: -rnd(0, 2), max: 1 }); }
+    const core = mus ? mk('circle', { cx: 110, cy: 290, r: 10, fill: '#e8a020' }) : null;
+    if (core) mus.appendChild(core);
+
+    // ================= Stock: falling numbers =================
+    const numsG = document.getElementById('stock-nums');
+    const fmt = () => { const t = Math.random();
+      if (t < 0.42) return rnd(20, 480).toFixed(2);
+      if (t < 0.72) return (Math.random() < 0.5 ? '+' : '−') + rnd(0.1, 4).toFixed(1) + '%';
+      return Math.round(rnd(1000, 9000)).toLocaleString(); };
+    const nums = [];
+    if (numsG) for (let i = 0; i < 11; i++) { const el = mk('text', { class: 'stock-num' }); numsG.appendChild(el);
+      nums.push({ el, x: rnd(110, 420), y: rnd(232, 470), v: rnd(0.3, 0.9), sz: rnd(9, 13), op: rnd(0.22, 0.5), txt: fmt() }); }
+    const drawNum = n => { n.el.setAttribute('x', n.x.toFixed(1)); n.el.setAttribute('y', n.y.toFixed(1));
+      n.el.setAttribute('font-size', n.sz.toFixed(1)); n.el.setAttribute('fill-opacity', n.op.toFixed(2)); n.el.textContent = n.txt; };
+
+    // initial paint (also the static state for reduced-motion)
+    for (const s of stars) { s.el.setAttribute('cx', s.x.toFixed(1)); s.el.setAttribute('cy', s.y.toFixed(1)); s.el.setAttribute('r', s.r.toFixed(1)); s.el.setAttribute('opacity', 0.7); }
+    nums.forEach(drawNum);
+    if (reduce) return;
+
+    let last = performance.now(), t = 0;
+    function frame(now) {
+      const dt = Math.min(0.05, (now - last) / 1000); last = now; t += dt;
+      // stars
+      for (const s of stars) {
+        s.ph += s.phs * dt; s.x += s.vx * dt * 60; s.y += s.vy * dt * 60;
+        if (s.x < 254) s.x = 462; else if (s.x > 464) s.x = 256;
+        if (s.y < 48) s.y = 350; else if (s.y > 352) s.y = 50;
+        s.el.setAttribute('cx', s.x.toFixed(1)); s.el.setAttribute('cy', s.y.toFixed(1));
+        s.el.setAttribute('opacity', (0.35 + 0.45 * (0.5 + 0.5 * Math.sin(s.ph))).toFixed(2));
+      }
+      // shooting star
+      if (shoot) { shootCd -= dt;
+        if (!shoot.on && shootCd <= 0) { shoot.on = true; shoot.life = 0; shoot.x = rnd(300, 440); shoot.y = rnd(55, 120); shoot.vx = rnd(-170, -90); shoot.vy = rnd(70, 140); }
+        if (shoot.on) { shoot.life += dt; shoot.x += shoot.vx * dt; shoot.y += shoot.vy * dt;
+          shoot.el.setAttribute('x1', shoot.x.toFixed(1)); shoot.el.setAttribute('y1', shoot.y.toFixed(1));
+          shoot.el.setAttribute('x2', (shoot.x - shoot.vx * 0.05).toFixed(1)); shoot.el.setAttribute('y2', (shoot.y - shoot.vy * 0.05).toFixed(1));
+          shoot.el.setAttribute('opacity', Math.max(0, 0.9 - shoot.life * 1.1).toFixed(2));
+          if (shoot.life > 0.9) { shoot.on = false; shoot.el.setAttribute('opacity', 0); shootCd = rnd(3, 7); } }
+      }
+      // stock numbers
+      for (const n of nums) { n.y += n.v * dt * 60; if (n.y > 476) { n.y = rnd(232, 250); n.x = rnd(110, 420); n.txt = fmt(); n.sz = rnd(9, 13); n.op = rnd(0.22, 0.5); } drawNum(n); }
+      // music rings
+      const CYC = 3;
+      for (const r of rings) { r.t += dt; if (r.t > CYC) r.t -= CYC + rnd(-0.3, 0.3);
+        if (r.t < 0) { r.el.setAttribute('opacity', 0); continue; }
+        const p = r.t / CYC; r.el.setAttribute('r', (8 + p * 64).toFixed(1)); r.el.setAttribute('opacity', ((1 - p) * 0.5).toFixed(2)); }
+      // motes
+      for (const m of motes) { m.life -= dt;
+        if (m.life <= 0) { m.max = rnd(1.6, 3); m.life = m.max; m.x = 110 + rnd(-4, 4); m.y = 290; m.vy = rnd(18, 30); }
+        m.y -= m.vy * dt; m.x += Math.sin(m.y * 0.05) * 0.25;
+        m.el.setAttribute('cx', m.x.toFixed(1)); m.el.setAttribute('cy', m.y.toFixed(1));
+        m.el.setAttribute('opacity', (Math.sin((1 - m.life / m.max) * Math.PI) * 0.55).toFixed(2)); }
+      // core pulse
+      if (core) { core.setAttribute('r', (10 * (1 + 0.18 * Math.sin(t * 2.2))).toFixed(1)); core.setAttribute('opacity', (0.85 + 0.15 * Math.sin(t * 2.2)).toFixed(2)); }
+      // gears
+      for (const g of gears) { g.a += g.dir * g.speed * dt; g.place(); }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
 </script>
 </body>
 </html>

@@ -75,17 +75,9 @@ a { color: var(--acc); }
 .tex.show { opacity: 1; }
 
 /* Room 01 — deep space: a real starfield with nebulae */
+/* deep-space glow only — the scattered star dots were removed (the planet is the
+   starfield now, and fixed page-stars kept landing on the buttons at some sizes) */
 .tex-uni { background:
-  radial-gradient(circle at 82% 18%, rgba(255, 217, 168, 0.9) 0 2.5px, transparent 4px),
-  radial-gradient(circle at 20% 64%, rgba(127, 180, 255, 0.7) 0 2px, transparent 3px),
-  radial-gradient(circle at 62% 80%, rgba(216, 226, 242, 0.75) 0 1.5px, transparent 3px),
-  radial-gradient(circle at 38% 26%, rgba(216, 226, 242, 0.6) 0 1.5px, transparent 3px),
-  radial-gradient(circle at 90% 58%, rgba(216, 226, 242, 0.55) 0 1.5px, transparent 3px),
-  radial-gradient(circle at 12% 12%, rgba(216, 226, 242, 0.5) 0 1px, transparent 2px),
-  radial-gradient(circle at 45% 55%, rgba(216, 226, 242, 0.45) 0 1px, transparent 2px),
-  radial-gradient(circle at 70% 42%, rgba(255, 217, 168, 0.5) 0 1.5px, transparent 3px),
-  radial-gradient(circle at 30% 88%, rgba(216, 226, 242, 0.5) 0 1px, transparent 2px),
-  radial-gradient(circle at 55% 8%, rgba(216, 226, 242, 0.45) 0 1px, transparent 2px),
   radial-gradient(ellipse 60% 40% at 78% 26%, rgba(31, 48, 84, 0.85) 0%, transparent 65%),
   radial-gradient(ellipse 50% 60% at 12% 78%, rgba(58, 34, 66, 0.5) 0%, transparent 65%); }
 
@@ -255,7 +247,7 @@ a { color: var(--acc); }
 .landing-text .ctas a { font-family: var(--ui); font-size: 14px; text-decoration: none;
   padding: 13px 22px; font-weight: 600; border-radius: var(--btnr); }
 .landing-text .ctas .go { background: var(--acc); color: var(--bg); }
-.landing-text .ctas .alt { color: var(--ink); border: 1px solid var(--line); }
+.landing-text .ctas .alt { color: var(--ink); border: 1px solid var(--line); background: var(--bg); }
 .landing-text .ctas .alt:hover { border-color: var(--acc); }
 .landing-planet svg { width: 100%; height: auto; display: block;
   filter: drop-shadow(0 0 46px rgba(127, 180, 255, 0.14)); }

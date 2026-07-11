@@ -13,12 +13,25 @@
 <meta property="og:url" content="https://davisonbaldwin.github.io/rooms.html">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%E2%9C%B6%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css?v=2">
+<style>
+  /* subtle dynamism (self-contained here; remove this block + #roomglow + the
+     glow script to revert): a breathing, cursor-reactive accent glow that
+     recolors per world */
+  #roomglow { position: fixed; inset: -20%; z-index: 0; pointer-events: none;
+    background: radial-gradient(42% 38% at 58% 42%, var(--glowc, #7fb4ff) 0%, transparent 72%);
+    mix-blend-mode: screen; opacity: .13; animation: roomBreathe 11s ease-in-out infinite; will-change: transform, opacity; }
+  @keyframes roomBreathe { 0%, 100% { opacity: .09; } 50% { opacity: .16; } }
+  @media (prefers-reduced-motion: reduce) {
+    #roomglow { animation: none; }
+  }
+</style>
 </head>
 <body>
 
 <div class="tex tex-uni show" id="tex-uni"></div>
 <div class="tex tex-eval" id="tex-eval"></div>
 <div class="tex tex-mus" id="tex-mus"></div>
+<div id="roomglow"></div>
 
 <div class="wrap">
 
@@ -27,7 +40,7 @@
   <span class="tagline">PRODUCT DESIGN · THREE WORLDS</span>
   <nav>
     <a href="index.html">Home</a>
-    <a href="davis-baldwin-resume.pdf" target="_blank" rel="noopener">Resume</a>
+    <a href="resume.html">Resume</a>
     <a href="mailto:davison.baldwin@gmail.com">Contact</a>
   </nav>
 </header>
@@ -90,6 +103,7 @@
     active = i;
     const r = ROOMS[i];
     document.documentElement.dataset.skin = r.skin;
+    setGlow(i);
     rows.forEach((el, k) => el.classList.toggle('on', k === i));
     document.querySelectorAll('.tex').forEach(t =>
       t.classList.toggle('show', t.id === 'tex-' + r.skin));
@@ -106,6 +120,23 @@
     }).join('') +
       '<span class="mail"><a href="mailto:davison.baldwin@gmail.com">davison.baldwin@gmail.com</a></span>';
   }
+  // --- dynamic: breathing accent glow + a crossfade when switching worlds ---
+  const glow = document.getElementById('roomglow');
+  const reduceM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function setGlow(i) {
+    const t = ROOMS[i].tokens.find(x => /ACCENT/i.test(x[1])) || ROOMS[i].tokens[2] || [];
+    glow.style.setProperty('--glowc', t[0] || '#7fb4ff');
+  }
+  setGlow(0);
+  if (!reduceM && !matchMedia('(hover: none)').matches) {
+    let raf = 0, tx = 0, ty = 0;
+    addEventListener('pointermove', (e) => {
+      tx = (e.clientX / innerWidth - 0.5) * 42; ty = (e.clientY / innerHeight - 0.5) * 42;
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = 0; glow.style.transform = `translate(${tx.toFixed(1)}px,${ty.toFixed(1)}px)`; });
+    });
+  }
+
   rows.forEach((el, i) => {
     el.addEventListener('mouseenter', () => dress(i));
     el.addEventListener('focus', () => dress(i));

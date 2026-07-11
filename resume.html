@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" data-skin="uni">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resume — Davis Baldwin</title>
+<meta name="description" content="Resume of Davis Baldwin: product designer and builder of interactive systems — an interactive universe, a live stock evaluator, and a body of music technology. Carnegie Mellon, 2026.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Resume — Davis Baldwin">
+<meta property="og:description" content="Product designer and builder of interactive systems. Carnegie Mellon, 2026.">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:image" content="assets/og.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%E2%9C%B6%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css?v=2">
+<style>
+  /* resume page — self-contained on top of the shared skeleton (style.css).
+     Uses the site's tokens so it wears the same identity as the rest of the site. */
+  .cv-head { padding: 46px 0 6px; max-width: 780px; }
+  .cv-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--sub); display: flex; align-items: center; gap: 12px; }
+  .cv-worlds { display: inline-flex; gap: 5px; }
+  .cv-worlds i { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .cv-worlds i:nth-child(1) { background: #7fb4ff; }
+  .cv-worlds i:nth-child(2) { background: #ffb454; }
+  .cv-worlds i:nth-child(3) { background: #d9a96a; }
+  .cv-head h1 { font-family: var(--face); font-size: clamp(42px, 6.4vw, 66px);
+    font-weight: 600; line-height: 1.0; margin-top: 12px; letter-spacing: -0.015em; }
+  .cv-lead { margin-top: 16px; font-family: var(--body); font-size: 18px; font-style: italic;
+    color: var(--sub); line-height: 1.55; max-width: 600px; }
+  .cv-contact { margin-top: 20px; font-family: var(--mono); font-size: 12px; color: var(--sub);
+    letter-spacing: 0.02em; display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+  .cv-contact .sep { opacity: 0.4; }
+  .cv-contact a { color: var(--sub); text-decoration: none; border-bottom: 1px solid transparent; transition: 0.2s; }
+  .cv-contact a:hover { color: var(--ink); border-bottom-color: var(--acc); }
+  .cv-actions { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+  .cv-actions a { font-family: var(--ui); font-size: 14px; text-decoration: none;
+    padding: 12px 22px; border-radius: 7px; transition: 0.2s; }
+  .cv-actions .dl { background: var(--acc); color: var(--bg); font-weight: 600; }
+  .cv-actions .dl:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .cv-actions .alt2 { color: var(--ink); border: 1px solid var(--line); }
+  .cv-actions .alt2:hover { border-color: var(--acc); }
+
+  .cv { margin-top: 44px; border-top: 1px solid var(--line); }
+  .cv-sec { display: grid; grid-template-columns: 168px 1fr; gap: 30px;
+    padding: 32px 0; border-bottom: 1px solid var(--line); }
+  .cv-label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--acc); padding-top: 5px; }
+  .cv-body { max-width: 720px; min-width: 0; }
+  .cv-entry + .cv-entry { margin-top: 28px; }
+  .cv-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+  .cv-title { font-family: var(--face); font-size: 19px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+  .cv-title a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); transition: 0.2s; }
+  .cv-title a:hover { color: var(--acc); border-bottom-color: var(--acc); }
+  .cv-tag { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 3px 7px; border-radius: 4px; margin-left: 10px; vertical-align: middle;
+    border: 1px solid currentColor; opacity: 0.85; }
+  .cv-tag.w1 { color: #7fb4ff; } .cv-tag.w2 { color: #ffb454; } .cv-tag.w3 { color: #d9a96a; }
+  .cv-date { font-family: var(--mono); font-size: 11.5px; color: var(--sub); white-space: nowrap; }
+  .cv-sub { margin-top: 4px; font-family: var(--body); font-size: 15px; color: var(--sub); }
+  .cv-note { margin-top: 4px; font-family: var(--body); font-size: 14px; font-style: italic; color: var(--sub); }
+  .cv-body ul { list-style: none; margin-top: 11px; }
+  .cv-body li { position: relative; padding-left: 18px; margin-top: 7px;
+    font-family: var(--body); font-size: 15px; line-height: 1.58; color: var(--ink); }
+  .cv-body li::before { content: ""; position: absolute; left: 2px; top: 9px;
+    width: 5px; height: 5px; border-radius: 50%; background: var(--acc); opacity: 0.7; }
+  .cv-links { margin-top: 12px; display: flex; gap: 16px; flex-wrap: wrap;
+    font-family: var(--ui); font-size: 13px; }
+  .cv-links a { color: var(--acc); text-decoration: none; border-bottom: 1px solid transparent; transition: 0.2s; }
+  .cv-links a:hover { border-bottom-color: var(--acc); }
+  .cv-skill { font-family: var(--body); font-size: 15px; line-height: 1.5; margin-top: 8px; }
+  .cv-skill b { font-family: var(--ui); font-size: 13.5px; color: var(--ink); letter-spacing: 0.01em; }
+
+  .cv-foot { padding: 30px 0 60px; font-family: var(--mono); font-size: 11px;
+    color: var(--sub); letter-spacing: 0.04em; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .cv-foot a { color: var(--sub); text-decoration: none; }
+  .cv-foot a:hover { color: var(--ink); }
+
+  @media (max-width: 720px) {
+    .cv-sec { grid-template-columns: 1fr; gap: 12px; }
+    .cv-label { padding-top: 0; }
+    .cv-row { flex-direction: column; gap: 2px; }
+  }
+
+  /* clean printable fallback if someone prints this page directly (Cmd+P) */
+  @media print {
+    .tex, .bar nav, .cv-actions, .cv-foot { display: none !important; }
+    body { background: #fff !important; color: #111 !important; }
+    .wrap { max-width: 100%; }
+    .cv-label, .cv-eyebrow, .cv-date, .cv-sub, .cv-note, .cv-contact, .cv-contact a { color: #444 !important; }
+    .cv-title, .cv-title a, .cv-body li, .cv-skill b, .cv-head h1 { color: #111 !important; }
+    .cv-body li::before { background: #111 !important; }
+    a { color: #111 !important; }
+    .cv-tag { border-color: #888 !important; color: #444 !important; }
+    .cv-sec, .cv, .bar { border-color: #ccc !important; }
+    .cv-worlds i { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+
+<div class="tex tex-uni show"></div>
+<div class="wrap">
+
+<header class="bar">
+  <span><a class="who" href="index.html">Davis Baldwin</a></span>
+  <span class="tagline">PRODUCT DESIGN · RESUME</span>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="rooms.html">The worlds</a>
+    <a href="mailto:davison.baldwin@gmail.com">Contact</a>
+  </nav>
+</header>
+
+<section class="cv-head">
+  <div class="cv-eyebrow">Resume <span class="cv-worlds" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  <h1>Davis Baldwin</h1>
+  <p class="cv-lead">I design and build interactive systems — a planetarium of the whole universe,
+  a live stock evaluator, and a body of music technology.</p>
+  <div class="cv-contact">
+    <a href="mailto:davison.baldwin@gmail.com">davison.baldwin@gmail.com</a><span class="sep">·</span>
+    <a href="tel:+16304144137">630-414-4137</a><span class="sep">·</span>
+    <span>Warrenville, IL 60555</span><span class="sep">·</span>
+    <a href="https://www.linkedin.com/in/davisonbaldwin/" target="_blank" rel="noopener">linkedin.com/in/davisonbaldwin</a>
+  </div>
+  <div class="cv-actions">
+    <a class="dl" href="davis-baldwin-resume.pdf" target="_blank" rel="noopener">Download PDF ↓</a>
+    <a class="alt2" href="rooms.html">Enter the worlds →</a>
+  </div>
+</section>
+
+<main class="cv">
+
+  <section class="cv-sec">
+    <div class="cv-label">Education</div>
+    <div class="cv-body">
+      <div class="cv-entry">
+        <div class="cv-row">
+          <span class="cv-title">Bachelor of Humanities &amp; Arts (BHA)</span>
+          <span class="cv-date">May 2026</span>
+        </div>
+        <div class="cv-sub">Carnegie Mellon University · Pittsburgh, PA</div>
+        <ul>
+          <li>Phi Beta Kappa Inductee.</li>
+          <li>3.78 GPA · University Honors · College Honors.</li>
+          <li><em>Relevant coursework:</em> Concepts of Mathematics, Fundamentals of Programming and
+          Computer Science, Introduction to Data Structures, Principles of Computing, Reasoning with
+          Data, Nature of Reason.</li>
+          <li>Vice President, The Originals A Cappella.</li>
+          <li>Languages: English (fluent), Spanish (fluent).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="cv-sec">
+    <div class="cv-label">Experience</div>
+    <div class="cv-body">
+      <div class="cv-entry">
+        <div class="cv-row">
+          <span class="cv-title">Research Fellow</span>
+          <span class="cv-date">May – Aug 2025</span>
+        </div>
+        <div class="cv-sub">Carnegie Mellon University · Pittsburgh, PA</div>
+        <ul>
+          <li>Conducted research in improvisational composition and reharmonization, investigating the
+          acquisition of music as a language.</li>
+          <li>Composed, performed, and produced a fully improvised, seven-movement piano suite as the
+          centerpiece of the research.</li>
+          <li>Independently performed all mixing and mastering engineering for the recorded suite.</li>
+        </ul>
+        <div class="cv-links">
+          <a href="https://www.youtube.com/watch?v=7EuehU9jKHM" target="_blank" rel="noopener">Listen ↗</a>
+        </div>
+      </div>
+      <div class="cv-entry">
+        <div class="cv-row">
+          <span class="cv-title">Software Engineer Intern</span>
+          <span class="cv-date">May – Aug 2024</span>
+        </div>
+        <div class="cv-sub">Gamma Technologies LLC · Westmont, IL</div>
+        <div class="cv-note">Physics-based engineering simulation software serving the automotive,
+        energy, and data-center industries (TA Associates / Insight Partners portfolio company).</div>
+        <ul>
+          <li>Improved and optimized GUI components across the Gamma suite as a member of the GUI team.</li>
+          <li>Debugged and troubleshot Java application issues across the stack — sophisticated Java
+          applications, a custom distributed-computing solution, 3D graphics tooling, and
+          high-performance data storage.</li>
+          <li>Validated and edited technical documentation.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="cv-sec">
+    <div class="cv-label">Selected Work</div>
+    <div class="cv-body">
+      <div class="cv-entry">
+        <div class="cv-row">
+          <span class="cv-title"><a href="studies/universe.html">Universe — Interactive 3D Planetarium</a><span class="cv-tag w1">World 01</span></span>
+        </div>
+        <ul>
+          <li>Built with Claude AI: a JavaScript/Three.js planetarium rendering 119,625 HYG-catalog stars
+          across six connected scales — night sky, solar system, stellar neighborhood, Milky Way galaxy,
+          cosmic web, and free-flight deep space with Sagittarius A*.</li>
+          <li>Sky mode includes 88 IAU constellation figures, 85 classical constellation paintings,
+          deep-sky objects, an astrophysical phenomena catalog, and NASA's exoplanet archive — 4,689 real
+          planetary systems.</li>
+          <li>Solar system computes accurate positions from JPL Keplerian elements: planets with NASA-imagery
+          textures, 21 moons, named asteroids, seven comets with dynamic anti-solar tails, and
+          trans-Neptunian dwarf planets; time simulation spans 1800–2050.</li>
+          <li>Orientation-first design: guided nine-stop tour, universal search across every rendered
+          object, data cards on click, and progressive texture loading for a fast first paint.</li>
+        </ul>
+        <div class="cv-links">
+          <a href="studies/universe.html">Read the case study →</a>
+          <a href="https://davisonbaldwin.github.io/universe/" target="_blank" rel="noopener">Explore it live ↗</a>
+        </div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-row">
+          <span class="cv-title"><a href="studies/stock-evaluator.html">Stock Evaluator — Index-Benchmarked Analysis</a><span class="cv-tag w2">World 02</span></span>
+        </div>
+        <ul>
+          <li>Built with Claude AI: a Python/Flask web app that scores any US stock against a total-market
+          index-fund baseline, so every verdict answers the honest question — would this beat simply buying
+          the index?</li>
+          <li>Analysis engine combines block-bootstrap simulations, rolling entry-point windows, and reverse
+          discounted-cash-flow tests; compare mode benchmarks up to 10 tickers at once against a choice of
+          eight index funds.</li>
+          <li>Deployed live with an interactive terminal-styled interface.</li>
+        </ul>
+        <div class="cv-links">
+          <a href="studies/stock-evaluator.html">Read the case study →</a>
+          <a href="https://stock-evaluator-mp72.onrender.com" target="_blank" rel="noopener">Try it live ↗</a>
+        </div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-row">
+          <span class="cv-title"><a href="studies/music-technology.html">Music Technology — Six Works</a><span class="cv-tag w3">World 03</span></span>
+        </div>
+        <ul>
+          <li>A body of self-composed, self-produced music built inside custom visual worlds — including
+          <em>"Rest My Soul,"</em> a multitracked one-man choir performed and self-recorded across every
+          vocal part, set in a custom infinite 3D environment.</li>
+          <li>Directed the full pipeline end to end: composition, performance, recording, video direction,
+          and post-production coordination with recording and mixing engineers.</li>
+        </ul>
+        <div class="cv-links">
+          <a href="studies/music-technology.html">See the six chapters →</a>
+          <a href="https://www.youtube.com/watch?v=ZdAaofDbIfM" target="_blank" rel="noopener">Watch "Rest My Soul" ↗</a>
+        </div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-row">
+          <span class="cv-title">Sudoku Autosolver — Backtracking Puzzle Solver</span>
+        </div>
+        <ul>
+          <li>Built a Sudoku solver in Python using recursive backtracking, handling puzzles of varying
+          difficulty, with a built-in hint system that surfaces the candidate numbers in each square.</li>
+          <li>Automated detection of singleton, double, and triple candidate values to narrow the search space.</li>
+        </ul>
+        <div class="cv-links">
+          <a href="https://www.youtube.com/watch?v=7QvkMWuUWXc" target="_blank" rel="noopener">Watch the demo ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cv-sec">
+    <div class="cv-label">Skills</div>
+    <div class="cv-body">
+      <p class="cv-skill"><b>Programming</b> — Python, Java, JavaScript, Data Structures &amp; Algorithms.</p>
+      <p class="cv-skill"><b>Music Production</b> — Composition, Performance, Mixing &amp; Mastering Engineering.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="cv-foot">
+  <span>DAVIS BALDWIN · PRODUCT DESIGN · 2026</span>
+  <span><a href="rooms.html">The worlds</a> · <a href="davis-baldwin-resume.pdf" target="_blank" rel="noopener">PDF</a> · <a href="mailto:davison.baldwin@gmail.com">davison.baldwin@gmail.com</a></span>
+</footer>
+
+</div>
+</body>
+</html>
