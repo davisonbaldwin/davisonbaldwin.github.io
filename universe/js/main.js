@@ -2608,13 +2608,18 @@ backdrop.rotation.x = -23.4393 * DEG;
 const solStarsMat = starMat.clone();
 solStarsMat.depthTest = true;
 // The sky view's soft naked-eye PSF (wide halo, big discs) reads as smudges when it's
-// a BACKDROP behind planets — pin the stars down: much tighter halo, smaller discs.
-// Every other uniform (mag limit, twinkle, spectrum, time) stays shared and live.
+// a BACKDROP behind planets — pin the stars down: tighter halo, smaller discs. Shrinking
+// a disc slashes its total light, so the faint end gets an alpha floor boost to keep the
+// field DENSE (crisp long-exposure look, not a sparse one). Every other uniform
+// (mag limit, twinkle, spectrum, time) stays shared and live.
 solStarsMat.fragmentShader = starFrag.replace(
   'float f = core * 1.3 + halo * 0.55 + spike;',
-  'float f = core * 1.5 + halo * 0.16 + spike;');
+  'float f = core * 1.6 + halo * 0.22 + spike;');
+solStarsMat.vertexShader = starVert.replace(
+  'float alpha = clamp(0.22 + 0.78 * pow(bright / 5.5, 0.55), 0.10, 1.0);',
+  'float alpha = clamp(0.42 + 0.58 * pow(bright / 5.5, 0.55), 0.30, 1.0);');
 solStarsMat.uniforms = { ...starMat.uniforms,
-  uSizeScale: { value: starUniforms.uSizeScale.value * 0.45 } };
+  uSizeScale: { value: starUniforms.uSizeScale.value * 0.55 } };
 solStarsMat.needsUpdate = true;
 const solStarSize = solStarsMat.uniforms.uSizeScale;   // kept in step with the Brightness slider
 const solStars = new THREE.Points(skyStarGeo, solStarsMat);
@@ -6101,7 +6106,7 @@ function updateEarthPointer() {
 bind('rg-mag', (el) => { starUniforms.uMagLimit.value = +el.value; });
 bind('rg-size', (el) => {
   starUniforms.uSizeScale.value = +el.value;
-  solStarSize.value = +el.value * 0.45;      // solar backdrop tracks the slider at its crisper scale
+  solStarSize.value = +el.value * 0.55;      // solar backdrop tracks the slider at its crisper scale
 });
 
 // ------------------------------------------- controls panel: sections, presets, persistence
