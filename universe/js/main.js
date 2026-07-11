@@ -1766,7 +1766,7 @@ const solarSailGroup = new THREE.Group();
     name: 'Solar Sail',
     sub: 'Light-propelled spacecraft',
     rows: [['Sail area', '~1.2 km²'], ['Acceleration', '~0.1 mm/s² at 1 AU'], ['Propellant', 'None, photon pressure'], ['Example', 'IKAROS (JAXA, 2010)']],
-    doc: 'A solar sail uses radiation pressure from sunlight to accelerate without propellant. The sail is shown here near Earth–Sun L1, where continuous sunward sunlight provides maximum thrust. The thin reflective membrane must be only micrometres thick — thinner than a human hair.',
+    doc: 'A solar sail uses radiation pressure from sunlight to accelerate without propellant. The sail is shown here near Earth–Sun L1, where continuous sunward sunlight provides maximum thrust. The thin reflective membrane must be only micrometres thick, thinner than a human hair.',
   };
 }
 megaGroup.add(solarSailGroup);
