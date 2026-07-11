@@ -93,6 +93,10 @@ try {
 }
 // phones render fewer pixels: high-dpi panels don't need the full 2x GPU load
 const MAX_PIXEL_RATIO = matchMedia('(pointer: coarse)').matches ? 1.75 : 2;
+// touch devices have no keyboard or hover — flight & HUD adapt around this
+// (?touch previews the touch UI on a desktop browser)
+const TOUCH_UI = matchMedia('(hover: none) and (pointer: coarse)').matches
+  || new URLSearchParams(location.search).has('touch');
 renderer.setPixelRatio(Math.min(devicePixelRatio, MAX_PIXEL_RATIO));
 renderer.setSize(innerWidth, innerHeight);
 host.appendChild(renderer.domElement);
@@ -4527,13 +4531,15 @@ function flyCollide(m) {
 const _zeroV = new THREE.Vector3();
 // double-click an object to fly to and frame it
 const flyHud = document.getElementById('fly-hud');
+const flyBtn = document.getElementById('fly-btn');
 const crosshair = document.getElementById('crosshair');
 const flyArmPrompt = document.getElementById('fly-arm');
 const fadeEl = document.getElementById('fade');
 let flyHudHidden = true;                       // spaceship-controls panel off by default — only the menu shows it (not F)
 function flyShowToggle() {
-  const active = (flyMode && FLY_MODES.has(mode)) || mode === 'deep';   // the top Fly button was removed; flying is via F / double-click
-  flyHud.classList.toggle('show', active && !flyHudHidden);
+  const active = (flyMode && FLY_MODES.has(mode)) || mode === 'deep';   // flying is via F / double-click / the touch 🚀 button
+  // on touch the HUD is the only set of flight controls — always show it while flying
+  flyHud.classList.toggle('show', active && (!flyHudHidden || TOUCH_UI));
   crosshair.classList.toggle('show', active);
   flyArmPrompt.classList.toggle('show', active && !flyArmed);
   const cr = document.getElementById('fh-cruise');
@@ -4542,11 +4548,24 @@ function flyShowToggle() {
   if (vw) { vw.textContent = thirdPerson ? 'THIRD person — V for cockpit' : '1st / 3rd person'; vw.style.color = thirdPerson ? 'var(--accent)' : ''; }
   const sp = document.getElementById('fh-speed');
   if (sp) sp.textContent = flySpeed.toFixed(flySpeed < 1 ? 2 : 1) + '×';
+  // touch controls mirror the key-bound state
+  const cb = document.getElementById('fh-cruise-btn');
+  if (cb) { cb.classList.toggle('active', flyCruise); cb.textContent = flyCruise ? '⏸ Cruising' : '⏵ Cruise'; }
+  const vb = document.getElementById('fh-view-btn');
+  if (vb) vb.textContent = thirdPerson ? '👁 3rd person' : '👁 1st person';
+  // the 🚀 door into flight: touch only, flyable scales only, gone while flying
+  flyBtn.style.display = TOUCH_UI && !active && FLY_MODES.has(mode) ? 'block' : 'none';
 }
 function setFlyMode(on) {
   if (!FLY_MODES.has(mode)) on = false;
   if (on) exitRideAlong();   // rideAlong and fly are mutually exclusive
-  if (on && !flyMode) { syncFlyFromOrbit(mode); flyArmed = false; flyThrottle = false; thirdPerson = true; }
+  if (on && !flyMode) {
+    syncFlyFromOrbit(mode); flyThrottle = false; thirdPerson = true;
+    // touch: no persistent cursor to bring to the centre — arm immediately with the
+    // stick neutral, so nothing turns until a finger is actually down
+    flyArmed = TOUCH_UI;
+    if (TOUCH_UI) { mouseNDC.x = 0; mouseNDC.y = 0; }
+  }
   else if (!on && flyMode) syncOrbitFromFly(mode);
   flyMode = on;
   if (!on) { flyCruise = false; fly.attach = null; shipModel.visible = false; }
@@ -4557,6 +4576,19 @@ const flyish = () => (flyMode && FLY_MODES.has(mode)) || mode === 'deep';
 function setFlySpeed(mult) { flySpeed = Math.max(0.15, Math.min(12, mult)); flyShowToggle(); }
 document.getElementById('fh-slower').onclick = () => setFlySpeed(flySpeed / 1.4);
 document.getElementById('fh-faster').onclick = () => setFlySpeed(flySpeed * 1.4);
+// touch flight: 🚀 enters with cruise on (hands-free motion, nothing to hold),
+// and the HUD's buttons stand in for Space / V / F
+flyBtn.onclick = () => { setFlyMode(true); flyCruise = true; flyShowToggle(); };
+document.getElementById('fh-cruise-btn').onclick = () => {
+  flyCruise = !flyCruise;
+  if (flyCruise) fly.goto = null;
+  flyShowToggle();
+};
+document.getElementById('fh-view-btn').onclick = () => { thirdPerson = !thirdPerson; flyShowToggle(); };
+document.getElementById('fh-exit').onclick = () => {
+  if (mode === 'deep') exitDeepInPlace();   // same meaning as F: stop flying, stay here
+  else setFlyMode(false);
+};
 
 // double-click destination: aim a fly-to at whatever is under the cursor
 const _fndc = new THREE.Vector2(), _fray = new THREE.Raycaster();
@@ -4677,6 +4709,9 @@ let lastTapT = 0, lastTapX = 0, lastTapY = 0;
 addEventListener('pointerup', (e) => {
   dropPointer(e);
   flyThrottle = false;
+  // touch: the finger IS the flight stick — lifting it recentres, so the ship flies
+  // straight instead of turning forever toward wherever the screen was last touched
+  if (e.pointerType === 'touch' && livePointers.size === 0) releaseFlightStick();
   if (!dragging || wasPinch) return;
   if (livePointers.size === 0) dragging = false;
   const dist = Math.hypot(e.clientX - downX, e.clientY - downY);
@@ -4888,6 +4923,7 @@ function exitRideAlong() {
   orbits.solar.follow = 'Earth';
   orbits.solar.r = Math.max(3, orbits.solar.r);
   rideAlong = null;
+  document.body.classList.remove('riding');
   document.getElementById('ride-exit')?.remove();
 }
 
@@ -4930,14 +4966,12 @@ function viewFromObject(pov) {
   rideAlong = { getPos, getLook, up: upGet, label: obj.name || 'object' };
   orbits.solar.follow = null;
   infocard.classList.remove('open');
+  document.body.classList.add('riding');   // the scale readout describes the orbit view — hide it here
   // Show a small exit banner so the user knows how to get back
   let banner = document.getElementById('ride-exit');
   if (!banner) {
     banner = document.createElement('div');
-    banner.id = 'ride-exit';
-    banner.style.cssText = 'position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:20;' +
-      'background:rgba(13,20,34,0.82);border:1px solid rgba(120,160,220,0.18);border-radius:8px;' +
-      'padding:7px 16px;font-size:12px;color:#8aa0c0;backdrop-filter:blur(12px)';
+    banner.id = 'ride-exit';                       // positioned & styled in index.html CSS
     document.body.appendChild(banner);
   }
   banner.innerHTML = `👁 Viewing from <b style="color:#d6e2f5">${rideAlong.label}</b> &nbsp;·&nbsp; <span style="cursor:pointer;color:#7fb4ff" onclick="window.U&&window.U.exitRideAlong()">✕ Exit</span>`;
@@ -5375,6 +5409,12 @@ const searchIndex = [];
     searchIndex.push({ label: dso[0], type: dso[4], dsoIdx: i });
   });
   for (const s of SATS_RT) searchIndex.push({ label: s.name, type: 'sat', sat: s });
+  // craft indexed under short labels should also match their everyday names
+  for (const [alias, of] of [['James Webb Space Telescope', 'JWST'],
+                             ['International Space Station', 'ISS']]) {
+    const t = SATS_RT.find(s => s.name === of);
+    if (t) searchIndex.push({ label: alias, type: 'sat', sat: t });
+  }
   for (const s of LUNAR_RT) searchIndex.push({ label: s.name, type: 'lunarsite', site: s });
   for (const mo of MOONS_RT) searchIndex.push({ label: mo.name, type: 'moon', moon: mo });
   PHENOMENA.forEach((ph, i) => {
@@ -6346,12 +6386,18 @@ window.U = {
       title: 'Make it yours',
       text: 'The UNIVERSE menu holds every layer — constellation art, exoplanets, pulsars and quasars, megastructures, dark matter, even the sky in X-ray or radio — with one-tap presets: Essentials, Clean view, Everything. The minimap’s ladder jumps scales. All of it is remembered. Your universe now.' },
   ];
-  // Touch devices: no keyboard or scroll wheel — adapt the language, and drop
-  // the spaceship stop (flight needs keys the device doesn't have).
-  const IS_TOUCH = matchMedia('(hover: none) and (pointer: coarse)').matches;
+  // Touch devices: no keyboard or scroll wheel — adapt the language, and teach
+  // the touch flight controls (🚀 button) instead of the key bindings.
+  const IS_TOUCH = TOUCH_UI;
   if (IS_TOUCH) {
-    const hudIdx = TOUR.findIndex((t) => t.hud);
-    if (hudIdx >= 0) TOUR.splice(hudIdx, 1);
+    const hudStop = TOUR.find((t) => t.hud);
+    if (hudStop) {
+      delete hudStop.hud;                    // don't force the HUD open — it sits where 🚀 lives
+      hudStop.hi = '#fly-btn';               // point at the real thing to tap
+      hudStop.text = 'Tap 🚀 Fly any time to take the controls. You cruise hands-free — ' +
+        'drag to steer, pinch for speed, ⏵ Cruise to stop and go. Double-tap any planet, ' +
+        'moon, or star to fly straight to it. ✕ Exit lands you back in orbit.';
+    }
     for (const t of TOUR) {
       t.text = t.text
         .replace(/scroll to zoom/g, 'pinch to zoom')

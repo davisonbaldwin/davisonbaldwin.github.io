@@ -44,7 +44,8 @@
     border: 1px solid var(--border); border-radius: 10px; color: var(--text);
     font-size: 13px; outline: none; font-family: inherit; backdrop-filter: blur(12px); }
   #search:focus { border-color: rgba(127, 180, 255, 0.5); }
-  #search-results { margin-top: 6px; overflow: hidden; display: none; }
+  #search-results { margin-top: 6px; overflow: hidden; display: none;
+    max-height: min(340px, calc(100vh - 170px)); overflow-y: auto; }
   #search-results.open { display: block; }
   .sr-item { padding: 8px 13px; font-size: 13px; cursor: pointer; display: flex;
     justify-content: space-between; gap: 10px; }
@@ -66,15 +67,17 @@
   #panel.open { display: block; }
   /* Locator minimap — "you are here" across the scales of the universe */
   #locator { position: fixed; left: 16px; top: 70px; z-index: 9; width: 196px; padding: 9px 10px 8px; }
-  #loc-head { display: flex; justify-content: space-between; align-items: baseline; }
+  #loc-head { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
   /* small dismiss button shared by hideable panels */
   .panel-x { margin-left: 8px; padding: 0 4px; background: none; border: none; cursor: pointer;
     color: var(--dim); font-size: 11px; line-height: 1; opacity: 0.55; transition: opacity 0.15s; }
   .panel-x:hover { opacity: 1; color: var(--text); }
   .fh-title { position: relative; }
   .fh-title .panel-x { position: absolute; right: -2px; top: -1px; }
-  #loc-name { font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0.4px; }
-  #loc-dist { font-size: 10px; color: var(--dim); font-variant-numeric: tabular-nums; }
+  #loc-name { font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0.4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  #loc-dist { font-size: 10px; color: var(--dim); font-variant-numeric: tabular-nums;
+    white-space: nowrap; flex-shrink: 0; margin-left: auto; }
   #loc-canvas { width: 196px; height: 196px; display: block; margin: 7px 0 7px; border-radius: 9px;
     background: radial-gradient(circle at 50% 50%, rgba(20,30,52,0.55), rgba(6,9,16,0.65)); }
   #loc-ladder { display: flex; gap: 3px; }
@@ -137,7 +140,7 @@
   #date-input { position: fixed; opacity: 0; pointer-events: none; }
 
   #infocard { position: fixed; right: 16px; top: 70px; z-index: 9; width: 260px;
-    padding: 16px; display: none; }
+    padding: 16px; display: none; max-height: calc(100vh - 110px); overflow-y: auto; }
   #infocard.open { display: block; }
   #info-name { font-size: 17px; font-weight: 650; }
   #info-sub { font-size: 12px; color: var(--accent); margin: 2px 0 10px; }
@@ -171,6 +174,19 @@
   .fh-grid b { display: inline-block; min-width: 16px; text-align: center;
     color: var(--text); background: rgba(127,180,255,0.14); border-radius: 4px;
     padding: 1px 5px; margin: 0 1px; font-weight: 600; }
+  /* touch fly controls — replace the key-binding grid on touch devices */
+  #fh-touch { display: none; }
+  .fh-tbtns { display: flex; gap: 6px; }
+  .fh-tbtns button { flex: 1; font-family: inherit; font-size: 12px; padding: 10px 4px;
+    border-radius: 6px; cursor: pointer; color: var(--text); white-space: nowrap;
+    background: rgba(127,180,255,0.13); border: 1px solid var(--border); }
+  .fh-tbtns button.active { background: rgba(127,180,255,0.3); border-color: rgba(127,180,255,0.6); }
+  #fh-touch-help { margin-top: 8px; font-size: 10px; color: var(--dim); text-align: center;
+    letter-spacing: 0.3px; }
+  /* 🚀 Fly — the touch door into flight (shown by JS only on touch, in flyable scales) */
+  #fly-btn { position: fixed; left: 16px; bottom: 56px; z-index: 9; display: none;
+    font-family: inherit; font-size: 13px; font-weight: 600; color: var(--text);
+    padding: 11px 18px; cursor: pointer; }
   #crosshair { position: fixed; left: 50%; top: 50%; transform: translate(-50%,-50%);
     width: 26px; height: 26px; z-index: 7; display: none; pointer-events: none; }
   #crosshair.show { display: block; }
@@ -191,6 +207,15 @@
     background: rgba(127,180,255,0.5); }
   #crosshair::before { left: 50%; top: 0; width: 1px; height: 100%; transform: translateX(-50%); }
   #crosshair::after { top: 50%; left: 0; height: 1px; width: 100%; transform: translateY(-50%); }
+  /* "viewing from X" banner shown while riding along with a probe / standing on a surface */
+  #ride-exit { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); z-index: 20;
+    background: rgba(13,20,34,0.82); border: 1px solid rgba(120,160,220,0.18); border-radius: 8px;
+    padding: 7px 16px; font-size: 12px; color: #8aa0c0; backdrop-filter: blur(12px);
+    white-space: nowrap; max-width: calc(100vw - 24px); overflow: hidden; text-overflow: ellipsis; }
+  @media (max-width: 640px) {
+    /* top of a phone screen is full: title row, then search, then minimap — sit above the timebar instead */
+    #ride-exit { top: auto; bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
+  }
   #scalebar { position: fixed; bottom: 16px; right: 16px; z-index: 8; font-size: 10px;
     color: var(--dim); padding: 6px 10px; text-align: right; max-width: 30vw; }
   #scalebar b { color: var(--accent); font-weight: 600; }
@@ -198,8 +223,9 @@
   @media (max-width: 960px) {
     #scalebar { bottom: 64px; max-width: 44vw; }
   }
-  /* the tour caption takes the same corner — let it speak */
-  body.touring #scalebar { opacity: 0; transition: opacity 0.3s; }
+  /* the tour caption takes the same corner — let it speak; and while riding along
+     with an object the readout would describe the wrong camera — hide it there too */
+  body.touring #scalebar, body.riding #scalebar { opacity: 0; transition: opacity 0.3s; }
   /* transition veil — briefly dims to mask the scale hand-off jump */
   #fade { position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: 0;
     background: radial-gradient(ellipse at center, #0a1020 0%, #04060c 70%); }
@@ -264,30 +290,56 @@
   @media (max-width: 640px) {
     #searchbox { top: calc(58px + env(safe-area-inset-top, 0px)); left: 12px; right: 12px; width: auto; }
     #topbar { top: calc(10px + env(safe-area-inset-top, 0px)); left: 12px; }
-    #locator { top: calc(108px + env(safe-area-inset-top, 0px)); left: 12px; width: 152px; padding: 7px 8px 6px; }
-    #loc-canvas { width: 136px; height: 136px; margin: 5px 0; }
-    #loc-name { font-size: 10px; }
+    #locator { top: calc(108px + env(safe-area-inset-top, 0px)); left: 12px; width: 178px; padding: 8px 9px 7px; }
+    #loc-canvas { width: 160px; height: 160px; margin: 6px 0 5px; }
+    #loc-name { font-size: 10px; letter-spacing: 0.2px; }
+    #loc-head .panel-x { padding: 4px 6px; }
+    .loc-step { font-size: 9px; }
     #panel { top: calc(108px + env(safe-area-inset-top, 0px)); left: 12px; width: min(240px, calc(100vw - 24px));
-      max-height: calc(100vh - 130px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); }
+      max-height: calc(100vh - 165px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); }
     #timebar { bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding: 4px 6px; gap: 0; max-width: calc(100vw - 20px); }
     .tbtn { font-size: 12px; padding: 3px 5px; }
     #speed-label { min-width: 46px; font-size: 10px; }
-    #date-label { min-width: 0; font-size: 10px; padding: 0 5px; white-space: nowrap; }
+    #date-label { min-width: 0; font-size: 10px; padding: 0 5px; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; }
     #scalebar { bottom: calc(54px + env(safe-area-inset-bottom, 0px)); font-size: 9px; max-width: 60vw; }
     #fly-hud { left: 12px; bottom: calc(48px + env(safe-area-inset-bottom, 0px)); }
+    #fly-btn { left: 12px; bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
     #tour { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
     #infocard { right: 12px; left: 12px; top: auto;
-      bottom: calc(58px + env(safe-area-inset-bottom, 0px)); width: auto; }
-    #hints { bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+      bottom: calc(58px + env(safe-area-inset-bottom, 0px)); width: auto;
+      max-height: 44vh; overflow-y: auto; }
+    /* hint chips stack in a column here — keep the stack clear of the scale readout */
+    #hints { bottom: calc(118px + env(safe-area-inset-bottom, 0px)); }
+  }
+  /* ---- short landscape windows (phones rotated): drop the chrome lower & tighter ---- */
+  @media (max-height: 500px) {
+    #locator { top: 60px; width: 178px; padding: 8px 9px 7px; }
+    #loc-canvas { width: 160px; height: 160px; margin: 6px 0 5px; }
+    #loc-name { font-size: 10px; letter-spacing: 0.2px; }
+    #panel { top: 60px; max-height: calc(100vh - 80px); }
+    #infocard { top: 60px; max-height: calc(100vh - 76px); }
+    #tour { bottom: 60px; }
+    #welcome-card { padding: 16px 22px 12px; }
+    #welcome-card p { margin-bottom: 10px; }
+    .w-btns { margin-bottom: 8px; gap: 6px; }
+    .w-btns button { padding: 8px 0; }
   }
   /* ---- touch devices: no keyboard, no mouse — hide what depends on them ---- */
   @media (hover: none) and (pointer: coarse) {
     .kbd-note { display: none; }
+    /* the HUD shows itself while flying on touch — the visibility toggle row would only strand people */
     #panel .row:has(#ck-flyhud) { display: none; }
-    #fly-hud { display: none !important; }
-    /* fingers need bigger targets than cursors */
-    .loc-step, .loc-more-item { padding: 6px 10px; }
-    .tbtn { padding: 7px 9px; font-size: 14px; }
+    /* flight works by touch here: key-binding help out, touch buttons in */
+    .fh-grid { display: none; }
+    #fh-touch { display: block; }
+    #fh-throttle { margin-bottom: 10px; padding-bottom: 10px; }
+    #fh-slower, #fh-faster { width: 34px; height: 34px; font-size: 18px; }
+    /* fingers need bigger targets than cursors — taller chips, but never wider than
+       the card: horizontal padding would push the ladder past the minimap's edge */
+    .loc-step { padding: 7px 0; min-width: 0; }
+    .loc-more-item { padding: 8px 14px; }
+    .tbtn { padding: 7px 7px; font-size: 14px; }
     .panel-x, #info-close { padding: 6px 9px; font-size: 14px; }
     #panel .row { min-height: 34px; }
     #panel input[type="checkbox"] { width: 17px; height: 17px; }
@@ -465,7 +517,17 @@
     <span><b>V</b></span><span id="fh-view">1st / 3rd person</span>
     <span><b>F</b></span><span>exit flight</span>
   </div>
+  <!-- touch devices get buttons instead of key bindings -->
+  <div id="fh-touch">
+    <div class="fh-tbtns">
+      <button id="fh-cruise-btn">⏵ Cruise</button>
+      <button id="fh-view-btn">👁 View</button>
+      <button id="fh-exit">✕ Exit</button>
+    </div>
+    <div id="fh-touch-help">drag to steer · hold to thrust · pinch = speed</div>
+  </div>
 </div>
+<button id="fly-btn" class="card" title="Take the spaceship">🚀 Fly</button>
 <div id="crosshair"></div>
 <div id="earth-ptr"><div id="ep-arrow"></div><div id="ep-dist"></div></div>
 <div id="fly-arm">move the cursor to the centre to take the controls</div>
@@ -507,6 +569,6 @@
   <div class="bar"><div class="fill" id="load-fill"></div></div>
 </div>
 
-<script type="module" src="js/main.js?v=2"></script>
+<script type="module" src="js/main.js?v=3"></script>
 </body>
 </html>

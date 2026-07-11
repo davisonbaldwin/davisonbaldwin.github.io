@@ -151,7 +151,13 @@
     el.addEventListener('focus', () => dress(i));
     // touch / keyboard without hover: first activation selects, second enters
     el.addEventListener('click', (e) => {
-      if (active !== i) { e.preventDefault(); dress(i); }
+      if (active !== i) {
+        e.preventDefault(); dress(i);
+        // on a stacked (one-column) layout the stage lives below the list —
+        // bring the preview into view so the first tap visibly does something
+        if (matchMedia('(max-width: 900px)').matches)
+          document.querySelector('.stage').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     });
   });
 </script>
