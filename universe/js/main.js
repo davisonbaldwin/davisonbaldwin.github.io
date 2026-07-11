@@ -2607,7 +2607,16 @@ const backdrop = new THREE.Group();
 backdrop.rotation.x = -23.4393 * DEG;
 const solStarsMat = starMat.clone();
 solStarsMat.depthTest = true;
-solStarsMat.uniforms = starMat.uniforms;
+// The sky view's soft naked-eye PSF (wide halo, big discs) reads as smudges when it's
+// a BACKDROP behind planets — pin the stars down: much tighter halo, smaller discs.
+// Every other uniform (mag limit, twinkle, spectrum, time) stays shared and live.
+solStarsMat.fragmentShader = starFrag.replace(
+  'float f = core * 1.3 + halo * 0.55 + spike;',
+  'float f = core * 1.5 + halo * 0.16 + spike;');
+solStarsMat.uniforms = { ...starMat.uniforms,
+  uSizeScale: { value: starUniforms.uSizeScale.value * 0.45 } };
+solStarsMat.needsUpdate = true;
+const solStarSize = solStarsMat.uniforms.uSizeScale;   // kept in step with the Brightness slider
 const solStars = new THREE.Points(skyStarGeo, solStarsMat);
 solStars.frustumCulled = false;
 solStars.renderOrder = -1;                       // draw the backdrop before the planets
@@ -4576,9 +4585,9 @@ const flyish = () => (flyMode && FLY_MODES.has(mode)) || mode === 'deep';
 function setFlySpeed(mult) { flySpeed = Math.max(0.15, Math.min(12, mult)); flyShowToggle(); }
 document.getElementById('fh-slower').onclick = () => setFlySpeed(flySpeed / 1.4);
 document.getElementById('fh-faster').onclick = () => setFlySpeed(flySpeed * 1.4);
-// touch flight: 🚀 enters with cruise on (hands-free motion, nothing to hold),
-// and the HUD's buttons stand in for Space / V / F
-flyBtn.onclick = () => { setFlyMode(true); flyCruise = true; flyShowToggle(); };
+// touch flight: 🚀 takes the controls with the ship at rest — same as F on desktop.
+// ⏵ Cruise (or holding a finger) gets it moving; the HUD's buttons stand in for Space / V / F
+flyBtn.onclick = () => { setFlyMode(true); flyShowToggle(); };
 document.getElementById('fh-cruise-btn').onclick = () => {
   flyCruise = !flyCruise;
   if (flyCruise) fly.goto = null;
@@ -6090,7 +6099,10 @@ function updateEarthPointer() {
     : distAU.toFixed(distAU < 10 ? 2 : distAU < 100 ? 1 : 0) + ' AU');
 }
 bind('rg-mag', (el) => { starUniforms.uMagLimit.value = +el.value; });
-bind('rg-size', (el) => { starUniforms.uSizeScale.value = +el.value; });
+bind('rg-size', (el) => {
+  starUniforms.uSizeScale.value = +el.value;
+  solStarSize.value = +el.value * 0.45;      // solar backdrop tracks the slider at its crisper scale
+});
 
 // ------------------------------------------- controls panel: sections, presets, persistence
 const panelEl = document.getElementById('panel');
@@ -6394,8 +6406,8 @@ window.U = {
     if (hudStop) {
       delete hudStop.hud;                    // don't force the HUD open — it sits where 🚀 lives
       hudStop.hi = '#fly-btn';               // point at the real thing to tap
-      hudStop.text = 'Tap 🚀 Fly any time to take the controls. You cruise hands-free — ' +
-        'drag to steer, pinch for speed, ⏵ Cruise to stop and go. Double-tap any planet, ' +
+      hudStop.text = 'Tap 🚀 Fly any time to take the controls: hold to thrust, drag to steer, ' +
+        'pinch for speed — or tap ⏵ Cruise to fly hands-free. Double-tap any planet, ' +
         'moon, or star to fly straight to it. ✕ Exit lands you back in orbit.';
     }
     for (const t of TOUR) {
