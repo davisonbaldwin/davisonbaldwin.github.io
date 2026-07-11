@@ -31,72 +31,72 @@
 
 <section class="room-head">
   <div class="eyebrow">WORLD 01 · <b>INTERACTIVE MODEL · DESIGN + BUILD · 2026</b></div>
-  <h1>Universe — making 46 billion light-years navigable</h1>
+  <h1>Universe: making 46 billion light-years navigable</h1>
   <p class="dek">A planetarium built on real catalogs: 119,625 stars, every one clickable, in one continuous zoom from the Moon to the edge of the observable universe.</p>
 </section>
 
 <figure class="plate">
   <img class="plate-img" src="../assets/uni-opening.jpg" alt="The Universe app's opening view: the Solar System with textured planets on their orbits, a minimap in the top-left, a search bar, and a time bar reading real time">
-  <figcaption>FIG. 1A — the opening view, captured from the live model. Planet positions computed from real orbital elements for today's date; the minimap and clock already running.</figcaption>
+  <figcaption>FIG. 1A · the opening view, captured from the live model. Planet positions computed from real orbital elements for today's date; the minimap and clock already running.</figcaption>
   <a class="live" href="../universe/" target="_blank" rel="noopener">Open the live model ↗</a>
 </figure>
 
 <div class="grid">
   <aside class="rail">
     <b>Figures</b>
-    fig. 1a — opening view, solar system<br>
-    fig. 1b — the cosmic web, end of the zoom<br>
-    fig. 1c — welcome card, first visit<br>
-    fig. 1d — night sky + view compass<br>
-    fig. 1e — layer panel, three presets
+    fig. 1a · opening view, solar system<br>
+    fig. 1b · the cosmic web, end of the zoom<br>
+    fig. 1c · welcome card, first visit<br>
+    fig. 1d · night sky + view compass<br>
+    fig. 1e · layer panel, three presets
     <span class="pencil">“Three presets replaced thirty-five toggles.”</span>
     <span class="pencil">“The minimap has to be right at every scale.”</span>
   </aside>
   <div class="prose">
-    <div class="question"><span class="qlbl">The design question</span><p>How do you make the largest possible information space feel navigable — instead of infinite?</p></div>
-    <p>The universe is the largest possible information space, and this project models it with real data: the HYG star catalog, JPL planetary ephemerides, IAU constellations, NASA imagery. Rendering it is an engineering problem. The design problem is <em>orientation</em>: in an environment nine orders of magnitude deep, a person needs to know where they are, what they're looking at, and how to get home.</p>
-    <div class="pao"><div><span>Problem</span><p>First-time visitors saw a beautiful void and left. The best feature — continuous zoom across six scales — was invisible, buried behind a heavy load and a wall of expert controls.</p></div><div><span>Approach</span><p>Design the first minute: a guided tour that rides the real camera outward, a minimap that answers “where am I” at every scale, curated presets in place of raw toggles.</p></div><div><span>Outcome</span><p>Time-to-interactive cut 5× with progressive texture loading; a first session now reaches the cosmic web instead of stalling in the dark.</p></div></div>
+    <div class="question"><span class="qlbl">The design question</span><p>How do you make the largest possible information space feel navigable instead of infinite?</p></div>
+    <p>The universe is the largest possible information space, and this project models it with real data: the HYG star catalog, JPL planetary ephemerides, IAU constellations, NASA imagery. Rendering it is an engineering problem. The design problem is <em>orientation</em>: in an environment nine orders of magnitude deep, you need to know where you are, what you're looking at, and how to get home.</p>
+    <div class="pao"><div><span>Problem</span><p>First-time visitors saw a beautiful void and left. The best feature, continuous zoom across six scales, was invisible, buried behind a heavy load and a wall of expert controls.</p></div><div><span>Approach</span><p>Design the first minute: a guided tour that rides the real camera outward, a minimap that answers “where am I” at every scale, curated presets in place of raw toggles.</p></div><div><span>Outcome</span><p>Time-to-interactive cut 5× with progressive texture loading; a first session now reaches the cosmic web instead of stalling on a loading bar.</p></div></div>
     <h2><span>THE AUDIT</span>The problems, in the first minute</h2>
-    <p>A first-time visitor landed in a beautiful, silent solar system with no hint that they could drag, scroll, click a star, or — the whole point — keep scrolling out until the Milky Way became a dot in the cosmic web. The single best feature was invisible. The controls panel read as a debug menu: thirty-five raw toggles, “Minimap” sitting next to “Alcubierre Warp.” And the model told small lies: the minimap in sky view showed a cosmic-web map labeled from a different scale, in orbit view it pinned “you are here” to the Sun at a distance of zero, and the search dropdown hung open over the sky after you'd looked away. If a model of everything is wrong about small things, people stop trusting it about big ones.</p>
+    <p>A first-time visitor landed in a beautiful, silent solar system with no hint that they could drag, scroll, click a star, or (the whole point) keep scrolling out until the Milky Way became a dot in the cosmic web. The single best feature was invisible. The controls panel read like a debug menu: thirty-five raw toggles, “Minimap” sitting next to “Alcubierre Warp.” And small things were just wrong: the minimap in sky view showed a cosmic-web map from a different scale, orbit view pinned “you are here” to the Sun at a distance of zero, and the search dropdown hung open over the sky after you'd looked away. They were small errors, but they made the model feel less trustworthy.</p>
     <figure class="plate">
       <img class="plate-img" src="../assets/uni-cosmic.jpg" alt="The cosmic web view: galaxy clusters and voids in blue and rust, with the Local Group labeled 'you are here' and superclusters named across the frame">
-      <figcaption>FIG. 1B — the far end of the continuous zoom: the cosmic web, 71 billion light-years across. The Local Group is still labeled “you are here.”</figcaption>
+      <figcaption>FIG. 1B · the far end of the continuous zoom: the cosmic web, 71 billion light-years across. The Local Group is still labeled “you are here.”</figcaption>
     </figure>
-    <h2><span>DECISION 01</span>The tour is the camera</h2>
-    <p>The first minute became a designed object. A welcome card offers two honest paths — take the guided tour, or explore alone (skippers get three hint chips that fade on their own). The tour is not a video: it rides the product's real camera through nine self-paced stops — the Solar System, the running clock, a satellite's seat, your own spaceship, then outward through the stellar neighborhood, the Milky Way, and the cosmic web, and home to tonight's sky — with a slow drift outward at each stop while you read. The “powers of ten” hand-off between scales is <em>experienced</em>, not explained; by the last stop the visitor has already traveled the entire model once. A small ✦ Tour button keeps it replayable.</p>
+    <h2><span>DECISION 01</span>The tour rides the real camera</h2>
+    <p>I designed the first minute deliberately. A welcome card offers two paths: take the guided tour, or explore alone (skippers get three hint chips that fade on their own). The tour is not a video: it rides the product's real camera through nine self-paced stops: the Solar System, the running clock, a satellite's seat, your own spaceship, then outward through the stellar neighborhood, the Milky Way, and the cosmic web, and home to tonight's sky, drifting slowly outward at each stop while you read. By the last stop you've already traveled the whole model once. A small ✦ Tour button keeps it replayable.</p>
     <figure class="plate">
       <img class="plate-img" src="../assets/uni-welcome.jpg" alt="The first-visit welcome card over a dimmed Solar System: 'Take the tour — 9 stops, skip any time' and 'Explore on my own', with the hint line 'drag to orbit, scroll to zoom, click anything'">
-      <figcaption>FIG. 1C — the first minute, as shipped: two honest paths, and the model already alive behind the card.</figcaption>
+      <figcaption>FIG. 1C · the first minute, as shipped: two paths, with the model already running behind the card.</figcaption>
     </figure>
-    <h2><span>DECISION 02</span>A minimap that never lies</h2>
-    <p>The “you are here” minimap only works if it is right at every scale. I rebuilt it: in orbit it tracks the actual camera (the old one tracked an unused flight camera, so “you” sat on the Sun); across the solar system, the stars, the galaxy, and the cosmic web it redraws its map to the scale you're in; and in the night-sky view — where a position map is meaningless because you're standing on Earth looking up — it becomes a view-direction compass: Earth at the center, a cone sweeping the sky as you turn. “You are here” means something different when <em>here</em> is home.</p>
+    <h2><span>DECISION 02</span>A minimap that's right at every scale</h2>
+    <p>The “you are here” minimap only works if it is right at every scale. I rebuilt it: in orbit it tracks the actual camera (the old one tracked an unused flight camera, so “you” sat on the Sun); across the solar system, the stars, the galaxy, and the cosmic web it redraws its map to the scale you're in; and in the night-sky view, where a position map is meaningless because you're standing on Earth looking up, it becomes a view-direction compass: Earth at the center, a cone sweeping the sky as you turn.</p>
     <figure class="plate">
       <img class="plate-img" src="../assets/uni-sky.jpg" alt="The night-sky view: constellation lines and names, the Moon, Mars, nebulae and star names over Earth's sky — and the minimap turned into a view-direction compass showing a cone sweeping from Earth">
-      <figcaption>FIG. 1D — the night sky from Earth, tonight. The minimap has become a view-direction compass: Earth at the center, a cone where you're looking.</figcaption>
+      <figcaption>FIG. 1D · the night sky from Earth, tonight. The minimap has become a view-direction compass: Earth at the center, a cone where you're looking.</figcaption>
     </figure>
-    <h2><span>DECISION 03</span>Presets replace expertise</h2>
-    <p>The old panel had thirty-five raw toggles. Most visitors need three good defaults. I rebuilt the panel into collapsible groups — Sky &amp; Stars, Solar System, Phenomena, Sci-Fi &amp; Physics, Interface — under three one-tap presets: <b>Essentials</b> (the balanced view), <b>Clean view</b> (just the universe, labels off), and <b>Everything</b>. Change any single toggle and the preset highlight turns off — the mix is yours now. Every choice persists between visits, so the model opens the way you left it.</p>
+    <h2><span>DECISION 03</span>Three presets instead of thirty-five toggles</h2>
+    <p>The old panel had thirty-five raw toggles. Most visitors need three good defaults. I rebuilt the panel into collapsible groups (Sky &amp; Stars, Solar System, Phenomena, Sci-Fi &amp; Physics, Interface) under three one-tap presets: <b>Essentials</b> (the balanced view), <b>Clean view</b> (just the universe, labels off), and <b>Everything</b>. Change any single toggle and the preset highlight turns off. Every choice persists between visits, so the model opens the way you left it.</p>
     <figure class="plate">
       <img class="plate-img" src="../assets/uni-panel.jpg" alt="The layer panel open over the Solar System: Essentials, Clean view, and Everything preset buttons above grouped toggles — Sky & Stars, EM Spectrum, Solar System, Phenomena, Sci-Fi & Physics, Interface">
-      <figcaption>FIG. 1E — the rebuilt panel: three presets over thirty-five layers in five groups, with the EM spectrum one tap away.</figcaption>
+      <figcaption>FIG. 1E · the rebuilt panel: three presets over thirty-five layers in five groups, with the EM spectrum one tap away.</figcaption>
     </figure>
     <h2><span>DECISION 04</span>Load only what the first minute needs</h2>
-    <p>The heaviest UX problem was the loading bar. The scene gated on tens of megabytes of 8K planet textures a first-time visitor couldn't yet see the value of. The fix is progressive: the loader now waits only for lightweight 2K stand-ins, then the full-resolution maps stream in one at a time behind the already-live scene and swap in invisibly. Time-to-interactive dropped roughly five-fold, and nothing pops or flashes — the first Jupiter you see is a slightly softer version of the one you can orbit a minute later.</p>
+    <p>The heaviest UX problem was the loading bar. The scene gated on tens of megabytes of 8K planet textures a first-time visitor couldn't yet see the value of. The fix is progressive: the loader now waits only for lightweight 2K stand-ins, then the full-resolution maps stream in one at a time behind the already-live scene and swap in invisibly. Time-to-interactive dropped roughly five-fold, and nothing pops or flashes. The first Jupiter you see is a slightly softer version of the one you can orbit a minute later.</p>
     <h2><span>THE DETAILS</span>Getting the small things right</h2>
-    <p>The same principle runs under the surface: search closes when you click away and reopens where you left it; keyboard shortcuts survive the search box; the scale readout always tells you how wide the view is and how long light takes to cross it; star cards tell you when the light you're seeing left its star. None of these are features anyone asks for, but they are what makes the model feel dependable.</p>
+    <p>The same principle runs under the surface: search closes when you click away and reopens where you left it; keyboard shortcuts survive the search box; the scale readout always tells you how wide the view is and how long light takes to cross it; star cards tell you when the light you're seeing left its star. Nobody asks for these features, but they're what make the model feel dependable.</p>
     <div class="blocks">
       <div class="block">
         <h3>My role</h3>
         <ul>
-          <li>Design — interaction, information architecture, onboarding</li>
-          <li>Build — Three.js and plain JavaScript, built from scratch</li>
-          <li>Data — catalog processing pipeline (Python)</li>
+          <li>Design · interaction, information architecture, onboarding</li>
+          <li>Build · Three.js and plain JavaScript, built from scratch</li>
+          <li>Data · catalog processing pipeline (Python)</li>
         </ul>
       </div>
       <div class="block">
         <h3>Material</h3>
         <ul>
-          <li><b>119,625</b> stars — HYG v4.0, all clickable</li>
+          <li><b>119,625</b> stars · HYG v4.0, all clickable</li>
           <li><b>88</b> IAU constellations + classical artwork</li>
           <li><b>6</b> scales, one continuous zoom</li>
           <li><b>9</b>-stop guided tour, self-paced</li>
@@ -114,7 +114,7 @@
 </nav>
 
 <footer class="tokens">
-  <span>THIS WORLD'S DESIGN —</span>
+  <span>THIS WORLD'S DESIGN:</span>
   <span><span class="sw" style="background:#05070d"></span>BG <b>#05070D</b></span>
   <span><span class="sw" style="background:#d8e2f2"></span>INK <b>#D8E2F2</b></span>
   <span><span class="sw" style="background:#7fb4ff"></span>ACCENT <b>#7FB4FF</b></span>

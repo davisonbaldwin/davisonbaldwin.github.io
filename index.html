@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Davis Baldwin — Product Design Portfolio</title>
-<meta name="description" content="The product design portfolio of Davis Baldwin: eight works, each designed as its own world — spanning interaction design, engineering, choral writing, arrangement, team leadership, and creative direction.">
+<meta name="description" content="The product design portfolio of Davis Baldwin: eight works, each designed as its own world, spanning interaction design, engineering, choral writing, arrangement, team leadership, and creative direction.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Davis Baldwin — Product Design Portfolio">
-<meta property="og:description" content="The product design portfolio of Davis Baldwin: eight works, each designed as its own world — spanning interaction design, engineering, choral writing, arrangement, team leadership, and creative direction.">
+<meta property="og:description" content="The product design portfolio of Davis Baldwin: eight works, each designed as its own world, spanning interaction design, engineering, choral writing, arrangement, team leadership, and creative direction.">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:image" content="https://davisonbaldwin.github.io/assets/og.jpg">
 <meta property="og:url" content="https://davisonbaldwin.github.io/">
@@ -42,7 +42,7 @@
   </div>
 
   <div class="landing-planet">
-    <svg viewBox="0 0 500 500" role="img" aria-label="A planet made of eight worlds — each slice is one work; click a slice to enter it">
+    <svg viewBox="0 0 500 500" role="img" aria-label="A planet made of eight worlds. Each slice is one work; click a slice to enter it">
       <defs>
         <clipPath id="s1"><path d="M250,250 L250,40 A210,210 0 0 1 398.5,101.5 Z"/></clipPath>
         <clipPath id="s2"><path d="M250,250 L398.5,101.5 A210,210 0 0 1 460,250 Z"/></clipPath>
@@ -139,7 +139,7 @@
       <circle cx="250" cy="250" r="210" fill="url(#rim)" pointer-events="none"/>
       <circle cx="250" cy="250" r="210" fill="none" stroke="rgba(216,226,242,0.35)" stroke-width="1.5"/>
     </svg>
-    <div class="planet-caption" id="planet-caption">EIGHT WORLDS, ONE PLANET — ENTER ANY SLICE</div>
+    <div class="planet-caption" id="planet-caption">EIGHT WORLDS, ONE PLANET · ENTER ANY SLICE</div>
   </div>
 </main>
 
@@ -161,7 +161,7 @@
   const rest = cap.textContent;
   document.querySelectorAll('.landing-planet a').forEach(a => {
     const name = a.querySelector('title')?.textContent || '';
-    const show = () => { cap.textContent = name + ' — ENTER'; cap.classList.add('lit'); };
+    const show = () => { cap.textContent = name + ' · ENTER'; cap.classList.add('lit'); };
     const hide = () => { cap.textContent = rest; cap.classList.remove('lit'); };
     a.addEventListener('mouseenter', show);
     a.addEventListener('mouseleave', hide);

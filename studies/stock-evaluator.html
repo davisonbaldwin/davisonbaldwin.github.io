@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>World 03 · Stock Evaluator — Davis Baldwin</title>
-<meta name="description" content="One command turns a ticker into a full dossier — and every conclusion is measured against the alternative of just buying an index fund.">
+<meta name="description" content="One command turns a ticker into a full dossier, and every conclusion is measured against the alternative of just buying an index fund.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="World 03 · Stock Evaluator — Davis Baldwin">
-<meta property="og:description" content="One command turns a ticker into a full dossier — and every conclusion is measured against the alternative of just buying an index fund.">
+<meta property="og:description" content="One command turns a ticker into a full dossier, and every conclusion is measured against the alternative of just buying an index fund.">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:image" content="https://davisonbaldwin.github.io/assets/og.jpg">
 <meta property="og:url" content="https://davisonbaldwin.github.io/studies/stock-evaluator.html">
@@ -31,72 +31,72 @@
 
 <section class="room-head">
   <div class="eyebrow">WORLD 03 · <b>DATA TOOL · LIVE APP · 2026</b></div>
-  <h1>Stock Evaluator — checked against the index</h1>
-  <p class="dek">One command turns a ticker into a full dossier — and every conclusion is measured against the alternative of just buying an index fund.</p>
+  <h1>Stock Evaluator: checked against the index</h1>
+  <p class="dek">One command turns a ticker into a full dossier, and every conclusion is measured against the alternative of just buying an index fund.</p>
 </section>
 
 <figure class="plate">
   <div class="plate-app"><iframe src="https://stock-evaluator-mp72.onrender.com" title="Stock Evaluator — live application" loading="lazy"></iframe></div>
-  <figcaption>LIVE — this is the actual application. Type a ticker and evaluate it right here.</figcaption>
+  <figcaption>LIVE · this is the actual application. Type a ticker and evaluate it right here.</figcaption>
   <a class="live" href="https://stock-evaluator-mp72.onrender.com" target="_blank" rel="noopener">Open the app full-screen ↗</a>
 </figure>
 
 <div class="grid">
   <aside class="rail">
     <b>Figures</b>
-    fig. 3a — the live application, above<br>
-    fig. 3b — the dossier: verdict first<br>
-    fig. 3c — forecasts + rolling windows<br>
-    fig. 3d — compare mode, three tickers<br>
-    fig. 3e — the original CLI report
+    fig. 3a · the live application, above<br>
+    fig. 3b · the dossier: verdict first<br>
+    fig. 3c · forecasts + rolling windows<br>
+    fig. 3d · compare mode, three tickers<br>
+    fig. 3e · the original CLI report
     <span class="pencil">“The first question: would the index have done better?”</span>
   </aside>
   <div class="prose">
     <div class="question"><span class="qlbl">The design question</span><p>Is this stock actually better than just buying the index fund?</p></div>
-    <p>Most stock research tools are built to surface information. I wanted one built around a single rule: <em>every number a stock earns is presented against the alternative of holding a total-market index fund.</em> The question is never just whether a company is good — it is whether it beats the index you could have bought instead.</p>
-    <div class="pao"><div><span>Problem</span><p>Ticker hype travels faster than base rates. It's easy to find reasons to buy a stock and hard to see what an index investor would have earned over the same windows.</p></div><div><span>Approach</span><p>Rolling win rates across every historical entry point, Monte Carlo that samples stock and index together, a reverse DCF for what's already priced in — composed into a six-pillar score with a verdict phrased against the index.</p></div><div><span>Outcome</span><p>One command produces the full dossier and chart. Honest defaults throughout: hypergrowth capped, missing data scored neutral, never punitive.</p></div></div>
+    <p>Most stock research tools just surface information. I wanted one built around a single rule: <em>every number is presented against the alternative of just holding a total-market index fund.</em> The question is never whether a company is good. It's whether it beats the index you could have bought instead.</p>
+    <div class="pao"><div><span>Problem</span><p>It's easy to find reasons to buy a stock, and hard to see what an index investor would have earned over the same period.</p></div><div><span>Approach</span><p>Rolling win rates across every historical entry point, Monte Carlo that samples stock and index together, a reverse DCF for what's already priced in, combined into a six-pillar score with a verdict phrased against the index.</p></div><div><span>Outcome</span><p>One command produces the full dossier and chart. Conservative defaults throughout: hypergrowth capped, missing data scored neutral, never punitive.</p></div></div>
     <h2><span>DECISION 01</span>The index is the baseline, everywhere</h2>
-    <p>Every number a stock earns appears next to the same number for the benchmark: growth of $10,000 from a common start date, returns over matching windows, up and down capture, and win rates against it. The benchmark is a choice, not an assumption — VTI by default, or VOO, SPY, QQQ, DIA, IWM, VXUS, even a mutual fund like FXAIX. Whatever you would actually buy instead, that is what the stock has to beat.</p>
+    <p>Every number the stock gets appears next to the same number for the benchmark: growth of $10,000 from a common start date, returns over matching windows, up and down capture, and win rates against it. You choose the benchmark: VTI by default, or VOO, SPY, QQQ, DIA, IWM, VXUS, even a mutual fund like FXAIX. Whatever you would actually buy instead is what the stock has to beat.</p>
     <figure class="plate">
       <img class="plate-img" src="../assets/eval-dossier.jpg" alt="The AAPL dossier: verdict card with a 60 score ring reading 'Mixed — no clear edge over the index', stat tiles each showing the VTI comparison, and two charts — growth of $10,000 on a log scale and drawdowns from peak, stock and index overlaid">
-      <figcaption>FIG. 3B — the dossier leads with the verdict. Every tile carries the benchmark's number beneath the stock's, and both charts draw the index on top of the stock.</figcaption>
+      <figcaption>FIG. 3B · the dossier leads with the verdict. Every tile carries the benchmark's number beneath the stock's, and both charts draw the index on top of the stock.</figcaption>
     </figure>
-    <h2><span>DECISION 02</span>Honest defaults</h2>
-    <p>Forecasts are where research tools quietly sell you something, so the defaults here are conservative on purpose. Past hypergrowth doesn't extrapolate: the base scenario caps historical growth at 25% a year and blends it 50/50 with the return the market itself implies. The Monte Carlo doesn't assume tidy bell curves — it bootstraps 10,000 futures from blocks of real stock-and-index history together, so fat tails and correlation survive into the forecast. A reverse DCF states plainly what growth today's price already assumes. And when a company's data is missing, the score treats it as neutral, never as a penalty.</p>
+    <h2><span>DECISION 02</span>Conservative on purpose</h2>
+    <p>Research tools tend to get optimistic in their forecasts, so the defaults here are conservative on purpose. Past hypergrowth doesn't get extrapolated: the base scenario caps historical growth at 25% a year and blends it 50/50 with the return the market itself implies. The Monte Carlo doesn't assume tidy bell curves. It bootstraps 10,000 futures from blocks of real stock-and-index history together, so fat tails and correlation survive into the forecast. A reverse DCF states what growth today's price already assumes. And when a company's data is missing, the score treats it as neutral, never as a penalty.</p>
     <h2><span>DECISION 03</span>Every entry point, not one backtest</h2>
-    <p>A backtest from a single start date proves almost nothing — pick the right day and anything looks brilliant. So the tool rolls <em>every</em> 1-, 3-, and 5-year holding window in the stock's history and reports the whole distribution: worst, median, best, the share that ended positive, and the share that beat the index. That last column is the closest thing to an honest answer the data can give.</p>
+    <p>A backtest from a single start date proves almost nothing. Pick the right day and anything looks great. So the tool rolls <em>every</em> 1-, 3-, and 5-year holding window in the stock's history and reports the whole distribution: worst, median, best, the share that ended positive, and the share that beat the index.</p>
     <figure class="plate">
       <img class="plate-img" src="../assets/eval-analytics.jpg" alt="The dossier's analysis cards: calendar-year returns bar chart, a ten-year forecast cone with Monte Carlo percentile markers, scenario price targets from bear to bull, the Monte Carlo table of 10,000 simulated futures, alpha and capture ratios versus an index investor, and rolling holding periods for every historical entry point">
-      <figcaption>FIG. 3C — the machinery in one spread: the forecast cone with its Monte Carlo markers, scenario targets with the assumptions printed under them, and the rolling windows from every entry point.</figcaption>
+      <figcaption>FIG. 3C · the analysis in one spread: the forecast cone with its Monte Carlo markers, scenario targets with the assumptions printed under them, and the rolling windows from every entry point.</figcaption>
     </figure>
     <h2><span>DECISION 04</span>From command line to something you can try</h2>
-    <p>The tool began as a CLI — one command, a full dossier and chart. The web app above is the same engine with one control in front of it: a ticker. The waiting is honest — the status line names each stage of the work, and a note says the first run on a ticker takes ten to thirty seconds before the cache makes it instant. Results lead with the verdict: a 0–100 score and one sentence, every table beneath it. Comparison is built in — type up to ten tickers and you get one chart where everyone starts at $10,000 on the same date, with a table ranked by score. Click any row for that stock's full dossier.</p>
+    <p>The tool began as a CLI: one command, a full dossier and chart. The web app above is the same engine with one control in front of it: a ticker. While it works, the status line names each stage, and a note says the first run on a ticker takes ten to thirty seconds before the cache makes it instant. Results lead with the verdict: a 0–100 score and one sentence, every table beneath it. Comparison is built in: type up to ten tickers and you get one chart where everyone starts at $10,000 on the same date, with a table ranked by score. Click any row for that stock's full dossier.</p>
     <figure class="plate">
       <img class="plate-img" src="../assets/eval-compare.jpg" alt="Compare mode: AAPL, MSFT, and NVDA growth-of-$10,000 lines overlaid on a log chart with VOO as a dashed grey baseline, above a table ranking the three by score with each verdict printed under its row">
-      <figcaption>FIG. 3D — compare mode: three tickers against VOO, everyone starting at $10,000 on the same date. The dashed grey line is the index everyone has to beat.</figcaption>
+      <figcaption>FIG. 3D · compare mode: three tickers against VOO, everyone starting at $10,000 on the same date. The dashed grey line is the index everyone has to beat.</figcaption>
     </figure>
     <figure class="plate">
       <img class="plate-img" src="../assets/eval-report-aapl.png" alt="The original CLI report: a four-panel matplotlib chart of AAPL versus VTI — log growth of $10,000, drawdowns from running peak, calendar-year returns, and the forecast cone with Monte Carlo markers">
-      <figcaption>FIG. 3E — where it began: the CLI's report chart, one command in a terminal. The web app above is the same engine.</figcaption>
+      <figcaption>FIG. 3E · where it began: the CLI's report chart, one command in a terminal. The web app above is the same engine.</figcaption>
     </figure>
     <div class="blocks">
       <div class="block">
         <h3>My role</h3>
         <ul>
-          <li>Design — information design, scoring model, report layout</li>
-          <li>Build — Python CLI + local web dashboard</li>
-          <li>Method — statistics with guardrails</li>
+          <li>Design · information design, scoring model, report layout</li>
+          <li>Build · Python CLI + local web dashboard</li>
+          <li>Method · statistics with guardrails</li>
         </ul>
       </div>
       <div class="block">
         <h3>Material</h3>
         <ul>
-          <li><b>6</b> pillars — growth, valuation, quality, momentum, risk, vs index</li>
+          <li><b>6</b> pillars · growth, valuation, quality, momentum, risk, vs index</li>
           <li><b>10,000</b> Monte Carlo paths, block-bootstrapped</li>
-          <li><b>8</b> benchmarks — index ETFs and mutual funds</li>
+          <li><b>8</b> benchmarks · index ETFs and mutual funds</li>
           <li>Compare up to <b>10</b> tickers side by side</li>
           <li>Rolling 1/3/5-year win rates vs the benchmark</li>
-          <li>Reverse DCF — the growth the price implies</li>
+          <li>Reverse DCF · the growth the price implies</li>
         </ul>
       </div>
     </div>
@@ -109,7 +109,7 @@
 </nav>
 
 <footer class="tokens">
-  <span>THIS WORLD'S DESIGN —</span>
+  <span>THIS WORLD'S DESIGN:</span>
   <span><span class="sw" style="background:#15130d"></span>BG <b>#15130D</b></span>
   <span><span class="sw" style="background:#ede3cf"></span>INK <b>#EDE3CF</b></span>
   <span><span class="sw" style="background:#ffb454"></span>ACCENT <b>#FFB454</b></span>
