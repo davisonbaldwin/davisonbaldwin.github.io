@@ -93,6 +93,10 @@ try {
 }
 // phones render fewer pixels: high-dpi panels don't need the full 2x GPU load
 const MAX_PIXEL_RATIO = matchMedia('(pointer: coarse)').matches ? 1.75 : 2;
+// touch devices have no keyboard or hover — flight & HUD adapt around this
+// (?touch previews the touch UI on a desktop browser)
+const TOUCH_UI = matchMedia('(hover: none) and (pointer: coarse)').matches
+  || new URLSearchParams(location.search).has('touch');
 renderer.setPixelRatio(Math.min(devicePixelRatio, MAX_PIXEL_RATIO));
 renderer.setSize(innerWidth, innerHeight);
 host.appendChild(renderer.domElement);
@@ -149,14 +153,45 @@ const POST = (() => {
       }`,
   });
   const compMat = new THREE.ShaderMaterial({
-    uniforms: { tScene: { value: null }, tBloom: { value: null }, uStrength: { value: 0.85 } },
+    uniforms: { tScene: { value: null }, tBloom: { value: null }, uStrength: { value: 0.85 },
+      // gravitational lens: xy = hole centre (UV), z = Einstein radius, w = shadow radius
+      // (both radii in height-normalized units); uLensOn ramps the effect in and out
+      uLens: { value: new THREE.Vector4(0.5, 0.5, 0, 0) },
+      uLensOn: { value: 0 }, uAspect: { value: 1 } },
     vertexShader: VS, depthTest: false, depthWrite: false,
     fragmentShader: `precision highp float; varying vec2 vUv;
       uniform sampler2D tScene, tBloom; uniform float uStrength;
+      uniform vec4 uLens; uniform float uLensOn, uAspect;
+      // Point-mass gravitational lens (Schwarzschild, small angles): a source at
+      // angle beta appears at theta where beta = theta - thetaE^2/theta. To render,
+      // invert it: the pixel at theta shows the scene from beta. Inside the Einstein
+      // radius beta goes negative: the image comes from the OPPOSITE side of the hole,
+      // flipped — which is what stretches the background into the ring.
+      vec2 lensUV(vec2 uv){
+        vec2 d = uv - uLens.xy;
+        d.x *= uAspect;                       // work in height-normalized units
+        float th = length(d);
+        float reach = uLens.z * 7.0;          // effect fades to nothing beyond this
+        if (uLensOn < 0.01 || th > reach || th < 1e-5) return uv;
+        float beta = th - (uLens.z * uLens.z) / th;
+        // blend back to the true direction toward the edge of the effect region
+        float w = smoothstep(reach, reach * 0.55, th) * uLensOn;
+        float thSrc = mix(th, beta, w);       // beta<0 → sample mirrored across centre
+        vec2 dir = d / th;
+        vec2 s = dir * thSrc;
+        s.x /= uAspect;
+        return uLens.xy + s;
+      }
       void main(){
-        vec3 base  = texture2D(tScene, vUv).rgb;
-        vec3 bloom = texture2D(tBloom, vUv).rgb;
-        gl_FragColor = vec4(base + bloom * uStrength, 1.0);   // additive glow over untouched base
+        vec2 uv = lensUV(vUv);
+        vec3 base  = texture2D(tScene, uv).rgb;
+        vec3 bloom = texture2D(tBloom, uv).rgb;
+        // inside the shadow's silhouette nothing escapes: keep it black even where
+        // the lens mapping would smear neighbouring pixels across it
+        vec2 d = vUv - uLens.xy; d.x *= uAspect;
+        float hole = uLensOn * (1.0 - smoothstep(uLens.w * 0.985, uLens.w * 1.015, length(d)));
+        vec3 col = (base + bloom * uStrength) * (1.0 - hole);
+        gl_FragColor = vec4(col, 1.0);
       }`,
   });
 
@@ -262,25 +297,63 @@ function rescaleLabels(m) {
 
 // ---------------------------------------------------------------- data
 setLoad(0.05);
-const [STARS, CONS, EXO] = await Promise.all([
-  fetch('data/stars.json').then((r) => r.json()),
+// The star catalog ships as a binary file decoded in a Web Worker: no JSON parse
+// of 119k stars on the main thread, and the GPU attribute arrays (colors, twinkle)
+// arrive precomputed. stars.json stays as the fallback path if either fails.
+function loadStarsBinary() {
+  return new Promise((resolve) => {
+    let worker;
+    try { worker = new Worker('js/starloader.js'); } catch (e) { resolve(null); return; }
+    const bail = (why) => { console.warn('binary star catalog unavailable:', why);
+      try { worker.terminate(); } catch (e) {} resolve(null); };
+    const timer = setTimeout(() => bail('timeout'), 30000);
+    worker.onerror = (e) => { clearTimeout(timer); bail(e.message || 'worker error'); };
+    worker.onmessage = (e) => {
+      clearTimeout(timer);
+      if (e.data && e.data.error) { bail(e.data.error); return; }
+      worker.terminate();
+      resolve(e.data);
+    };
+    worker.postMessage({ bin: new URL('data/stars.bin', location.href).href,
+                         meta: new URL('data/stars_meta.json', location.href).href });
+  });
+}
+const [_starBin, CONS, EXO] = await Promise.all([
+  loadStarsBinary(),
   fetch('data/constellations.json').then((r) => r.json()),
   fetch('data/exoplanets.json').then((r) => r.json()).catch(() => []),   // NASA Exoplanet Archive (confirmed)
 ]);
 setLoad(0.35);
 
-const N = STARS.ra.length;
+let STARS, dirs, STAR_PRECOMP = null;
+if (_starBin) {
+  STARS = { nInfo: _starBin.nInfo, mag: _starBin.mag, ci: _starBin.ci, dist: _starBin.dist,
+    hip: _starBin.hip, hd: _starBin.hd, con: _starBin.con, names: _starBin.names,
+    desig: _starBin.desig, spect: _starBin.spect, conCodes: _starBin.conCodes };
+  dirs = _starBin.dirs;
+  STAR_PRECOMP = { cols: _starBin.cols, tw: _starBin.tw };
+} else {
+  // fallback: the original JSON path, parsed and converted on the main thread
+  STARS = await fetch('data/stars.json').then((r) => r.json());
+  dirs = new Float32Array(STARS.ra.length * 3);
+  for (let i = 0; i < STARS.ra.length; i++) {
+    const r = STARS.ra[i] * DEG, d = STARS.dec[i] * DEG;
+    dirs[i * 3] = Math.cos(d) * Math.cos(r);
+    dirs[i * 3 + 1] = Math.sin(d);
+    dirs[i * 3 + 2] = -Math.cos(d) * Math.sin(r);
+  }
+}
+const N = STARS.mag.length;
 const N_INFO = STARS.nInfo;
 const conFull = {};
 for (const c of CONS) conFull[c.abbr] = c.name;
-
-// unit direction per star (flat array, shared by sky + neighborhood + picking)
-const dirs = new Float32Array(N * 3);
-for (let i = 0; i < N; i++) {
-  const r = STARS.ra[i] * DEG, d = STARS.dec[i] * DEG;
-  dirs[i * 3] = Math.cos(d) * Math.cos(r);
-  dirs[i * 3 + 1] = Math.sin(d);
-  dirs[i * 3 + 2] = -Math.cos(d) * Math.sin(r);
+// RA/Dec for display, derived from the direction vector (the binary catalog
+// doesn't carry the original angles; the JSON fallback still does)
+function starRaDec(i) {
+  if (STARS.ra) return [STARS.ra[i], STARS.dec[i]];
+  const ra = (Math.atan2(-dirs[i * 3 + 2], dirs[i * 3]) / DEG + 360) % 360;
+  const dec = Math.asin(Math.max(-1, Math.min(1, dirs[i * 3 + 1]))) / DEG;
+  return [ra, dec];
 }
 setLoad(0.45);
 
@@ -367,6 +440,13 @@ const starFrag = `
   }`;
 
 function buildStarAttributes(geo) {
+  if (STAR_PRECOMP) {
+    // the worker already computed these — just wrap them
+    geo.setAttribute('aMag', new THREE.BufferAttribute(STARS.mag, 1));
+    geo.setAttribute('aColor', new THREE.BufferAttribute(STAR_PRECOMP.cols, 3));
+    geo.setAttribute('aTw', new THREE.BufferAttribute(STAR_PRECOMP.tw, 1));
+    return;
+  }
   const mags = new Float32Array(N);
   const cols = new Float32Array(N * 3);
   const tw = new Float32Array(N);
@@ -703,20 +783,20 @@ function phenomInfo(idx) {
 // Fields: name, RA°, Dec°, peakJD, peak mag, days to fade 8 mag, watch label, sub, rows, doc.
 const SUPERNOVAE = [
   ['SN 1006', 225.7, -41.95, 2088580.5, -7.5, 520, 'spring 1006',
-    'The brightest star event in recorded history', [['Peak brightness', 'mag −7.5 — a quarter Moon'], ['Visible', '~18 months to the naked eye'], ['Recorded in', 'China, Egypt, Iraq, Japan, Switzerland'], ['Type', 'Ia — white dwarf detonation']],
-    'The brightest stellar event humans have ever recorded — bright enough to read by at night, seen low in the southern sky by chroniclers across three continents. A monk in Switzerland wrote that it "dazzled the eyes." Its shattered remains still glow in Lupus.'],
+    'The brightest star event in recorded history', [['Peak brightness', 'mag −7.5, a quarter Moon'], ['Visible', '~18 months to the naked eye'], ['Recorded in', 'China, Egypt, Iraq, Japan, Switzerland'], ['Type', 'Ia, white dwarf detonation']],
+    'The brightest stellar event humans have ever recorded, bright enough to read by at night, seen low in the southern sky by chroniclers across three continents. A monk in Switzerland wrote that it "dazzled the eyes." Its shattered remains still glow in Lupus.'],
   ['SN 1054 · Crab Supernova', 83.63, 22.01, 2106216.5, -6.0, 650, 'July 1054',
-    'The guest star that built the Crab Nebula', [['Peak brightness', 'mag −6 — brighter than Venus'], ['Daylight visibility', '23 days'], ['Naked-eye', '~650 nights'], ['Remnant', 'Crab Nebula + pulsar (M1)']],
-    'Chinese astronomers logged a "guest star" beside ζ Tauri, visible in broad daylight for 23 days. Nine centuries later we watch its debris still expanding — the Crab Nebula — with a city-sized pulsar spinning 30 times a second at its heart.'],
+    'The guest star that built the Crab Nebula', [['Peak brightness', 'mag −6, brighter than Venus'], ['Daylight visibility', '23 days'], ['Naked-eye', '~650 nights'], ['Remnant', 'Crab Nebula + pulsar (M1)']],
+    'Chinese astronomers logged a "guest star" beside ζ Tauri, visible in broad daylight for 23 days. Nine centuries later we watch its debris still expanding, the Crab Nebula, with a city-sized pulsar spinning 30 times a second at its heart.'],
   ['SN 1572 · Tycho\'s Supernova', 6.34, 64.13, 2295528.5, -4.0, 480, 'November 1572',
-    'The star that broke the immutable heavens', [['Peak brightness', 'mag −4 — like Venus'], ['Observed by', 'Tycho Brahe'], ['Consequence', 'proved the heavens change'], ['Type', 'Ia']],
-    'When a new star appeared in Cassiopeia, Tycho Brahe measured it obsessively and proved it lay far beyond the Moon — shattering two thousand years of doctrine that the heavens never change, and helping clear the way for the scientific revolution.'],
+    'The star that broke the immutable heavens', [['Peak brightness', 'mag −4, like Venus'], ['Observed by', 'Tycho Brahe'], ['Consequence', 'proved the heavens change'], ['Type', 'Ia']],
+    'When a new star appeared in Cassiopeia, Tycho Brahe measured it obsessively and proved it lay far beyond the Moon, shattering two thousand years of doctrine that the heavens never change, and helping clear the way for the scientific revolution.'],
   ['SN 1604 · Kepler\'s Supernova', 262.66, -21.48, 2307232.5, -2.5, 400, 'October 1604',
-    'The Milky Way\'s last naked-eye supernova', [['Peak brightness', 'mag −2.5 — like Jupiter'], ['Observed by', 'Johannes Kepler, for a year'], ['Note', 'none seen in our galaxy since'], ['Type', 'Ia']],
-    'Kepler tracked it for a full year from Prague. No one has seen a supernova inside the Milky Way with the naked eye since — we are four centuries overdue, and somewhere in the galaxy the next one is already on its way.'],
+    'The Milky Way\'s last naked-eye supernova', [['Peak brightness', 'mag −2.5, like Jupiter'], ['Observed by', 'Johannes Kepler, for a year'], ['Note', 'none seen in our galaxy since'], ['Type', 'Ia']],
+    'Kepler tracked it for a full year from Prague. No one has seen a supernova inside the Milky Way with the naked eye since. We are four centuries overdue, and somewhere in the galaxy the next one is already on its way.'],
   ['SN 1987A', 83.87, -69.27, 2446846.5, 2.9, 300, 'February 1987',
-    'The supernova that opened neutrino astronomy', [['Peak brightness', 'mag +2.9 — naked-eye from the south'], ['Host', 'Large Magellanic Cloud'], ['First light', 'Feb 23, 1987'], ['Neutrinos', 'detected 3 hours before the light']],
-    'The nearest supernova in four centuries, in the Large Magellanic Cloud. Underground detectors caught a burst of neutrinos hours before telescopes saw anything — the moment neutrino astronomy was born, and proof of how a star\'s core collapses.'],
+    'The supernova that opened neutrino astronomy', [['Peak brightness', 'mag +2.9, naked-eye from the south'], ['Host', 'Large Magellanic Cloud'], ['First light', 'Feb 23, 1987'], ['Neutrinos', 'detected 3 hours before the light']],
+    'The nearest supernova in four centuries, in the Large Magellanic Cloud. Underground detectors caught a burst of neutrinos hours before telescopes saw anything: the moment neutrino astronomy was born, and proof of how a star\'s core collapses.'],
 ];
 // starburst texture: brilliant core + four diffraction rays
 function makeSupernovaTexture() {
@@ -918,6 +998,16 @@ neiSelMark.renderOrder = 8;
 neiSelMark.visible = false;
 neiScene.add(neiSelMark);
 labelGroups.neighborhood.push(neiSelMark);
+// and the same ring for the galaxy view's Local Group members
+const galSelMark = new THREE.Sprite(new THREE.SpriteMaterial({
+  map: makeRingTexture('#9fd0ff'), transparent: true, opacity: 0.95, depthTest: false, depthWrite: false,
+  sizeAttenuation: false,
+}));
+galSelMark.userData.pxW = 26; galSelMark.userData.pxH = 26;
+galSelMark.renderOrder = 8;
+galSelMark.visible = false;
+galScene.add(galSelMark);
+labelGroups.galaxy.push(galSelMark);
 
 // ---------------------------------------------------------------- horizon (alt-az) view
 const horizon = { on: false, lat: 37.77, lon: -122.42 };
@@ -991,6 +1081,14 @@ solScene.add(new THREE.AmbientLight(0x6a7890, 1.9));
 const shipFillLight = new THREE.PointLight(0xd8eaff, 26.0, 0);
 shipFillLight.visible = false;
 solScene.add(shipFillLight);
+// fill-light intensity vs chase-camera distance: the light travels with the ship
+// across scene scales. Physical falloff means a constant intensity goes dark as the
+// chase camera pulls back at bigger scales, so intensity grows with distance², at a
+// level calibrated for a readable (not clipped-white) hull against black space.
+// The floor keeps the close-range solar look exactly as it always was.
+const U_SHIPLIGHT = { floor: 26, perDist2: 18 };
+window.U_SHIPLIGHT = U_SHIPLIGHT;                 // live-tunable
+const SHIP_LIGHT_I = (d) => Math.max(U_SHIPLIGHT.floor, U_SHIPLIGHT.perDist2 * d * d);
 const sunLight = new THREE.PointLight(0xfff2dd, 3.2, 0, 0);
 solScene.add(sunLight);
 
@@ -1409,11 +1507,11 @@ function updatePlanetMoons(jd) {
 // [name, shell, inclination°, color, doc, periodSeconds, altKm]
 // Periods are real values: ISS = 92.68 min, GPS = 11.97 hr, GEO = 23.934 hr sidereal, etc.
 const SATELLITES = [
-  ['ISS',                  'leo',  51.64,  '#9fe8ff', 'The International Space Station — a continuously crewed laboratory orbiting at ~420 km. It completes ~15.5 orbits per day.',                                           5561,   420],
+  ['ISS',                  'leo',  51.64,  '#9fe8ff', 'The International Space Station: a continuously crewed laboratory orbiting at ~420 km. It completes ~15.5 orbits per day.',                                           5561,   420],
   ['Hubble Space Telescope','leo', 28.47,  '#cfe0ff', 'Launched 1990; orbits at ~535 km (~95 min period) and has transformed astronomy with deep-field images of the early universe.',                                      5712,   535],
   ['Tiangong',             'leo',  41.58,  '#ffd9a0', "China's modular space station, crewed since 2021, at ~390 km (~92 min period).",                                                                                    5508,   390],
   ['Landsat 9',            'leo',  98.20,  '#bfe8c0', 'A near-polar sun-synchronous Earth-imaging satellite at ~705 km (~99 min period), continuing a 50-year global land-cover record.',                                   5943,   705],
-  ['GPS',                  'meo',  55.0,   '#ffe98f', 'The Global Positioning System — 31 active satellites in medium Earth orbit at ~20,200 km with an exact 11 h 58 min period (half a sidereal day).',                  43082, 20200],
+  ['GPS',                  'meo',  55.0,   '#ffe98f', 'The Global Positioning System: 31 active satellites in medium Earth orbit at ~20,200 km with an exact 11 h 58 min period (half a sidereal day).',                  43082, 20200],
   ['GOES Weather',         'geo',   0.0,   '#a0d8ff', 'A geostationary weather satellite at ~35,786 km. Its 23 h 56 min sidereal period exactly matches Earth\'s rotation, so it hovers over one spot.',                   86164, 35786],
   ['Intelsat',             'geo',   0.1,   '#d0c0ff', 'A geostationary communications satellite in the crowded Clarke belt at ~35,786 km. The 0.1° inclination is typical of station-keeping drift.',                      86164, 35786],
   ['JWST',                 'deep',  5.0,   '#ffd0b0', 'The James Webb Space Telescope orbits Sun–Earth L2 ~1.5 million km out on a 6-month halo orbit. Shown here with its actual ~180-day period.',                     15552000, 1500000],
@@ -1475,13 +1573,57 @@ let simSecClock = 0;                              // accumulated sim-seconds for
   swarm.frustumCulled = false; eNode.add(swarm); satObjs.push(swarm);
   SATS_RT._swarm = { geo: swarmGeo, basis: sBasis, pos: sp };
 }
+// Real orbits: each named satellite upgrades from its display orbit to its actual
+// published orbital elements (TLE, propagated with SGP4 via satellite.js). Position
+// keeps the exaggerated shell RADIUS (true altitude would sit inside the drawn Earth
+// at this scale) but the direction from Earth's centre is the satellite's real one,
+// so planes, phases, and ground tracks are live. The info card shows the real numbers.
+let TLE_FETCHED = '';
+(async () => {
+  if (typeof satellite === 'undefined') return;          // library missing: display orbits stand
+  try {
+    const t = await fetch('data/tle.json').then((r) => r.json());
+    TLE_FETCHED = t.fetched || '';
+    for (const s of SATS_RT) {
+      const tle = t.sats && t.sats[s.name];
+      if (!tle) continue;
+      const rec = satellite.twoline2satrec(tle[0], tle[1]);
+      if (rec && !rec.error) s.satrec = rec;
+    }
+  } catch (e) { /* no tle.json: display orbits stand */ }
+})();
+const _tleDir = new THREE.Vector3();
+// SGP4 is meaningful near its element epoch; far outside it (time scrubbing to 1054)
+// fall back to the display orbit rather than propagate garbage
+const TLE_VALID_DAYS = 45;
+function tlePosition(s, jd) {
+  if (!s.satrec || typeof satellite === 'undefined') return false;
+  if (Math.abs(jd - s.satrec.jdsatepoch) > TLE_VALID_DAYS) { s.live = null; return false; }
+  const date = new Date((jd - 2440587.5) * 86400000);
+  const pv = satellite.propagate(s.satrec, date);
+  if (!pv || !pv.position) { s.live = null; return false; }
+  _tleDir.set(pv.position.x, pv.position.z, -pv.position.y).normalize();  // TEME (equatorial) -> scene
+  s.mark.position.copy(_tleDir).multiplyScalar(s.R);
+  const gmst = satellite.gstime(date);
+  const geo = satellite.eciToGeodetic(pv.position, gmst);
+  const v = pv.velocity;
+  s.live = {
+    altKm: geo.height,
+    speed: Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z),
+    lat: geo.latitude / DEG,
+    lon: ((geo.longitude / DEG) + 540) % 360 - 180,
+  };
+  return true;
+}
 // dSim = simulation-seconds elapsed since last frame, so satellites obey the time
 // controls (freeze when paused, race when sped up) like everything else.
 function updateSatellites(dSim) {
   for (const s of SATS_RT) {
-    s.phase = (s.phase + dSim * s.speed) % 6.2831853;
-    const a = s.phase;
-    s.mark.position.copy(s.u).multiplyScalar(Math.cos(a) * s.R).addScaledVector(s.v, Math.sin(a) * s.R);
+    if (!tlePosition(s, time.jd)) {
+      s.phase = (s.phase + dSim * s.speed) % 6.2831853;
+      const a = s.phase;
+      s.mark.position.copy(s.u).multiplyScalar(Math.cos(a) * s.R).addScaledVector(s.v, Math.sin(a) * s.R);
+    }
     s.mark.getWorldPosition(s.world);
     s.lab.position.copy(s.world);
   }
@@ -1502,12 +1644,12 @@ function updateSatellites(dSim) {
 
 // lunar surface markers: human landing sites & rovers, placed on the Moon by lat/lon
 const LUNAR_SITES = [
-  ['Apollo 11', 0.67, 23.47, 'First crewed Moon landing, July 1969 — Armstrong & Aldrin, Sea of Tranquility.'],
+  ['Apollo 11', 0.67, 23.47, 'First crewed Moon landing, July 1969: Armstrong & Aldrin, Sea of Tranquility.'],
   ['Apollo 12', -3.01, -23.42, 'Second landing, Nov 1969; touched down beside the Surveyor 3 probe.'],
-  ['Apollo 14', -3.65, -17.47, 'Feb 1971 — Shepard & Mitchell explored Fra Mauro.'],
-  ['Apollo 15', 26.13, 3.63, 'July 1971 — first to carry the Lunar Roving Vehicle, at Hadley Rille.'],
-  ['Apollo 16', -8.97, 15.50, 'April 1972 — Descartes Highlands, with the rover.'],
-  ['Apollo 17', 20.19, 30.77, 'Last crewed landing, Dec 1972 — Taurus–Littrow, longest stay & rover drive.'],
+  ['Apollo 14', -3.65, -17.47, 'Feb 1971: Shepard & Mitchell explored Fra Mauro.'],
+  ['Apollo 15', 26.13, 3.63, 'July 1971: first to carry the Lunar Roving Vehicle, at Hadley Rille.'],
+  ['Apollo 16', -8.97, 15.50, 'April 1972: Descartes Highlands, with the rover.'],
+  ['Apollo 17', 20.19, 30.77, 'Last crewed landing, Dec 1972: Taurus–Littrow, longest stay & rover drive.'],
   ['Luna 17 · Lunokhod 1', 38.28, -35.0, "The Soviet Union's first robotic Moon rover, 1970."],
   ['Chang’e 3 · Yutu', 44.12, -19.51, 'China’s first lunar rover, 2013, in Mare Imbrium.'],
   ['Chang’e 4 · Yutu-2', -45.5, 177.6, 'First-ever landing on the Moon’s far side, 2019.'],
@@ -1590,7 +1732,7 @@ const dysonGroup = new THREE.Group();
     name: 'Dyson Sphere',
     sub: 'Speculative megastructure',
     rows: [['Radius', '0.33 AU'], ['Output', '3.8 × 10²⁶ W (total Solar)'], ['Type', 'Stellar energy collector'], ['Concept', 'Freeman Dyson, 1960']],
-    doc: 'A hypothetical shell enclosing a star to capture its entire energy output. Freeman Dyson proposed this in 1960 as a marker of a K-II civilization on the Kardashev scale. In practice, a rigid shell is mechanically unstable — most proposals use a swarm of independent orbiting collectors.',
+    doc: 'A hypothetical shell enclosing a star to capture its entire energy output. Freeman Dyson proposed this in 1960 as a marker of a K-II civilization on the Kardashev scale. In practice, a rigid shell is mechanically unstable. Most proposals use a swarm of independent orbiting collectors.',
   };
 }
 megaGroup.add(dysonGroup);
@@ -1623,8 +1765,8 @@ const solarSailGroup = new THREE.Group();
   solarSailGroup.userData.info = {
     name: 'Solar Sail',
     sub: 'Light-propelled spacecraft',
-    rows: [['Sail area', '~1.2 km²'], ['Acceleration', '~0.1 mm/s² at 1 AU'], ['Propellant', 'None — photon pressure'], ['Example', 'IKAROS (JAXA, 2010)']],
-    doc: 'A solar sail uses radiation pressure from sunlight to accelerate without propellant. The sail is shown here near Earth—Sun L1, where continuous sunward sunlight provides maximum thrust. The thin reflective membrane must be only micrometres thick — thinner than a human hair.',
+    rows: [['Sail area', '~1.2 km²'], ['Acceleration', '~0.1 mm/s² at 1 AU'], ['Propellant', 'None, photon pressure'], ['Example', 'IKAROS (JAXA, 2010)']],
+    doc: 'A solar sail uses radiation pressure from sunlight to accelerate without propellant. The sail is shown here near Earth–Sun L1, where continuous sunward sunlight provides maximum thrust. The thin reflective membrane must be only micrometres thick — thinner than a human hair.',
   };
 }
 megaGroup.add(solarSailGroup);
@@ -1752,7 +1894,7 @@ const warpGroup = new THREE.Group();
     name: 'Alcubierre Warp Drive',
     sub: 'Exotic-matter spacetime warp',
     rows: [['Concept', 'Miguel Alcubierre, 1994'], ['Speed', 'FTL (in principle)'], ['Energy', '~10⁶⁴ J (exotic matter)'], ['Status', 'Theoretical only']],
-    doc: "Physicist Miguel Alcubierre showed in 1994 that Einstein's equations permit a solution where a 'warp bubble' compresses space ahead of a ship and expands it behind — moving the ship faster than light without locally violating relativity. The catch: it requires negative-energy 'exotic matter' in quantities far beyond anything known, and causality problems remain unsolved.",
+    doc: "Physicist Miguel Alcubierre showed in 1994 that Einstein's equations permit a solution where a 'warp bubble' compresses space ahead of a ship and expands it behind, moving the ship faster than light without locally violating relativity. The catch: it requires negative-energy 'exotic matter' in quantities far beyond anything known, and causality problems remain unsolved.",
   };
   warpGroup.userData.rings = [outer, inner];
 }
@@ -1826,7 +1968,7 @@ const genShipGroup = new THREE.Group();
     name: 'Generation Ship',
     sub: 'Interstellar ark',
     rows: [['Length', '~10 km (shown ×1:1000)'], ['Journey time', '10,000–100,000 yr'], ['Destination', 'Nearest star system'], ['Population', '10,000–100,000']],
-    doc: 'A generation ship travels to another star so slowly that the original crew will die before arrival — the descendants of the first crew complete the journey. Rotating habitat rings provide artificial gravity. The ship must be a self-contained biosphere, carrying ecosystems, genetic diversity, and all knowledge of human civilization.',
+    doc: 'A generation ship travels to another star so slowly that the original crew will die before arrival. The descendants of the first crew complete the journey. Rotating habitat rings provide artificial gravity. The ship must be a self-contained biosphere, carrying ecosystems, genetic diversity, and all knowledge of human civilization.',
   };
 }
 megaGroup.add(genShipGroup);
@@ -2136,10 +2278,10 @@ solScene.add(beltGroup);
 const REAL_ASTEROIDS = [
   ['1 Ceres',     2.7660, 0.0785, 10.59,  80.31,  73.60,  95.99, 939, '#d8cdbe',
     'Dwarf planet · largest belt object', [['Diameter', '939 km'], ['Type', 'C-type (carbonaceous)'], ['Discovered', '1801, Piazzi'], ['Visited by', 'Dawn (2015–18)']],
-    'The largest object in the asteroid belt and the only dwarf planet in the inner solar system — it holds about a third of the belt\'s total mass. NASA\'s Dawn spacecraft found bright carbonate/salt deposits in Occator crater, likely from a briny subsurface reservoir.'],
+    'The largest object in the asteroid belt and the only dwarf planet in the inner solar system. It holds about a third of the belt\'s total mass. NASA\'s Dawn spacecraft found bright carbonate/salt deposits in Occator crater, likely from a briny subsurface reservoir.'],
   ['2 Pallas',    2.7730, 0.2302, 34.84, 173.02, 310.87,  40.60, 512, '#b9bcc4',
     'Third-largest asteroid', [['Diameter', '~512 km'], ['Type', 'B-type'], ['Discovered', '1802, Olbers'], ['Inclination', '34.8° (extreme)']],
-    'The third-most-massive asteroid, on a steeply tilted, eccentric orbit that makes it costly to reach — no spacecraft has visited. Its 34.8° inclination is among the largest of any large belt body.'],
+    'The third-most-massive asteroid, on a steeply tilted, eccentric orbit that makes it costly to reach. No spacecraft has visited. Its 34.8° inclination is among the largest of any large belt body.'],
   ['3 Juno',      2.6690, 0.2563, 12.99, 169.85, 248.41,  33.00, 247, '#cdb9a6',
     'Large S-type asteroid', [['Diameter', '~247 km'], ['Type', 'S-type (stony)'], ['Discovered', '1804, Harding']],
     'One of the first asteroids discovered and among the largest stony (S-type) bodies. For a few decades after discovery it was counted as a planet, before the belt\'s true nature was understood.'],
@@ -2148,13 +2290,13 @@ const REAL_ASTEROIDS = [
     'The brightest asteroid as seen from Earth and the only one occasionally visible to the naked eye. It is differentiated like a small planet, with an iron core; a giant south-pole impact (Rheasilvia) flung out the "vestoid" family and the HED meteorites we find on Earth.'],
   ['10 Hygiea',   3.1390, 0.1125,  3.83, 283.20, 312.32, 152.18, 434, '#9fb0b6',
     'Fourth-largest · near-spherical', [['Diameter', '~434 km'], ['Type', 'C-type'], ['Discovered', '1849, de Gasparis']],
-    'The fourth-largest asteroid and a candidate dwarf planet — 2019 imaging showed it is nearly spherical, suggesting it may have relaxed into hydrostatic equilibrium after a major impact.'],
+    'The fourth-largest asteroid and a candidate dwarf planet. Imaging in 2019 showed it is nearly spherical, suggesting it may have relaxed into hydrostatic equilibrium after a major impact.'],
   ['16 Psyche',   2.9230, 0.1340,  3.10, 150.19, 229.25,  10.00, 222, '#caa98a',
     'Metallic world · mission target', [['Diameter', '~222 km'], ['Type', 'M-type (metallic)'], ['Mission', 'Psyche (arrives 2029)']],
     'An unusually metal-rich body, possibly the exposed iron–nickel core of a shattered protoplanet. NASA\'s Psyche spacecraft, launched 2023, will orbit it from 2029 to study what a planetary core looks like up close.'],
   ['243 Ida',     2.8610, 0.0451,  1.13, 324.49, 110.92, 200.00, 31.4, '#bca78f',
     'First asteroid found to have a moon', [['Diameter', '~31 km'], ['Moon', 'Dactyl (~1.4 km)'], ['Flyby', 'Galileo (1993)']],
-    'During its cruise to Jupiter, Galileo flew past Ida and discovered Dactyl orbiting it — the first confirmed asteroid moon, proving small bodies can hold satellites.'],
+    'During its cruise to Jupiter, Galileo flew past Ida and discovered Dactyl orbiting it: the first confirmed asteroid moon, proving small bodies can hold satellites.'],
   ['253 Mathilde',2.6460, 0.2660,  6.74, 179.58, 157.39, 170.00, 52.8, '#7e756a',
     'Dark, porous C-type', [['Diameter', '~53 km'], ['Type', 'C-type (very dark)'], ['Flyby', 'NEAR Shoemaker (1997)']],
     'A pitch-black carbonaceous asteroid imaged by NEAR Shoemaker on its way to Eros. Its very low density implies a rubble-pile interior that is up to half empty space.'],
@@ -2163,7 +2305,7 @@ const REAL_ASTEROIDS = [
     'A near-Earth asteroid and the first to be orbited and then gently landed on, by NEAR Shoemaker in 2001. Its elongated, saddle-shaped form became the archetype of a small stony asteroid.'],
   ['951 Gaspra',  2.2100, 0.1730,  4.10, 253.20, 129.51,  60.00, 12.2, '#c7b08c',
     'First asteroid ever imaged close-up', [['Diameter', '~12 km'], ['Type', 'S-type'], ['Flyby', 'Galileo (1991)']],
-    'The first asteroid ever seen up close, when Galileo flew past in 1991 en route to Jupiter — revealing a cratered, irregular world and confirming asteroids as distinct small bodies.'],
+    'The first asteroid ever seen up close, when Galileo flew past in 1991 en route to Jupiter, revealing a cratered, irregular world and confirming asteroids as distinct small bodies.'],
   ['25143 Itokawa',1.3240,0.2800,  1.62,  69.08, 162.82, 100.00, 0.33, '#c9a37e',
     'Rubble-pile · first sample return', [['Length', '~535 m'], ['Type', 'S-type, rubble pile'], ['Mission', 'Hayabusa (2005, returned 2010)']],
     'A peanut-shaped rubble pile from which Japan\'s Hayabusa returned the first-ever asteroid surface samples in 2010, confirming the link between S-type asteroids and ordinary chondrite meteorites.'],
@@ -2175,7 +2317,7 @@ const REAL_ASTEROIDS = [
     'A spinning-top-shaped carbonaceous asteroid sampled by Hayabusa2, which fired a copper impactor to expose subsurface material. Its returned grains contain amino acids and predate the solar system.'],
   ['99942 Apophis',0.9224,0.1914,  3.34, 204.43, 126.39, 180.00, 0.34, '#d9b388',
     'Famous close-approach NEO', [['Diameter', '~340 m'], ['Type', 'S-type, Aten NEO'], ['Close pass', '31,000 km on 13 Apr 2029']],
-    'Once feared as an impact threat, Apophis is now ruled out for at least a century. On 13 April 2029 it will pass just 31,000 km from Earth — closer than geostationary satellites — visible to the naked eye, and ESA\'s Ramses mission aims to study it during the flyby.'],
+    'Once feared as an impact threat, Apophis is now ruled out for at least a century. On 13 April 2029 it will pass just 31,000 km from Earth, closer than geostationary satellites, visible to the naked eye, and ESA\'s Ramses mission aims to study it during the flyby.'],
 ];
 const ASTEROIDS_RT = [];
 let asteroidsVisible = false;          // named asteroids off by default (toggle in Solar panel)
@@ -2230,25 +2372,25 @@ function updateNamedAsteroids(jd) {
 const COMETS = [
   ['1P/Halley', 17.834, 0.9671, 162.26, 58.42, 111.33, 2446470.5,
     'The most famous comet · returns 2061', [['Period', '75.3 years'], ['Last perihelion', 'Feb 1986'], ['Next return', 'Jul 2061'], ['Nucleus', '15 × 8 km']],
-    'The comet that proved comets return: Edmond Halley predicted its 1758 reappearance from Newton\'s laws. Recorded at every pass since 240 BC — it is the Bayeux Tapestry\'s star and Giotto\'s 1986 flyby target. Its debris stream feeds the Orionid meteor shower every October.', 'Feb 1986'],
+    'The comet that proved comets return: Edmond Halley predicted its 1758 reappearance from Newton\'s laws. Recorded at every pass since 240 BC. It is the Bayeux Tapestry\'s star and Giotto\'s 1986 flyby target. Its debris stream feeds the Orionid meteor shower every October.', 'Feb 1986'],
   ['2P/Encke', 2.2152, 0.8482, 11.78, 334.57, 186.55, 2460239.5,
     'Shortest period of any bright comet', [['Period', '3.30 years'], ['Last perihelion', 'Oct 2023'], ['Nucleus', '~4.8 km']],
-    'No comet returns more often — Encke swings past the Sun every 3.3 years, so it has been watched on more than 60 passes. Its debris produces the Taurid meteor showers, and one Taurid fragment is a leading suspect for the 1908 Tunguska blast.', 'Oct 2023'],
+    'No comet returns more often: Encke swings past the Sun every 3.3 years, so it has been watched on more than 60 passes. Its debris produces the Taurid meteor showers, and one Taurid fragment is a leading suspect for the 1908 Tunguska blast.', 'Oct 2023'],
   ['C/1995 O1 Hale–Bopp', 186.0, 0.9951, 89.43, 282.47, 130.59, 2450539.5,
-    'The great comet of 1997', [['Period', '~2,500 years'], ['Perihelion', 'Apr 1997'], ['Nucleus', '~60 km (giant)'], ['Naked-eye run', '18 months — a record']],
-    'Visible to the naked eye for a record 18 months through 1996–97, with its blue ion tail and cream dust tail split wide apart. Its nucleus is huge for a comet — around 60 km. It is now receding beyond Neptune and will not return for roughly 2,500 years.', 'Apr 1997'],
+    'The great comet of 1997', [['Period', '~2,500 years'], ['Perihelion', 'Apr 1997'], ['Nucleus', '~60 km (giant)'], ['Naked-eye run', '18 months, a record']],
+    'Visible to the naked eye for a record 18 months through 1996–97, with its blue ion tail and cream dust tail split wide apart. Its nucleus is huge for a comet, around 60 km. It is now receding beyond Neptune and will not return for roughly 2,500 years.', 'Apr 1997'],
   ['C/2020 F3 NEOWISE', 358, 0.9992, 128.93, 61.01, 37.28, 2459033.5,
     'Brightest northern comet since Hale–Bopp', [['Period', '~6,800 years'], ['Perihelion', 'Jul 2020'], ['Nucleus', '~5 km']],
-    'The surprise of the pandemic summer: discovered by the NEOWISE space telescope in March 2020, it survived perihelion and hung in northern twilight through July with a long golden dust tail — photographed above nearly every landscape on Earth.', 'Jul 2020'],
+    'The surprise of the pandemic summer: discovered by the NEOWISE space telescope in March 2020, it survived perihelion and hung in northern twilight through July with a long golden dust tail, photographed above nearly every landscape on Earth.', 'Jul 2020'],
   ['67P/Churyumov–Gerasimenko', 3.4630, 0.6410, 7.04, 50.14, 12.78, 2457247.5,
     'Rosetta\'s comet', [['Period', '6.44 years'], ['Last perihelion', 'Aug 2015'], ['Nucleus', '4.3 × 4.1 km, two-lobed'], ['Missions', 'Rosetta + Philae (2014–16)']],
-    'The first comet ever orbited — ESA\'s Rosetta escorted its duck-shaped nucleus for two years and set the Philae lander on its surface. Rosetta watched jets of gas and dust switch on as the comet warmed toward perihelion, then ended its mission by touching down itself.', 'Aug 2015'],
+    'The first comet ever orbited: ESA\'s Rosetta escorted its duck-shaped nucleus for two years and set the Philae lander on its surface. Rosetta watched jets of gas and dust switch on as the comet warmed toward perihelion, then ended its mission by touching down itself.', 'Aug 2015'],
   ['109P/Swift–Tuttle', 26.092, 0.9632, 113.45, 139.38, 152.98, 2448967.5,
     'Parent of the Perseid meteor shower', [['Period', '133 years'], ['Last perihelion', 'Dec 1992'], ['Nucleus', '~26 km'], ['Next return', '2126']],
-    'Every August the Earth crosses this comet\'s debris stream and the Perseids fill the sky — the year\'s most-watched meteor shower. Its 26 km nucleus is the largest object that makes repeated close approaches to Earth, though its orbit is stable for millennia.', 'Dec 1992'],
+    'Every August the Earth crosses this comet\'s debris stream and the Perseids fill the sky, the year\'s most-watched meteor shower. Its 26 km nucleus is the largest object that makes repeated close approaches to Earth, though its orbit is stable for millennia.', 'Dec 1992'],
   ['55P/Tempel–Tuttle', 10.335, 0.9056, 162.49, 235.27, 172.50, 2450872.5,
     'Parent of the Leonid meteor storms', [['Period', '33.2 years'], ['Last perihelion', 'Feb 1998'], ['Nucleus', '~3.6 km']],
-    'A modest comet with a spectacular calling card: fresh debris trails near its 33-year returns turn the November Leonids into meteor storms — 1833\'s "night the stars fell" and 1966\'s ~100,000 meteors per hour, the strongest ever witnessed.', 'Feb 1998'],
+    'A modest comet with a spectacular calling card: fresh debris trails near its 33-year returns turn the November Leonids into meteor storms: 1833\'s "night the stars fell" and 1966\'s ~100,000 meteors per hour, the strongest ever witnessed.', 'Feb 1998'],
 ];
 // tail texture: bright narrow head fading to a wide faint tip (drawn per-pixel once)
 function makeTailTexture() {
@@ -2381,23 +2523,23 @@ function updateComets(jd) {
 // Fields: name, a(AU), e, inc°, Ω°, ω°, M0°(J2000), diameter km, colour, sub, rows, doc.
 const TNOS = [
   ['Eris', 67.86, 0.4407, 44.04, 35.95, 151.64, 194.5, 2326, '#e8e4dc',
-    'Most massive dwarf planet', [['Diameter', '2,326 km'], ['Distance now', '~96 AU — near aphelion'], ['Moon', 'Dysnomia'], ['Discovered', '2005, Brown/Trujillo/Rabinowitz']],
+    'Most massive dwarf planet', [['Diameter', '2,326 km'], ['Distance now', '~96 AU, near aphelion'], ['Moon', 'Dysnomia'], ['Discovered', '2005, Brown/Trujillo/Rabinowitz']],
     'The discovery that ended Pluto\'s planethood: Eris is slightly smaller than Pluto but more massive, and finding it in 2005 forced the "dwarf planet" definition a year later. It rides a steeply tilted 559-year orbit and is currently near its far point, almost 100 AU out.'],
   ['Makemake', 45.43, 0.161, 28.98, 79.62, 294.83, 141.0, 1430, '#d8b49a',
     'Bright icy world of the Kuiper belt', [['Diameter', '~1,430 km'], ['Moon', 'MK2'], ['Discovered', '2005, Palomar'], ['Surface', 'methane ice, reddish']],
     'One of the brightest Kuiper-belt objects, coated in frozen methane that reddens under cosmic rays. Named for the creator god of Rapa Nui (Easter Island), it was discovered shortly after Easter 2005.'],
   ['Haumea', 43.12, 0.195, 28.21, 122.16, 239.18, 191.0, 1632, '#e9e2e6',
     'Spinning egg with a ring', [['Dimensions', '~2,100 × 1,000 km'], ['Day length', '3.9 hours'], ['Moons', 'Hiʻiaka & Namaka'], ['Ring', 'discovered 2017']],
-    'A dwarf planet spinning so fast — one rotation every four hours — that it has stretched into an egg shape. It has two moons and, uniquely among dwarf planets, a ring, likely debris from an ancient collision that also spawned a whole family of icy fragments.'],
+    'A dwarf planet spinning so fast, one rotation every four hours, that it has stretched into an egg shape. It has two moons and, uniquely among dwarf planets, a ring, likely debris from an ancient collision that also spawned a whole family of icy fragments.'],
   ['Sedna', 506, 0.855, 11.93, 144.25, 311.36, 357.6, 995, '#d47a5c',
-    'The loneliest known world', [['Diameter', '~1,000 km'], ['Orbit', '76 → 936 AU'], ['Period', '~11,400 years'], ['Perihelion', '2076 — first since the last ice age']],
-    'Sedna never comes closer than 76 AU — far beyond Neptune — and swings out to nearly 1,000. It last rounded the Sun when humans were crossing into the Americas, and reaches perihelion again in 2076. Its detached orbit is a standing argument for an unseen distant planet.'],
+    'The loneliest known world', [['Diameter', '~1,000 km'], ['Orbit', '76 → 936 AU'], ['Period', '~11,400 years'], ['Perihelion', '2076, first since the last ice age']],
+    'Sedna never comes closer than 76 AU, far beyond Neptune, and swings out to nearly 1,000. It last rounded the Sun when humans were crossing into the Americas, and reaches perihelion again in 2076. Its detached orbit is a standing argument for an unseen distant planet.'],
   ['Quaoar', 43.7, 0.040, 7.99, 188.8, 147.5, 266.5, 1090, '#b08a74',
     'Icy world with an impossible ring', [['Diameter', '~1,090 km'], ['Moon', 'Weywot'], ['Ring', 'far outside the Roche limit'], ['Discovered', '2002, Palomar']],
-    'Named for the creation force of the Tongva people of Los Angeles. In 2023 astronomers found a ring orbiting far beyond where rings should be able to survive — material there ought to have clumped into a moon, and no one yet knows why it hasn\'t.'],
+    'Named for the creation force of the Tongva people of Los Angeles. In 2023 astronomers found a ring orbiting far beyond where rings should be able to survive. Material there ought to have clumped into a moon, and no one yet knows why it hasn\'t.'],
   ['Gonggong', 67.5, 0.503, 30.6, 336.8, 207.7, 92.9, 1230, '#c26a52',
     'Red, slow-spinning, and far away', [['Diameter', '~1,230 km'], ['Distance now', '~88 AU'], ['Moon', 'Xiangliu'], ['Named for', 'a Chinese water god (public vote, 2019)']],
-    'One of the reddest large objects known, its surface stained by irradiated methane. It spins once every 22 hours — unusually slowly for its size, likely braked by its moon Xiangliu. The public chose its name in an online vote.'],
+    'One of the reddest large objects known, its surface stained by irradiated methane. It spins once every 22 hours, unusually slowly for its size, likely braked by its moon Xiangliu. The public chose its name in an online vote.'],
 ];
 const TNOS_RT = [];
 let tnosVisible = true;
@@ -2459,19 +2601,19 @@ function updateTNOs(jd) {
 const PROBES = [
   ['Voyager 1', 262.0, 12.4, 167.3, 3.57, 2443391.5,
     'The most distant human-made object', [['Launched', 'Sep 5, 1977'], ['Speed', '3.57 AU/year'], ['Heliopause crossed', 'Aug 2012'], ['Carries', 'the Golden Record']],
-    'Farther from home than anything humanity has ever built, and still calling back daily on a 23-watt radio. It photographed the Pale Blue Dot from 40 AU in 1990, crossed into interstellar space in 2012, and carries a gold-plated record of Earth\'s sounds — greetings in 55 languages, whale song, Chuck Berry.'],
+    'Farther from home than anything humanity has ever built, and still calling back daily on a 23-watt radio. It photographed the Pale Blue Dot from 40 AU in 1990, crossed into interstellar space in 2012, and carries a gold-plated record of Earth\'s sounds: greetings in 55 languages, whale song, Chuck Berry.'],
   ['Voyager 2', 302.1, -58.9, 139.8, 3.16, 2443375.5,
     'The only visitor to Uranus & Neptune', [['Launched', 'Aug 20, 1977'], ['Speed', '3.16 AU/year'], ['Heliopause crossed', 'Nov 2018'], ['Grand Tour', 'Jupiter · Saturn · Uranus · Neptune']],
     'The only spacecraft ever to visit all four giant planets, riding a planetary alignment that occurs once every 176 years. Everything we know of Uranus and Neptune up close, Voyager 2 saw. It followed its twin into interstellar space in 2018, headed south out of the solar system.'],
   ['Pioneer 10', 78.2, 26.1, 137.3, 2.52, 2441379.5,
     'First through the asteroid belt', [['Launched', 'Mar 2, 1972'], ['First flyby of', 'Jupiter (1973)'], ['Last contact', 'Jan 2003'], ['Headed toward', 'Aldebaran (~2 million years)']],
-    'The trailblazer: first spacecraft through the asteroid belt and first past Jupiter, proving the outer solar system could be reached at all. Its signal faded to silence in 2003. It coasts on, silent, toward the star Aldebaran — arriving in roughly two million years, carrying its famous plaque.'],
+    'The trailblazer: first spacecraft through the asteroid belt and first past Jupiter, proving the outer solar system could be reached at all. Its signal faded to silence in 2003. It coasts on, silent, toward the star Aldebaran, arriving in roughly two million years, carrying its famous plaque.'],
   ['Pioneer 11', 282.5, -8.9, 117.0, 2.37, 2441778.5,
     'First spacecraft past Saturn', [['Launched', 'Apr 6, 1973'], ['First flyby of', 'Saturn (1979)'], ['Last contact', 'Nov 1995'], ['Carries', 'the Pioneer plaque']],
-    'It threaded Saturn\'s rings in 1979 — the first spacecraft ever to see the ringed planet up close — scouting the path the Voyagers would follow. Silent since 1995, it drifts outward toward the constellation Aquila.'],
+    'It threaded Saturn\'s rings in 1979, the first spacecraft ever to see the ringed planet up close, scouting the path the Voyagers would follow. Silent since 1995, it drifts outward toward the constellation Aquila.'],
   ['New Horizons', 293.7, -20.5, 61.8, 2.94, 2453754.5,
     'Pluto\'s first and only visitor', [['Launched', 'Jan 19, 2006'], ['Pluto flyby', 'Jul 14, 2015'], ['Arrokoth flyby', 'Jan 1, 2019'], ['Status', 'active in the Kuiper belt']],
-    'The fastest launch in history — past the Moon in nine hours. In 2015 it turned Pluto from a fuzzy dot into a world with a heart-shaped glacier, then flew past Arrokoth, the most distant object ever explored. Still awake, still exploring the Kuiper belt.'],
+    'The fastest launch in history: past the Moon in nine hours. In 2015 it turned Pluto from a fuzzy dot into a world with a heart-shaped glacier, then flew past Arrokoth, the most distant object ever explored. Still awake, still exploring the Kuiper belt.'],
 ];
 const PROBES_RT = [];
 let probesVisible = true;
@@ -2564,7 +2706,7 @@ const helioMesh = (() => {
   const mesh = new THREE.Mesh(new THREE.SphereGeometry(123 * AUU, 96, 64), mat);
   mesh.scale.set(1.0, 0.94, 1.0);          // gently flattened — the wind bubble isn't a perfect sphere
   solScene.add(mesh);
-  const lab = makeTextSprite('Heliopause — edge of the solar wind', { size: 10, color: '#9fc8e0', alpha: 0.8 });
+  const lab = makeTextSprite('Heliopause · edge of the solar wind', { size: 10, color: '#9fc8e0', alpha: 0.8 });
   lab.position.set(0, 123 * AUU * 0.32, -123 * AUU * 0.92);
   lab.renderOrder = 9;
   solScene.add(lab);
@@ -2603,7 +2745,21 @@ const backdrop = new THREE.Group();
 backdrop.rotation.x = -23.4393 * DEG;
 const solStarsMat = starMat.clone();
 solStarsMat.depthTest = true;
-solStarsMat.uniforms = starMat.uniforms;
+// The sky view's soft naked-eye PSF (wide halo, big discs) reads as smudges when it's
+// a BACKDROP behind planets — pin the stars down: tighter halo, smaller discs. Shrinking
+// a disc slashes its total light, so the faint end gets an alpha floor boost to keep the
+// field DENSE (crisp long-exposure look, not a sparse one). Every other uniform
+// (mag limit, twinkle, spectrum, time) stays shared and live.
+solStarsMat.fragmentShader = starFrag.replace(
+  'float f = core * 1.3 + halo * 0.55 + spike;',
+  'float f = core * 1.6 + halo * 0.22 + spike;');
+solStarsMat.vertexShader = starVert.replace(
+  'float alpha = clamp(0.22 + 0.78 * pow(bright / 5.5, 0.55), 0.10, 1.0);',
+  'float alpha = clamp(0.42 + 0.58 * pow(bright / 5.5, 0.55), 0.30, 1.0);');
+solStarsMat.uniforms = { ...starMat.uniforms,
+  uSizeScale: { value: starUniforms.uSizeScale.value * 0.55 } };
+solStarsMat.needsUpdate = true;
+const solStarSize = solStarsMat.uniforms.uSizeScale;   // kept in step with the Brightness slider
 const solStars = new THREE.Points(skyStarGeo, solStarsMat);
 solStars.frustumCulled = false;
 solStars.renderOrder = -1;                       // draw the backdrop before the planets
@@ -2887,6 +3043,24 @@ const neiStarLabels = [];
   sunLab.center.set(0.5, 1.8);
   neiScene.add(sunLab);
   labelGroups.neighborhood.push(sunLab);
+
+  // Approach halo — the same arrival cue as the deep continuum's beacon: over the
+  // last stretch home concentric orbit rings fade/grow in, so the solar system
+  // visibly "forms" ahead of the ship before the dive (see flyHandoff's Sun capture).
+  const sunHalo = new THREE.Group();
+  const haloTex = makeRingTexture('#bcd2f0');
+  sunHalo.userData.rings = [];
+  for (let k = 0; k < 4; k++) {
+    const r = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: haloTex, transparent: true, depthWrite: false, depthTest: false,
+      blending: THREE.AdditiveBlending, opacity: 0 }));
+    r.userData.k = 0.45 + k * 0.6;                 // relative orbit radius
+    sunHalo.userData.rings.push(r);
+    sunHalo.add(r);
+  }
+  sunHalo.visible = false;
+  neiScene.add(sunHalo);
+  neiScene.userData.sunHalo = sunHalo;
 
   const ringMat = new THREE.LineBasicMaterial({
     color: 0x5d7da8, transparent: true, opacity: 0.28, depthWrite: false,
@@ -3277,16 +3451,15 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
   // centre (no separate screen): event-horizon shadow, doppler accretion disk, photon ring.
   {
     const RS = 0.5;
-    // the shadow must actually occlude: the galaxy's additive star points ignore the
-    // depth buffer, so a plain black sphere lets them shine through. Drawing the
-    // shadow AFTER the particles (depthTest off, depth still written) paints true
-    // black over everything behind it, while the disk/arcs draw later on top.
-    // (transparent:true is load-bearing — it puts the shadow in the TRANSPARENT render
-    // queue, which draws after the additive particles; an opaque mesh always draws
-    // first and the stars paint right over the black)
+    // the shadow must actually occlude: the galaxy's additive star points don't write
+    // depth, so a plain black sphere in the opaque queue lets them shine through.
+    // Drawing the shadow AFTER the particles (transparent queue, renderOrder 4) paints
+    // true black over them, while the disk/arcs draw later on top. depthTest stays ON:
+    // opaque objects DO write depth, so the ship correctly hides behind the shadow and
+    // correctly covers it when it is in front (it used to be painted over either way).
     const shadow = new THREE.Mesh(new THREE.SphereGeometry(RS, 96, 64),
       new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 1,
-        depthTest: false, depthWrite: true }));
+        depthTest: true, depthWrite: true }));
     shadow.renderOrder = 4;
     galBH.add(shadow);
     // accretion disk v2 — static (per the design call: no motion), but detailed:
@@ -3368,7 +3541,7 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
     galBH.add(lens);
     const photon = new THREE.Sprite(new THREE.SpriteMaterial({
       map: makeRingTexture('#ffe6b8'), transparent: true, depthWrite: false,
-      depthTest: false, blending: THREE.AdditiveBlending }));
+      depthTest: true, blending: THREE.AdditiveBlending }));
     photon.scale.set(RS * 2.3, RS * 2.3, 1);
     photon.renderOrder = 7;
     galBH.add(photon);
@@ -3457,66 +3630,66 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
 const GALAXY_CAT = [
   ['Sagittarius Dwarf', 5.6, -14.2, 26, 'sph', [5, 3.5, 0.3], true,
     'Satellite being devoured by the Milky Way', [['Type', 'Dwarf spheroidal'], ['Distance', '85,000 ly'], ['Status', 'tidally disrupting']],
-    'The closest galaxy of all — so close the Milky Way is tearing it apart. Its stars are being pulled into a stream that loops around our entire galaxy, and its debris is scattered through the halo. Discovered only in 1994, hiding behind the galactic centre.'],
+    'The closest galaxy of all, so close the Milky Way is tearing it apart. Its stars are being pulled into a stream that loops around our entire galaxy, and its debris is scattered through the halo. Discovered only in 1994, hiding behind the galactic centre.'],
   ['Sculptor Dwarf', 287.5, -83.2, 86, 'sph', [6, 5, 0], true,
     'First dwarf galaxy ever found', [['Type', 'Dwarf spheroidal'], ['Distance', '280,000 ly'], ['Discovered', '1938, Shapley']],
-    'The first of the Milky Way\'s dwarf companions to be discovered — a diffuse ball of ancient stars with almost no gas, orbiting high above the galactic plane.'],
+    'The first of the Milky Way\'s dwarf companions to be discovered: a diffuse ball of ancient stars with almost no gas, orbiting high above the galactic plane.'],
   ['Draco Dwarf', 86.4, 34.7, 76, 'sph', [5, 4, 0.2], true,
     'One of the darkest galaxies known', [['Type', 'Dwarf spheroidal'], ['Distance', '250,000 ly'], ['Dark matter', '~99% of its mass']],
-    'A wisp of a galaxy whose stars move far too fast for the matter you can see — one of the most dark-matter-dominated objects known, and a favorite laboratory for testing what dark matter is.'],
+    'A wisp of a galaxy whose stars move far too fast for the matter you can see: one of the most dark-matter-dominated objects known, and a favorite laboratory for testing what dark matter is.'],
   ['Fornax Dwarf', 237.1, -65.7, 147, 'sph', [8, 6, 0.4], true,
     'A dwarf with its own star clusters', [['Type', 'Dwarf spheroidal'], ['Distance', '480,000 ly'], ['Globular clusters', '6 of its own']],
-    'Large for a dwarf — big enough to hold six globular clusters of its own. Why those clusters haven\'t spiraled into its centre is a long-standing puzzle about how dark matter is spread inside it.'],
+    'Large for a dwarf, big enough to hold six globular clusters of its own. Why those clusters haven\'t spiraled into its centre is a long-standing puzzle about how dark matter is spread inside it.'],
   ['Leo I', 226.0, 49.1, 254, 'sph', [6, 5, 0], true,
     'The Milky Way\'s farthest satellite', [['Type', 'Dwarf spheroidal'], ['Distance', '830,000 ly'], ['Note', 'near the Milky Way\'s gravitational edge']],
-    'Right at the edge of the Milky Way\'s gravitational reach, and moving so fast it may not even be bound to us — a satellite on the verge of independence.'],
+    'Right at the edge of the Milky Way\'s gravitational reach, and moving so fast it may not even be bound to us, a satellite on the verge of independence.'],
   ['NGC 6822 · Barnard\'s Galaxy', 25.3, -18.4, 500, 'irr', [10, 8, 0.5], true,
     'A lonely island of star formation', [['Type', 'Dwarf irregular'], ['Distance', '1.6 million ly'], ['Discovered', '1884, E.E. Barnard']],
-    'A free-floating member of the Local Group belonging to no one — not ours, not Andromeda\'s — quietly forming stars on its own. Hubble used it in 1925 as one of the first proofs that other galaxies lie beyond the Milky Way.'],
+    'A free-floating member of the Local Group belonging to no one, not ours, not Andromeda\'s, quietly forming stars on its own. Hubble used it in 1925 as one of the first proofs that other galaxies lie beyond the Milky Way.'],
   ['IC 10', 119.0, -3.3, 750, 'irr', [9, 7, 0.2], true,
     'The Local Group\'s only starburst', [['Type', 'Dwarf irregular, starburst'], ['Distance', '2.4 million ly'], ['Note', 'hidden behind the Milky Way\'s dust']],
-    'The only galaxy in the Local Group caught in a violent burst of star formation — packed with young clusters and more Wolf-Rayet stars per square parsec than anywhere nearby. We see it dimly, through the dust of our own disc.'],
+    'The only galaxy in the Local Group caught in a violent burst of star formation, packed with young clusters and more Wolf-Rayet stars per square parsec than anywhere nearby. We see it dimly, through the dust of our own disc.'],
   ['NGC 185', 120.8, -14.5, 620, 'sph', [7, 6, 0.3], false,
     'Companion of Andromeda', [['Type', 'Dwarf elliptical'], ['Distance', '2.0 million ly'], ['Satellite of', 'Andromeda']],
     'One of Andromeda\'s court of satellite galaxies, with a surprisingly active history of star formation for a small elliptical.'],
   ['M32', 121.2, -22.0, 785, 'len', [5, 4, 0], true,
     'Andromeda\'s compact companion', [['Type', 'Compact elliptical'], ['Distance', '2.6 million ly'], ['Note', 'possibly a stripped spiral core']],
-    'A strange, dense little galaxy hugging Andromeda — possibly the surviving core of a much larger spiral that Andromeda stripped bare in an ancient collision.'],
+    'A strange, dense little galaxy hugging Andromeda, possibly the surviving core of a much larger spiral that Andromeda stripped bare in an ancient collision.'],
   ['M110', 120.7, -21.1, 820, 'sph', [8, 5, 0.6], true,
     'Andromeda\'s other bright companion', [['Type', 'Dwarf elliptical'], ['Distance', '2.7 million ly'], ['Satellite of', 'Andromeda']],
     'The larger and more diffuse of Andromeda\'s two bright companions, visible in the same binocular field as M31 itself.'],
   // — the nearest neighbor groups, beyond the Local Group —
   ['Maffei 1', 135.9, -0.6, 2850, 'len', [16, 12, 0.1], true,
-    'The hidden giant next door', [['Type', 'Giant elliptical'], ['Distance', '9.3 million ly'], ['Discovered', '1967 — behind the Milky Way']],
-    'A giant elliptical galaxy that would be one of the brightest in our sky — if it weren\'t sitting almost exactly behind the Milky Way\'s disc. It hid behind our own dust until 1967.'],
+    'The hidden giant next door', [['Type', 'Giant elliptical'], ['Distance', '9.3 million ly'], ['Discovered', '1967, behind the Milky Way']],
+    'A giant elliptical galaxy that would be one of the brightest in our sky, if it weren\'t sitting almost exactly behind the Milky Way\'s disc. It hid behind our own dust until 1967.'],
   ['NGC 300', 299.2, -79.4, 1900, 'spiral', [20, 15, 0.4], true,
     'A quiet spiral toward Sculptor', [['Type', 'Spiral'], ['Distance', '6.2 million ly'], ['Group', 'Sculptor group outskirts']],
-    'A textbook quiet spiral, one of the nearest beyond the Local Group — close enough that its brightest individual stars can be studied one by one.'],
+    'A textbook quiet spiral, one of the nearest beyond the Local Group, close enough that its brightest individual stars can be studied one by one.'],
   ['NGC 55', 332.7, -75.7, 2000, 'spiral', [18, 7, 0.9], true,
     'An edge-on neighbor', [['Type', 'Magellanic spiral, edge-on'], ['Distance', '6.5 million ly'], ['Group', 'Sculptor group']],
-    'A galaxy much like the Large Magellanic Cloud, but seen almost perfectly edge-on — a bright sliver on the border of the Sculptor group.'],
+    'A galaxy much like the Large Magellanic Cloud, but seen almost perfectly edge-on, a bright sliver on the border of the Sculptor group.'],
   ['NGC 253 · Sculptor Galaxy', 97.4, -88.0, 3500, 'spiral', [26, 9, 0.7], true,
     'The Silver Coin', [['Type', 'Starburst spiral'], ['Distance', '11.4 million ly'], ['Group', 'Sculptor group']],
-    'The dusty "Silver Coin" — the brightest member of the Sculptor group and one of the great starburst galaxies, furiously converting gas into stars at its crowded centre.'],
+    'The dusty "Silver Coin": the brightest member of the Sculptor group and one of the great starburst galaxies, furiously converting gas into stars at its crowded centre.'],
   ['M81 · Bode\'s Galaxy', 142.1, 40.9, 3630, 'spiral', [26, 16, 0.3], true,
     'Grand-design spiral of the M81 group', [['Type', 'Grand-design spiral'], ['Distance', '11.8 million ly'], ['Companion', 'M82, locked in interaction']],
-    'A perfect grand-design spiral and anchor of the nearest big galaxy group. It is gravitationally tangled with the Cigar Galaxy beside it — their last close pass set M82 ablaze with star formation.'],
+    'A perfect grand-design spiral and anchor of the nearest big galaxy group. It is gravitationally tangled with the Cigar Galaxy beside it. Their last close pass set M82 ablaze with star formation.'],
   ['M82 · Cigar Galaxy', 141.4, 40.6, 3530, 'spiral', [16, 6, 1.0], false,
     'Exploding with new stars', [['Type', 'Starburst, edge-on'], ['Distance', '11.5 million ly'], ['Cause', 'a close pass by M81']],
     'Wrecked and glorious: its encounter with M81 ignited a starburst ten times our galaxy\'s rate, blowing towers of glowing gas out of its disc.'],
   ['Centaurus A', 309.5, 19.4, 3800, 'len', [24, 18, 0.2], false,
     'The nearest active galaxy', [['Type', 'Elliptical w/ dust lane'], ['Distance', '12.4 million ly'], ['Core', 'feeding supermassive black hole']],
-    'The nearest galaxy with an actively feeding central black hole, wearing a dramatic dust lane — the remains of a spiral galaxy it swallowed whole.'],
+    'The nearest galaxy with an actively feeding central black hole, wearing a dramatic dust lane, the remains of a spiral galaxy it swallowed whole.'],
   // existing visuals — cards for the members already drawn in the scene
   ['Andromeda Galaxy', 121.2, -21.6, 778, 'none', null, false,
     'The Local Group\'s other giant', [['Type', 'Spiral'], ['Distance', '2.5 million ly'], ['Future', 'merges with the Milky Way in ~4.5 billion yr']],
     'Our twin and our destiny: the Local Group\'s largest galaxy, closing on the Milky Way at 110 km/s. In roughly 4.5 billion years the two will merge into a single giant elliptical.'],
   ['Triangulum Galaxy', 133.6, -31.3, 870, 'none', null, false,
     'The Local Group\'s third spiral', [['Type', 'Spiral'], ['Distance', '2.7 million ly'], ['Note', 'likely a distant companion of Andromeda']],
-    'The smallest of the Local Group\'s three spirals, rich in gas and busy forming stars — probably a far-flung companion of Andromeda.'],
+    'The smallest of the Local Group\'s three spirals, rich in gas and busy forming stars, probably a far-flung companion of Andromeda.'],
   ['Large Magellanic Cloud', 280.5, -32.9, 50, 'none', null, false,
     'Our brightest satellite', [['Type', 'Magellanic irregular'], ['Distance', '163,000 ly'], ['Hosts', 'the Tarantula Nebula']],
-    'The Milky Way\'s brightest companion, home to the Tarantula Nebula — the most violent star-forming region in the Local Group — and site of Supernova 1987A.'],
+    'The Milky Way\'s brightest companion, home to the Tarantula Nebula, the most violent star-forming region in the Local Group, and site of Supernova 1987A.'],
   ['Small Magellanic Cloud', 302.8, -44.3, 62, 'none', null, false,
     'The LMC\'s little sibling', [['Type', 'Dwarf irregular'], ['Distance', '200,000 ly'], ['Note', 'trails the Magellanic Stream']],
     'Together with the LMC it trails the Magellanic Stream, a river of hydrogen stripped out by the Milky Way\'s tides, wrapping half the sky.'],
@@ -3779,6 +3952,7 @@ function applySkyCam() {
   skyCam.position.set(0, 0, 0);
   skyCam.lookAt(dirVec(skyView.lon, skyView.lat));
 }
+const _lookPt = new THREE.Vector3();
 function applyOrbitCam(m) {
   const o = orbits[m], cam = camFor(m);
   o.phi = Math.max(0.05, Math.min(Math.PI - 0.05, o.phi));
@@ -3788,7 +3962,24 @@ function applyOrbitCam(m) {
     o.target.y + o.r * Math.cos(o.phi),
     o.target.z + o.r * Math.sin(o.phi) * Math.sin(o.theta),
   );
-  cam.lookAt(o.target);
+  // A click re-anchors the orbit on a new object with ZERO camera motion (the old
+  // targetGoal glide auto-moved the view; removed at the user's request): lookOff
+  // preserves the exact framing at click time, and the anchor only eases toward
+  // centre as the user themselves zooms in (k shrinks with r). Auto-expires if the
+  // target is repointed by anything else, or once effectively centred.
+  let lookPt = o.target;
+  if (o.lookOff) {
+    if (!o.lookOffAnchor || o.lookOffAnchor.distanceToSquared(o.target) > 1e-9) o.lookOff = null;
+    else {
+      // quadratic in r: the anchor's ANGULAR offset then shrinks linearly as you zoom
+      // in (a linear k keeps it pinned at a constant screen offset forever), while
+      // zooming back out past the click distance restores the original framing exactly
+      const k = Math.min(1, (o.r / (o.lookOffR0 || o.r)) ** 2);
+      if (o.lookOff.lengthSq() * k * k < o.r * o.r * 4e-4) o.lookOff = null;   // converged
+      else lookPt = _lookPt.copy(o.target).addScaledVector(o.lookOff, k);
+    }
+  }
+  cam.lookAt(lookPt);
 }
 
 // ---------------------------------------------------------------- free-flight ("spaceship") camera
@@ -3913,28 +4104,20 @@ function applyDeepCam(dt) {
   try { streamChunks(); } catch (e) { if (!window._scErr) { window._scErr = String(e && e.stack || e); console.error('streamChunks', e); } }
 }
 
-// The one scale transition: arriving at the Sun swaps the continuous deep starfield
-// for the detailed planetary system (solScene), and flying back out returns to deep.
-const _diveDir = new THREE.Vector3();
+// Arriving at the Sun — from the deep continuum's beacon or the stars view's capture —
+// swaps the surrounding starfield for the detailed planetary system (solScene).
+// Flying back out past the planets emerges into the stars view (flyHandoff).
 function diveIntoSystem() {
   crossDissolve();
   setMode('solar', true);
   orbits.solar.follow = null;
   orbits.solar.target.set(0, 0, 0);
   orbits.solar.r = 200; orbits.solar.phi = 1.08; orbits.solar.theta = 0.6;   // ~10 AU: frames the inner system
+  // arriving mid-flight (stars view) flyMode is already true and setFlyMode(true) would
+  // keep the old sub-parsec coords — force the re-seat from the orbit framing above
+  flyMode = false;
   setFlyMode(true);
   thirdPerson = true; flyArmed = false; flyThrottle = false; flyCruise = false;
-  flyShowToggle();
-}
-function diveOutToDeep() {
-  crossDissolve();
-  setMode('deep', true);
-  _diveDir.copy(fly.pos).normalize();                 // continue outward in the direction you left
-  if (_diveDir.lengthSq() < 0.5) _diveDir.set(0, 0, 1);
-  deep.pos.copy(_diveDir).multiplyScalar(SUN_DIVE_PC * 1.4);
-  deep.yaw = Math.atan2(_diveDir.x, _diveDir.z);
-  deep.pitch = Math.asin(Math.max(-1, Math.min(1, _diveDir.y)));
-  flyArmed = false; thirdPerson = true;
   flyShowToggle();
 }
 // "Exit flight" from deep space: return to the solar system and stop flying (orbit it).
@@ -3953,6 +4136,7 @@ function returnHomeFromDeep() {
 // the galaxy scene's frame; the neighborhood scene uses equatorial axes, so rotate.
 const DEEP_TO_NEI = new THREE.Matrix4().makeBasis(
   eqToThree(galToEq(0, 0)), eqToThree(galToEq(0, 90)), eqToThree(galToEq(270, 0)));
+const NEI_TO_DEEP = DEEP_TO_NEI.clone().transpose();   // pure rotation → inverse = transpose
 function exitDeepInPlace() {
   crossDissolve();
   const d = deep.pos.length();
@@ -4392,20 +4576,47 @@ function syncFlyFromOrbit(m) {
   fly.pitch = Math.asin(Math.max(-1, Math.min(1, dir.y)));
   fly.goto = null;
 }
-// write the fly state back into orbit coords so orbiting resumes from here
+// write the fly state back into orbit coords so orbiting resumes from here.
+// Anchor on the rendered camera (the chase cam in third person), not the ship:
+// exiting flight keeps the exact viewpoint, and only the look direction pivots
+// back to the orbit target.
 function syncOrbitFromFly(m) {
   const o = orbits[m];
-  const rel = fly.pos.clone().sub(o.target);
+  const camPos = camFor(m).position;
+  const rel = camPos.clone().sub(o.target);
   o.r = Math.max(0.001, rel.length());
   const dir = rel.clone().normalize();
   o.phi = Math.acos(Math.max(-1, Math.min(1, dir.y)));
   o.theta = Math.atan2(dir.z, dir.x);
   o.follow = null;
+  o.lookOff = null;                    // recomputed framing looks at the target itself
+}
+// Re-anchor an orbit on a new object with ZERO camera motion — position, orientation
+// and framing all hold; the click only changes what scroll zooms toward and drag
+// orbits around. prevLook must be the point the camera is ACTUALLY looking at (with
+// a lookOff still active that is target + lookOff·k, not the target — using the
+// target made every click after the first snap-pivot the view).
+function reanchorOrbit(m, pos) {
+  const o = orbits[m];
+  const k0 = o.lookOff ? Math.min(1, (o.r / (o.lookOffR0 || o.r)) ** 2) : 0;
+  const prevLook = o.lookOff
+    ? o.target.clone().addScaledVector(o.lookOff, k0)
+    : o.target.clone();
+  o.target.copy(pos);
+  syncOrbitFromFly(m);
+  o.lookOff = prevLook.sub(o.target);
+  o.lookOffAnchor = o.target.clone();
+  o.lookOffR0 = o.r;
 }
 // distance-based scale hand-offs while flying — mirror of applyZoom's chain
 // Hard outer walls per scale, kept well inside float32's precision-loss zone (~1e6+),
 // so you can never fly the camera out to where the ship's vertices scatter / coords go NaN.
 const FLY_WALL = { neighborhood: 6000, galaxy: 2500, cosmic: 160 };
+// Inward Sun captures (mirror of the deep-space beacon's dive: hard radius OR aimed-at-
+// the-Sun cone, so flying "at" home works without threading a pixel).
+const NEI_SUN_DIVE_PC = 0.4;        // stars view: this close to the Sun, dive into the planetary system
+const GAL_SUN_APPROACH_KPC = 1.2;   // galaxy map: aimed-capture range of the Sun marker — capped so the
+                                    // landing point stays inside the stars view's real catalog (~1.2 kpc)
 function flyHandoff(m) {
   // NaN/Infinity guard: extreme speed × distance could overflow float32 and would otherwise
   // scatter the ship and freeze the whole render loop. Snap back to a safe vantage instead.
@@ -4414,9 +4625,93 @@ function flyHandoff(m) {
     flyThrottle = false; flyCruise = false; flySpeed = 1;
     return;
   }
-  // The shell chain is retired: the only transition is solar → the deep continuum
-  // when you fly past the planetary system's edge. Everything beyond is deepScene.
-  if (m === 'solar') { if (fly.pos.length() > 3800) diveOutToDeep(); return; }
+  if (fly.attach) return;                    // riding a "view from here" vantage — never hand off
+  // Flying past the planetary system's edge emerges into interstellar space (the stars
+  // view) — the outward mirror of the Sun capture below, so the flight ladder chains
+  // solar ↔ neighborhood ↔ galaxy. The deep "fly forever" continuum stays a special
+  // destination (the Sgr A* card's deep approach) rather than the default exit.
+  if (m === 'solar') {
+    if (fly.pos.length() > 3800) {
+      crossDissolve();
+      const dir = fly.pos.clone().normalize();
+      const f = flyForward().clone();
+      setMode('neighborhood', true);
+      const o = orbits.neighborhood;
+      o.follow = null; o.target.set(0, 0, 0);
+      fly.pos.copy(dir).multiplyScalar(2.5);   // re-emerge 2.5 pc out — clear of the 1.6 pc inward capture
+      fly.yaw = Math.atan2(f.x, f.z);
+      fly.pitch = Math.asin(Math.max(-1, Math.min(1, f.y)));
+    }
+    return;
+  }
+  // spatial hand-offs between the galaxy map and the stars view: position carries
+  // over exactly (kpc ↔ pc, galactic ↔ equatorial axes), so flying home to the
+  // Sun's marker on the galaxy map lands you among the local stars right there,
+  // and flying far past the local stars pops you out onto the galaxy map.
+  if (m === 'galaxy') {
+    const dSun = fly.pos.distanceTo(SUN_GAL);
+    _toSun.copy(SUN_GAL).sub(fly.pos).normalize();
+    if (dSun < 0.55 || (dSun < GAL_SUN_APPROACH_KPC && flyForward().dot(_toSun) > SUN_CONE_DOT)) {
+      crossDissolve();
+      const p = fly.pos.clone().sub(SUN_GAL).multiplyScalar(1000).applyMatrix4(DEEP_TO_NEI);
+      const f = flyForward().clone().applyMatrix4(DEEP_TO_NEI);
+      setMode('neighborhood', true);
+      const o = orbits.neighborhood;
+      o.follow = null; o.target.set(0, 0, 0);
+      fly.pos.copy(p);
+      fly.yaw = Math.atan2(f.x, f.z);
+      fly.pitch = Math.asin(Math.max(-1, Math.min(1, f.y)));
+      return;
+    }
+    // flying far past the Local Group pops out into the cosmic web — the fly-mode
+    // mirror of applyZoom's galaxy→cosmic handoff (fires inside the 2500 kpc wall)
+    if (fly.pos.length() > 2000) {
+      crossDissolve();
+      const dir = fly.pos.clone().normalize();
+      const f = flyForward().clone();
+      setMode('cosmic', true);
+      const o = orbits.cosmic;
+      o.follow = null; o.target.set(0, 0, 0);
+      fly.pos.copy(dir).multiplyScalar(7);     // matches the zoom chain's cosmic entry framing
+      fly.yaw = Math.atan2(f.x, f.z);
+      fly.pitch = Math.asin(Math.max(-1, Math.min(1, f.y)));
+      return;
+    }
+  }
+  if (m === 'cosmic' && fly.pos.length() < 3.2) {
+    // dive back into the Local Group — lands at 1500 kpc, clear of the 2000 outward exit
+    crossDissolve();
+    const dir = fly.pos.lengthSq() < 0.25 ? new THREE.Vector3(0.3, 0.2, 1).normalize() : fly.pos.clone().normalize();
+    const f = flyForward().clone();
+    setMode('galaxy', true);
+    const o = orbits.galaxy;
+    o.follow = null; o.target.set(0, 0, 0);
+    fly.pos.copy(dir).multiplyScalar(1500);
+    fly.yaw = Math.atan2(f.x, f.z);
+    fly.pitch = Math.asin(Math.max(-1, Math.min(1, f.y)));
+    return;
+  }
+  if (m === 'neighborhood') {
+    // flying home: the inward mirror of applyZoom's neighborhood→solar handoff
+    const dSun = fly.pos.length();
+    _toSun.copy(fly.pos).multiplyScalar(-1).normalize();
+    if (dSun < NEI_SUN_DIVE_PC || (dSun < SUN_APPROACH_PC && flyForward().dot(_toSun) > SUN_CONE_DOT)) {
+      diveIntoSystem();
+      return;
+    }
+    if (dSun > 2000) {
+      crossDissolve();
+      const p = fly.pos.clone().applyMatrix4(NEI_TO_DEEP).multiplyScalar(0.001).add(SUN_GAL);
+      const f = flyForward().clone().applyMatrix4(NEI_TO_DEEP);
+      setMode('galaxy', true);
+      const o = orbits.galaxy;
+      o.follow = null; o.target.set(0, 0, 0);
+      fly.pos.copy(p);
+      fly.yaw = Math.atan2(f.x, f.z);
+      fly.pitch = Math.asin(Math.max(-1, Math.min(1, f.y)));
+      return;
+    }
+  }
   // Every other scale stops at a hard wall at the edge of its scene rather than letting you
   // fly off into the precision-death zone (which broke the ship apart and hung the game).
   const wall = FLY_WALL[m];
@@ -4476,6 +4771,9 @@ function applyFlyCam(m, dt) {
   const f2 = flyForward();
   if (thirdPerson) {
     if (shipModel.parent !== sceneFor(m)) sceneFor(m).add(shipModel);
+    // the fill light travels with the ship between scenes (it lived only in the
+    // solar scene, leaving the ship unlit in the stars/galaxy/cosmic views)
+    if (shipFillLight.parent !== sceneFor(m)) sceneFor(m).add(shipFillLight);
     shipModel.visible = true;
     // Ship scale proportional to scene but capped; camera always the same number of
     // ship-lengths behind so the ship occupies a consistent portion of the frame.
@@ -4490,6 +4788,7 @@ function applyFlyCam(m, dt) {
     shipModel.quaternion.copy(_shipQ.setFromUnitVectors(SHIP_FWD, f2));
     // Fill light: close to camera so it always illuminates the ship face we can see
     shipFillLight.position.copy(fly.pos).addScaledVector(f2, -camDist * 0.4).addScaledVector(_wup, camDist * 0.6);
+    shipFillLight.intensity = SHIP_LIGHT_I(camDist);
     shipFillLight.visible = true;
     const throttleOn = flyThrottle || flyCruise;
     const nowS = performance.now() / 1000;
@@ -4527,26 +4826,41 @@ function flyCollide(m) {
 const _zeroV = new THREE.Vector3();
 // double-click an object to fly to and frame it
 const flyHud = document.getElementById('fly-hud');
+const flyBtn = document.getElementById('fly-btn');
 const crosshair = document.getElementById('crosshair');
 const flyArmPrompt = document.getElementById('fly-arm');
 const fadeEl = document.getElementById('fade');
 let flyHudHidden = true;                       // spaceship-controls panel off by default — only the menu shows it (not F)
 function flyShowToggle() {
-  const active = (flyMode && FLY_MODES.has(mode)) || mode === 'deep';   // the top Fly button was removed; flying is via F / double-click
-  flyHud.classList.toggle('show', active && !flyHudHidden);
+  const active = (flyMode && FLY_MODES.has(mode)) || mode === 'deep';   // flying is via F / double-click / the touch 🚀 button
+  // on touch the HUD is the only set of flight controls — always show it while flying
+  flyHud.classList.toggle('show', active && (!flyHudHidden || TOUCH_UI));
   crosshair.classList.toggle('show', active);
   flyArmPrompt.classList.toggle('show', active && !flyArmed);
   const cr = document.getElementById('fh-cruise');
-  if (cr) { cr.textContent = flyCruise ? 'CRUISING — Space to stop' : 'cruise (hands-free)'; cr.style.color = flyCruise ? 'var(--accent)' : ''; }
+  if (cr) { cr.textContent = flyCruise ? 'CRUISING · Space to stop' : 'cruise (hands-free)'; cr.style.color = flyCruise ? 'var(--accent)' : ''; }
   const vw = document.getElementById('fh-view');
-  if (vw) { vw.textContent = thirdPerson ? 'THIRD person — V for cockpit' : '1st / 3rd person'; vw.style.color = thirdPerson ? 'var(--accent)' : ''; }
+  if (vw) { vw.textContent = thirdPerson ? 'THIRD person · V for cockpit' : '1st / 3rd person'; vw.style.color = thirdPerson ? 'var(--accent)' : ''; }
   const sp = document.getElementById('fh-speed');
   if (sp) sp.textContent = flySpeed.toFixed(flySpeed < 1 ? 2 : 1) + '×';
+  // touch controls mirror the key-bound state
+  const cb = document.getElementById('fh-cruise-btn');
+  if (cb) { cb.classList.toggle('active', flyCruise); cb.textContent = flyCruise ? '⏸ Cruising' : '⏵ Cruise'; }
+  const vb = document.getElementById('fh-view-btn');
+  if (vb) vb.textContent = thirdPerson ? '👁 3rd person' : '👁 1st person';
+  // the 🚀 door into flight: touch only, flyable scales only, gone while flying
+  flyBtn.style.display = TOUCH_UI && !active && FLY_MODES.has(mode) ? 'block' : 'none';
 }
 function setFlyMode(on) {
   if (!FLY_MODES.has(mode)) on = false;
   if (on) exitRideAlong();   // rideAlong and fly are mutually exclusive
-  if (on && !flyMode) { syncFlyFromOrbit(mode); flyArmed = false; flyThrottle = false; thirdPerson = true; }
+  if (on && !flyMode) {
+    syncFlyFromOrbit(mode); flyThrottle = false; thirdPerson = true;
+    // touch: no persistent cursor to bring to the centre — arm immediately with the
+    // stick neutral, so nothing turns until a finger is actually down
+    flyArmed = TOUCH_UI;
+    if (TOUCH_UI) { mouseNDC.x = 0; mouseNDC.y = 0; }
+  }
   else if (!on && flyMode) syncOrbitFromFly(mode);
   flyMode = on;
   if (!on) { flyCruise = false; fly.attach = null; shipModel.visible = false; }
@@ -4557,12 +4871,29 @@ const flyish = () => (flyMode && FLY_MODES.has(mode)) || mode === 'deep';
 function setFlySpeed(mult) { flySpeed = Math.max(0.15, Math.min(12, mult)); flyShowToggle(); }
 document.getElementById('fh-slower').onclick = () => setFlySpeed(flySpeed / 1.4);
 document.getElementById('fh-faster').onclick = () => setFlySpeed(flySpeed * 1.4);
+// touch flight: 🚀 takes the controls with the ship at rest — same as F on desktop.
+// ⏵ Cruise (or holding a finger) gets it moving; the HUD's buttons stand in for Space / V / F
+flyBtn.onclick = () => { setFlyMode(true); flyShowToggle(); };
+document.getElementById('fh-cruise-btn').onclick = () => {
+  flyCruise = !flyCruise;
+  if (flyCruise) fly.goto = null;
+  flyShowToggle();
+};
+document.getElementById('fh-view-btn').onclick = () => { thirdPerson = !thirdPerson; flyShowToggle(); };
+document.getElementById('fh-exit').onclick = () => {
+  if (mode === 'deep') exitDeepInPlace();   // same meaning as F: stop flying, stay here
+  else setFlyMode(false);
+};
 
 // double-click destination: aim a fly-to at whatever is under the cursor
 const _fndc = new THREE.Vector2(), _fray = new THREE.Raycaster();
 function flyToObject(cx, cy) {
   if (!FLY_MODES.has(mode)) return;
   if (!flyMode) setFlyMode(true);
+  // the cursor is wherever the double-click landed — as a live flight stick it would
+  // deflect and cancel this glide next frame; disengage until the user re-centres it
+  // (touch has no persistent cursor: the stick is already neutral there)
+  if (!TOUCH_UI) flyArmed = false;
   _fndc.set((cx / innerWidth) * 2 - 1, -(cy / innerHeight) * 2 + 1);
   _fray.setFromCamera(_fndc, camFor(mode));
   const dir = _fray.ray.direction;
@@ -4677,6 +5008,9 @@ let lastTapT = 0, lastTapX = 0, lastTapY = 0;
 addEventListener('pointerup', (e) => {
   dropPointer(e);
   flyThrottle = false;
+  // touch: the finger IS the flight stick — lifting it recentres, so the ship flies
+  // straight instead of turning forever toward wherever the screen was last touched
+  if (e.pointerType === 'touch' && livePointers.size === 0) releaseFlightStick();
   if (!dragging || wasPinch) return;
   if (livePointers.size === 0) dragging = false;
   const dist = Math.hypot(e.clientX - downX, e.clientY - downY);
@@ -4720,16 +5054,30 @@ function applyZoom(f) {
   } else if (mode === 'neighborhood') {
     if (o.r > 2900) { setMode('galaxy'); orbits.galaxy.follow = null; orbits.galaxy.target.set(0, 0, 0); orbits.galaxy.r = 3.2; return; }
     if (o.r < 1.6) {
-      setMode('solar');
-      orbits.solar.follow = null;
-      orbits.solar.target.set(0, 0, 0);
-      orbits.solar.r = 3500;
-      return;
+      // the inward hand-off leads to OUR solar system, so it only makes sense
+      // when the orbit is anchored at the Sun. Focused on another star, zooming
+      // in gets you close to that star instead of teleporting home.
+      if (o.target.lengthSq() < 0.25) {
+        setMode('solar');
+        orbits.solar.follow = null;
+        orbits.solar.target.set(0, 0, 0);
+        orbits.solar.r = 3500;
+        return;
+      }
+      o.r = Math.max(0.05, o.r);
     }
   } else if (mode === 'galaxy') {
     // zoom in → drop to the stellar neighbourhood (so you can always continue inward to the
-    // solar system instead of getting pinned at Sgr A* in the galactic centre)
-    if (o.r < 2.0) { toNeighborhood(2700); return; }
+    // solar system instead of getting pinned at Sgr A* in the galactic centre) — but only
+    // while anchored inside the Milky Way's disc; zooming into a clicked Local Group
+    // galaxy (Andromeda &c) closes in on IT rather than teleporting home
+    if (o.r < 2.0) {
+      // "home" = anchored within 10 kpc of the centre (covers the default centre anchor
+      // and the Sun at 8.2 kpc, excludes every Local Group member — the nearest,
+      // the Sagittarius Dwarf, sits 18 kpc out)
+      if (o.target.lengthSq() < 100) { toNeighborhood(2700); return; }
+      o.r = Math.max(0.4, o.r);
+    }
     if (o.r > 1700) { setMode('cosmic'); orbits.cosmic.r = 7; return; }   // zoom out → cosmic web
     o.r = Math.min(1700, o.r);
   } else if (mode === 'cosmic') {
@@ -4847,11 +5195,25 @@ const infocard = document.getElementById('infocard');
 const infoName = document.getElementById('info-name');
 const infoSub = document.getElementById('info-sub');
 const infoRows = document.getElementById('info-rows');
-document.getElementById('info-close').onclick = () => { infocard.classList.remove('open'); selMark.visible = false; neiSelMark.visible = false; };
+document.getElementById('info-close').onclick = () => { infocard.classList.remove('open'); selMark.visible = false; neiSelMark.visible = false; galSelMark.visible = false; };
 
 function showInfo(title, sub, rows, doc, pov, action) {
   infoName.textContent = title;
   infoSub.textContent = sub;
+  // shareable deep link (?focus=) for anything the search index can find again
+  const linkBtn = document.getElementById('info-link');
+  const linkable = typeof searchIndex !== 'undefined' && searchIndex.some((x) => x.label === title);
+  linkBtn.style.display = linkable ? 'block' : 'none';
+  if (linkable) {
+    linkBtn.textContent = '🔗';
+    linkBtn.onclick = () => {
+      const url = `${location.origin}${location.pathname}?focus=${encodeURIComponent(title)}&welcomed`;
+      const done = () => { linkBtn.textContent = '✓'; setTimeout(() => { linkBtn.textContent = '🔗'; }, 1200); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(done, () => prompt('Link to this object:', url));
+      } else prompt('Link to this object:', url);
+    };
+  }
   infoRows.innerHTML = (doc ? `<div class="info-doc">${doc}</div>` : '') + rows
     .map(([k, v]) => `<div class="info-row"><span class="k">${k}</span><span>${v}</span></div>`)
     .join('') + (pov ? '<button id="info-pov" class="minibtn" style="margin-top:11px">👁  View from here</button>' : '')
@@ -4862,14 +5224,40 @@ function showInfo(title, sub, rows, doc, pov, action) {
   if (action && action.label) document.getElementById('info-action').onclick = action.fn;
 }
 // place the fly camera at an object so you see the universe from its vantage point
+let liveSat = null;                       // satellite whose card shows live numbers
+function fmtLatLon(lat, lon) {
+  return `${Math.abs(lat).toFixed(1)}°${lat >= 0 ? 'N' : 'S'} ${Math.abs(lon).toFixed(1)}°${lon >= 0 ? 'E' : 'W'}`;
+}
 function showSatInfo(s) {
   const periodMin = ((2 * Math.PI) / s.speed / 60).toFixed(1);
   const orbitsPerDay = (1440 / +periodMin).toFixed(2);
+  if (s.satrec && s.live) {
+    // real elements: show the live numbers, updating while the card is open
+    showInfo(s.name, 'Earth satellite · live orbit (TLE)',
+      [['Altitude now', `<span id="live-alt">${Math.round(s.live.altKm).toLocaleString()}</span> km`],
+       ['Speed now', `<span id="live-spd">${s.live.speed.toFixed(2)}</span> km/s`],
+       ['Above', `<span id="live-pos">${fmtLatLon(s.live.lat, s.live.lon)}</span>`],
+       ['Orbital period', `${periodMin} min (${orbitsPerDay} orbits/day)`],
+       ['Elements', TLE_FETCHED ? `Celestrak, ${TLE_FETCHED}` : 'Celestrak TLE']],
+      s.doc, { obj: s, lookEarth: true });
+    liveSat = s;
+    return;
+  }
   showInfo(s.name, 'Earth satellite / spacecraft',
     [['Altitude', s.altKm >= 1000 ? (s.altKm / 1000).toFixed(3) + ' million km' : s.altKm + ' km'],
      ['Orbital period', `${periodMin} min (${orbitsPerDay} orbits/day)`]],
     s.doc, { obj: s, lookEarth: true });
 }
+// refresh the open card's live numbers once a second
+setInterval(() => {
+  if (!liveSat || !liveSat.live || !infocard.classList.contains('open')) return;
+  const a = document.getElementById('live-alt'), sp = document.getElementById('live-spd'),
+    p = document.getElementById('live-pos');
+  if (!a) { liveSat = null; return; }                    // card moved on to another object
+  a.textContent = Math.round(liveSat.live.altKm).toLocaleString();
+  sp.textContent = liveSat.live.speed.toFixed(2);
+  p.textContent = fmtLatLon(liveSat.live.lat, liveSat.live.lon);
+}, 1000);
 
 // rideAlong: lock solCam to a moving object's POV without enabling fly mode.
 // The camera sits at the object's world position looking toward its reference body.
@@ -4888,6 +5276,7 @@ function exitRideAlong() {
   orbits.solar.follow = 'Earth';
   orbits.solar.r = Math.max(3, orbits.solar.r);
   rideAlong = null;
+  document.body.classList.remove('riding');
   document.getElementById('ride-exit')?.remove();
 }
 
@@ -4930,14 +5319,12 @@ function viewFromObject(pov) {
   rideAlong = { getPos, getLook, up: upGet, label: obj.name || 'object' };
   orbits.solar.follow = null;
   infocard.classList.remove('open');
+  document.body.classList.add('riding');   // the scale readout describes the orbit view — hide it here
   // Show a small exit banner so the user knows how to get back
   let banner = document.getElementById('ride-exit');
   if (!banner) {
     banner = document.createElement('div');
-    banner.id = 'ride-exit';
-    banner.style.cssText = 'position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:20;' +
-      'background:rgba(13,20,34,0.82);border:1px solid rgba(120,160,220,0.18);border-radius:8px;' +
-      'padding:7px 16px;font-size:12px;color:#8aa0c0;backdrop-filter:blur(12px)';
+    banner.id = 'ride-exit';                       // positioned & styled in index.html CSS
     document.body.appendChild(banner);
   }
   banner.innerHTML = `👁 Viewing from <b style="color:#d6e2f5">${rideAlong.label}</b> &nbsp;·&nbsp; <span style="cursor:pointer;color:#7fb4ff" onclick="window.U&&window.U.exitRideAlong()">✕ Exit</span>`;
@@ -4998,7 +5385,8 @@ function starInfo(i) {
   } else rows.push(['Distance', 'unknown']);
   if (STARS.spect[i]) rows.push(['Spectral type', STARS.spect[i]]);
   rows.push(['Color index B−V', STARS.ci[i].toFixed(2)]);
-  rows.push(['RA / Dec', `${(STARS.ra[i] / 15).toFixed(2)}h / ${STARS.dec[i].toFixed(1)}°`]);
+  { const [sra, sdec] = starRaDec(i);
+    rows.push(['RA / Dec', `${(sra / 15).toFixed(2)}h / ${sdec.toFixed(1)}°`]); }
   if (conAbbr && conFull[conAbbr]) rows.push(['Constellation', conFull[conAbbr]]);
   // real planetary system, if the NASA archive knows one for this star
   const exoIdx = exoForStar([STARS.names[i], STARS.desig[i], ...catIds]);
@@ -5038,7 +5426,12 @@ function bodyInfo(name, jd) {
   if (info.extra) rows.push(...info.extra);
   // offer a vantage-point view from any solar body (looks back toward the Sun)
   const pov = solBodies[name] ? { obj: solBodies[name] } : null;
-  showInfo(name, info.type, rows, null, pov);
+  // the Sun's card is the front door to the deep continuum near home — drop into
+  // free flight a few pc out, facing the home beacon (flying at it dives back in)
+  const action = name === 'Sun'
+    ? { label: '🚀  Free-fly the solar neighbourhood', fn: () => flyToDeep(2.5, 1.2, 2.5, new THREE.Vector3(0, 0, 0)) }
+    : null;
+  showInfo(name, info.type, rows, null, pov, action);
 }
 
 // ---------------------------------------------------------------- picking
@@ -5130,7 +5523,14 @@ function handleClick(cx, cy) {
       const px = Math.hypot((v.x - ndc.x) * innerWidth / 2, (v.y - ndc.y) * innerHeight / 2);
       if (px < 20 && (!best || px < best.px)) best = { px, G };
     }
-    if (best) showInfo(best.G.name, best.G.sub, best.G.rows, best.G.doc);
+    if (best) {
+      showInfo(best.G.name, best.G.sub, best.G.rows, best.G.doc);
+      // same click semantics as the stars view: ring it, and make it the zoom/orbit
+      // reference without moving the camera — zooming then closes in on that galaxy
+      galSelMark.position.copy(best.G.pos);
+      galSelMark.visible = true;
+      reanchorOrbit('galaxy', best.G.pos);
+    }
   } else if (mode === 'solar') {
     let best = null;
     const v = new THREE.Vector3();
@@ -5231,7 +5631,7 @@ function handleClick(cx, cy) {
     } else if (best && best.sat) {
       showSatInfo(best.sat);
     } else if (best && best.site) {
-      showInfo(best.site.name, 'Lunar surface — landing site', [], best.site.doc, { obj: best.site, surfaceBody: 'Moon' });
+      showInfo(best.site.name, 'Lunar surface · landing site', [], best.site.doc, { obj: best.site, surfaceBody: 'Moon' });
     } else if (best && best.moon) {
       const mo = best.moon;
       showInfo(mo.name, `Moon of ${mo.parent}`, [
@@ -5272,24 +5672,48 @@ function handleClick(cx, cy) {
       if (bi >= 0) starInfo(bi);
     }
   } else if (mode === 'neighborhood') {
-    // nearest projected star within 14 px
+    // Every rendered star is clickable (the old mag>7-unless-named gate made most of
+    // the field dead to clicks — Earth-apparent magnitude means nothing once you've
+    // flown 500 pc from home). Within reach of the cursor, candidates are scored by
+    // their apparent brightness FROM THE CAMERA (luminosity over camera-distance²)
+    // over pixel distance, so the big star you can see beats a faint background dot
+    // that happens to project a pixel closer to the click.
     const idxs = neiScene.userData.starIdxs;
-    const v = new THREE.Vector3();
-    let bi = -1, bp = 14;
+    const v = new THREE.Vector3(), w = new THREE.Vector3();
+    const camPos = camFor('neighborhood').position;
+    let bi = -1, bp = 14, bs = 0;
     for (let k = 0; k < idxs.length; k++) {
       const i = idxs[k];
-      if (STARS.mag[i] > 7 && !STARS.names[i]) continue;
       const dd = STARS.dist[i];
-      v.set(dirs[i * 3] * dd, dirs[i * 3 + 1] * dd, dirs[i * 3 + 2] * dd).project(neiCam);
+      w.set(dirs[i * 3] * dd, dirs[i * 3 + 1] * dd, dirs[i * 3 + 2] * dd);
+      v.copy(w).project(neiCam);
       if (v.z > 1) continue;
       const px = Math.hypot((v.x - ndc.x) * innerWidth / 2, (v.y - ndc.y) * innerHeight / 2);
-      if (px < bp) { bp = px; bi = i; }
+      if (px > 14) continue;
+      // Earth-normalized brightness rescaled to the camera's vantage; ~mag 12.5 floor
+      // so a click on genuinely dark sky stays a no-op instead of surfacing a dot
+      const b = Math.pow(10, -0.4 * STARS.mag[i]) * dd * dd / Math.max(1e-6, w.distanceToSquared(camPos));
+      if (b < 1e-5) continue;
+      const score = b / (px + 4);
+      if (score > bs) { bs = score; bi = i; bp = px; }
     }
-    if (bi >= 0) {
+    // the Sun isn't a catalog star: give it its own hit test, or a click on it
+    // grabs whatever faint star projects nearby and drags the camera off to it
+    let sunPx = Infinity;
+    v.set(0, 0, 0).project(neiCam);
+    if (v.z <= 1) sunPx = Math.hypot((v.x - ndc.x) * innerWidth / 2, (v.y - ndc.y) * innerHeight / 2);
+    const o = orbits.neighborhood;
+    if (sunPx < 16 && sunPx <= bp) {
+      bodyInfo('Sun', time.jd);
+      neiSelMark.position.set(0, 0, 0);
+      neiSelMark.visible = true;
+      reanchorOrbit('neighborhood', neiSelMark.position);
+    } else if (bi >= 0) {
       starInfo(bi);
       const dd = STARS.dist[bi];
       neiSelMark.position.set(dirs[bi * 3] * dd, dirs[bi * 3 + 1] * dd, dirs[bi * 3 + 2] * dd);
-      neiSelMark.visible = true;     // just ring the star — don't recentre/jump the camera
+      neiSelMark.visible = true;
+      reanchorOrbit('neighborhood', neiSelMark.position);
     }
   }
 }
@@ -5375,6 +5799,12 @@ const searchIndex = [];
     searchIndex.push({ label: dso[0], type: dso[4], dsoIdx: i });
   });
   for (const s of SATS_RT) searchIndex.push({ label: s.name, type: 'sat', sat: s });
+  // craft indexed under short labels should also match their everyday names
+  for (const [alias, of] of [['James Webb Space Telescope', 'JWST'],
+                             ['International Space Station', 'ISS']]) {
+    const t = SATS_RT.find(s => s.name === of);
+    if (t) searchIndex.push({ label: alias, type: 'sat', sat: t });
+  }
   for (const s of LUNAR_RT) searchIndex.push({ label: s.name, type: 'lunarsite', site: s });
   for (const mo of MOONS_RT) searchIndex.push({ label: mo.name, type: 'moon', moon: mo });
   PHENOMENA.forEach((ph, i) => {
@@ -5437,7 +5867,7 @@ function gotoTarget(t) {
     showSatInfo(t.sat);
   } else if (t.type === 'lunarsite') {
     jumpToPoint(solBodies.Moon.pos.clone(), displayRadius('Moon'), 'Earth');
-    showInfo(t.site.name, 'Lunar surface — landing site', [], t.site.doc, { obj: t.site, surfaceBody: 'Moon' });
+    showInfo(t.site.name, 'Lunar surface · landing site', [], t.site.doc, { obj: t.site, surfaceBody: 'Moon' });
   } else if (t.type === 'moon') {
     jumpToPoint(t.moon.world.clone(), 0.18, t.moon.parent);
     showInfo(t.moon.name, `Moon of ${t.moon.parent}`, [
@@ -5497,8 +5927,8 @@ function gotoTarget(t) {
     orbits.neighborhood.r = 2.2;
     showInfo('Oort Cloud', 'The Sun\'s comet reservoir · 0.01–0.5 parsecs',
       [['True extent', '2,000 – 100,000 AU'], ['Contents', 'trillions of icy bodies'],
-       ['Sends us', 'the long-period comets'], ['Directly observed', 'never — inferred from comets']],
-      'The Sun\'s deep-freeze: a spherical cloud of icy debris left over from planet formation, reaching a quarter of the way to Alpha Centauri. Every long-period comet — Hale-Bopp, NEOWISE — is an Oort cloud body nudged sunward by a passing star or the galaxy\'s tide. No telescope has ever seen it directly; we know it only by the comets it sends.');
+       ['Sends us', 'the long-period comets'], ['Directly observed', 'never, inferred from comets']],
+      'The Sun\'s deep-freeze: a spherical cloud of icy debris left over from planet formation, reaching a quarter of the way to Alpha Centauri. Every long-period comet (Hale-Bopp, NEOWISE) is an Oort cloud body nudged sunward by a passing star or the galaxy\'s tide. No telescope has ever seen it directly; we know it only by the comets it sends.');
   } else {
     const dso = DSOS[t.dsoIdx];
     frameSkyDir(dsoDirs[t.dsoIdx]);
@@ -5571,7 +6001,7 @@ searchInput.addEventListener('input', () => {
   searchItems = [...cat, ...exact, ...starts, ...contains].slice(0, 8);
   if (!searchItems.length) {
     searchResults.innerHTML =
-      '<div class="sr-empty">No matches — try a star, planet, constellation, or an HD/HIP number</div>';
+      '<div class="sr-empty">No matches. Try a star, planet, constellation, or an HD/HIP number</div>';
     searchResults.classList.add('open');
   } else renderSearch(searchItems);
 });
@@ -5668,6 +6098,7 @@ function setMode(m, fromHandoff = false) {
   infocard.classList.remove('open');
   selMark.visible = false;
   neiSelMark.visible = false;
+  galSelMark.visible = false;
   rescaleLabels(m);
   onResize();
   if (!FLY_MODES.has(m)) flyMode = false;                // sky / black hole are orbit-only
@@ -6050,7 +6481,10 @@ function updateEarthPointer() {
     : distAU.toFixed(distAU < 10 ? 2 : distAU < 100 ? 1 : 0) + ' AU');
 }
 bind('rg-mag', (el) => { starUniforms.uMagLimit.value = +el.value; });
-bind('rg-size', (el) => { starUniforms.uSizeScale.value = +el.value; });
+bind('rg-size', (el) => {
+  starUniforms.uSizeScale.value = +el.value;
+  solStarSize.value = +el.value * 0.55;      // solar backdrop tracks the slider at its crisper scale
+});
 
 // ------------------------------------------- controls panel: sections, presets, persistence
 const panelEl = document.getElementById('panel');
@@ -6168,6 +6602,55 @@ refreshTimeUI();
 rescaleLabels('sky'); rescaleLabels('solar'); rescaleLabels('neighborhood'); rescaleLabels('galaxy');
 setLoad(1);
 
+// ---- adaptive quality: hold the frame rate by stepping the render resolution ----
+// A smoothed FPS estimate drives the renderer's pixel ratio between 1.0 and the
+// device cap: sustained drops below ~40fps step it down a quarter at a time,
+// sustained headroom above ~55fps steps it back up. Hysteresis plus a cooldown
+// keeps it from oscillating; a device that never struggles never changes.
+const quality = {
+  pr: Math.min(devicePixelRatio, MAX_PIXEL_RATIO),
+  fpsEma: 60, lastAdjust: 0,
+};
+window.U_QUALITY = quality;                       // observable for debugging
+quality.tick = (now, dt) => adaptQuality(now, dt);   // drivable in tests / console
+function adaptQuality(now, dt) {
+  if (dt <= 0 || dt > 0.5 || document.hidden) return;   // ignore stalls/background ticks
+  quality.fpsEma += (1 / dt - quality.fpsEma) * 0.05;   // ~1s smoothing at 60fps
+  if (now - quality.lastAdjust < 2500) return;          // cooldown between steps
+  const cap = Math.min(devicePixelRatio, MAX_PIXEL_RATIO);
+  let next = quality.pr;
+  if (quality.fpsEma < 40 && quality.pr > 1.0) next = Math.max(1.0, quality.pr - 0.25);
+  else if (quality.fpsEma > 55 && quality.pr < cap) next = Math.min(cap, quality.pr + 0.25);
+  if (next !== quality.pr) {
+    quality.pr = next;
+    quality.lastAdjust = now;
+    quality.fpsEma = 48;                                // re-measure from neutral after a step
+    renderer.setPixelRatio(next);
+    renderer.setSize(innerWidth, innerHeight);
+    POST.resize();
+    starUniforms.uPR.value = next;                      // point sprites track the resolution
+  }
+}
+// feed the composite pass the black hole's on-screen position and apparent size,
+// so the gravitational-lens warp tracks Sgr A* precisely (galaxy view only)
+const _bhNdc = new THREE.Vector3();
+function updateBHLens() {
+  const u = POST.compMat.uniforms;
+  if (mode !== 'galaxy' || !galBH.visible) { u.uLensOn.value = 0; return; }
+  const cam = galCam;
+  const camDist = cam.position.length();               // the hole sits at the scene origin
+  _bhNdc.set(0, 0, 0).project(cam);
+  if (_bhNdc.z > 1 || camDist < 0.7) { u.uLensOn.value = 0; return; }
+  const RS = 0.5;
+  const halfFov = Math.tan(cam.fov * DEG / 2);
+  const thetaShadow = Math.asin(Math.min(1, RS / camDist));
+  const rShadow = Math.tan(Math.min(1.2, thetaShadow)) / (2 * halfFov);   // height-normalized
+  const rE = rShadow * 1.18;                            // Einstein radius: lensed light hugs the shadow
+  u.uLens.value.set((_bhNdc.x + 1) / 2, (_bhNdc.y + 1) / 2, rE, rShadow);
+  u.uAspect.value = innerWidth / innerHeight;
+  // ramp in once the hole is more than a speck; full strength as it grows
+  u.uLensOn.value = Math.max(0, Math.min(1, (rShadow - 0.004) / 0.012));
+}
 let lastT = performance.now();
 let _lastDate = '';                          // cache for the per-frame date readout (skip unchanged DOM writes)
 function animate(now) {
@@ -6175,6 +6658,7 @@ function animate(now) {
   window._animFrames = (window._animFrames || 0) + 1;
   try {
   const dt = Math.min(0.1, (now - lastT) / 1000);
+  adaptQuality(now, (now - lastT) / 1000);
   lastT = now;
 
   if (time.running) {
@@ -6182,6 +6666,7 @@ function animate(now) {
   }
   starUniforms.uTime.value = now / 1000;
   applyHeldKeys(dt);
+  updateBHLens();
 
   if (mode === 'deep') {
     applyDeepCam(dt);
@@ -6233,6 +6718,19 @@ function animate(now) {
       }
       // Oort cloud only at close zoom — farther out its points stack into a false dot
       neiScene.userData.oort.visible = r < 12;
+      // Sun approach halo — fades in over the capture zone (ship in flight, else camera)
+      const halo = neiScene.userData.sunHalo;
+      const dS = (flyMode ? fly.pos : camFor('neighborhood').position).length();
+      const near = 1 - Math.min(1, (dS - NEI_SUN_DIVE_PC) / (SUN_APPROACH_PC - NEI_SUN_DIVE_PC));
+      halo.visible = near > 0.001;
+      if (halo.visible) {
+        const base = Math.max(dS * 0.16, 0.02);
+        for (const rg of halo.userData.rings) {
+          const s = base * rg.userData.k;
+          rg.scale.set(s, s, 1);
+          rg.material.opacity = near * 0.6;
+        }
+      }
     }
     if (mode === 'galaxy') {
       const gr = orbits.galaxy.r;
@@ -6324,34 +6822,40 @@ window.U = {
       text: 'Eight planets moving at their real positions for today’s date, computed from NASA orbital elements. Drag to look around; scroll to zoom.' },
     { mode: 'solar', r0: 60, r1: 90, phi: 1.05, timeIdx: 9, hi: '#timebar',
       title: 'You are watching the future',
-      text: 'The clock is running at a week per second — press ▶▶ for faster futures, ◀◀ to rewind into the past, ❚❚ to freeze a moment. Click the date to jump anywhere from the year 1000 to 3000 — try 1054, when a supernova outshone Venus. Every planet follows its real orbit the whole way.' },
+      text: 'The clock is running at a week per second: press ▶▶ for faster futures, ◀◀ to rewind into the past, ❚❚ to freeze a moment. Click the date to jump anywhere from the year 1000 to 3000. Try 1054, when a supernova outshone Venus. Every planet follows its real orbit the whole way.' },
     { mode: 'solar', follow: 'Earth', r0: 2.2, r1: 5.5, phi: 1.2,
       title: 'Ride along with a satellite',
-      text: 'Home, up close — the ISS, Hubble, JWST, GPS, and more, all in motion around Earth. Click any satellite and choose “View from here” to ride in its seat. The Moon carries the Apollo landing sites, clickable too.' },
+      text: 'Home, up close: the ISS, Hubble, JWST, GPS, and more, all in motion around Earth. Click any satellite and choose “View from here” to ride in its seat. The Moon carries the Apollo landing sites, clickable too.' },
     { mode: 'solar', r0: 70, r1: 130, phi: 1.0, hud: true, hi: '#fly-hud',
       title: 'You have a spaceship',
       text: 'Press F any time to fly: hold the mouse to thrust, steer with the cursor, Shift to boost, V for third person. Double-click any planet, moon, or star to fly straight to it. F or Esc brings you home.' },
     { mode: 'neighborhood', r0: 18, r1: 70, phi: 1.15,
       title: 'The Stellar Neighborhood',
-      text: 'Zoom out and the Sun becomes one star among 119,625 — every one plotted at its true measured 3D position. Keep flying outward and the scales hand off on their own.' },
+      text: 'Zoom out and the Sun becomes one star among 119,625, every one plotted at its true measured 3D position. Keep flying outward and the scales hand off on their own.' },
     { mode: 'galaxy', r0: 22, r1: 65, phi: 1.0,
       title: 'The Milky Way',
-      text: 'Our galaxy from above. The Sun orbits 26,000 light-years from the centre — one lap every 230 million years. Search “Sagittarius A*” later to visit the black hole at the middle.' },
+      text: 'Our galaxy from above. The Sun orbits 26,000 light-years from the centre, one lap every 230 million years. Search “Sagittarius A*” later to visit the black hole at the middle.' },
     { mode: 'cosmic', r0: 28, r1: 95, phi: 1.1,
       title: 'The Cosmic Web',
-      text: 'Galaxies gather into filaments around immense voids — the largest structure there is, out to 46 billion light-years.' },
+      text: 'Galaxies gather into filaments around immense voids, the largest structure there is, out to 46 billion light-years.' },
     { mode: 'sky', title: 'And this is home',
-      text: 'The sky above Earth tonight. Every star here is clickable — click anything for its story, or press / and search any of thousands of stars, planets, constellations, and nebulae.' },
+      text: 'The sky above Earth tonight. Every star here is clickable. Click anything for its story, or press / and search any of thousands of stars, planets, constellations, and nebulae.' },
     { mode: 'sky', hi: '#title',
       title: 'Make it yours',
-      text: 'The UNIVERSE menu holds every layer — constellation art, exoplanets, pulsars and quasars, megastructures, dark matter, even the sky in X-ray or radio — with one-tap presets: Essentials, Clean view, Everything. The minimap’s ladder jumps scales. All of it is remembered. Your universe now.' },
+      text: 'The UNIVERSE menu holds every layer: constellation art, exoplanets, pulsars and quasars, megastructures, dark matter, even the sky in X-ray or radio, with one-tap presets: Essentials, Clean view, Everything. The minimap’s ladder jumps scales. All of it is remembered.' },
   ];
-  // Touch devices: no keyboard or scroll wheel — adapt the language, and drop
-  // the spaceship stop (flight needs keys the device doesn't have).
-  const IS_TOUCH = matchMedia('(hover: none) and (pointer: coarse)').matches;
+  // Touch devices: no keyboard or scroll wheel — adapt the language, and teach
+  // the touch flight controls (🚀 button) instead of the key bindings.
+  const IS_TOUCH = TOUCH_UI;
   if (IS_TOUCH) {
-    const hudIdx = TOUR.findIndex((t) => t.hud);
-    if (hudIdx >= 0) TOUR.splice(hudIdx, 1);
+    const hudStop = TOUR.find((t) => t.hud);
+    if (hudStop) {
+      delete hudStop.hud;                    // don't force the HUD open — it sits where 🚀 lives
+      hudStop.hi = '#fly-btn';               // point at the real thing to tap
+      hudStop.text = 'Tap 🚀 Fly any time to take the controls: hold to thrust, drag to steer, ' +
+        'pinch for speed, or tap ⏵ Cruise to fly hands-free. Double-tap any planet, ' +
+        'moon, or star to fly straight to it. ✕ Exit lands you back in orbit.';
+    }
     for (const t of TOUR) {
       t.text = t.text
         .replace(/scroll to zoom/g, 'pinch to zoom')
@@ -6456,11 +6960,20 @@ window.U = {
     showHints();
   };
   // Deep links: ?scale=sky|solar|neighborhood|galaxy|cosmic opens at that scale;
-  // ?welcomed skips the first-visit card (a shared link shouldn't open on onboarding).
+  // ?focus=<object name> flies straight to any searchable object (star, planet,
+  // comet, probe, galaxy…); ?welcomed skips the first-visit card (a shared link
+  // shouldn't open on onboarding).
   const params = new URLSearchParams(location.search);
   if (params.has('welcomed')) localStorage.setItem(WELCOME_KEY, '1');
   const jump = params.get('scale');
   if (jump && (jump === 'sky' || orbits[jump])) goToScale(jump);
+  const focus = params.get('focus');
+  if (focus) {
+    const q = focus.trim().toLowerCase();
+    const t = searchIndex.find((x) => x.label.toLowerCase() === q)
+      || searchIndex.find((x) => x.label.toLowerCase().startsWith(q));
+    if (t) { localStorage.setItem(WELCOME_KEY, '1'); gotoTarget(t); }
+  }
   urlScaleSync = true;
 
   // First visit: the welcome card offers two paths — the tour, or exploring alone.

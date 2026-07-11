@@ -352,7 +352,7 @@ html[data-skin="asj"] { --btnr: 999px; }
 html[data-skin="ywlmb"] { --btnr: 3px; }
 .stage .ctas a, .plate .live { border-radius: var(--btnr); }
 
-/* ---- World 03 · Stock Evaluator: a terminal session ---- */
+/* ---- World 02 · Stock Evaluator: a terminal session ---- */
 html[data-skin="eval"] .room-head h1,
 html[data-skin="eval"] .stage h1 { font-size: clamp(26px, 3.8vw, 40px);
   letter-spacing: -0.02em; }
@@ -372,7 +372,7 @@ html[data-skin="eval"] .pao span::before { content: "$ "; color: var(--acc); }
 html[data-skin="eval"] .question p { font-size: 18px; }
 html[data-skin="eval"] .question p::before { content: "> "; }
 
-/* ---- World 02 · A Soul's Journey: one page that travels from light into the sun ----
+/* ---- World 03 · A Soul’s Journey: one page that travels from light into the sun ----
    The journey page is built from full-bleed .part sections. Part I (Rest my soul)
    lives in the light; Part II (Dame sol) in Franco's dark; a .dusk band with the
    low sun carries the crossing. Each part redefines the tokens locally. */
