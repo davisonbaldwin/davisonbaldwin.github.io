@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Universe — Interactive Model</title>
+<title>Universe · Interactive Model</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23060a14'/%3E%3Ctext x='50' y='72' font-size='64' text-anchor='middle' fill='%237fb4ff'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
 <style>
   :root {
@@ -389,7 +389,7 @@
 <div id="panel" class="card">
   <div id="panel-presets">
     <button class="preset-btn" data-preset="essentials" title="The default balanced view">Essentials</button>
-    <button class="preset-btn" data-preset="clean" title="Just the universe — labels and overlays off">Clean view</button>
+    <button class="preset-btn" data-preset="clean" title="Just the universe, labels and overlays off">Clean view</button>
     <button class="preset-btn" data-preset="everything" title="Every layer on">Everything</button>
   </div>
   <div id="panel-body">
@@ -411,10 +411,10 @@
   <div class="row"><label>Brightness</label><input type="range" id="rg-size" min="0.6" max="3" step="0.05" value="3"></div>
   <div class="sub-label">EM Spectrum</div>
   <div class="row" style="flex-wrap:wrap;gap:4px">
-    <button class="spec-btn active" onclick="window.U&&window.U.setSpectrum(0)" title="Visible light — normal B–V star colours">Visible</button>
-    <button class="spec-btn" onclick="window.U&&window.U.setSpectrum(1)" title="X-ray — hot blue stars dominate">X-ray</button>
-    <button class="spec-btn" onclick="window.U&&window.U.setSpectrum(2)" title="Infrared — cool red stars dominate">IR</button>
-    <button class="spec-btn" onclick="window.U&&window.U.setSpectrum(3)" title="Radio — non-thermal emission, flat brightness">Radio</button>
+    <button class="spec-btn active" onclick="window.U&&window.U.setSpectrum(0)" title="Visible light: normal B–V star colours">Visible</button>
+    <button class="spec-btn" onclick="window.U&&window.U.setSpectrum(1)" title="X-ray: hot blue stars dominate">X-ray</button>
+    <button class="spec-btn" onclick="window.U&&window.U.setSpectrum(2)" title="Infrared: cool red stars dominate">IR</button>
+    <button class="spec-btn" onclick="window.U&&window.U.setSpectrum(3)" title="Radio: non-thermal emission, flat brightness">Radio</button>
   </div>
   </div>
   </div>
@@ -468,16 +468,16 @@
   <div class="row"><label for="ck-minimap">Minimap</label><input type="checkbox" id="ck-minimap" checked></div>
   <div class="row"><label for="ck-flyhud">Spaceship controls</label><input type="checkbox" id="ck-flyhud"></div>
   <div class="row"><label for="ck-timebar">Time controls</label><input type="checkbox" id="ck-timebar" checked></div>
-  <div class="kbd-note">Keyboard — <b>/</b> search &nbsp; <b>F</b> fly &nbsp; <b>V</b> 1st/3rd person &nbsp; <b>Space</b> cruise &nbsp; <b>+ −</b> speed &nbsp; <b>Esc</b> home</div>
+  <div class="kbd-note">Keyboard: <b>/</b> search &nbsp; <b>F</b> fly &nbsp; <b>V</b> 1st/3rd person &nbsp; <b>Space</b> cruise &nbsp; <b>+ −</b> speed &nbsp; <b>Esc</b> home</div>
   </div>
   </div>
 
-  <div class="credits">Data &amp; imagery: HYG v4.0 star catalog — David Nash / Astronexus
+  <div class="credits">Data &amp; imagery: HYG v4.0 star catalog · David Nash / Astronexus
     (<a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>) ·
-    NASA / JPL ephemerides &amp; data · planet textures —
+    NASA / JPL ephemerides &amp; data · planet textures ·
     <a href="https://www.solarsystemscope.com/textures/" target="_blank" rel="noopener">Solar System Scope</a>
     (<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>) ·
-    constellation art — Johan Meuris, Free Art License (via Stellarium) · built with three.js</div>
+    constellation art · Johan Meuris, Free Art License (via Stellarium) · built with three.js</div>
 
   </div>
 </div>
@@ -539,7 +539,7 @@
 <div id="welcome">
   <div id="welcome-card" class="card">
     <div class="w-title">UNIVER<span>SE</span></div>
-    <p>A real-data model of everything — from tonight's sky over Earth to the edge of the observable universe.</p>
+    <p>A real-data model of everything, from tonight's sky over Earth to the edge of the observable universe.</p>
     <div class="w-btns">
       <button id="w-tour">Take the tour<span>9 stops · skip any time</span></button>
       <button id="w-skip">Explore on my own</button>
@@ -569,6 +569,6 @@
   <div class="bar"><div class="fill" id="load-fill"></div></div>
 </div>
 
-<script type="module" src="js/main.js?v=5"></script>
+<script type="module" src="js/main.js?v=6"></script>
 </body>
 </html>

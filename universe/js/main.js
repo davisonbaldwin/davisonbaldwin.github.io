@@ -707,20 +707,20 @@ function phenomInfo(idx) {
 // Fields: name, RA°, Dec°, peakJD, peak mag, days to fade 8 mag, watch label, sub, rows, doc.
 const SUPERNOVAE = [
   ['SN 1006', 225.7, -41.95, 2088580.5, -7.5, 520, 'spring 1006',
-    'The brightest star event in recorded history', [['Peak brightness', 'mag −7.5 — a quarter Moon'], ['Visible', '~18 months to the naked eye'], ['Recorded in', 'China, Egypt, Iraq, Japan, Switzerland'], ['Type', 'Ia — white dwarf detonation']],
-    'The brightest stellar event humans have ever recorded — bright enough to read by at night, seen low in the southern sky by chroniclers across three continents. A monk in Switzerland wrote that it "dazzled the eyes." Its shattered remains still glow in Lupus.'],
+    'The brightest star event in recorded history', [['Peak brightness', 'mag −7.5, a quarter Moon'], ['Visible', '~18 months to the naked eye'], ['Recorded in', 'China, Egypt, Iraq, Japan, Switzerland'], ['Type', 'Ia, white dwarf detonation']],
+    'The brightest stellar event humans have ever recorded, bright enough to read by at night, seen low in the southern sky by chroniclers across three continents. A monk in Switzerland wrote that it "dazzled the eyes." Its shattered remains still glow in Lupus.'],
   ['SN 1054 · Crab Supernova', 83.63, 22.01, 2106216.5, -6.0, 650, 'July 1054',
-    'The guest star that built the Crab Nebula', [['Peak brightness', 'mag −6 — brighter than Venus'], ['Daylight visibility', '23 days'], ['Naked-eye', '~650 nights'], ['Remnant', 'Crab Nebula + pulsar (M1)']],
-    'Chinese astronomers logged a "guest star" beside ζ Tauri, visible in broad daylight for 23 days. Nine centuries later we watch its debris still expanding — the Crab Nebula — with a city-sized pulsar spinning 30 times a second at its heart.'],
+    'The guest star that built the Crab Nebula', [['Peak brightness', 'mag −6, brighter than Venus'], ['Daylight visibility', '23 days'], ['Naked-eye', '~650 nights'], ['Remnant', 'Crab Nebula + pulsar (M1)']],
+    'Chinese astronomers logged a "guest star" beside ζ Tauri, visible in broad daylight for 23 days. Nine centuries later we watch its debris still expanding, the Crab Nebula, with a city-sized pulsar spinning 30 times a second at its heart.'],
   ['SN 1572 · Tycho\'s Supernova', 6.34, 64.13, 2295528.5, -4.0, 480, 'November 1572',
-    'The star that broke the immutable heavens', [['Peak brightness', 'mag −4 — like Venus'], ['Observed by', 'Tycho Brahe'], ['Consequence', 'proved the heavens change'], ['Type', 'Ia']],
-    'When a new star appeared in Cassiopeia, Tycho Brahe measured it obsessively and proved it lay far beyond the Moon — shattering two thousand years of doctrine that the heavens never change, and helping clear the way for the scientific revolution.'],
+    'The star that broke the immutable heavens', [['Peak brightness', 'mag −4, like Venus'], ['Observed by', 'Tycho Brahe'], ['Consequence', 'proved the heavens change'], ['Type', 'Ia']],
+    'When a new star appeared in Cassiopeia, Tycho Brahe measured it obsessively and proved it lay far beyond the Moon, shattering two thousand years of doctrine that the heavens never change, and helping clear the way for the scientific revolution.'],
   ['SN 1604 · Kepler\'s Supernova', 262.66, -21.48, 2307232.5, -2.5, 400, 'October 1604',
-    'The Milky Way\'s last naked-eye supernova', [['Peak brightness', 'mag −2.5 — like Jupiter'], ['Observed by', 'Johannes Kepler, for a year'], ['Note', 'none seen in our galaxy since'], ['Type', 'Ia']],
-    'Kepler tracked it for a full year from Prague. No one has seen a supernova inside the Milky Way with the naked eye since — we are four centuries overdue, and somewhere in the galaxy the next one is already on its way.'],
+    'The Milky Way\'s last naked-eye supernova', [['Peak brightness', 'mag −2.5, like Jupiter'], ['Observed by', 'Johannes Kepler, for a year'], ['Note', 'none seen in our galaxy since'], ['Type', 'Ia']],
+    'Kepler tracked it for a full year from Prague. No one has seen a supernova inside the Milky Way with the naked eye since. We are four centuries overdue, and somewhere in the galaxy the next one is already on its way.'],
   ['SN 1987A', 83.87, -69.27, 2446846.5, 2.9, 300, 'February 1987',
-    'The supernova that opened neutrino astronomy', [['Peak brightness', 'mag +2.9 — naked-eye from the south'], ['Host', 'Large Magellanic Cloud'], ['First light', 'Feb 23, 1987'], ['Neutrinos', 'detected 3 hours before the light']],
-    'The nearest supernova in four centuries, in the Large Magellanic Cloud. Underground detectors caught a burst of neutrinos hours before telescopes saw anything — the moment neutrino astronomy was born, and proof of how a star\'s core collapses.'],
+    'The supernova that opened neutrino astronomy', [['Peak brightness', 'mag +2.9, naked-eye from the south'], ['Host', 'Large Magellanic Cloud'], ['First light', 'Feb 23, 1987'], ['Neutrinos', 'detected 3 hours before the light']],
+    'The nearest supernova in four centuries, in the Large Magellanic Cloud. Underground detectors caught a burst of neutrinos hours before telescopes saw anything: the moment neutrino astronomy was born, and proof of how a star\'s core collapses.'],
 ];
 // starburst texture: brilliant core + four diffraction rays
 function makeSupernovaTexture() {
@@ -1413,11 +1413,11 @@ function updatePlanetMoons(jd) {
 // [name, shell, inclination°, color, doc, periodSeconds, altKm]
 // Periods are real values: ISS = 92.68 min, GPS = 11.97 hr, GEO = 23.934 hr sidereal, etc.
 const SATELLITES = [
-  ['ISS',                  'leo',  51.64,  '#9fe8ff', 'The International Space Station — a continuously crewed laboratory orbiting at ~420 km. It completes ~15.5 orbits per day.',                                           5561,   420],
+  ['ISS',                  'leo',  51.64,  '#9fe8ff', 'The International Space Station: a continuously crewed laboratory orbiting at ~420 km. It completes ~15.5 orbits per day.',                                           5561,   420],
   ['Hubble Space Telescope','leo', 28.47,  '#cfe0ff', 'Launched 1990; orbits at ~535 km (~95 min period) and has transformed astronomy with deep-field images of the early universe.',                                      5712,   535],
   ['Tiangong',             'leo',  41.58,  '#ffd9a0', "China's modular space station, crewed since 2021, at ~390 km (~92 min period).",                                                                                    5508,   390],
   ['Landsat 9',            'leo',  98.20,  '#bfe8c0', 'A near-polar sun-synchronous Earth-imaging satellite at ~705 km (~99 min period), continuing a 50-year global land-cover record.',                                   5943,   705],
-  ['GPS',                  'meo',  55.0,   '#ffe98f', 'The Global Positioning System — 31 active satellites in medium Earth orbit at ~20,200 km with an exact 11 h 58 min period (half a sidereal day).',                  43082, 20200],
+  ['GPS',                  'meo',  55.0,   '#ffe98f', 'The Global Positioning System: 31 active satellites in medium Earth orbit at ~20,200 km with an exact 11 h 58 min period (half a sidereal day).',                  43082, 20200],
   ['GOES Weather',         'geo',   0.0,   '#a0d8ff', 'A geostationary weather satellite at ~35,786 km. Its 23 h 56 min sidereal period exactly matches Earth\'s rotation, so it hovers over one spot.',                   86164, 35786],
   ['Intelsat',             'geo',   0.1,   '#d0c0ff', 'A geostationary communications satellite in the crowded Clarke belt at ~35,786 km. The 0.1° inclination is typical of station-keeping drift.',                      86164, 35786],
   ['JWST',                 'deep',  5.0,   '#ffd0b0', 'The James Webb Space Telescope orbits Sun–Earth L2 ~1.5 million km out on a 6-month halo orbit. Shown here with its actual ~180-day period.',                     15552000, 1500000],
@@ -1506,12 +1506,12 @@ function updateSatellites(dSim) {
 
 // lunar surface markers: human landing sites & rovers, placed on the Moon by lat/lon
 const LUNAR_SITES = [
-  ['Apollo 11', 0.67, 23.47, 'First crewed Moon landing, July 1969 — Armstrong & Aldrin, Sea of Tranquility.'],
+  ['Apollo 11', 0.67, 23.47, 'First crewed Moon landing, July 1969: Armstrong & Aldrin, Sea of Tranquility.'],
   ['Apollo 12', -3.01, -23.42, 'Second landing, Nov 1969; touched down beside the Surveyor 3 probe.'],
-  ['Apollo 14', -3.65, -17.47, 'Feb 1971 — Shepard & Mitchell explored Fra Mauro.'],
-  ['Apollo 15', 26.13, 3.63, 'July 1971 — first to carry the Lunar Roving Vehicle, at Hadley Rille.'],
-  ['Apollo 16', -8.97, 15.50, 'April 1972 — Descartes Highlands, with the rover.'],
-  ['Apollo 17', 20.19, 30.77, 'Last crewed landing, Dec 1972 — Taurus–Littrow, longest stay & rover drive.'],
+  ['Apollo 14', -3.65, -17.47, 'Feb 1971: Shepard & Mitchell explored Fra Mauro.'],
+  ['Apollo 15', 26.13, 3.63, 'July 1971: first to carry the Lunar Roving Vehicle, at Hadley Rille.'],
+  ['Apollo 16', -8.97, 15.50, 'April 1972: Descartes Highlands, with the rover.'],
+  ['Apollo 17', 20.19, 30.77, 'Last crewed landing, Dec 1972: Taurus–Littrow, longest stay & rover drive.'],
   ['Luna 17 · Lunokhod 1', 38.28, -35.0, "The Soviet Union's first robotic Moon rover, 1970."],
   ['Chang’e 3 · Yutu', 44.12, -19.51, 'China’s first lunar rover, 2013, in Mare Imbrium.'],
   ['Chang’e 4 · Yutu-2', -45.5, 177.6, 'First-ever landing on the Moon’s far side, 2019.'],
@@ -1594,7 +1594,7 @@ const dysonGroup = new THREE.Group();
     name: 'Dyson Sphere',
     sub: 'Speculative megastructure',
     rows: [['Radius', '0.33 AU'], ['Output', '3.8 × 10²⁶ W (total Solar)'], ['Type', 'Stellar energy collector'], ['Concept', 'Freeman Dyson, 1960']],
-    doc: 'A hypothetical shell enclosing a star to capture its entire energy output. Freeman Dyson proposed this in 1960 as a marker of a K-II civilization on the Kardashev scale. In practice, a rigid shell is mechanically unstable — most proposals use a swarm of independent orbiting collectors.',
+    doc: 'A hypothetical shell enclosing a star to capture its entire energy output. Freeman Dyson proposed this in 1960 as a marker of a K-II civilization on the Kardashev scale. In practice, a rigid shell is mechanically unstable. Most proposals use a swarm of independent orbiting collectors.',
   };
 }
 megaGroup.add(dysonGroup);
@@ -1627,8 +1627,8 @@ const solarSailGroup = new THREE.Group();
   solarSailGroup.userData.info = {
     name: 'Solar Sail',
     sub: 'Light-propelled spacecraft',
-    rows: [['Sail area', '~1.2 km²'], ['Acceleration', '~0.1 mm/s² at 1 AU'], ['Propellant', 'None — photon pressure'], ['Example', 'IKAROS (JAXA, 2010)']],
-    doc: 'A solar sail uses radiation pressure from sunlight to accelerate without propellant. The sail is shown here near Earth—Sun L1, where continuous sunward sunlight provides maximum thrust. The thin reflective membrane must be only micrometres thick — thinner than a human hair.',
+    rows: [['Sail area', '~1.2 km²'], ['Acceleration', '~0.1 mm/s² at 1 AU'], ['Propellant', 'None, photon pressure'], ['Example', 'IKAROS (JAXA, 2010)']],
+    doc: 'A solar sail uses radiation pressure from sunlight to accelerate without propellant. The sail is shown here near Earth–Sun L1, where continuous sunward sunlight provides maximum thrust. The thin reflective membrane must be only micrometres thick — thinner than a human hair.',
   };
 }
 megaGroup.add(solarSailGroup);
@@ -1756,7 +1756,7 @@ const warpGroup = new THREE.Group();
     name: 'Alcubierre Warp Drive',
     sub: 'Exotic-matter spacetime warp',
     rows: [['Concept', 'Miguel Alcubierre, 1994'], ['Speed', 'FTL (in principle)'], ['Energy', '~10⁶⁴ J (exotic matter)'], ['Status', 'Theoretical only']],
-    doc: "Physicist Miguel Alcubierre showed in 1994 that Einstein's equations permit a solution where a 'warp bubble' compresses space ahead of a ship and expands it behind — moving the ship faster than light without locally violating relativity. The catch: it requires negative-energy 'exotic matter' in quantities far beyond anything known, and causality problems remain unsolved.",
+    doc: "Physicist Miguel Alcubierre showed in 1994 that Einstein's equations permit a solution where a 'warp bubble' compresses space ahead of a ship and expands it behind, moving the ship faster than light without locally violating relativity. The catch: it requires negative-energy 'exotic matter' in quantities far beyond anything known, and causality problems remain unsolved.",
   };
   warpGroup.userData.rings = [outer, inner];
 }
@@ -1830,7 +1830,7 @@ const genShipGroup = new THREE.Group();
     name: 'Generation Ship',
     sub: 'Interstellar ark',
     rows: [['Length', '~10 km (shown ×1:1000)'], ['Journey time', '10,000–100,000 yr'], ['Destination', 'Nearest star system'], ['Population', '10,000–100,000']],
-    doc: 'A generation ship travels to another star so slowly that the original crew will die before arrival — the descendants of the first crew complete the journey. Rotating habitat rings provide artificial gravity. The ship must be a self-contained biosphere, carrying ecosystems, genetic diversity, and all knowledge of human civilization.',
+    doc: 'A generation ship travels to another star so slowly that the original crew will die before arrival. The descendants of the first crew complete the journey. Rotating habitat rings provide artificial gravity. The ship must be a self-contained biosphere, carrying ecosystems, genetic diversity, and all knowledge of human civilization.',
   };
 }
 megaGroup.add(genShipGroup);
@@ -2140,10 +2140,10 @@ solScene.add(beltGroup);
 const REAL_ASTEROIDS = [
   ['1 Ceres',     2.7660, 0.0785, 10.59,  80.31,  73.60,  95.99, 939, '#d8cdbe',
     'Dwarf planet · largest belt object', [['Diameter', '939 km'], ['Type', 'C-type (carbonaceous)'], ['Discovered', '1801, Piazzi'], ['Visited by', 'Dawn (2015–18)']],
-    'The largest object in the asteroid belt and the only dwarf planet in the inner solar system — it holds about a third of the belt\'s total mass. NASA\'s Dawn spacecraft found bright carbonate/salt deposits in Occator crater, likely from a briny subsurface reservoir.'],
+    'The largest object in the asteroid belt and the only dwarf planet in the inner solar system. It holds about a third of the belt\'s total mass. NASA\'s Dawn spacecraft found bright carbonate/salt deposits in Occator crater, likely from a briny subsurface reservoir.'],
   ['2 Pallas',    2.7730, 0.2302, 34.84, 173.02, 310.87,  40.60, 512, '#b9bcc4',
     'Third-largest asteroid', [['Diameter', '~512 km'], ['Type', 'B-type'], ['Discovered', '1802, Olbers'], ['Inclination', '34.8° (extreme)']],
-    'The third-most-massive asteroid, on a steeply tilted, eccentric orbit that makes it costly to reach — no spacecraft has visited. Its 34.8° inclination is among the largest of any large belt body.'],
+    'The third-most-massive asteroid, on a steeply tilted, eccentric orbit that makes it costly to reach. No spacecraft has visited. Its 34.8° inclination is among the largest of any large belt body.'],
   ['3 Juno',      2.6690, 0.2563, 12.99, 169.85, 248.41,  33.00, 247, '#cdb9a6',
     'Large S-type asteroid', [['Diameter', '~247 km'], ['Type', 'S-type (stony)'], ['Discovered', '1804, Harding']],
     'One of the first asteroids discovered and among the largest stony (S-type) bodies. For a few decades after discovery it was counted as a planet, before the belt\'s true nature was understood.'],
@@ -2152,13 +2152,13 @@ const REAL_ASTEROIDS = [
     'The brightest asteroid as seen from Earth and the only one occasionally visible to the naked eye. It is differentiated like a small planet, with an iron core; a giant south-pole impact (Rheasilvia) flung out the "vestoid" family and the HED meteorites we find on Earth.'],
   ['10 Hygiea',   3.1390, 0.1125,  3.83, 283.20, 312.32, 152.18, 434, '#9fb0b6',
     'Fourth-largest · near-spherical', [['Diameter', '~434 km'], ['Type', 'C-type'], ['Discovered', '1849, de Gasparis']],
-    'The fourth-largest asteroid and a candidate dwarf planet — 2019 imaging showed it is nearly spherical, suggesting it may have relaxed into hydrostatic equilibrium after a major impact.'],
+    'The fourth-largest asteroid and a candidate dwarf planet. Imaging in 2019 showed it is nearly spherical, suggesting it may have relaxed into hydrostatic equilibrium after a major impact.'],
   ['16 Psyche',   2.9230, 0.1340,  3.10, 150.19, 229.25,  10.00, 222, '#caa98a',
     'Metallic world · mission target', [['Diameter', '~222 km'], ['Type', 'M-type (metallic)'], ['Mission', 'Psyche (arrives 2029)']],
     'An unusually metal-rich body, possibly the exposed iron–nickel core of a shattered protoplanet. NASA\'s Psyche spacecraft, launched 2023, will orbit it from 2029 to study what a planetary core looks like up close.'],
   ['243 Ida',     2.8610, 0.0451,  1.13, 324.49, 110.92, 200.00, 31.4, '#bca78f',
     'First asteroid found to have a moon', [['Diameter', '~31 km'], ['Moon', 'Dactyl (~1.4 km)'], ['Flyby', 'Galileo (1993)']],
-    'During its cruise to Jupiter, Galileo flew past Ida and discovered Dactyl orbiting it — the first confirmed asteroid moon, proving small bodies can hold satellites.'],
+    'During its cruise to Jupiter, Galileo flew past Ida and discovered Dactyl orbiting it: the first confirmed asteroid moon, proving small bodies can hold satellites.'],
   ['253 Mathilde',2.6460, 0.2660,  6.74, 179.58, 157.39, 170.00, 52.8, '#7e756a',
     'Dark, porous C-type', [['Diameter', '~53 km'], ['Type', 'C-type (very dark)'], ['Flyby', 'NEAR Shoemaker (1997)']],
     'A pitch-black carbonaceous asteroid imaged by NEAR Shoemaker on its way to Eros. Its very low density implies a rubble-pile interior that is up to half empty space.'],
@@ -2167,7 +2167,7 @@ const REAL_ASTEROIDS = [
     'A near-Earth asteroid and the first to be orbited and then gently landed on, by NEAR Shoemaker in 2001. Its elongated, saddle-shaped form became the archetype of a small stony asteroid.'],
   ['951 Gaspra',  2.2100, 0.1730,  4.10, 253.20, 129.51,  60.00, 12.2, '#c7b08c',
     'First asteroid ever imaged close-up', [['Diameter', '~12 km'], ['Type', 'S-type'], ['Flyby', 'Galileo (1991)']],
-    'The first asteroid ever seen up close, when Galileo flew past in 1991 en route to Jupiter — revealing a cratered, irregular world and confirming asteroids as distinct small bodies.'],
+    'The first asteroid ever seen up close, when Galileo flew past in 1991 en route to Jupiter, revealing a cratered, irregular world and confirming asteroids as distinct small bodies.'],
   ['25143 Itokawa',1.3240,0.2800,  1.62,  69.08, 162.82, 100.00, 0.33, '#c9a37e',
     'Rubble-pile · first sample return', [['Length', '~535 m'], ['Type', 'S-type, rubble pile'], ['Mission', 'Hayabusa (2005, returned 2010)']],
     'A peanut-shaped rubble pile from which Japan\'s Hayabusa returned the first-ever asteroid surface samples in 2010, confirming the link between S-type asteroids and ordinary chondrite meteorites.'],
@@ -2179,7 +2179,7 @@ const REAL_ASTEROIDS = [
     'A spinning-top-shaped carbonaceous asteroid sampled by Hayabusa2, which fired a copper impactor to expose subsurface material. Its returned grains contain amino acids and predate the solar system.'],
   ['99942 Apophis',0.9224,0.1914,  3.34, 204.43, 126.39, 180.00, 0.34, '#d9b388',
     'Famous close-approach NEO', [['Diameter', '~340 m'], ['Type', 'S-type, Aten NEO'], ['Close pass', '31,000 km on 13 Apr 2029']],
-    'Once feared as an impact threat, Apophis is now ruled out for at least a century. On 13 April 2029 it will pass just 31,000 km from Earth — closer than geostationary satellites — visible to the naked eye, and ESA\'s Ramses mission aims to study it during the flyby.'],
+    'Once feared as an impact threat, Apophis is now ruled out for at least a century. On 13 April 2029 it will pass just 31,000 km from Earth, closer than geostationary satellites, visible to the naked eye, and ESA\'s Ramses mission aims to study it during the flyby.'],
 ];
 const ASTEROIDS_RT = [];
 let asteroidsVisible = false;          // named asteroids off by default (toggle in Solar panel)
@@ -2234,25 +2234,25 @@ function updateNamedAsteroids(jd) {
 const COMETS = [
   ['1P/Halley', 17.834, 0.9671, 162.26, 58.42, 111.33, 2446470.5,
     'The most famous comet · returns 2061', [['Period', '75.3 years'], ['Last perihelion', 'Feb 1986'], ['Next return', 'Jul 2061'], ['Nucleus', '15 × 8 km']],
-    'The comet that proved comets return: Edmond Halley predicted its 1758 reappearance from Newton\'s laws. Recorded at every pass since 240 BC — it is the Bayeux Tapestry\'s star and Giotto\'s 1986 flyby target. Its debris stream feeds the Orionid meteor shower every October.', 'Feb 1986'],
+    'The comet that proved comets return: Edmond Halley predicted its 1758 reappearance from Newton\'s laws. Recorded at every pass since 240 BC. It is the Bayeux Tapestry\'s star and Giotto\'s 1986 flyby target. Its debris stream feeds the Orionid meteor shower every October.', 'Feb 1986'],
   ['2P/Encke', 2.2152, 0.8482, 11.78, 334.57, 186.55, 2460239.5,
     'Shortest period of any bright comet', [['Period', '3.30 years'], ['Last perihelion', 'Oct 2023'], ['Nucleus', '~4.8 km']],
-    'No comet returns more often — Encke swings past the Sun every 3.3 years, so it has been watched on more than 60 passes. Its debris produces the Taurid meteor showers, and one Taurid fragment is a leading suspect for the 1908 Tunguska blast.', 'Oct 2023'],
+    'No comet returns more often: Encke swings past the Sun every 3.3 years, so it has been watched on more than 60 passes. Its debris produces the Taurid meteor showers, and one Taurid fragment is a leading suspect for the 1908 Tunguska blast.', 'Oct 2023'],
   ['C/1995 O1 Hale–Bopp', 186.0, 0.9951, 89.43, 282.47, 130.59, 2450539.5,
-    'The great comet of 1997', [['Period', '~2,500 years'], ['Perihelion', 'Apr 1997'], ['Nucleus', '~60 km (giant)'], ['Naked-eye run', '18 months — a record']],
-    'Visible to the naked eye for a record 18 months through 1996–97, with its blue ion tail and cream dust tail split wide apart. Its nucleus is huge for a comet — around 60 km. It is now receding beyond Neptune and will not return for roughly 2,500 years.', 'Apr 1997'],
+    'The great comet of 1997', [['Period', '~2,500 years'], ['Perihelion', 'Apr 1997'], ['Nucleus', '~60 km (giant)'], ['Naked-eye run', '18 months, a record']],
+    'Visible to the naked eye for a record 18 months through 1996–97, with its blue ion tail and cream dust tail split wide apart. Its nucleus is huge for a comet, around 60 km. It is now receding beyond Neptune and will not return for roughly 2,500 years.', 'Apr 1997'],
   ['C/2020 F3 NEOWISE', 358, 0.9992, 128.93, 61.01, 37.28, 2459033.5,
     'Brightest northern comet since Hale–Bopp', [['Period', '~6,800 years'], ['Perihelion', 'Jul 2020'], ['Nucleus', '~5 km']],
-    'The surprise of the pandemic summer: discovered by the NEOWISE space telescope in March 2020, it survived perihelion and hung in northern twilight through July with a long golden dust tail — photographed above nearly every landscape on Earth.', 'Jul 2020'],
+    'The surprise of the pandemic summer: discovered by the NEOWISE space telescope in March 2020, it survived perihelion and hung in northern twilight through July with a long golden dust tail, photographed above nearly every landscape on Earth.', 'Jul 2020'],
   ['67P/Churyumov–Gerasimenko', 3.4630, 0.6410, 7.04, 50.14, 12.78, 2457247.5,
     'Rosetta\'s comet', [['Period', '6.44 years'], ['Last perihelion', 'Aug 2015'], ['Nucleus', '4.3 × 4.1 km, two-lobed'], ['Missions', 'Rosetta + Philae (2014–16)']],
-    'The first comet ever orbited — ESA\'s Rosetta escorted its duck-shaped nucleus for two years and set the Philae lander on its surface. Rosetta watched jets of gas and dust switch on as the comet warmed toward perihelion, then ended its mission by touching down itself.', 'Aug 2015'],
+    'The first comet ever orbited: ESA\'s Rosetta escorted its duck-shaped nucleus for two years and set the Philae lander on its surface. Rosetta watched jets of gas and dust switch on as the comet warmed toward perihelion, then ended its mission by touching down itself.', 'Aug 2015'],
   ['109P/Swift–Tuttle', 26.092, 0.9632, 113.45, 139.38, 152.98, 2448967.5,
     'Parent of the Perseid meteor shower', [['Period', '133 years'], ['Last perihelion', 'Dec 1992'], ['Nucleus', '~26 km'], ['Next return', '2126']],
-    'Every August the Earth crosses this comet\'s debris stream and the Perseids fill the sky — the year\'s most-watched meteor shower. Its 26 km nucleus is the largest object that makes repeated close approaches to Earth, though its orbit is stable for millennia.', 'Dec 1992'],
+    'Every August the Earth crosses this comet\'s debris stream and the Perseids fill the sky, the year\'s most-watched meteor shower. Its 26 km nucleus is the largest object that makes repeated close approaches to Earth, though its orbit is stable for millennia.', 'Dec 1992'],
   ['55P/Tempel–Tuttle', 10.335, 0.9056, 162.49, 235.27, 172.50, 2450872.5,
     'Parent of the Leonid meteor storms', [['Period', '33.2 years'], ['Last perihelion', 'Feb 1998'], ['Nucleus', '~3.6 km']],
-    'A modest comet with a spectacular calling card: fresh debris trails near its 33-year returns turn the November Leonids into meteor storms — 1833\'s "night the stars fell" and 1966\'s ~100,000 meteors per hour, the strongest ever witnessed.', 'Feb 1998'],
+    'A modest comet with a spectacular calling card: fresh debris trails near its 33-year returns turn the November Leonids into meteor storms: 1833\'s "night the stars fell" and 1966\'s ~100,000 meteors per hour, the strongest ever witnessed.', 'Feb 1998'],
 ];
 // tail texture: bright narrow head fading to a wide faint tip (drawn per-pixel once)
 function makeTailTexture() {
@@ -2385,23 +2385,23 @@ function updateComets(jd) {
 // Fields: name, a(AU), e, inc°, Ω°, ω°, M0°(J2000), diameter km, colour, sub, rows, doc.
 const TNOS = [
   ['Eris', 67.86, 0.4407, 44.04, 35.95, 151.64, 194.5, 2326, '#e8e4dc',
-    'Most massive dwarf planet', [['Diameter', '2,326 km'], ['Distance now', '~96 AU — near aphelion'], ['Moon', 'Dysnomia'], ['Discovered', '2005, Brown/Trujillo/Rabinowitz']],
+    'Most massive dwarf planet', [['Diameter', '2,326 km'], ['Distance now', '~96 AU, near aphelion'], ['Moon', 'Dysnomia'], ['Discovered', '2005, Brown/Trujillo/Rabinowitz']],
     'The discovery that ended Pluto\'s planethood: Eris is slightly smaller than Pluto but more massive, and finding it in 2005 forced the "dwarf planet" definition a year later. It rides a steeply tilted 559-year orbit and is currently near its far point, almost 100 AU out.'],
   ['Makemake', 45.43, 0.161, 28.98, 79.62, 294.83, 141.0, 1430, '#d8b49a',
     'Bright icy world of the Kuiper belt', [['Diameter', '~1,430 km'], ['Moon', 'MK2'], ['Discovered', '2005, Palomar'], ['Surface', 'methane ice, reddish']],
     'One of the brightest Kuiper-belt objects, coated in frozen methane that reddens under cosmic rays. Named for the creator god of Rapa Nui (Easter Island), it was discovered shortly after Easter 2005.'],
   ['Haumea', 43.12, 0.195, 28.21, 122.16, 239.18, 191.0, 1632, '#e9e2e6',
     'Spinning egg with a ring', [['Dimensions', '~2,100 × 1,000 km'], ['Day length', '3.9 hours'], ['Moons', 'Hiʻiaka & Namaka'], ['Ring', 'discovered 2017']],
-    'A dwarf planet spinning so fast — one rotation every four hours — that it has stretched into an egg shape. It has two moons and, uniquely among dwarf planets, a ring, likely debris from an ancient collision that also spawned a whole family of icy fragments.'],
+    'A dwarf planet spinning so fast, one rotation every four hours, that it has stretched into an egg shape. It has two moons and, uniquely among dwarf planets, a ring, likely debris from an ancient collision that also spawned a whole family of icy fragments.'],
   ['Sedna', 506, 0.855, 11.93, 144.25, 311.36, 357.6, 995, '#d47a5c',
-    'The loneliest known world', [['Diameter', '~1,000 km'], ['Orbit', '76 → 936 AU'], ['Period', '~11,400 years'], ['Perihelion', '2076 — first since the last ice age']],
-    'Sedna never comes closer than 76 AU — far beyond Neptune — and swings out to nearly 1,000. It last rounded the Sun when humans were crossing into the Americas, and reaches perihelion again in 2076. Its detached orbit is a standing argument for an unseen distant planet.'],
+    'The loneliest known world', [['Diameter', '~1,000 km'], ['Orbit', '76 → 936 AU'], ['Period', '~11,400 years'], ['Perihelion', '2076, first since the last ice age']],
+    'Sedna never comes closer than 76 AU, far beyond Neptune, and swings out to nearly 1,000. It last rounded the Sun when humans were crossing into the Americas, and reaches perihelion again in 2076. Its detached orbit is a standing argument for an unseen distant planet.'],
   ['Quaoar', 43.7, 0.040, 7.99, 188.8, 147.5, 266.5, 1090, '#b08a74',
     'Icy world with an impossible ring', [['Diameter', '~1,090 km'], ['Moon', 'Weywot'], ['Ring', 'far outside the Roche limit'], ['Discovered', '2002, Palomar']],
-    'Named for the creation force of the Tongva people of Los Angeles. In 2023 astronomers found a ring orbiting far beyond where rings should be able to survive — material there ought to have clumped into a moon, and no one yet knows why it hasn\'t.'],
+    'Named for the creation force of the Tongva people of Los Angeles. In 2023 astronomers found a ring orbiting far beyond where rings should be able to survive. Material there ought to have clumped into a moon, and no one yet knows why it hasn\'t.'],
   ['Gonggong', 67.5, 0.503, 30.6, 336.8, 207.7, 92.9, 1230, '#c26a52',
     'Red, slow-spinning, and far away', [['Diameter', '~1,230 km'], ['Distance now', '~88 AU'], ['Moon', 'Xiangliu'], ['Named for', 'a Chinese water god (public vote, 2019)']],
-    'One of the reddest large objects known, its surface stained by irradiated methane. It spins once every 22 hours — unusually slowly for its size, likely braked by its moon Xiangliu. The public chose its name in an online vote.'],
+    'One of the reddest large objects known, its surface stained by irradiated methane. It spins once every 22 hours, unusually slowly for its size, likely braked by its moon Xiangliu. The public chose its name in an online vote.'],
 ];
 const TNOS_RT = [];
 let tnosVisible = true;
@@ -2463,19 +2463,19 @@ function updateTNOs(jd) {
 const PROBES = [
   ['Voyager 1', 262.0, 12.4, 167.3, 3.57, 2443391.5,
     'The most distant human-made object', [['Launched', 'Sep 5, 1977'], ['Speed', '3.57 AU/year'], ['Heliopause crossed', 'Aug 2012'], ['Carries', 'the Golden Record']],
-    'Farther from home than anything humanity has ever built, and still calling back daily on a 23-watt radio. It photographed the Pale Blue Dot from 40 AU in 1990, crossed into interstellar space in 2012, and carries a gold-plated record of Earth\'s sounds — greetings in 55 languages, whale song, Chuck Berry.'],
+    'Farther from home than anything humanity has ever built, and still calling back daily on a 23-watt radio. It photographed the Pale Blue Dot from 40 AU in 1990, crossed into interstellar space in 2012, and carries a gold-plated record of Earth\'s sounds: greetings in 55 languages, whale song, Chuck Berry.'],
   ['Voyager 2', 302.1, -58.9, 139.8, 3.16, 2443375.5,
     'The only visitor to Uranus & Neptune', [['Launched', 'Aug 20, 1977'], ['Speed', '3.16 AU/year'], ['Heliopause crossed', 'Nov 2018'], ['Grand Tour', 'Jupiter · Saturn · Uranus · Neptune']],
     'The only spacecraft ever to visit all four giant planets, riding a planetary alignment that occurs once every 176 years. Everything we know of Uranus and Neptune up close, Voyager 2 saw. It followed its twin into interstellar space in 2018, headed south out of the solar system.'],
   ['Pioneer 10', 78.2, 26.1, 137.3, 2.52, 2441379.5,
     'First through the asteroid belt', [['Launched', 'Mar 2, 1972'], ['First flyby of', 'Jupiter (1973)'], ['Last contact', 'Jan 2003'], ['Headed toward', 'Aldebaran (~2 million years)']],
-    'The trailblazer: first spacecraft through the asteroid belt and first past Jupiter, proving the outer solar system could be reached at all. Its signal faded to silence in 2003. It coasts on, silent, toward the star Aldebaran — arriving in roughly two million years, carrying its famous plaque.'],
+    'The trailblazer: first spacecraft through the asteroid belt and first past Jupiter, proving the outer solar system could be reached at all. Its signal faded to silence in 2003. It coasts on, silent, toward the star Aldebaran, arriving in roughly two million years, carrying its famous plaque.'],
   ['Pioneer 11', 282.5, -8.9, 117.0, 2.37, 2441778.5,
     'First spacecraft past Saturn', [['Launched', 'Apr 6, 1973'], ['First flyby of', 'Saturn (1979)'], ['Last contact', 'Nov 1995'], ['Carries', 'the Pioneer plaque']],
-    'It threaded Saturn\'s rings in 1979 — the first spacecraft ever to see the ringed planet up close — scouting the path the Voyagers would follow. Silent since 1995, it drifts outward toward the constellation Aquila.'],
+    'It threaded Saturn\'s rings in 1979, the first spacecraft ever to see the ringed planet up close, scouting the path the Voyagers would follow. Silent since 1995, it drifts outward toward the constellation Aquila.'],
   ['New Horizons', 293.7, -20.5, 61.8, 2.94, 2453754.5,
     'Pluto\'s first and only visitor', [['Launched', 'Jan 19, 2006'], ['Pluto flyby', 'Jul 14, 2015'], ['Arrokoth flyby', 'Jan 1, 2019'], ['Status', 'active in the Kuiper belt']],
-    'The fastest launch in history — past the Moon in nine hours. In 2015 it turned Pluto from a fuzzy dot into a world with a heart-shaped glacier, then flew past Arrokoth, the most distant object ever explored. Still awake, still exploring the Kuiper belt.'],
+    'The fastest launch in history: past the Moon in nine hours. In 2015 it turned Pluto from a fuzzy dot into a world with a heart-shaped glacier, then flew past Arrokoth, the most distant object ever explored. Still awake, still exploring the Kuiper belt.'],
 ];
 const PROBES_RT = [];
 let probesVisible = true;
@@ -2568,7 +2568,7 @@ const helioMesh = (() => {
   const mesh = new THREE.Mesh(new THREE.SphereGeometry(123 * AUU, 96, 64), mat);
   mesh.scale.set(1.0, 0.94, 1.0);          // gently flattened — the wind bubble isn't a perfect sphere
   solScene.add(mesh);
-  const lab = makeTextSprite('Heliopause — edge of the solar wind', { size: 10, color: '#9fc8e0', alpha: 0.8 });
+  const lab = makeTextSprite('Heliopause · edge of the solar wind', { size: 10, color: '#9fc8e0', alpha: 0.8 });
   lab.position.set(0, 123 * AUU * 0.32, -123 * AUU * 0.92);
   lab.renderOrder = 9;
   solScene.add(lab);
@@ -3475,66 +3475,66 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
 const GALAXY_CAT = [
   ['Sagittarius Dwarf', 5.6, -14.2, 26, 'sph', [5, 3.5, 0.3], true,
     'Satellite being devoured by the Milky Way', [['Type', 'Dwarf spheroidal'], ['Distance', '85,000 ly'], ['Status', 'tidally disrupting']],
-    'The closest galaxy of all — so close the Milky Way is tearing it apart. Its stars are being pulled into a stream that loops around our entire galaxy, and its debris is scattered through the halo. Discovered only in 1994, hiding behind the galactic centre.'],
+    'The closest galaxy of all, so close the Milky Way is tearing it apart. Its stars are being pulled into a stream that loops around our entire galaxy, and its debris is scattered through the halo. Discovered only in 1994, hiding behind the galactic centre.'],
   ['Sculptor Dwarf', 287.5, -83.2, 86, 'sph', [6, 5, 0], true,
     'First dwarf galaxy ever found', [['Type', 'Dwarf spheroidal'], ['Distance', '280,000 ly'], ['Discovered', '1938, Shapley']],
-    'The first of the Milky Way\'s dwarf companions to be discovered — a diffuse ball of ancient stars with almost no gas, orbiting high above the galactic plane.'],
+    'The first of the Milky Way\'s dwarf companions to be discovered: a diffuse ball of ancient stars with almost no gas, orbiting high above the galactic plane.'],
   ['Draco Dwarf', 86.4, 34.7, 76, 'sph', [5, 4, 0.2], true,
     'One of the darkest galaxies known', [['Type', 'Dwarf spheroidal'], ['Distance', '250,000 ly'], ['Dark matter', '~99% of its mass']],
-    'A wisp of a galaxy whose stars move far too fast for the matter you can see — one of the most dark-matter-dominated objects known, and a favorite laboratory for testing what dark matter is.'],
+    'A wisp of a galaxy whose stars move far too fast for the matter you can see: one of the most dark-matter-dominated objects known, and a favorite laboratory for testing what dark matter is.'],
   ['Fornax Dwarf', 237.1, -65.7, 147, 'sph', [8, 6, 0.4], true,
     'A dwarf with its own star clusters', [['Type', 'Dwarf spheroidal'], ['Distance', '480,000 ly'], ['Globular clusters', '6 of its own']],
-    'Large for a dwarf — big enough to hold six globular clusters of its own. Why those clusters haven\'t spiraled into its centre is a long-standing puzzle about how dark matter is spread inside it.'],
+    'Large for a dwarf, big enough to hold six globular clusters of its own. Why those clusters haven\'t spiraled into its centre is a long-standing puzzle about how dark matter is spread inside it.'],
   ['Leo I', 226.0, 49.1, 254, 'sph', [6, 5, 0], true,
     'The Milky Way\'s farthest satellite', [['Type', 'Dwarf spheroidal'], ['Distance', '830,000 ly'], ['Note', 'near the Milky Way\'s gravitational edge']],
-    'Right at the edge of the Milky Way\'s gravitational reach, and moving so fast it may not even be bound to us — a satellite on the verge of independence.'],
+    'Right at the edge of the Milky Way\'s gravitational reach, and moving so fast it may not even be bound to us, a satellite on the verge of independence.'],
   ['NGC 6822 · Barnard\'s Galaxy', 25.3, -18.4, 500, 'irr', [10, 8, 0.5], true,
     'A lonely island of star formation', [['Type', 'Dwarf irregular'], ['Distance', '1.6 million ly'], ['Discovered', '1884, E.E. Barnard']],
-    'A free-floating member of the Local Group belonging to no one — not ours, not Andromeda\'s — quietly forming stars on its own. Hubble used it in 1925 as one of the first proofs that other galaxies lie beyond the Milky Way.'],
+    'A free-floating member of the Local Group belonging to no one, not ours, not Andromeda\'s, quietly forming stars on its own. Hubble used it in 1925 as one of the first proofs that other galaxies lie beyond the Milky Way.'],
   ['IC 10', 119.0, -3.3, 750, 'irr', [9, 7, 0.2], true,
     'The Local Group\'s only starburst', [['Type', 'Dwarf irregular, starburst'], ['Distance', '2.4 million ly'], ['Note', 'hidden behind the Milky Way\'s dust']],
-    'The only galaxy in the Local Group caught in a violent burst of star formation — packed with young clusters and more Wolf-Rayet stars per square parsec than anywhere nearby. We see it dimly, through the dust of our own disc.'],
+    'The only galaxy in the Local Group caught in a violent burst of star formation, packed with young clusters and more Wolf-Rayet stars per square parsec than anywhere nearby. We see it dimly, through the dust of our own disc.'],
   ['NGC 185', 120.8, -14.5, 620, 'sph', [7, 6, 0.3], false,
     'Companion of Andromeda', [['Type', 'Dwarf elliptical'], ['Distance', '2.0 million ly'], ['Satellite of', 'Andromeda']],
     'One of Andromeda\'s court of satellite galaxies, with a surprisingly active history of star formation for a small elliptical.'],
   ['M32', 121.2, -22.0, 785, 'len', [5, 4, 0], true,
     'Andromeda\'s compact companion', [['Type', 'Compact elliptical'], ['Distance', '2.6 million ly'], ['Note', 'possibly a stripped spiral core']],
-    'A strange, dense little galaxy hugging Andromeda — possibly the surviving core of a much larger spiral that Andromeda stripped bare in an ancient collision.'],
+    'A strange, dense little galaxy hugging Andromeda, possibly the surviving core of a much larger spiral that Andromeda stripped bare in an ancient collision.'],
   ['M110', 120.7, -21.1, 820, 'sph', [8, 5, 0.6], true,
     'Andromeda\'s other bright companion', [['Type', 'Dwarf elliptical'], ['Distance', '2.7 million ly'], ['Satellite of', 'Andromeda']],
     'The larger and more diffuse of Andromeda\'s two bright companions, visible in the same binocular field as M31 itself.'],
   // — the nearest neighbor groups, beyond the Local Group —
   ['Maffei 1', 135.9, -0.6, 2850, 'len', [16, 12, 0.1], true,
-    'The hidden giant next door', [['Type', 'Giant elliptical'], ['Distance', '9.3 million ly'], ['Discovered', '1967 — behind the Milky Way']],
-    'A giant elliptical galaxy that would be one of the brightest in our sky — if it weren\'t sitting almost exactly behind the Milky Way\'s disc. It hid behind our own dust until 1967.'],
+    'The hidden giant next door', [['Type', 'Giant elliptical'], ['Distance', '9.3 million ly'], ['Discovered', '1967, behind the Milky Way']],
+    'A giant elliptical galaxy that would be one of the brightest in our sky, if it weren\'t sitting almost exactly behind the Milky Way\'s disc. It hid behind our own dust until 1967.'],
   ['NGC 300', 299.2, -79.4, 1900, 'spiral', [20, 15, 0.4], true,
     'A quiet spiral toward Sculptor', [['Type', 'Spiral'], ['Distance', '6.2 million ly'], ['Group', 'Sculptor group outskirts']],
-    'A textbook quiet spiral, one of the nearest beyond the Local Group — close enough that its brightest individual stars can be studied one by one.'],
+    'A textbook quiet spiral, one of the nearest beyond the Local Group, close enough that its brightest individual stars can be studied one by one.'],
   ['NGC 55', 332.7, -75.7, 2000, 'spiral', [18, 7, 0.9], true,
     'An edge-on neighbor', [['Type', 'Magellanic spiral, edge-on'], ['Distance', '6.5 million ly'], ['Group', 'Sculptor group']],
-    'A galaxy much like the Large Magellanic Cloud, but seen almost perfectly edge-on — a bright sliver on the border of the Sculptor group.'],
+    'A galaxy much like the Large Magellanic Cloud, but seen almost perfectly edge-on, a bright sliver on the border of the Sculptor group.'],
   ['NGC 253 · Sculptor Galaxy', 97.4, -88.0, 3500, 'spiral', [26, 9, 0.7], true,
     'The Silver Coin', [['Type', 'Starburst spiral'], ['Distance', '11.4 million ly'], ['Group', 'Sculptor group']],
-    'The dusty "Silver Coin" — the brightest member of the Sculptor group and one of the great starburst galaxies, furiously converting gas into stars at its crowded centre.'],
+    'The dusty "Silver Coin": the brightest member of the Sculptor group and one of the great starburst galaxies, furiously converting gas into stars at its crowded centre.'],
   ['M81 · Bode\'s Galaxy', 142.1, 40.9, 3630, 'spiral', [26, 16, 0.3], true,
     'Grand-design spiral of the M81 group', [['Type', 'Grand-design spiral'], ['Distance', '11.8 million ly'], ['Companion', 'M82, locked in interaction']],
-    'A perfect grand-design spiral and anchor of the nearest big galaxy group. It is gravitationally tangled with the Cigar Galaxy beside it — their last close pass set M82 ablaze with star formation.'],
+    'A perfect grand-design spiral and anchor of the nearest big galaxy group. It is gravitationally tangled with the Cigar Galaxy beside it. Their last close pass set M82 ablaze with star formation.'],
   ['M82 · Cigar Galaxy', 141.4, 40.6, 3530, 'spiral', [16, 6, 1.0], false,
     'Exploding with new stars', [['Type', 'Starburst, edge-on'], ['Distance', '11.5 million ly'], ['Cause', 'a close pass by M81']],
     'Wrecked and glorious: its encounter with M81 ignited a starburst ten times our galaxy\'s rate, blowing towers of glowing gas out of its disc.'],
   ['Centaurus A', 309.5, 19.4, 3800, 'len', [24, 18, 0.2], false,
     'The nearest active galaxy', [['Type', 'Elliptical w/ dust lane'], ['Distance', '12.4 million ly'], ['Core', 'feeding supermassive black hole']],
-    'The nearest galaxy with an actively feeding central black hole, wearing a dramatic dust lane — the remains of a spiral galaxy it swallowed whole.'],
+    'The nearest galaxy with an actively feeding central black hole, wearing a dramatic dust lane, the remains of a spiral galaxy it swallowed whole.'],
   // existing visuals — cards for the members already drawn in the scene
   ['Andromeda Galaxy', 121.2, -21.6, 778, 'none', null, false,
     'The Local Group\'s other giant', [['Type', 'Spiral'], ['Distance', '2.5 million ly'], ['Future', 'merges with the Milky Way in ~4.5 billion yr']],
     'Our twin and our destiny: the Local Group\'s largest galaxy, closing on the Milky Way at 110 km/s. In roughly 4.5 billion years the two will merge into a single giant elliptical.'],
   ['Triangulum Galaxy', 133.6, -31.3, 870, 'none', null, false,
     'The Local Group\'s third spiral', [['Type', 'Spiral'], ['Distance', '2.7 million ly'], ['Note', 'likely a distant companion of Andromeda']],
-    'The smallest of the Local Group\'s three spirals, rich in gas and busy forming stars — probably a far-flung companion of Andromeda.'],
+    'The smallest of the Local Group\'s three spirals, rich in gas and busy forming stars, probably a far-flung companion of Andromeda.'],
   ['Large Magellanic Cloud', 280.5, -32.9, 50, 'none', null, false,
     'Our brightest satellite', [['Type', 'Magellanic irregular'], ['Distance', '163,000 ly'], ['Hosts', 'the Tarantula Nebula']],
-    'The Milky Way\'s brightest companion, home to the Tarantula Nebula — the most violent star-forming region in the Local Group — and site of Supernova 1987A.'],
+    'The Milky Way\'s brightest companion, home to the Tarantula Nebula, the most violent star-forming region in the Local Group, and site of Supernova 1987A.'],
   ['Small Magellanic Cloud', 302.8, -44.3, 62, 'none', null, false,
     'The LMC\'s little sibling', [['Type', 'Dwarf irregular'], ['Distance', '200,000 ly'], ['Note', 'trails the Magellanic Stream']],
     'Together with the LMC it trails the Magellanic Stream, a river of hydrogen stripped out by the Milky Way\'s tides, wrapping half the sky.'],
@@ -4557,9 +4557,9 @@ function flyShowToggle() {
   crosshair.classList.toggle('show', active);
   flyArmPrompt.classList.toggle('show', active && !flyArmed);
   const cr = document.getElementById('fh-cruise');
-  if (cr) { cr.textContent = flyCruise ? 'CRUISING — Space to stop' : 'cruise (hands-free)'; cr.style.color = flyCruise ? 'var(--accent)' : ''; }
+  if (cr) { cr.textContent = flyCruise ? 'CRUISING · Space to stop' : 'cruise (hands-free)'; cr.style.color = flyCruise ? 'var(--accent)' : ''; }
   const vw = document.getElementById('fh-view');
-  if (vw) { vw.textContent = thirdPerson ? 'THIRD person — V for cockpit' : '1st / 3rd person'; vw.style.color = thirdPerson ? 'var(--accent)' : ''; }
+  if (vw) { vw.textContent = thirdPerson ? 'THIRD person · V for cockpit' : '1st / 3rd person'; vw.style.color = thirdPerson ? 'var(--accent)' : ''; }
   const sp = document.getElementById('fh-speed');
   if (sp) sp.textContent = flySpeed.toFixed(flySpeed < 1 ? 2 : 1) + '×';
   // touch controls mirror the key-bound state
@@ -5279,7 +5279,7 @@ function handleClick(cx, cy) {
     } else if (best && best.sat) {
       showSatInfo(best.sat);
     } else if (best && best.site) {
-      showInfo(best.site.name, 'Lunar surface — landing site', [], best.site.doc, { obj: best.site, surfaceBody: 'Moon' });
+      showInfo(best.site.name, 'Lunar surface · landing site', [], best.site.doc, { obj: best.site, surfaceBody: 'Moon' });
     } else if (best && best.moon) {
       const mo = best.moon;
       showInfo(mo.name, `Moon of ${mo.parent}`, [
@@ -5491,7 +5491,7 @@ function gotoTarget(t) {
     showSatInfo(t.sat);
   } else if (t.type === 'lunarsite') {
     jumpToPoint(solBodies.Moon.pos.clone(), displayRadius('Moon'), 'Earth');
-    showInfo(t.site.name, 'Lunar surface — landing site', [], t.site.doc, { obj: t.site, surfaceBody: 'Moon' });
+    showInfo(t.site.name, 'Lunar surface · landing site', [], t.site.doc, { obj: t.site, surfaceBody: 'Moon' });
   } else if (t.type === 'moon') {
     jumpToPoint(t.moon.world.clone(), 0.18, t.moon.parent);
     showInfo(t.moon.name, `Moon of ${t.moon.parent}`, [
@@ -5551,8 +5551,8 @@ function gotoTarget(t) {
     orbits.neighborhood.r = 2.2;
     showInfo('Oort Cloud', 'The Sun\'s comet reservoir · 0.01–0.5 parsecs',
       [['True extent', '2,000 – 100,000 AU'], ['Contents', 'trillions of icy bodies'],
-       ['Sends us', 'the long-period comets'], ['Directly observed', 'never — inferred from comets']],
-      'The Sun\'s deep-freeze: a spherical cloud of icy debris left over from planet formation, reaching a quarter of the way to Alpha Centauri. Every long-period comet — Hale-Bopp, NEOWISE — is an Oort cloud body nudged sunward by a passing star or the galaxy\'s tide. No telescope has ever seen it directly; we know it only by the comets it sends.');
+       ['Sends us', 'the long-period comets'], ['Directly observed', 'never, inferred from comets']],
+      'The Sun\'s deep-freeze: a spherical cloud of icy debris left over from planet formation, reaching a quarter of the way to Alpha Centauri. Every long-period comet (Hale-Bopp, NEOWISE) is an Oort cloud body nudged sunward by a passing star or the galaxy\'s tide. No telescope has ever seen it directly; we know it only by the comets it sends.');
   } else {
     const dso = DSOS[t.dsoIdx];
     frameSkyDir(dsoDirs[t.dsoIdx]);
@@ -5625,7 +5625,7 @@ searchInput.addEventListener('input', () => {
   searchItems = [...cat, ...exact, ...starts, ...contains].slice(0, 8);
   if (!searchItems.length) {
     searchResults.innerHTML =
-      '<div class="sr-empty">No matches — try a star, planet, constellation, or an HD/HIP number</div>';
+      '<div class="sr-empty">No matches. Try a star, planet, constellation, or an HD/HIP number</div>';
     searchResults.classList.add('open');
   } else renderSearch(searchItems);
 });
@@ -6381,27 +6381,27 @@ window.U = {
       text: 'Eight planets moving at their real positions for today’s date, computed from NASA orbital elements. Drag to look around; scroll to zoom.' },
     { mode: 'solar', r0: 60, r1: 90, phi: 1.05, timeIdx: 9, hi: '#timebar',
       title: 'You are watching the future',
-      text: 'The clock is running at a week per second — press ▶▶ for faster futures, ◀◀ to rewind into the past, ❚❚ to freeze a moment. Click the date to jump anywhere from the year 1000 to 3000 — try 1054, when a supernova outshone Venus. Every planet follows its real orbit the whole way.' },
+      text: 'The clock is running at a week per second: press ▶▶ for faster futures, ◀◀ to rewind into the past, ❚❚ to freeze a moment. Click the date to jump anywhere from the year 1000 to 3000. Try 1054, when a supernova outshone Venus. Every planet follows its real orbit the whole way.' },
     { mode: 'solar', follow: 'Earth', r0: 2.2, r1: 5.5, phi: 1.2,
       title: 'Ride along with a satellite',
-      text: 'Home, up close — the ISS, Hubble, JWST, GPS, and more, all in motion around Earth. Click any satellite and choose “View from here” to ride in its seat. The Moon carries the Apollo landing sites, clickable too.' },
+      text: 'Home, up close: the ISS, Hubble, JWST, GPS, and more, all in motion around Earth. Click any satellite and choose “View from here” to ride in its seat. The Moon carries the Apollo landing sites, clickable too.' },
     { mode: 'solar', r0: 70, r1: 130, phi: 1.0, hud: true, hi: '#fly-hud',
       title: 'You have a spaceship',
       text: 'Press F any time to fly: hold the mouse to thrust, steer with the cursor, Shift to boost, V for third person. Double-click any planet, moon, or star to fly straight to it. F or Esc brings you home.' },
     { mode: 'neighborhood', r0: 18, r1: 70, phi: 1.15,
       title: 'The Stellar Neighborhood',
-      text: 'Zoom out and the Sun becomes one star among 119,625 — every one plotted at its true measured 3D position. Keep flying outward and the scales hand off on their own.' },
+      text: 'Zoom out and the Sun becomes one star among 119,625, every one plotted at its true measured 3D position. Keep flying outward and the scales hand off on their own.' },
     { mode: 'galaxy', r0: 22, r1: 65, phi: 1.0,
       title: 'The Milky Way',
-      text: 'Our galaxy from above. The Sun orbits 26,000 light-years from the centre — one lap every 230 million years. Search “Sagittarius A*” later to visit the black hole at the middle.' },
+      text: 'Our galaxy from above. The Sun orbits 26,000 light-years from the centre, one lap every 230 million years. Search “Sagittarius A*” later to visit the black hole at the middle.' },
     { mode: 'cosmic', r0: 28, r1: 95, phi: 1.1,
       title: 'The Cosmic Web',
-      text: 'Galaxies gather into filaments around immense voids — the largest structure there is, out to 46 billion light-years.' },
+      text: 'Galaxies gather into filaments around immense voids, the largest structure there is, out to 46 billion light-years.' },
     { mode: 'sky', title: 'And this is home',
-      text: 'The sky above Earth tonight. Every star here is clickable — click anything for its story, or press / and search any of thousands of stars, planets, constellations, and nebulae.' },
+      text: 'The sky above Earth tonight. Every star here is clickable. Click anything for its story, or press / and search any of thousands of stars, planets, constellations, and nebulae.' },
     { mode: 'sky', hi: '#title',
       title: 'Make it yours',
-      text: 'The UNIVERSE menu holds every layer — constellation art, exoplanets, pulsars and quasars, megastructures, dark matter, even the sky in X-ray or radio — with one-tap presets: Essentials, Clean view, Everything. The minimap’s ladder jumps scales. All of it is remembered. Your universe now.' },
+      text: 'The UNIVERSE menu holds every layer: constellation art, exoplanets, pulsars and quasars, megastructures, dark matter, even the sky in X-ray or radio, with one-tap presets: Essentials, Clean view, Everything. The minimap’s ladder jumps scales. All of it is remembered.' },
   ];
   // Touch devices: no keyboard or scroll wheel — adapt the language, and teach
   // the touch flight controls (🚀 button) instead of the key bindings.
@@ -6412,7 +6412,7 @@ window.U = {
       delete hudStop.hud;                    // don't force the HUD open — it sits where 🚀 lives
       hudStop.hi = '#fly-btn';               // point at the real thing to tap
       hudStop.text = 'Tap 🚀 Fly any time to take the controls: hold to thrust, drag to steer, ' +
-        'pinch for speed — or tap ⏵ Cruise to fly hands-free. Double-tap any planet, ' +
+        'pinch for speed, or tap ⏵ Cruise to fly hands-free. Double-tap any planet, ' +
         'moon, or star to fly straight to it. ✕ Exit lands you back in orbit.';
     }
     for (const t of TOUR) {
