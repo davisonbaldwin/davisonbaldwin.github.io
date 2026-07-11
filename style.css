@@ -47,6 +47,10 @@ html[data-skin="snc"] {
   --bg: #0d1311; --ink: #e4eee8; --sub: #8fa89d; --acc: #4fd8c4;
   --line: rgba(228, 238, 232, 0.16); --face: "Helvetica Neue", Helvetica, sans-serif;
 }
+html[data-skin="mus"] {
+  --bg: #141114; --ink: #ebe4da; --sub: #a79c93; --acc: #d9a96a;
+  --line: rgba(235, 228, 218, 0.14); --face: Baskerville, "Iowan Old Style", Georgia, serif;
+}
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -154,6 +158,34 @@ a { color: var(--acc); }
   radial-gradient(circle at 84% 76%, rgba(242, 176, 79, 0.45) 0 4vw, rgba(242, 176, 79, 0.14) 9vw, transparent 22vw),
   repeating-linear-gradient(12deg, transparent 0 26px, rgba(79, 216, 196, 0.07) 26px 28px),
   repeating-linear-gradient(-14deg, transparent 0 34px, rgba(242, 176, 79, 0.06) 34px 36px); }
+
+/* Music Technology — a dark stage; sound rippling out from one warm point,
+   like the run-out grooves of a record */
+.tex-mus { background:
+  radial-gradient(circle at 16% 84%, rgba(217, 169, 106, 0.12) 0 6vw, transparent 34vw),
+  repeating-radial-gradient(circle at 16% 84%, transparent 0 42px, rgba(217, 169, 106, 0.055) 42px 44px, transparent 44px 46px),
+  radial-gradient(ellipse 120% 90% at 50% 30%, transparent 55%, rgba(6, 4, 6, 0.5) 100%),
+  linear-gradient(180deg, #16121a 0%, #141114 55%, #181310 100%); }
+
+/* Music Technology hub — the chapter index */
+.chapters { margin: 34px 0 8px; border-top: 1px solid var(--line); }
+.chapters a { display: grid; grid-template-columns: 74px 1fr auto; gap: 18px;
+  align-items: baseline; padding: 20px 4px; border-bottom: 1px solid var(--line);
+  text-decoration: none; color: var(--ink); transition: background 0.25s ease; }
+.chapters a:hover { background: rgba(235, 228, 218, 0.04); }
+.chapters .no { font-family: var(--mono); font-size: 11px; color: var(--sub);
+  letter-spacing: 0.08em; }
+.chapters .nm { font-family: var(--face); font-size: 21px; }
+.chapters .nm .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+  margin-right: 12px; vertical-align: 6%; }
+.chapters .k { font-family: var(--mono); font-size: 10.5px; color: var(--sub);
+  letter-spacing: 0.07em; text-align: right; }
+.chapters .sum { grid-column: 2 / 4; color: var(--sub); font-size: 14.5px;
+  line-height: 1.6; margin-top: 2px; max-width: 640px; }
+@media (max-width: 640px) {
+  .chapters a { grid-template-columns: 50px 1fr; }
+  .chapters .k { display: none; }
+}
 
 .wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto;
   padding: 0 28px; }
