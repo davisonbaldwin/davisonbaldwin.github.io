@@ -1681,369 +1681,6 @@ function updateLunarSites() {
 }
 
 
-// ---------------------------------------------------------------- megastructures
-// Six speculative/hypothetical structures shown in the Solar System view.
-// Toggled individually via the Controls panel; clickable for info cards.
-const megaGroup = new THREE.Group();
-solScene.add(megaGroup);
-
-const MEGA_MAT = (color, o = {}) => new THREE.MeshStandardMaterial({
-  color, metalness: o.m ?? 0.6, roughness: o.r ?? 0.45,
-  emissive: new THREE.Color(color).multiplyScalar(o.ei ?? 0),
-  transparent: o.t ?? false, opacity: o.op ?? 1,
-  side: o.side ?? THREE.FrontSide,
-});
-const MEGA_WIRE = (color, op = 0.35) => new THREE.MeshBasicMaterial({
-  color, wireframe: true, transparent: true, opacity: op,
-});
-
-// ---- 1. Dyson Sphere around the Sun ----
-const dysonGroup = new THREE.Group();
-{
-  const r = 6.5; // between Sun visual radius (~4 WU) and Earth orbit (20 WU)
-  // outer wireframe shell
-  const shell = new THREE.Mesh(
-    new THREE.SphereGeometry(r, 32, 20),
-    MEGA_WIRE(0xffcc44, 0.18),
-  );
-  // inner glowing surface (sunward side lit)
-  const inner = new THREE.Mesh(
-    new THREE.SphereGeometry(r * 0.995, 32, 20),
-    MEGA_MAT(0xffa020, { m: 0, r: 1, ei: 0.25, t: true, op: 0.12, side: THREE.BackSide }),
-  );
-  // equatorial collector ring
-  const ring = new THREE.Mesh(
-    new THREE.TorusGeometry(r, 0.08, 8, 80),
-    MEGA_MAT(0xffdd80, { m: 0.85, r: 0.2, ei: 0.4 }),
-  );
-  ring.rotation.x = Math.PI / 2;
-  // polar emitter rings
-  for (const ang of [0.55, -0.55]) {
-    const pr = new THREE.Mesh(
-      new THREE.TorusGeometry(r * Math.cos(ang), 0.05, 8, 60),
-      MEGA_MAT(0xffcc66, { m: 0.8, r: 0.3, ei: 0.35 }),
-    );
-    pr.rotation.x = Math.PI / 2;
-    pr.position.y = r * Math.sin(ang);
-    dysonGroup.add(pr);
-  }
-  dysonGroup.add(shell, inner, ring);
-  dysonGroup.userData.info = {
-    name: 'Dyson Sphere',
-    sub: 'Speculative megastructure',
-    rows: [['Radius', '0.33 AU'], ['Output', '3.8 × 10²⁶ W (total Solar)'], ['Type', 'Stellar energy collector'], ['Concept', 'Freeman Dyson, 1960']],
-    doc: 'A hypothetical shell enclosing a star to capture its entire energy output. Freeman Dyson proposed this in 1960 as a marker of a K-II civilization on the Kardashev scale. In practice, a rigid shell is mechanically unstable. Most proposals use a swarm of independent orbiting collectors.',
-  };
-}
-megaGroup.add(dysonGroup);
-
-// ---- 2. Solar Sail (follows Earth, sunward offset) ----
-const solarSailGroup = new THREE.Group();
-{
-  const S = 1.1;  // half-size of the sail
-  const sailMat = new THREE.MeshStandardMaterial({
-    color: 0xd4e8ff, metalness: 0.95, roughness: 0.05,
-    emissive: new THREE.Color(0x88bbff), emissiveIntensity: 0.12,
-    side: THREE.DoubleSide, transparent: true, opacity: 0.82,
-  });
-  const sail = new THREE.Mesh(new THREE.PlaneGeometry(S * 2, S * 2, 6, 6), sailMat);
-  sail.rotation.y = Math.PI / 2;
-  // boom/rigging lines
-  const lineMat = new THREE.LineBasicMaterial({ color: 0x8899bb, transparent: true, opacity: 0.7 });
-  const addLine = (pts) => solarSailGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat));
-  addLine([new THREE.Vector3(0, 0, 0.12), new THREE.Vector3(0, S, 0)]);
-  addLine([new THREE.Vector3(0, 0, 0.12), new THREE.Vector3(0, -S, 0)]);
-  addLine([new THREE.Vector3(0, 0, 0.12), new THREE.Vector3(0, 0, S)]);
-  addLine([new THREE.Vector3(0, 0, 0.12), new THREE.Vector3(0, 0, -S)]);
-  // small payload bus
-  const bus = new THREE.Mesh(
-    new THREE.BoxGeometry(0.06, 0.06, 0.18),
-    MEGA_MAT(0x99aacc, { m: 0.75, r: 0.3, ei: 0.2 }),
-  );
-  bus.position.set(0, 0, 0.12);
-  solarSailGroup.add(sail, bus);
-  solarSailGroup.userData.info = {
-    name: 'Solar Sail',
-    sub: 'Light-propelled spacecraft',
-    rows: [['Sail area', '~1.2 km²'], ['Acceleration', '~0.1 mm/s² at 1 AU'], ['Propellant', 'None, photon pressure'], ['Example', 'IKAROS (JAXA, 2010)']],
-    doc: 'A solar sail uses radiation pressure from sunlight to accelerate without propellant. The sail is shown here near Earth–Sun L1, where continuous sunward sunlight provides maximum thrust. The thin reflective membrane must be only micrometres thick, thinner than a human hair.',
-  };
-}
-megaGroup.add(solarSailGroup);
-
-// ---- 3. O'Neill Cylinder (at Earth L4, 60° ahead) ----
-const oneillGroup = new THREE.Group();
-{
-  const R = 0.22, L = 0.95;
-  // paired cylinders (Island Three design: two counter-rotating)
-  const cylMat = MEGA_MAT(0x8899bb, { m: 0.7, r: 0.35, ei: 0.15, t: true, op: 0.88 });
-  const windowMat = new THREE.MeshBasicMaterial({ color: 0x66aaff, transparent: true, opacity: 0.5 });
-  for (const side of [-1, 1]) {
-    const cyl = new THREE.Mesh(new THREE.CylinderGeometry(R, R, L, 36, 1, true), cylMat);
-    const cap1 = new THREE.Mesh(new THREE.CircleGeometry(R, 36), MEGA_MAT(0x6677aa, { m: 0.6, r: 0.4, ei: 0.2 }));
-    const cap2 = cap1.clone();
-    cap1.position.y = L / 2; cap1.rotation.x = Math.PI / 2;
-    cap2.position.y = -L / 2; cap2.rotation.x = -Math.PI / 2;
-    // stripe windows along the body
-    for (let i = 0; i < 6; i++) {
-      const strip = new THREE.Mesh(
-        new THREE.CylinderGeometry(R + 0.003, R + 0.003, 0.04, 36, 1, true),
-        windowMat,
-      );
-      strip.position.y = (i - 2.5) * (L / 6.5);
-      cyl.add(strip);
-    }
-    const sub = new THREE.Group();
-    sub.add(cyl, cap1, cap2);
-    sub.position.x = side * (R + 0.12);
-    oneillGroup.add(sub);
-  }
-  // connecting struts
-  for (let i = 0; i < 3; i++) {
-    const ang = (i / 3) * Math.PI * 2;
-    const strut = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.018, 0.018, (R + 0.12) * 2, 8),
-      MEGA_MAT(0x778899, { m: 0.7, r: 0.4 }),
-    );
-    strut.rotation.z = Math.PI / 2;
-    strut.position.y = (i - 1) * (L * 0.35);
-    oneillGroup.add(strut);
-  }
-  oneillGroup.userData.info = {
-    name: "O'Neill Cylinder",
-    sub: 'Rotating space habitat',
-    rows: [['Length', '32 km (1:32 scale shown)'], ['Diameter', '8 km'], ['Population', 'Up to ~10,000'], ['Concept', "Gerard K. O'Neill, 1976"]],
-    doc: "Proposed by physicist Gerard K. O'Neill in The High Frontier (1976), an O'Neill cylinder is a pair of counter-rotating cylinders providing artificial gravity through centripetal acceleration. The habitats sit at Earth's L4 or L5 Lagrange points, stable gravitational parking spots. Interior sunlight is reflected in through long windows running the length of the cylinder.",
-  };
-}
-megaGroup.add(oneillGroup);
-
-// ---- 4. Space Elevator (tethered to Earth, updates each frame) ----
-const elevatorGroup = new THREE.Group();
-{
-  const cableMat = new THREE.LineBasicMaterial({ color: 0x88ccff, transparent: true, opacity: 0.75 });
-  const cable = new THREE.Line(new THREE.BufferGeometry(), cableMat);
-  cable.userData.isCable = true;
-  // counterweight
-  const cwt = new THREE.Mesh(
-    new THREE.OctahedronGeometry(0.07),
-    MEGA_MAT(0x99bbdd, { m: 0.8, r: 0.3, ei: 0.3 }),
-  );
-  // transfer station (midpoint)
-  const station = new THREE.Mesh(
-    new THREE.TorusGeometry(0.09, 0.025, 8, 24),
-    MEGA_MAT(0x8899cc, { m: 0.75, r: 0.3, ei: 0.25 }),
-  );
-  station.rotation.x = Math.PI / 2;
-  // climber car
-  const climber = new THREE.Mesh(
-    new THREE.BoxGeometry(0.04, 0.04, 0.08),
-    MEGA_MAT(0xeebb44, { m: 0.8, r: 0.25, ei: 0.4 }),
-  );
-  elevatorGroup.add(cable, cwt, station, climber);
-  elevatorGroup.userData.cable = cable;
-  elevatorGroup.userData.cwt = cwt;
-  elevatorGroup.userData.station = station;
-  elevatorGroup.userData.climber = climber;
-  elevatorGroup.userData.info = {
-    name: 'Space Elevator',
-    sub: 'Carbon-nanotube tether',
-    rows: [['Cable length', '~100,000 km'], ['Anchor', 'Earth equator'], ['Counterweight', 'GEO+'], ['Material', 'Carbon nanotubes (theoretical)']],
-    doc: "A space elevator is a cable anchored at the equator and extending to a counterweight beyond geostationary orbit. Climbers ascend and descend the cable, delivering payloads to orbit at a fraction of rocket costs. The concept requires a cable material with specific strength far exceeding any currently known material — carbon nanotubes are the leading candidate.",
-  };
-}
-megaGroup.add(elevatorGroup);
-
-// ---- 5. Alcubierre Warp Drive (near Mars) ----
-const warpGroup = new THREE.Group();
-{
-  // warp bubble ring
-  const ringMat = new THREE.MeshStandardMaterial({
-    color: 0x6633ff, metalness: 0.3, roughness: 0.2,
-    emissive: new THREE.Color(0x3311aa), emissiveIntensity: 0.9,
-    transparent: true, opacity: 0.85,
-  });
-  const outer = new THREE.Mesh(new THREE.TorusGeometry(0.28, 0.045, 18, 64), ringMat);
-  const inner = new THREE.Mesh(new THREE.TorusGeometry(0.19, 0.028, 14, 64),
-    new THREE.MeshStandardMaterial({ color: 0x9955ff, emissive: new THREE.Color(0x5522cc), emissiveIntensity: 0.8, transparent: true, opacity: 0.7 }));
-  // bubble distortion sphere
-  const bubble = new THREE.Mesh(
-    new THREE.SphereGeometry(0.22, 32, 20),
-    new THREE.MeshBasicMaterial({ color: 0x2200aa, transparent: true, opacity: 0.08, side: THREE.DoubleSide }),
-  );
-  // ship inside
-  const shipInside = new THREE.Mesh(
-    new THREE.ConeGeometry(0.035, 0.18, 10),
-    MEGA_MAT(0xccddff, { m: 0.8, r: 0.2, ei: 0.5 }),
-  );
-  shipInside.rotation.x = Math.PI / 2;
-  // space-time grid lines around the bubble
-  const gridMat = new THREE.LineBasicMaterial({ color: 0x4422cc, transparent: true, opacity: 0.3 });
-  for (let i = 0; i < 8; i++) {
-    const ang = (i / 8) * Math.PI * 2;
-    const pts = [];
-    for (let j = 0; j <= 40; j++) {
-      const t = (j / 40 - 0.5) * 1.4;
-      const warp = 0.12 * Math.exp(-t * t * 3.5) * Math.cos(i * 0.4);
-      pts.push(new THREE.Vector3(t * 0.9, Math.cos(ang) * 0.38 + warp * Math.cos(ang), Math.sin(ang) * 0.38 + warp * Math.sin(ang)));
-    }
-    warpGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), gridMat));
-  }
-  warpGroup.add(outer, inner, bubble, shipInside);
-  warpGroup.userData.info = {
-    name: 'Alcubierre Warp Drive',
-    sub: 'Exotic-matter spacetime warp',
-    rows: [['Concept', 'Miguel Alcubierre, 1994'], ['Speed', 'FTL (in principle)'], ['Energy', '~10⁶⁴ J (exotic matter)'], ['Status', 'Theoretical only']],
-    doc: "Physicist Miguel Alcubierre showed in 1994 that Einstein's equations permit a solution where a 'warp bubble' compresses space ahead of a ship and expands it behind, moving the ship faster than light without locally violating relativity. The catch: it requires negative-energy 'exotic matter' in quantities far beyond anything known, and causality problems remain unsolved.",
-  };
-  warpGroup.userData.rings = [outer, inner];
-}
-megaGroup.add(warpGroup);
-
-// ---- 6. Generation Ship (heading outward from the inner system) ----
-const genShipGroup = new THREE.Group();
-{
-  const hull = MEGA_MAT(0x7788aa, { m: 0.65, r: 0.4, ei: 0.18 });
-  const dark = MEGA_MAT(0x445566, { m: 0.55, r: 0.5, ei: 0.1 });
-  const glow = MEGA_MAT(0x44aaff, { m: 0, r: 1, ei: 1.0 });
-  const solar = MEGA_MAT(0x334466, { m: 0.4, r: 0.5, ei: 0.08 });
-  const cyl = (rt, rb, h, s = 18) => new THREE.CylinderGeometry(rt, rb, h, s);
-  const box = (w, h, d) => new THREE.BoxGeometry(w, h, d);
-  const add = (geo, mat, x, y, z, rx, ry, rz) => {
-    const m = new THREE.Mesh(geo, mat);
-    m.position.set(x || 0, y || 0, z || 0);
-    if (rx) m.rotation.x = rx; if (ry) m.rotation.y = ry; if (rz) m.rotation.z = rz;
-    genShipGroup.add(m); return m;
-  };
-  // main spine (horizontal, nose +x)
-  add(cyl(0.06, 0.08, 2.2, 20), hull, 0, 0, 0, 0, 0, Math.PI / 2);  // spine tube
-  // habitat rings (rotating tori around the spine)
-  for (const x of [-0.3, 0.2, 0.7]) {
-    const torus = new THREE.Mesh(new THREE.TorusGeometry(0.38, 0.07, 10, 40), hull);
-    torus.rotation.y = Math.PI / 2;
-    torus.position.x = x;
-    torus.userData.spinRing = true;
-    genShipGroup.add(torus);
-    // spoke connectors
-    for (let i = 0; i < 4; i++) {
-      const ang = (i / 4) * Math.PI * 2;
-      const spoke = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.31, 6), dark);
-      spoke.position.set(x, Math.sin(ang) * 0.19, Math.cos(ang) * 0.19);
-      spoke.rotation.z = ang + Math.PI / 2;
-      genShipGroup.add(spoke);
-    }
-  }
-  // nose section — crew command
-  add(new THREE.SphereGeometry(0.12, 18, 12), hull, 1.15, 0, 0);
-  add(cyl(0.08, 0.12, 0.25, 18), hull, 0.97, 0, 0, 0, 0, Math.PI / 2);
-  // solar panel arrays
-  for (const side of [-1, 1]) {
-    for (const xp of [0.1, 0.65]) {
-      add(box(0.04, 0.6, 0.26), solar, xp, side * 0.52, 0);
-    }
-  }
-  // engine section — cluster of nozzles at the back
-  add(cyl(0.22, 0.15, 0.22, 20), dark, -1.1, 0, 0, 0, 0, Math.PI / 2);
-  for (let i = 0; i < 7; i++) {
-    const ang = i === 0 ? 0 : ((i - 1) / 6) * Math.PI * 2;
-    const nr = i === 0 ? 0 : 0.11;
-    const nozzle = new THREE.Mesh(cyl(0.04, 0.06, 0.14, 12), dark);
-    nozzle.position.set(-1.22, Math.sin(ang) * nr, Math.cos(ang) * nr);
-    nozzle.rotation.z = Math.PI / 2;
-    genShipGroup.add(nozzle);
-    // engine glow
-    const glowSp = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: makeDiscTexture('rgba(100,200,255,0.9)', 'rgba(40,80,200,0.0)', 0.3),
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-    }));
-    glowSp.scale.set(0.12, 0.12, 1);
-    glowSp.position.set(-1.3, Math.sin(ang) * nr, Math.cos(ang) * nr);
-    genShipGroup.add(glowSp);
-  }
-  // position in the solar system: heading away from Sun, 1.6 AU out
-  genShipGroup.position.set(-AUU * 1.6, AUU * 0.25, 0);
-  genShipGroup.rotation.y = Math.PI;   // nose points outward (+x away from Sun)
-  genShipGroup.scale.setScalar(1.0);
-  genShipGroup.userData.info = {
-    name: 'Generation Ship',
-    sub: 'Interstellar ark',
-    rows: [['Length', '~10 km (shown ×1:1000)'], ['Journey time', '10,000–100,000 yr'], ['Destination', 'Nearest star system'], ['Population', '10,000–100,000']],
-    doc: 'A generation ship travels to another star so slowly that the original crew will die before arrival. The descendants of the first crew complete the journey. Rotating habitat rings provide artificial gravity. The ship must be a self-contained biosphere, carrying ecosystems, genetic diversity, and all knowledge of human civilization.',
-  };
-}
-megaGroup.add(genShipGroup);
-
-// clickable picking for megastructures
-const MEGA_OBJECTS = [
-  { group: dysonGroup,    pickR: 7.0 },
-  { group: solarSailGroup, pickR: 1.5 },
-  { group: oneillGroup,   pickR: 1.2 },
-  { group: elevatorGroup, pickR: 0.5 },
-  { group: warpGroup,     pickR: 0.5 },
-  { group: genShipGroup,  pickR: 1.5 },
-];
-
-function updateMegastructures(jd, perfT) {
-  if (!megaGroup.visible) return;
-  const ePos = solBodies.Earth ? solBodies.Earth.pos : null;
-  const mPos = solBodies.Mars ? solBodies.Mars.pos : null;
-  if (!ePos) return;
-
-  // solar sail: sunward from Earth (toward origin) offset
-  if (solarSailGroup.visible) {
-    const sunDir = ePos.clone().negate().normalize();
-    solarSailGroup.position.copy(ePos).addScaledVector(sunDir, 3.2);
-    solarSailGroup.lookAt(new THREE.Vector3(0, 0, 0));
-  }
-
-  // O'Neill cylinder: Earth L4 (60° ahead in orbit)
-  if (oneillGroup.visible) {
-    const angle = Math.atan2(ePos.z, ePos.x) + Math.PI / 3;
-    const r = ePos.length();
-    oneillGroup.position.set(Math.cos(angle) * r, ePos.y * 0.9, Math.sin(angle) * r);
-    oneillGroup.rotation.x = perfT * 0.15;  // slow spin
-  }
-
-  // space elevator: attach to Earth surface, extend to GEO
-  if (elevatorGroup.visible && ePos) {
-    const eDisp = 1.165;  // approx displayRadius Earth
-    const geoR = eDisp * 6.6;
-    const up = ePos.clone().normalize();
-    const surfPt = ePos.clone().addScaledVector(up, eDisp);
-    const geoPt = ePos.clone().addScaledVector(up, geoR);
-    const cwtPt = ePos.clone().addScaledVector(up, geoR * 1.35);
-    // rebuild cable geometry
-    const cable = elevatorGroup.userData.cable;
-    cable.geometry.setFromPoints([surfPt, cwtPt]);
-    elevatorGroup.userData.cwt.position.copy(cwtPt);
-    elevatorGroup.userData.station.position.copy(geoPt);
-    // climber animates up and down the cable
-    const t = (Math.sin(perfT * 0.12) * 0.5 + 0.5);
-    elevatorGroup.userData.climber.position.lerpVectors(surfPt, cwtPt, t);
-    elevatorGroup.userData.climber.lookAt(cwtPt);
-    // orient the torus ring perpendicular to cable
-    elevatorGroup.userData.station.lookAt(cwtPt);
-  }
-
-  // Alcubierre: near Mars (or fixed if Mars not yet built)
-  if (warpGroup.visible && mPos) {
-    warpGroup.position.copy(mPos).addScaledVector(mPos.clone().normalize(), 2.5);
-    // pulse the rings
-    const pulse = 0.78 + 0.22 * Math.sin(perfT * 2.4);
-    for (const r of warpGroup.userData.rings) r.material.emissiveIntensity = pulse;
-    warpGroup.rotation.y = perfT * 0.08;
-  }
-
-  // Dyson sphere: rotate slowly
-  dysonGroup.rotation.y = perfT * 0.018;
-
-  // generation ship rings: spin independently
-  for (const child of genShipGroup.children) {
-    if (child.userData.spinRing) child.rotation.x += 0.003;
-  }
-}
-
-megaGroup.visible = false;  // off by default
 
 // ---------------------------------------------------------------- physics visualizers
 // (C) Invisible-physics overlays — toggled from the Controls panel.
@@ -3041,6 +2678,7 @@ const neiStarLabels = [];
   labelGroups.neighborhood.push(sun);
   const sunLab = makeTextSprite('Sun', { size: 11, color: '#ffe9a8' });
   sunLab.center.set(0.5, 1.8);
+  sunLab.userData.declutterPri = 0;          // home always wins the screen-space contest
   neiScene.add(sunLab);
   labelGroups.neighborhood.push(sunLab);
 
@@ -3099,6 +2737,7 @@ const neiStarLabels = [];
     const oortLab = makeTextSprite('Oort Cloud', { size: 9.5, color: '#a9c4d8', alpha: 0.85 });
     oortLab.position.set(0, 0.4, 0);
     oortLab.renderOrder = 9;
+    oortLab.userData.declutterPri = 500;     // informational — yields to every star name
     const grp = new THREE.Group();
     grp.add(oort, oortLab);
     grp.visible = false;                                   // gated by zoom in animate
@@ -3129,6 +2768,7 @@ const neiStarLabels = [];
     lab.center.set(0.5, 1.6);
     lab.position.set(dirs[i * 3] * dd, dirs[i * 3 + 1] * dd, dirs[i * 3 + 2] * dd);
     lab.userData.tier = tier1 ? 1 : 2;
+    lab.userData.declutterPri = 10 + rank;   // brightness rank decides who keeps its spot
     neiScene.add(lab);
     labelGroups.neighborhood.push(lab);
     neiStarLabels.push(lab);
@@ -3144,6 +2784,38 @@ const neiStarLabels = [];
       if (!clustered.has(b) && neiStarLabels[a].position.distanceTo(neiStarLabels[b].position) < 0.4) { group.push(b); clustered.add(b); }
     }
     if (group.length > 1) { clustered.add(a); group.forEach((g, k) => neiStarLabels[g].center.set(0.5, STAGGER[k % STAGGER.length])); }
+  }
+}
+
+// Screen-space label declutter for the stars view: each frame the labels compete for
+// room in priority order (the Sun first, then brightness rank; the zoom tier decides
+// who may compete at all). A label whose on-screen box would overlap an already-placed
+// one stays hidden until zooming in makes room — so the crowd of near-Sun names
+// resolves into whatever actually fits instead of printing into one knot.
+let _neiDeclutterList = null;
+const _dlV = new THREE.Vector3();
+function declutterNeiLabels(state) {
+  if (!_neiDeclutterList) {
+    _neiDeclutterList = labelGroups.neighborhood
+      .filter(sp => sp.userData.declutterPri !== undefined)
+      .sort((a, b) => a.userData.declutterPri - b.userData.declutterPri);
+  }
+  const placed = [];
+  for (const sp of _neiDeclutterList) {
+    const tier = sp.userData.tier || 0;                       // 0 = Sun/Oort: no zoom gate
+    if (tier === 1 ? state < 1 : tier === 2 && state < 2) { sp.visible = false; continue; }
+    _dlV.copy(sp.position).project(neiCam);
+    if (_dlV.z > 1) { sp.visible = false; continue; }         // behind the camera
+    // the label's on-screen box, honouring the sprite anchor (screen y runs down)
+    const w = sp.userData.pxW + 6, h = sp.userData.pxH + 4;   // padding keeps neighbours apart
+    const x = (_dlV.x + 1) / 2 * innerWidth + (0.5 - sp.center.x) * sp.userData.pxW;
+    const y = (-_dlV.y + 1) / 2 * innerHeight + (sp.center.y - 0.5) * sp.userData.pxH;
+    let hit = false;
+    for (const p of placed) {
+      if (Math.abs(x - p.x) * 2 < w + p.w && Math.abs(y - p.y) * 2 < h + p.h) { hit = true; break; }
+    }
+    sp.visible = !hit;
+    if (!hit) placed.push({ x, y, w, h });
   }
 }
 setLoad(0.93);
@@ -5567,20 +5239,6 @@ function handleClick(cx, cy) {
         if (px < 16 && (!best || px < best.px)) best = { px, site: s };
       }
     }
-    // megastructures — project group origin to screen, check proximity
-    if (megaGroup.visible) {
-      const wp = new THREE.Vector3();
-      for (const mo of MEGA_OBJECTS) {
-        if (!mo.group.visible) continue;
-        mo.group.getWorldPosition(wp);
-        const sv = wp.clone().project(solCam);
-        if (sv.z > 1) continue;
-        const px = Math.hypot((sv.x - ndc.x) * innerWidth / 2, (sv.y - ndc.y) * innerHeight / 2);
-        // scale pick radius by projected size of the object
-        const screenR = Math.max(22, mo.pickR / orbits.solar.r * 600);
-        if (px < screenR && (!best || px < best.px)) best = { px, mega: mo };
-      }
-    }
     // named asteroids — clickable whenever their layer is on, generous hit area
     if (asteroidsVisible) {
       for (const A of ASTEROIDS_RT) {
@@ -5625,9 +5283,6 @@ function handleClick(cx, cy) {
     } else if (best && best.asteroid) {
       const A = best.asteroid;
       showInfo(A.name, A.sub, A.rows, A.doc, { obj: A });
-    } else if (best && best.mega) {
-      const info = best.mega.group.userData.info;
-      showInfo(info.name, info.sub, info.rows, info.doc);
     } else if (best && best.sat) {
       showSatInfo(best.sat);
     } else if (best && best.site) {
@@ -5756,7 +5411,7 @@ function frameSkyDir(d) {
 }
 
 // Teleport the free-flight camera to frame a world-space point (a body, moon,
-// satellite, megastructure…) from a few frame-radii away, looking at it. The
+// satellite, probe…) from a few frame-radii away, looking at it. The
 // single travel primitive for "jump to a place" now that there are no modes.
 const _jp = new THREE.Vector3();
 function jumpToPoint(pos, frameR, follow = null, scale = 'solar') {
@@ -5814,11 +5469,6 @@ const searchIndex = [];
   });
   // every confirmed exoplanet system (host name) — search "Kepler-11", "TRAPPIST-1", …
   EXO.forEach((s, i) => searchIndex.push({ label: s.h, type: 'exo', exoIdx: i }));
-  // Megastructures
-  for (const mo of MEGA_OBJECTS) {
-    const info = mo.group.userData.info;
-    if (info) searchIndex.push({ label: info.name, type: 'megastructure', mega: mo });
-  }
   // Named asteroids — real bodies, fly to the actual position and show its card
   for (const A of ASTEROIDS_RT) searchIndex.push({ label: A.name, type: 'asteroid', asteroid: A });
   for (const C of COMETS_RT) {
@@ -5881,15 +5531,6 @@ function gotoTarget(t) {
     if (!exoGroup.visible) { exoGroup.visible = true; const ck = document.getElementById('ck-exo'); if (ck) ck.checked = true; }
     frameSkyDir(exoDirs[t.exoIdx]);
     exoInfo(t.exoIdx);
-  } else if (t.type === 'megastructure') {
-    megaGroup.visible = true;
-    document.getElementById('ck-mega').checked = true;
-    t.mega.group.visible = true;
-    const wp = new THREE.Vector3();
-    t.mega.group.getWorldPosition(wp);
-    jumpToPoint(wp, t.mega.pickR);
-    const info = t.mega.group.userData.info;
-    showInfo(info.name, info.sub, info.rows, info.doc);
   } else if (t.type === 'asteroid') {
     const A = t.asteroid;
     updateNamedAsteroids(time.jd);                 // make sure A.world is current before we fly to it
@@ -5952,7 +5593,7 @@ function jumpTo(ra, dec) {
 
 const TYPE_LABEL = { sat: 'satellite', lunarsite: 'landing site', moon: 'moon', phenom: 'phenomenon',
   body: 'planet', star: 'star', constellation: 'constellation', 'black hole': 'black hole',
-  megastructure: 'megastructure', asteroid: 'asteroid', comet: 'comet', tno: 'dwarf planet',
+  asteroid: 'asteroid', comet: 'comet', tno: 'dwarf planet',
   probe: 'spacecraft', galaxy: 'galaxy', sn: 'supernova', oort: 'comet reservoir',
   exo: 'exoplanet system' };
 // the Sun and Moon share the generic 'body' search type with the planets — name them properly
@@ -6364,7 +6005,13 @@ bind('ck-exo', (el) => { exoGroup.visible = el.checked; });
 bind('ck-mw', (el) => { milkyWay.visible = el.checked; });
 bind('ck-grid', (el) => { gridGroup.visible = el.checked; });
 bind('ck-twinkle', (el) => { starUniforms.uTwinkle.value = el.checked ? 1 : 0; });
-bind('ck-phenom', (el) => { phenomGroup.visible = el.checked; });
+bind('ck-phenom', (el) => {
+  phenomGroup.visible = el.checked;
+  // the category filters only mean something while the layer is on — hide them
+  // otherwise, so checked categories never sit under an off master looking broken
+  const cats = document.getElementById('phenom-cats');
+  if (cats) cats.style.display = el.checked ? '' : 'none';
+});
 {
   // per-category phenomena filters, generated from the catalogue
   const host = document.getElementById('phenom-cats');
@@ -6378,27 +6025,6 @@ bind('ck-phenom', (el) => { phenomGroup.visible = el.checked; });
     const cb = row.querySelector('input');
     cb.onchange = () => { for (const sp of phenomByCat[cat]) sp.visible = cb.checked; };
   }
-}
-// megastructure master toggle + per-item toggles
-{
-  const megaItems = document.getElementById('mega-items');
-  document.getElementById('ck-mega').onchange = function () {
-    megaGroup.visible = this.checked;
-    megaItems.style.display = this.checked ? '' : 'none';
-  };
-  const pairs = [
-    ['ck-mega-dyson',  dysonGroup],
-    ['ck-mega-sail',   solarSailGroup],
-    ['ck-mega-oneill', oneillGroup],
-    ['ck-mega-elev',   elevatorGroup],
-    ['ck-mega-warp',   warpGroup],
-    ['ck-mega-gen',    genShipGroup],
-  ];
-  for (const [id, grp] of pairs) {
-    document.getElementById(id).onchange = function () { grp.visible = this.checked; };
-    document.getElementById(id).onchange();          // apply restored / persisted state
-  }
-  document.getElementById('ck-mega').onchange();
 }
 bind('ck-grav', (el) => { gravGrid.visible = el.checked; });
 bind('ck-dm',   (el) => { dmHalo.visible = el.checked; });
@@ -6494,7 +6120,9 @@ const panelEl = document.getElementById('panel');
   try { sectState = JSON.parse(localStorage.getItem('universe-panel-sections') || '{}'); } catch (e) {}
   for (const sect of panelEl.querySelectorAll('.sect')) {
     const key = sect.dataset.sect;
-    sect.classList.toggle('closed', sectState[key] !== undefined ? !sectState[key] : key !== 'sky');
+    // all sections start collapsed — the panel opens as a clean list of headers
+    // (per the user; a visitor's own open/closed choices still persist)
+    sect.classList.toggle('closed', sectState[key] !== undefined ? !sectState[key] : true);
     sect.querySelector('.sect-head').onclick = () => {
       sect.classList.toggle('closed');
       sectState[key] = !sect.classList.contains('closed');
@@ -6508,7 +6136,7 @@ const PRESET_BASE = {
   'ck-lines': true, 'ck-art': false, 'ck-labels': true, 'ck-names': true, 'ck-planets': true,
   'ck-dso': true, 'ck-exo': false, 'ck-mw': true, 'ck-grid': false,
   'ck-twinkle': !matchMedia('(prefers-reduced-motion: reduce)').matches,  // a11y: calm sky by default
-  'ck-phenom': true, 'ck-mega': false, 'ck-grav': false, 'ck-dm': false,
+  'ck-phenom': true, 'ck-grav': false, 'ck-dm': false,
   'ck-orbits': true, 'ck-belts': true, 'ck-asteroids': false, 'ck-asteroid-names': false,
   'ck-comets': true, 'ck-tnos': true, 'ck-probes': true, 'ck-helio': true,
   'ck-moons': true, 'ck-sats': true, 'ck-plabels': true,
@@ -6518,7 +6146,7 @@ const PRESETS = {
   clean: { 'ck-lines': false, 'ck-labels': false, 'ck-names': false, 'ck-dso': false,
     'ck-phenom': false, 'ck-sats': false, 'ck-orbits': false, 'ck-belts': true,
     'ck-probes': false, 'ck-helio': false },
-  everything: { 'ck-art': true, 'ck-exo': true, 'ck-grid': true, 'ck-mega': true,
+  everything: { 'ck-art': true, 'ck-exo': true, 'ck-grid': true,
     'ck-grav': true, 'ck-dm': true, 'ck-asteroids': true, 'ck-asteroid-names': true },
 };
 const presetBtns = [...document.querySelectorAll('.preset-btn')];
@@ -6696,7 +6324,6 @@ function animate(now) {
       o.vT *= Math.pow(0.05, dt); o.vP *= Math.pow(0.05, dt);
     }
     updateSolarBodies(time.jd);
-    updateMegastructures(time.jd, now / 1000);
     updateGravGrid();
     if (rideAlong) applyRideAlong();
     else if (flyMode) applyFlyCam('solar', dt); else applyOrbitCam('solar');
@@ -6709,13 +6336,9 @@ function animate(now) {
     }
     if (mode === 'neighborhood') {
       const r = orbits.neighborhood.r;
-      const state = (r < 130 ? 1 : 0) + (r < 34 ? 1 : 0);   // 0 none · 1 famous · 2 all
-      if (neiScene.userData.labelState !== state) {
-        neiScene.userData.labelState = state;
-        for (const l of neiStarLabels) {
-          l.visible = l.userData.tier === 1 ? state >= 1 : state === 2;
-        }
-      }
+      // label visibility = zoom tier (0 none · 1 famous · 2 all) + per-frame
+      // screen-space declutter, so names never print over each other
+      declutterNeiLabels((r < 130 ? 1 : 0) + (r < 34 ? 1 : 0));
       // Oort cloud only at close zoom — farther out its points stack into a false dot
       neiScene.userData.oort.visible = r < 12;
       // Sun approach halo — fades in over the capture zone (ship in flight, else camera)
@@ -6842,7 +6465,7 @@ window.U = {
       text: 'The sky above Earth tonight. Every star here is clickable. Click anything for its story, or press / and search any of thousands of stars, planets, constellations, and nebulae.' },
     { mode: 'sky', hi: '#title',
       title: 'Make it yours',
-      text: 'The UNIVERSE menu holds every layer: constellation art, exoplanets, pulsars and quasars, megastructures, dark matter, even the sky in X-ray or radio, with one-tap presets: Essentials, Clean view, Everything. The minimap’s ladder jumps scales. All of it is remembered.' },
+      text: 'The UNIVERSE menu holds every layer: constellation art, exoplanets, pulsars and quasars, dark matter, even the sky in X-ray or radio, with one-tap presets: Essentials, Clean view, Everything. The minimap’s ladder jumps scales. All of it is remembered.' },
   ];
   // Touch devices: no keyboard or scroll wheel — adapt the language, and teach
   // the touch flight controls (🚀 button) instead of the key bindings.
