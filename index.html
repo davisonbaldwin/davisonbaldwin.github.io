@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Davis Baldwin — Product Design Portfolio</title>
-<meta name="description" content="The product design portfolio of Davis Baldwin: three worlds — an interactive universe, a live stock evaluator, and six works of music technology — each designed as its own world.">
+<title>Davis Baldwin · Product Design Portfolio</title>
+<meta name="description" content="The product design portfolio of Davis Baldwin: three worlds (an interactive universe, a live stock evaluator, and six works of music technology), each designed as its own world.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Davis Baldwin — Product Design Portfolio">
-<meta property="og:description" content="The product design portfolio of Davis Baldwin: three worlds — an interactive universe, a live stock evaluator, and six works of music technology — each designed as its own world.">
+<meta property="og:title" content="Davis Baldwin · Product Design Portfolio">
+<meta property="og:description" content="The product design portfolio of Davis Baldwin: three worlds (an interactive universe, a live stock evaluator, and six works of music technology), each designed as its own world.">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:image" content="https://davisonbaldwin.github.io/assets/og.jpg">
 <meta property="og:url" content="https://davisonbaldwin.github.io/">
@@ -134,7 +134,7 @@
 </div>
 
 <script>
-  // the caption names whichever slice you're on — hover or keyboard focus
+  // the caption names whichever slice you're on: hover or keyboard focus
   const cap = document.getElementById('planet-caption');
   const rest = cap.textContent;
   document.querySelectorAll('.landing-planet a').forEach(a => {
@@ -147,7 +147,7 @@
     a.addEventListener('focusout', hide);
   });
 
-  // cursor parallax — the planet tilts a few degrees toward the pointer (a hint of depth)
+  // cursor parallax: the planet tilts a few degrees toward the pointer (a hint of depth)
   (() => {
     const wrap = document.querySelector('.landing-planet');
     const svg = wrap && wrap.querySelector('svg');
@@ -167,7 +167,7 @@
     wrap.addEventListener('pointerleave', () => { svg.style.transform = ''; });
   })();
 
-  // generative motion — every system is driven per frame, so nothing ever repeats:
+  // generative motion: every system is driven per frame, so nothing ever repeats:
   //   Universe : a drifting, twinkling starfield with the odd shooting star
   //   Stock    : financial numbers raining down
   //   Music    : sound rings + rising motes emanating from a pulsing core
@@ -203,7 +203,7 @@
       frame.appendChild(mk('circle', { r: (R * 0.13).toFixed(1), fill: BRASS, 'fill-opacity': 0.9 }));
     }
     if (gearing) {
-      // outer graduated bezel — sweeps slowly around the whole planet
+      // outer graduated bezel: sweeps slowly around the whole planet
       const bez = mk('g', {});
       bez.appendChild(mk('circle', { r: 231, fill: 'none', stroke: GRAY, 'stroke-width': 1.3 }));
       bez.appendChild(mk('circle', { r: 216, fill: 'none', stroke: GRAY2, 'stroke-width': 1 }));

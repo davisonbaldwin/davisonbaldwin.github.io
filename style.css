@@ -1,9 +1,9 @@
 /* ==========================================================================
-   Davis Baldwin — portfolio
+   Davis Baldwin - portfolio
    "Eight Worlds": one fixed skeleton that wears each project's identity.
    The skeleton (grid, wordmark, labels, body face) never moves;
-   each room contributes six tokens — ground, ink, subdued, accent,
-   hairline, display face — plus a texture.
+   each room contributes six tokens - ground, ink, subdued, accent,
+   hairline, display face - plus a texture.
    ========================================================================== */
 
 :root {
@@ -74,20 +74,20 @@ a { color: var(--acc); }
   opacity: 0; transition: opacity 0.6s ease; }
 .tex.show { opacity: 1; }
 
-/* Room 01 — deep space: a real starfield with nebulae */
-/* deep-space glow only — the scattered star dots were removed (the planet is the
+/* Room 01 - deep space: a real starfield with nebulae */
+/* deep-space glow only - the scattered star dots were removed (the planet is the
    starfield now, and fixed page-stars kept landing on the buttons at some sizes) */
 .tex-uni { background:
   radial-gradient(ellipse 60% 40% at 78% 26%, rgba(31, 48, 84, 0.85) 0%, transparent 65%),
   radial-gradient(ellipse 50% 60% at 12% 78%, rgba(58, 34, 66, 0.5) 0%, transparent 65%); }
 
-/* Room 02 — the journey: light of rest descending to Franco's dark, a sun rising low */
+/* Room 02 - the journey: light of rest descending to Franco's dark, a sun rising low */
 .tex-asj { background:
   radial-gradient(ellipse 70% 30% at 50% 0%, rgba(255, 255, 255, 0.95) 0%, transparent 60%),
   radial-gradient(circle at 50% 88%, rgba(255, 196, 74, 0.9) 0 4vw, rgba(232, 160, 32, 0.5) 8vw, rgba(232, 160, 32, 0.18) 16vw, transparent 32vw),
   linear-gradient(180deg, #eef1f6 0%, #dde2ea 32%, #9d8767 58%, #4a3a26 76%, #241b12 100%); }
 
-/* Room 03 — the terminal: scanlines, a grid, one amber line going up */
+/* Room 03 - the terminal: scanlines, a grid, one amber line going up */
 .tex-eval { background:
   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 600' preserveAspectRatio='none'%3E%3Cpolyline points='0,540 140,500 260,510 400,430 520,450 660,360 780,380 900,290 1040,240 1200,150' fill='none' stroke='%23ffb454' stroke-opacity='0.28' stroke-width='2.5'/%3E%3Cpolyline points='0,560 180,545 340,548 520,520 700,510 900,480 1200,440' fill='none' stroke='%23ede3cf' stroke-opacity='0.14' stroke-width='1.5'/%3E%3C/svg%3E") center / cover no-repeat,
   linear-gradient(rgba(237, 227, 207, 0.05) 1px, transparent 1px),
@@ -95,7 +95,7 @@ a { color: var(--acc); }
   repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 180, 84, 0.04) 3px 4px);
   background-size: cover, 64px 64px, 64px 64px, auto; }
 
-/* Room 04 — dusk rose: a vinyl record spinning at the edge, bokeh in the dark */
+/* Room 04 - dusk rose: a vinyl record spinning at the edge, bokeh in the dark */
 .tex-sitw { background:
   repeating-radial-gradient(circle at 86% 92%, rgba(243, 231, 228, 0.10) 0 2px, transparent 2px 26px),
   radial-gradient(circle at 86% 92%, #150d10 0 4vw, rgba(224, 142, 155, 0.28) 4.4vw, #150d10 5vw, transparent 42vw),
@@ -103,7 +103,7 @@ a { color: var(--acc); }
   radial-gradient(circle at 34% 60%, rgba(224, 142, 155, 0.12) 0 34px, transparent 90px),
   radial-gradient(circle at 62% 14%, rgba(243, 231, 228, 0.09) 0 26px, transparent 70px); }
 
-/* Room 05 — open sky: sun glare and real cloud banks to fly through */
+/* Room 05 - open sky: sun glare and real cloud banks to fly through */
 .tex-ttf { background:
   radial-gradient(circle at 14% 10%, rgba(255, 255, 255, 0.98) 0 3vw, rgba(255, 255, 255, 0.4) 8vw, transparent 17vw),
   radial-gradient(ellipse 24% 7% at 64% 26%, rgba(255, 255, 255, 0.95) 0%, transparent 100%),
@@ -116,7 +116,7 @@ a { color: var(--acc); }
   radial-gradient(ellipse 42% 11% at 84% 82%, rgba(255, 255, 255, 0.55) 0%, transparent 100%),
   linear-gradient(180deg, #b9d9ef 0%, #d6e8f5 38%, #eaf2f8 62%, #f4ece2 82%, #eef0f2 100%); }
 
-/* Room 06 — lit the way the film was shot: one warm spotlight from above,
+/* Room 06 - lit the way the film was shot: one warm spotlight from above,
    a cool dark room, a cinematic letterboxed frame */
 .tex-ywlmb { background:
   linear-gradient(180deg, #000 0 24px, transparent 24px calc(100% - 24px), #000 calc(100% - 24px)),
@@ -127,7 +127,7 @@ a { color: var(--acc); }
   radial-gradient(ellipse 95% 85% at 50% 45%, transparent 40%, rgba(4, 5, 4, 0.55) 100%),
   linear-gradient(180deg, #101210 0%, #121312 60%, #0c0d0c 100%); }
 
-/* Room 07 — a summer night, and lightning bugs. Some near, some out of focus. */
+/* Room 07 - a summer night, and lightning bugs. Some near, some out of focus. */
 .tex-lm { background:
   radial-gradient(circle at 22% 78%, rgba(236, 208, 111, 0.9) 0 1.5px, rgba(236, 208, 111, 0.22) 4px, transparent 8px),
   radial-gradient(circle at 47% 84%, rgba(245, 226, 138, 0.85) 0 2px, rgba(236, 208, 111, 0.2) 5px, transparent 9px),
@@ -144,14 +144,14 @@ a { color: var(--acc); }
   radial-gradient(circle at 88% 80%, rgba(236, 208, 111, 0.07) 0 11px, transparent 28px),
   linear-gradient(180deg, #130f0c 0%, #171310 55%, #1d1712 100%); }
 
-/* Room 08 — two suns: teal and gold sharing one sky, interference where they meet */
+/* Room 08 - two suns: teal and gold sharing one sky, interference where they meet */
 .tex-snc { background:
   radial-gradient(circle at 18% 22%, rgba(79, 216, 196, 0.5) 0 4vw, rgba(79, 216, 196, 0.16) 9vw, transparent 22vw),
   radial-gradient(circle at 84% 76%, rgba(242, 176, 79, 0.45) 0 4vw, rgba(242, 176, 79, 0.14) 9vw, transparent 22vw),
   repeating-linear-gradient(12deg, transparent 0 26px, rgba(79, 216, 196, 0.07) 26px 28px),
   repeating-linear-gradient(-14deg, transparent 0 34px, rgba(242, 176, 79, 0.06) 34px 36px); }
 
-/* Music Technology — a dark stage; sound rippling out from one warm point,
+/* Music Technology - a dark stage; sound rippling out from one warm point,
    like the run-out grooves of a record */
 .tex-mus { background:
   radial-gradient(circle at 16% 84%, rgba(217, 169, 106, 0.12) 0 6vw, transparent 34vw),
@@ -159,7 +159,7 @@ a { color: var(--acc); }
   radial-gradient(ellipse 120% 90% at 50% 30%, transparent 55%, rgba(6, 4, 6, 0.5) 100%),
   linear-gradient(180deg, #16121a 0%, #141114 55%, #181310 100%); }
 
-/* Music Technology hub — the chapter index */
+/* Music Technology hub - the chapter index */
 .chapters { margin: 34px 0 8px; border-top: 1px solid var(--line); }
 .chapters a { display: grid; grid-template-columns: 74px 1fr auto; gap: 18px;
   align-items: baseline; padding: 20px 4px; border-bottom: 1px solid var(--line);
@@ -355,7 +355,7 @@ a { color: var(--acc); }
 .roomnav .next { text-align: right; margin-left: auto; }
 
 /* ==========================================================================
-   THE DESIGN QUESTION — every case study leads with one
+   THE DESIGN QUESTION - every case study leads with one
    ========================================================================== */
 .question { margin: 4px 0 24px; max-width: 62ch; }
 .question .qlbl { display: block; font-family: var(--mono); font-size: 10px;
@@ -365,7 +365,7 @@ a { color: var(--acc); }
   color: var(--acc); font-weight: 600; text-wrap: balance; }
 
 /* ==========================================================================
-   PER-ROOM DESIGN VARIANTS — each room changes the design, not just the ink.
+   PER-ROOM DESIGN VARIANTS - each room changes the design, not just the ink.
    Layout, type behavior, component shapes, and structure shift per skin.
    ========================================================================== */
 
@@ -432,7 +432,7 @@ html[data-skin="asj"] .stage h1 { text-shadow:
 .part-i .room-head .dek { margin-left: auto; margin-right: auto; }
 .part-i h1, .part-i .part-title { text-shadow: 0 14px 0 rgba(38, 46, 60, 0.12),
   0 28px 0 rgba(38, 46, 60, 0.05); }
-/* the crossing: one long dusk, with the sun setting exactly on the seam —
+/* the crossing: one long dusk, with the sun setting exactly on the seam;
    its top half lives here, its mirror half rises into Part II, so the glow
    is continuous across the boundary instead of chopped by it */
 .dusk { position: relative; z-index: 1; height: 52vh; min-height: 360px; background:
@@ -448,7 +448,7 @@ html[data-skin="asj"] .stage h1 { text-shadow:
 .part-ii { background: #241b12;
   --ink: #f2e4cb; --sub: #a89372; --acc: #e8a020; --line: rgba(242, 228, 203, 0.16);
   --face: "Bodoni 72", Didot, Georgia, serif; color: var(--ink); }
-/* the sun's other half — same radii and colors as the .dusk half above,
+/* the sun's other half - same radii and colors as the .dusk half above,
    so the two halves join into one disc across the section boundary */
 .part-ii::before { content: ""; position: absolute; left: 0; right: 0; top: 0;
   height: 42vw; pointer-events: none; background:
@@ -467,7 +467,7 @@ html[data-skin="asj"] .stage h1 { text-shadow:
 .part .pao > div:nth-child(3)::before { content: "III"; }
 .part-ii .pao > div::before { font-style: italic; }
 
-/* ---- World 04 · Sometimes in the world: liner notes — drop cap, two columns ---- */
+/* ---- World 04 · Sometimes in the world: liner notes - drop cap, two columns ---- */
 html[data-skin="sitw"] .prose > p:first-of-type::first-letter {
   font-family: var(--face); font-size: 3.4em; line-height: 0.85; float: left;
   padding: 4px 10px 0 0; color: var(--acc); font-weight: 700; }
@@ -479,7 +479,7 @@ html[data-skin="sitw"] .prose > p:first-of-type::first-letter {
   html[data-skin="sitw"] .blocks { column-span: all; max-width: none; }
 }
 
-/* ---- World 05 · Time to Fly: a playbill — uppercase poster type, billing block ---- */
+/* ---- World 05 · Time to Fly: a playbill - uppercase poster type, billing block ---- */
 html[data-skin="ttf"] .room-head { max-width: none; text-align: center;
   padding-top: 60px; }
 html[data-skin="ttf"] .room-head h1,
@@ -507,7 +507,7 @@ html[data-skin="ywlmb"] .rail { font-family: var(--ui); font-style: italic;
   font-size: 12.5px; }
 html[data-skin="ywlmb"] .question p { font-style: italic; font-weight: 400; }
 
-/* ---- World 07 · Life's Meaning: a storyboard — the triptych becomes frames ---- */
+/* ---- World 07 · Life's Meaning: a storyboard - the triptych becomes frames ---- */
 html[data-skin="lm"] .pao { gap: 14px; }
 html[data-skin="lm"] .pao > div { position: relative; border: 1px solid var(--line);
   padding: 34px 16px 16px; background: rgba(230, 224, 242, 0.04); }
@@ -518,7 +518,7 @@ html[data-skin="lm"] .pao > div:nth-child(1)::before { content: "FRAME 01"; }
 html[data-skin="lm"] .pao > div:nth-child(2)::before { content: "FRAME 02"; }
 html[data-skin="lm"] .pao > div:nth-child(3)::before { content: "FRAME 03"; }
 
-/* ---- World 08 · Supernova Cloud: two keys, one title — teal and gold ---- */
+/* ---- World 08 · Supernova Cloud: two keys, one title - teal and gold ---- */
 html[data-skin="snc"] .room-head h1,
 html[data-skin="snc"] .stage h1 { width: fit-content; background: linear-gradient(102deg,
     var(--acc) 0 49%, #f2b04f 51% 100%);
@@ -538,7 +538,7 @@ html[data-skin="snc"] .pao > div:nth-child(2) span { color: #f2b04f; }
   html[data-skin="asj"] .grid { grid-template-columns: 1fr; }
 }
 
-/* phones — the mobile version proper */
+/* phones - the mobile version proper */
 @media (max-width: 640px) {
   .wrap { padding: 0 18px; }
   .bar { padding: 18px 0 12px; }

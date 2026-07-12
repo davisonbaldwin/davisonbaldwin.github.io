@@ -3,7 +3,7 @@ import {
   J2000, DEG, AU_KM, PC_LY, jdFromDate, dateFromJd, planetHelio, geoRaDec,
   moonGeo, moonEcl, moonPhase, orbitalElements, posFromElements, PLANET_INFO, bvToRgb, galToEq, gmst,
 } from './astro.js?v=2';
-import { PHENOMENA, PHENOM_CATS } from './phenomena.js?v=2';
+import { PHENOMENA, PHENOM_CATS } from './phenomena.js?v=3';
 
 const R_SKY = 1000;
 const AUU = 20;                       // world units per AU in solar mode
@@ -93,7 +93,7 @@ try {
 }
 // phones render fewer pixels: high-dpi panels don't need the full 2x GPU load
 const MAX_PIXEL_RATIO = matchMedia('(pointer: coarse)').matches ? 1.75 : 2;
-// touch devices have no keyboard or hover — flight & HUD adapt around this
+// touch devices have no keyboard or hover - flight & HUD adapt around this
 // (?touch previews the touch UI on a desktop browser)
 const TOUCH_UI = matchMedia('(hover: none) and (pointer: coarse)').matches
   || new URLSearchParams(location.search).has('touch');
@@ -166,7 +166,7 @@ const POST = (() => {
       // angle beta appears at theta where beta = theta - thetaE^2/theta. To render,
       // invert it: the pixel at theta shows the scene from beta. Inside the Einstein
       // radius beta goes negative: the image comes from the OPPOSITE side of the hole,
-      // flipped — which is what stretches the background into the ring.
+      // flipped - which is what stretches the background into the ring.
       vec2 lensUV(vec2 uv){
         vec2 d = uv - uLens.xy;
         d.x *= uAspect;                       // work in height-normalized units
@@ -232,7 +232,7 @@ const solScene = new THREE.Scene();
 const neiScene = new THREE.Scene();
 const galScene = new THREE.Scene();
 const cosScene = new THREE.Scene();
-// deepScene — the one continuous "fly forever" space (floating-origin, parsec units).
+// deepScene - the one continuous "fly forever" space (floating-origin, parsec units).
 // The camera stays at the render origin; every object is positioned at (abs − camAbs)
 // each frame so coordinates never blow past float32 precision (no walls).
 const deepScene = new THREE.Scene();
@@ -270,7 +270,7 @@ const DEEP_PCPERSEC = 4;                      // base cruise speed (pc per secon
 const SUN_DIVE_PC = 0.05;                     // within this radius of the Sun, dive into the planetary system
 const SUN_APPROACH_PC = 1.6;                  // within this, you're "arriving": orbit-ring halo fades in
 const SUN_CONE_DOT = 0.94;                    // if aimed this well at the Sun, capture from the whole approach zone
-// Procedural galaxy chunk streaming (deterministic, density-driven) — see streamChunks().
+// Procedural galaxy chunk streaming (deterministic, density-driven) - see streamChunks().
 const CHUNK_L = 400, CHUNK_RAD = 2, CHUNK_CAP = 6000, CHUNK_BASE = 2400, CHUNK_BUDGET = 48;
 const GC_PC = new THREE.Vector3(8200, -20, 0); // galactic centre in Sun-centred pc (= −SUN_GAL·1000)
 const R_SUN_GAL = 8200, R_DISK = 2500, H_DISK = 300;
@@ -359,7 +359,7 @@ setLoad(0.45);
 
 // ---------------------------------------------------------------- star shaders
 const starUniforms = {
-  uMagLimit: { value: 14 },     // full catalog by default — dim it down if you want naked-eye realism
+  uMagLimit: { value: 14 },     // full catalog by default - dim it down if you want naked-eye realism
   uSizeScale: { value: 3 },
   uTime: { value: 0 },
   uTwinkle: { value: 1 },
@@ -373,7 +373,7 @@ const starVert = `
   attribute vec3 aColor;
   varying vec3 vColor;
   varying float vAlpha;
-  varying float vBright;   // 0..1 — controls diffraction spike intensity
+  varying float vBright;   // 0..1 - controls diffraction spike intensity
   void main() {
     if (aMag > uMagLimit) { gl_Position = vec4(2.0, 2.0, 2.0, 1.0); gl_PointSize = 0.0; vAlpha = 0.0; vBright = 0.0; return; }
     vec4 mv = modelViewMatrix * vec4(position, 1.0);
@@ -426,14 +426,14 @@ const starFrag = `
     float halo = exp(-r * r *  4.8);
 
     // 4-point diffraction spikes (horizontal + vertical cross)
-    // — only rendered for stars bright enough (vBright > 0)
+    // - only rendered for stars bright enough (vBright > 0)
     float spike_h = exp(-uv.y * uv.y * 1600.0) * max(0.0, 1.0 - abs(uv.x) * 2.2);
     float spike_v = exp(-uv.x * uv.x * 1600.0) * max(0.0, 1.0 - abs(uv.y) * 2.2);
     float spike = max(spike_h, spike_v) * vBright * 0.65;
 
     float f = core * 1.3 + halo * 0.55 + spike;
 
-    // Core whitens toward center — hot plasma effect
+    // Core whitens toward center - hot plasma effect
     vec3 col = mix(vColor, vec3(1.0, 0.98, 0.95), core * 0.55);
 
     gl_FragColor = vec4(col, vAlpha * min(f, 1.0));
@@ -441,7 +441,7 @@ const starFrag = `
 
 function buildStarAttributes(geo) {
   if (STAR_PRECOMP) {
-    // the worker already computed these — just wrap them
+    // the worker already computed these - just wrap them
     geo.setAttribute('aMag', new THREE.BufferAttribute(STARS.mag, 1));
     geo.setAttribute('aColor', new THREE.BufferAttribute(STAR_PRECOMP.cols, 3));
     geo.setAttribute('aTw', new THREE.BufferAttribute(STAR_PRECOMP.tw, 1));
@@ -488,7 +488,7 @@ function buildMilkyWay() {
   const alp = new Float32Array(M);
   let k = 0;
   while (k < M) {
-    // smooth density in longitude — rejection-sample a gaussian bump toward the
+    // smooth density in longitude - rejection-sample a gaussian bump toward the
     // galactic centre over a uniform floor. (The old two-population sampler cut the
     // centre-weighted component off hard at l=±120°, drawing a visible straight
     // seam across the sky where the density stepped down.)
@@ -860,7 +860,7 @@ function updateSupernovae(jd) {
     S.halo.material.opacity = a * 0.3;
   }
   // the "watch it explode" show borrows the clock at 7 d/s; hand it back at real
-  // time once the star has flared AND faded — never leave the universe racing
+  // time once the star has flared AND faded - never leave the universe racing
   if (snWatch) {
     const m = snWatch.S.mag;
     if (!snWatch.seen && m < 6) snWatch.seen = true;
@@ -925,7 +925,7 @@ function exoInfo(idx) {
     if (pl.r != null) bits.push(pl.r + ' R⊕');
     if (pl.pr != null) bits.push(pl.pr + ' d');
     if (pl.t != null) bits.push(pl.t + ' K');
-    rows.push([pl.n.replace(s.h, '').trim() || pl.n, bits.join(' · ') || '—']);
+    rows.push([pl.n.replace(s.h, '').trim() || pl.n, bits.join(' · ') || '·']);
   }
   const methods = [...new Set(s.p.map((p) => p.m))].join(', ');
   const yrs = s.p.map((p) => +p.y).filter(Boolean);
@@ -988,7 +988,7 @@ selMark.visible = false;
 skyGroup.add(selMark);
 labelGroups.sky.push(selMark);
 // matching selection ring for the 3D Stellar-Neighbourhood view (fixed-size ring around the
-// picked star — so clicking just highlights it instead of recentring/jumping the camera)
+// picked star - so clicking just highlights it instead of recentring/jumping the camera)
 const neiSelMark = new THREE.Sprite(new THREE.SpriteMaterial({
   map: makeRingTexture('#9fd0ff'), transparent: true, opacity: 0.95, depthTest: false, depthWrite: false,
   sizeAttenuation: false,
@@ -1076,7 +1076,7 @@ function updateHorizonFrame(jd) {
 
 // ---------------------------------------------------------------- solar system scene
 solScene.add(new THREE.AmbientLight(0x6a7890, 1.9));
-// Ship fill light — moves with the ship so it's always illuminated
+// Ship fill light - moves with the ship so it's always illuminated
 // regardless of sun angle (real cameras use a fill light too)
 const shipFillLight = new THREE.PointLight(0xd8eaff, 26.0, 0);
 shipFillLight.visible = false;
@@ -1086,7 +1086,11 @@ solScene.add(shipFillLight);
 // chase camera pulls back at bigger scales, so intensity grows with distance², at a
 // level calibrated for a readable (not clipped-white) hull against black space.
 // The floor keeps the close-range solar look exactly as it always was.
-const U_SHIPLIGHT = { floor: 26, perDist2: 18 };
+// perDist2·d² keeps the ship's apparent brightness constant as it rescales between
+// scenes (irradiance = I/d² and I grows with d²). The old floor of 26 broke that
+// below d≈1.2: entering the stars view (camDist ~0.4) overlit the hull ~8x, which
+// read as a white "sun flash" right at the solar-to-interstellar handoff.
+const U_SHIPLIGHT = { floor: 0.5, perDist2: 18 };
 window.U_SHIPLIGHT = U_SHIPLIGHT;                 // live-tunable
 const SHIP_LIGHT_I = (d) => Math.max(U_SHIPLIGHT.floor, U_SHIPLIGHT.perDist2 * d * d);
 const sunLight = new THREE.PointLight(0xfff2dd, 3.2, 0, 0);
@@ -1117,7 +1121,7 @@ const ROT_DAYS = {
   Saturn: 0.4440, Uranus: -0.7183, Neptune: 0.6713, Pluto: -6.387,
 };
 const texLoader = new THREE.TextureLoader();
-const texPromises = [];                       // every planet texture's load — awaited before the loader hides
+const texPromises = [];                       // every planet texture's load - awaited before the loader hides
 // Progressive loading: the loading screen only waits for these 2K stand-ins (~6 MB total);
 // the full-res maps (~60 MB) stream in behind the live scene and swap in seamlessly.
 const TEX_SMALL = {
@@ -1155,7 +1159,7 @@ function planetTex(file) {
   t.wrapS = THREE.RepeatWrapping;            // allow the animated band offset to wrap seamlessly
   return t;
 }
-// Per-body atmospheres — a back-side Fresnel rim shell that glows on the sun-lit
+// Per-body atmospheres - a back-side Fresnel rim shell that glows on the sun-lit
 // limb and fades across the terminator (so the night limb stays dark). Bloom turns
 // these into soft radiant halos. Mercury & Pluto have negligible atmospheres.
 const ATMO = {
@@ -1214,7 +1218,7 @@ function setupEarthMaterial(mat) {
   earthFx = { uSunDir, clouds: null };
 }
 // Surface relief from albedo: the cratered rocky worlds use their colour map as a
-// bump map (no extra asset — brightness drives height), so craters cast real shadows
+// bump map (no extra asset - brightness drives height), so craters cast real shadows
 // near the terminator under the Sun's light. bumpScale is tuned per body.
 const RELIEF = { Mercury: 0.030, Mars: 0.022 };   // Moon handled with its own material
 const GAS_GIANTS = new Set(['Jupiter', 'Saturn', 'Uranus', 'Neptune']);
@@ -1224,14 +1228,14 @@ let sunFx = null;                            // { corona, glow, proms } for the 
 let earthFx = null;                          // { uSunDir, clouds } for the hero Earth
 
 {
-  // sun — a living surface: granulation shimmer, a pulsing corona and erupting prominences
+  // sun - a living surface: granulation shimmer, a pulsing corona and erupting prominences
   const sunMesh = new THREE.Mesh(
     new THREE.SphereGeometry(2.0, 48, 32),
     new THREE.MeshBasicMaterial({ map: planetTex('2k_sun.jpg') }),
   );
   sunMesh.material.onBeforeCompile = (sh) => {
     sh.uniforms.uSunTime = sunUniform;
-    // uSunTime is performance-seconds mod 1000 — stays in a safe float range regardless
+    // uSunTime is performance-seconds mod 1000 - stays in a safe float range regardless
     // of simulation speed, so the shimmer never breaks at high time acceleration.
     // Rotation is handled by spinning the mesh via JD (like planets), not UV scroll.
     sh.fragmentShader = 'uniform float uSunTime;\n' + sh.fragmentShader.replace(
@@ -1285,7 +1289,7 @@ let earthFx = null;                          // { uSunDir, clouds } for the hero
     if (name === 'Earth') setupEarthMaterial(mat);    // night-side city lights
     if (RELIEF[name]) { mat.bumpMap = mat.map; mat.bumpScale = RELIEF[name]; }   // crater relief
     // gas giants: shear the cloud bands by latitude (differential rotation) so storms
-    // visibly drift — fast when the clock is sped up. Keeps standard lighting intact.
+    // visibly drift - fast when the clock is sped up. Keeps standard lighting intact.
     if (GAS_GIANTS.has(name)) {
       mat.onBeforeCompile = (shader) => {
         shader.uniforms.uBandTime = gasBandUniform;
@@ -1335,7 +1339,7 @@ let earthFx = null;                          // { uSunDir, clouds } for the hero
       node.add(ring);
     };
     if (name === 'Saturn') addRing(1.24, 2.27, planetTex('8k_saturn_ring_alpha.png'));
-    // the ice giants have real ring systems too — narrow, dark, and (at Uranus)
+    // the ice giants have real ring systems too - narrow, dark, and (at Uranus)
     // nearly pole-on thanks to the 98° axial tilt. Bands at true radii, kept faint.
     if (name === 'Uranus' || name === 'Neptune') {
       const bands = name === 'Uranus'
@@ -1368,10 +1372,10 @@ let earthFx = null;                          // { uSunDir, clouds } for the hero
     solBodies[name] = { node, mesh, lab, pos: new THREE.Vector3() };
   }
 
-  // Moon — a real body orbiting Earth. Real direction from lunar theory; orbital
+  // Moon - a real body orbiting Earth. Real direction from lunar theory; orbital
   // distance exaggerated (like the planet radii) so it reads clearly at this scale.
   const moonRd = displayRadius('Moon');
-  const moonTex = planetTex('8k_moon.jpg');       // 8K — you fly close to it
+  const moonTex = planetTex('8k_moon.jpg');       // 8K - you fly close to it
   const moonMesh = new THREE.Mesh(
     new THREE.SphereGeometry(moonRd, 128, 96),    // higher tessellation for close-up + bump relief
     new THREE.MeshStandardMaterial({ map: moonTex, bumpMap: moonTex, bumpScale: 0.045, roughness: 1.0, metalness: 0 }),
@@ -1683,7 +1687,7 @@ function updateLunarSites() {
 
 
 // ---------------------------------------------------------------- physics visualizers
-// (C) Invisible-physics overlays — toggled from the Controls panel.
+// (C) Invisible-physics overlays - toggled from the Controls panel.
 
 // ---- 1. Spacetime curvature grid (Solar System) ----
 // A flat grid in the ecliptic plane with vertices displaced downward proportional
@@ -1695,7 +1699,7 @@ const GRAV_MASS = {   // gravitational "weight" in display units (solar = 1)
 const GRAV_SCALE = 42;        // visual amplitude of the well (world units)
 const GRAV_SOFT  = 1.8;       // softening length to avoid singularity at body centre
 const GRID_N     = 80;        // grid lines per axis
-const GRID_HALF  = 680;       // half-size in world units (≈34 AU — covers all planets)
+const GRID_HALF  = 680;       // half-size in world units (≈34 AU - covers all planets)
 
 const gravPts = new Float32Array(GRID_N * GRID_N * 3);
 const gravGeo = new THREE.BufferGeometry();
@@ -1782,7 +1786,7 @@ function updateGravGrid() {
 }
 
 // ---- 2. Dark matter halo (Galaxy mode) ----
-// Dark-matter halo — a soft, roughly spherical glow enveloping the disc. The galaxy scene
+// Dark-matter halo - a soft, roughly spherical glow enveloping the disc. The galaxy scene
 // is in kpc and the visible disc is ~15 kpc; the true virial halo (~200 kpc) would be far
 // off-screen at the normal galaxy zoom, so it's shown compact (~2× the disc) and visible.
 // A fresnel rim-glow makes it read as a translucent sphere around the galaxy.
@@ -1815,7 +1819,7 @@ const dmHalo = (() => {
   return mesh;
 })();
 
-// ---- 3. EM spectrum mode — driven by starUniforms.uSpectrum ----
+// ---- 3. EM spectrum mode - driven by starUniforms.uSpectrum ----
 // Controlled from the Sky panel; reset to 0 on mode change (handled in setMode).
 let spectrumMode = 0;
 function setSpectrum(n) {
@@ -1907,7 +1911,7 @@ beltGroup.add(astBelt, kuiBelt);
 solScene.add(beltGroup);
 
 // ---------------------------------------------------------------- named asteroids
-// Real bodies on their real (osculating, ~J2000) heliocentric orbits — not procedural
+// Real bodies on their real (osculating, ~J2000) heliocentric orbits - not procedural
 // dots. Each is positioned every frame from Keplerian elements via posFromElements, so
 // they move on accurate orbits as you scrub time; M0 (mean anomaly at J2000) places them
 // realistically along it. Fields: name, a(AU), e, inc°, node Ω°, argPeri ω°, M0°,
@@ -1962,7 +1966,7 @@ let asteroidNamesOn = false;           // separate toggle for the name labels
 const astNamedGroup = new THREE.Group();
 solScene.add(astNamedGroup);
 {
-  // soft rocky glow — bright enough to spot, but a warm diffuse point (no hard edge) so it
+  // soft rocky glow - bright enough to spot, but a warm diffuse point (no hard edge) so it
   // sits naturally in the starfield instead of reading as a flat orange dot.
   const astTex = makeDiscTexture('rgba(245,235,214,1.0)', 'rgba(206,186,154,0.5)', 0.5);
   for (const [name, a, e, inc, node, argp, M0, diaKm, col, sub, rows, doc] of REAL_ASTEROIDS) {
@@ -1981,7 +1985,7 @@ solScene.add(astNamedGroup);
     lab.center.set(0.5, 1.8); lab.renderOrder = 9;
     astNamedGroup.add(lab);
     labelGroups.solar.push(lab);                    // so rescaleLabels sizes/orients it each frame
-    // n (deg/day) for live orbital motion: Gauss — 0.9856076686 / a^1.5
+    // n (deg/day) for live orbital motion: Gauss - 0.9856076686 / a^1.5
     const n = 0.9856076686 / Math.pow(a, 1.5);
     ASTEROIDS_RT.push({ name, el, M0, n, diaKm, col, sub, rows, doc, mark, lab, world: new THREE.Vector3() });
   }
@@ -2000,7 +2004,7 @@ function updateNamedAsteroids(jd) {
   }
 }
 
-// ---- comets — real periodic comets on their true orbits, with tails that grow near
+// ---- comets - real periodic comets on their true orbits, with tails that grow near
 // the Sun. Elements are osculating (J2000 ecliptic); Tp = perihelion Julian date, so
 // scrubbing time to Tp shows each comet at its brightest (Halley 1986, Hale-Bopp 1997…).
 // Tail physics, simplified honestly: the blue ion tail points straight anti-sunward;
@@ -2039,7 +2043,7 @@ function makeTailTexture() {
     for (let x = 0; x < w; x++) {
       const nx = (x / (w - 1)) * 2 - 1;                     // -1..1 across the quad
       const dx = nx * 0.5 / (0.13 + 0.36 * t);              // cone widens toward the tip
-      // edge mask forces alpha to exactly 0 at the quad borders — without it the
+      // edge mask forces alpha to exactly 0 at the quad borders - without it the
       // gaussian is still ~35% at the tip corners and the plane edge cuts a hard
       // diagonal across the sky when the camera is inside the tail
       const edge = Math.pow(Math.max(0, 1 - nx * nx), 2);
@@ -2054,7 +2058,7 @@ function makeTailTexture() {
   return tex;
 }
 const COMETS_RT = [];
-let cometsVisible = true;                  // headline layer — on by default (toggle in Solar panel)
+let cometsVisible = true;                  // headline layer - on by default (toggle in Solar panel)
 const cometGroup = new THREE.Group();
 solScene.add(cometGroup);
 {
@@ -2087,8 +2091,8 @@ solScene.add(cometGroup);
       cometGroup.add(m);
       return m;
     };
-    const ion = mkTail(0x8fc8ff);          // straight, blue — solar-wind-driven plasma
-    const dust = mkTail(0xffe2b8);         // curved, warm — heavier grains lag the orbit
+    const ion = mkTail(0x8fc8ff);          // straight, blue - solar-wind-driven plasma
+    const dust = mkTail(0xffe2b8);         // curved, warm - heavier grains lag the orbit
     const lab = makeTextSprite(name, { size: 8, color: '#bfe0f5', alpha: 0.85 });
     lab.center.set(0.5, 1.8); lab.renderOrder = 9;
     cometGroup.add(lab);
@@ -2096,7 +2100,7 @@ solScene.add(cometGroup);
     const n = 0.9856076686 / Math.pow(a, 1.5);
     COMETS_RT.push({ name, el, Tp, n, sub, rows, doc, periLabel, mark, coma, ion, dust, lab,
       world: new THREE.Vector3(), trail: new THREE.Vector3() });
-    // faint orbit line — long-period orbits are clipped to the inner ~80 AU so
+    // faint orbit line - long-period orbits are clipped to the inner ~80 AU so
     // Hale-Bopp's 370 AU ellipse doesn't drag a line across the whole scene
     const rClip = 80, pts = [];
     const closed = a * (1 + e) <= rClip;
@@ -2114,7 +2118,7 @@ solScene.add(cometGroup);
   }
 }
 // place comets + grow/aim their tails for the given date (camera-aware: the tail
-// planes are axial billboards — long axis fixed in space, face turned to the camera)
+// planes are axial billboards - long axis fixed in space, face turned to the camera)
 const _cV = new THREE.Vector3(), _cX = new THREE.Vector3(), _cZ = new THREE.Vector3();
 const _cM = new THREE.Matrix4();
 function updateComets(jd) {
@@ -2154,7 +2158,7 @@ function updateComets(jd) {
   }
 }
 
-// ---- trans-Neptunian dwarf planets — the icy worlds beyond Neptune, on their real
+// ---- trans-Neptunian dwarf planets - the icy worlds beyond Neptune, on their real
 // orbits (same machinery as the named asteroids). Sedna's 11,400-year ellipse is the
 // point of drawing the orbit lines: it barely dips into the planetary region.
 // Fields: name, a(AU), e, inc°, Ω°, ω°, M0°(J2000), diameter km, colour, sub, rows, doc.
@@ -2199,7 +2203,7 @@ solScene.add(tnoGroup);
     labelGroups.solar.push(lab);
     const n = 0.9856076686 / Math.pow(a, 1.5);
     TNOS_RT.push({ name, el, M0, n, diaKm, sub, rows, doc, mark, lab, world: new THREE.Vector3() });
-    // orbit line, clipped to 150 AU — Sedna's arc into the planetary region is the story
+    // orbit line, clipped to 150 AU - Sedna's arc into the planetary region is the story
     const rClip = 150, pts = [];
     const closed = a * (1 + e) <= rClip;
     const Emax = closed ? 180 : Math.acos((1 - rClip / a) / e) * 180 / Math.PI;
@@ -2216,7 +2220,7 @@ solScene.add(tnoGroup);
   }
 }
 function updateTNOs(jd) {
-  // labels only when the camera is out at Kuiper scale — at inner-system zoom these
+  // labels only when the camera is out at Kuiper scale - at inner-system zoom these
   // would be six full-size names stacked on the horizon
   const showLab = tnosVisible && orbits.solar.r > 220;
   for (const T of TNOS_RT) {
@@ -2228,10 +2232,10 @@ function updateTNOs(jd) {
   }
 }
 
-// ---- deep-space probes — the five spacecraft leaving the solar system, at their
+// ---- deep-space probes - the five spacecraft leaving the solar system, at their
 // real distances along their real outbound directions. Distances follow the sim
 // clock (linear cruise from a 2026-07-10 anchor), so rewinding to 1990 puts
-// Voyager 1 near 40 AU — where it took the Pale Blue Dot photograph. Each card's
+// Voyager 1 near 40 AU - where it took the Pale Blue Dot photograph. Each card's
 // "View from here" looks back at the Sun from the probe: a star among stars.
 // Fields: name, RA°, Dec° (J2000 outbound dir), r(AU @ 2026-07-10), speed AU/yr,
 // launch JD, sub, rows, doc.
@@ -2277,7 +2281,7 @@ solScene.add(probeGroup);
     lab.center.set(0.5, 1.8); lab.renderOrder = 9;
     probeGroup.add(lab);
     labelGroups.solar.push(lab);
-    // outbound trail — the interstellar-cruise leg behind the probe
+    // outbound trail - the interstellar-cruise leg behind the probe
     const tg = new THREE.BufferGeometry().setFromPoints([
       dir.clone().multiplyScalar(7 * AUU), dir.clone().multiplyScalar(r0 * AUU)]);
     const trail = new THREE.Line(tg, new THREE.LineBasicMaterial({
@@ -2291,7 +2295,7 @@ function updateProbes(jd) {
   const showLab = probesVisible && orbits.solar.r > 260;
   for (const P of PROBES_RT) {
     P.rAU = P.r0 + P.v * (jd - 2461231.5) / 365.25;
-    // hide during the early planetary-flyby years — the straight cruise model only
+    // hide during the early planetary-flyby years - the straight cruise model only
     // holds once the probe is well past the giant planets
     const on = jd > P.launchJd + 900 && P.rAU > 7;
     P.mark.visible = on; P.trail.visible = on;
@@ -2314,7 +2318,7 @@ function showProbeInfo(P) {
   showInfo(P.name, P.sub, rows, P.doc, { obj: P });
 }
 
-// ---- heliosphere — the boundary where the Sun's wind gives way to interstellar
+// ---- heliosphere - the boundary where the Sun's wind gives way to interstellar
 // space, at its real ~123 AU. Fades in only at outer-system zoom so it never
 // pollutes the planetary view; both Voyagers sit outside it, which is the story.
 const helioMesh = (() => {
@@ -2341,7 +2345,7 @@ const helioMesh = (() => {
       }`,
   });
   const mesh = new THREE.Mesh(new THREE.SphereGeometry(123 * AUU, 96, 64), mat);
-  mesh.scale.set(1.0, 0.94, 1.0);          // gently flattened — the wind bubble isn't a perfect sphere
+  mesh.scale.set(1.0, 0.94, 1.0);          // gently flattened - the wind bubble isn't a perfect sphere
   solScene.add(mesh);
   const lab = makeTextSprite('Heliopause · edge of the solar wind', { size: 10, color: '#9fc8e0', alpha: 0.8 });
   lab.position.set(0, 123 * AUU * 0.32, -123 * AUU * 0.92);
@@ -2360,7 +2364,7 @@ function updateHeliosphere() {
   helioMesh.userData.lab.visible = helioVisible && fade > 0.35;
 }
 
-// info card for a comet, with a time-travel action to its best show — the card
+// info card for a comet, with a time-travel action to its best show - the card
 // teaches the time controls the same way the Sgr A* card teaches deep flight
 function showCometInfo(C) {
   showInfo(C.name, C.sub, C.rows, C.doc, { obj: C }, {
@@ -2383,7 +2387,7 @@ backdrop.rotation.x = -23.4393 * DEG;
 const solStarsMat = starMat.clone();
 solStarsMat.depthTest = true;
 // The sky view's soft naked-eye PSF (wide halo, big discs) reads as smudges when it's
-// a BACKDROP behind planets — pin the stars down: tighter halo, smaller discs. Shrinking
+// a BACKDROP behind planets - pin the stars down: tighter halo, smaller discs. Shrinking
 // a disc slashes its total light, so the faint end gets an alpha floor boost to keep the
 // field DENSE (crisp long-exposure look, not a sparse one). Every other uniform
 // (mag limit, twinkle, spectrum, time) stays shared and live.
@@ -2403,13 +2407,13 @@ solStars.renderOrder = -1;                       // draw the backdrop before the
 const solStarsScale = 18;                       // push sphere outside Pluto orbit
 solStars.scale.setScalar(solStarsScale);
 backdrop.add(solStars);
-// the Milky Way band belongs in this sky too — it's most of what makes the real
+// the Milky Way band belongs in this sky too - it's most of what makes the real
 // night sky feel deep, and the solar backdrop looked flat without it
 const solMilkyWay = buildMilkyWay();
 solMilkyWay.scale.setScalar(solStarsScale);
 solMilkyWay.renderOrder = -1;
 // the sky-dome build skips depth testing (nothing occludes it there), but in the
-// solar scene the ship and planets must block the band — else its stars shine
+// solar scene the ship and planets must block the band - else its stars shine
 // straight through hulls and night sides (each build gets fresh materials, so this
 // doesn't touch the sky copy)
 solMilkyWay.traverse((o) => { if (o.material) o.material.depthTest = true; });
@@ -2417,7 +2421,7 @@ backdrop.add(solMilkyWay);
 solScene.add(backdrop);
 
 function updateSun(perfT) {
-  // perfT = performance.now()/1000 mod 1000 — always a small, safe float for the shader
+  // perfT = performance.now()/1000 mod 1000 - always a small, safe float for the shader
   sunUniform.value = perfT % 1000;
   if (!sunFx) return;
   // corona and glow pulse gently on wall-clock time (looks natural at any sim speed)
@@ -2426,7 +2430,7 @@ function updateSun(perfT) {
   sunFx.corona.material.opacity = 0.5 + Math.sin(perfT * 0.13) * 0.12;
   sunFx.glow.material.opacity = 0.9 + Math.sin(perfT * 0.06) * 0.1;
   // prominences: rate ≈ one visible eruption per 40–90 real seconds per sprite.
-  // pow(max(0,sin),8) gives a very narrow spike — long quiet then a sharp brief flare.
+  // pow(max(0,sin),8) gives a very narrow spike - long quiet then a sharp brief flare.
   for (const sp of sunFx.proms) {
     const ph = perfT * sp.userData.rate + sp.userData.phase;
     const flare = Math.pow(Math.max(0, Math.sin(ph)), 8.0);
@@ -2448,7 +2452,7 @@ function updateSolarBodies(jd) {
       if (earthFx.clouds) earthFx.clouds.rotation.y = ((jd - J2000) / 0.92) * Math.PI * 2 % (Math.PI * 2);
     }
   }
-  // Sun rotates once every 25.38 days (sidereal, equatorial) — driven by JD like planets
+  // Sun rotates once every 25.38 days (sidereal, equatorial) - driven by JD like planets
   solBodies.Sun.mesh.rotation.y = ((jd - J2000) % 25.38) / 25.38 * Math.PI * 2;
   solBodies.Sun.lab.position.set(0, 0, 0);
   // Moon: real ecliptic direction from Earth, exaggerated separation for visibility
@@ -2469,7 +2473,7 @@ function updateSolarBodies(jd) {
     m.orbit.geometry.setFromPoints(pts);
   }
   // everything dynamic advances on the SIMULATION clock so it freezes when paused and
-  // races when sped up — one shared sim-seconds delta for sun, clouds and satellites.
+  // races when sped up - one shared sim-seconds delta for sun, clouds and satellites.
   if (satClockJd === null) satClockJd = jd;
   let dSim = (jd - satClockJd) * 86400;             // sim-seconds since last frame
   satClockJd = jd;
@@ -2622,14 +2626,14 @@ const neiUniforms = { uScale: { value: 1.0 }, uPR: starUniforms.uPR };
   deepCatalog.frustumCulled = false;
   deepScene.add(deepCatalog);
   deepStarMat = mat;                          // reuse this exact star shader for procedural chunks
-  // "home" beacon — a bright golden marker at the Sun so deep space always shows the way back
+  // "home" beacon - a bright golden marker at the Sun so deep space always shows the way back
   deepSun = new THREE.Sprite(new THREE.SpriteMaterial({
     map: makeDiscTexture('#fff6cf', '#ffd27a', 0.5), transparent: true,
     depthWrite: false, blending: THREE.AdditiveBlending }));
   deepScene.add(deepSun);
   // (the gold "☉ Solar System" text label was removed at the user's request; the beacon
   // star itself stays so you can still see where home is and fly back.)
-  // Approach halo — as you near the beacon, concentric orbit rings fade/grow in so you
+  // Approach halo - as you near the beacon, concentric orbit rings fade/grow in so you
   // see "the solar system" forming around the Sun (not just a lone star) before the dive.
   deepSunHalo = new THREE.Group();
   const ringTex = makeRingTexture('#bcd2f0');
@@ -2645,7 +2649,7 @@ const neiUniforms = { uScale: { value: 1.0 }, uPR: starUniforms.uPR };
   deepSunHalo.visible = false;
   deepScene.add(deepSunHalo);
   // Sgr A* rendered in the deep continuum: approaching the galactic centre shows a
-  // real destination — shadow sphere, photon ring, warm glow — not just dense stars.
+  // real destination - shadow sphere, photon ring, warm glow - not just dense stars.
   deepGC = new THREE.Group();
   {
     const shadow = new THREE.Mesh(new THREE.SphereGeometry(18, 96, 64),
@@ -2682,7 +2686,7 @@ const neiStarLabels = [];
   neiScene.add(sunLab);
   labelGroups.neighborhood.push(sunLab);
 
-  // Approach halo — the same arrival cue as the deep continuum's beacon: over the
+  // Approach halo - the same arrival cue as the deep continuum's beacon: over the
   // last stretch home concentric orbit rings fade/grow in, so the solar system
   // visibly "forms" ahead of the ship before the dive (see flyHandoff's Sun capture).
   const sunHalo = new THREE.Group();
@@ -2716,7 +2720,7 @@ const neiStarLabels = [];
     labelGroups.neighborhood.push(rl);
   }
 
-  // ---- Oort cloud — at its TRUE scale this is a neighborhood-scene object, not a
+  // ---- Oort cloud - at its TRUE scale this is a neighborhood-scene object, not a
   // solar-system one: 2,000–100,000 AU is 0.01–0.5 parsecs, a quarter of the way to
   // Alpha Centauri. A faint icy haze around the Sun, visible only when zoomed close
   // (any farther out and 3,000 additive points would pile into a false bright dot).
@@ -2737,7 +2741,7 @@ const neiStarLabels = [];
     const oortLab = makeTextSprite('Oort Cloud', { size: 9.5, color: '#a9c4d8', alpha: 0.85 });
     oortLab.position.set(0, 0.4, 0);
     oortLab.renderOrder = 9;
-    oortLab.userData.declutterPri = 500;     // informational — yields to every star name
+    oortLab.userData.declutterPri = 500;     // informational - yields to every star name
     const grp = new THREE.Group();
     grp.add(oort, oortLab);
     grp.visible = false;                                   // gated by zoom in animate
@@ -2752,7 +2756,7 @@ const neiStarLabels = [];
 
   // labels for nearby stars, in two tiers: the brightest dozen (the names a
   // visitor knows) show at the default framing; the faint catalog names only
-  // appear once you zoom in close — otherwise they pile into an unreadable knot
+  // appear once you zoom in close - otherwise they pile into an unreadable knot
   const labelCandidates = [];
   for (const [idxStr, name] of Object.entries(STARS.names)) {
     const i = +idxStr;
@@ -2773,8 +2777,8 @@ const neiStarLabels = [];
     labelGroups.neighborhood.push(lab);
     neiStarLabels.push(lab);
   });
-  // stagger labels of near-co-located stars (e.g. the Alpha Centauri system — Rigil
-  // Kentaurus, Toliman, Proxima — sit ~0.2 ly apart) so they don't print on top of each other
+  // stagger labels of near-co-located stars (e.g. the Alpha Centauri system - Rigil
+  // Kentaurus, Toliman, Proxima - sit ~0.2 ly apart) so they don't print on top of each other
   const STAGGER = [1.6, -0.7, 2.8, -1.9];     // sprite-anchor y: alternates above / below the star
   const clustered = new Set();
   for (let a = 0; a < neiStarLabels.length; a++) {
@@ -2790,7 +2794,7 @@ const neiStarLabels = [];
 // Screen-space label declutter for the stars view: each frame the labels compete for
 // room in priority order (the Sun first, then brightness rank; the zoom tier decides
 // who may compete at all). A label whose on-screen box would overlap an already-placed
-// one stays hidden until zooming in makes room — so the crowd of near-Sun names
+// one stays hidden until zooming in makes room - so the crowd of near-Sun names
 // resolves into whatever actually fits instead of printing into one knot.
 let _neiDeclutterList = null;
 const _dlV = new THREE.Vector3();
@@ -2932,7 +2936,7 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
   const lmcPos = clump(280.5, -32.9, 50, 1.6, 900, [0.80, 0.85, 1.0]);
   const smcPos = clump(302.8, -44.3, 62, 1.1, 450, [0.82, 0.82, 1.0]);
 
-  // ---- the Orion Spur — the short arm segment the Sun actually lives in, arcing
+  // ---- the Orion Spur - the short arm segment the Sun actually lives in, arcing
   // through (−8.2, 0, 0) between the Sagittarius and Perseus arms
   for (let i = 0; i < 2600; i++) {
     const t = Math.random();
@@ -2945,7 +2949,7 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
     else if (pick < 0.5) push(x, y, z, 0.70, 0.80, 1.0, 0.045);   // young blue stars
     else push(x, y, z, 1.0, 0.94, 0.84, 0.038);
   }
-  // flocculent feathers — the short spurs that branch off every real spiral's arms
+  // flocculent feathers - the short spurs that branch off every real spiral's arms
   for (let f = 0; f < 10; f++) {
     const th0 = ARMS[f % 4];
     const u0 = 0.25 + Math.random() * 0.55;
@@ -3003,9 +3007,9 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
   cloud.frustumCulled = false;
   galScene.add(cloud);
 
-  // ---- dust lanes — dark absorption clouds hugging each arm's INNER edge and
+  // ---- dust lanes - dark absorption clouds hugging each arm's INNER edge and
   // threading the bar. Drawn with NORMAL blending after the stars, so they truly
-  // darken the light behind them — the detail every face-on spiral photo lives on.
+  // darken the light behind them - the detail every face-on spiral photo lives on.
   {
     const dpts = [];
     for (const th0 of ARMS) {
@@ -3018,7 +3022,7 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
           0.16 + Math.random() * 0.14, 0.05 + Math.random() * 0.04);
       }
     }
-    // (no dust across the bar — face-on, the bulge reads as a clean glowing mass;
+    // (no dust across the bar - face-on, the bulge reads as a clean glowing mass;
     // flank dust carved an hourglass out of it and looked broken)
     const DN = dpts.length / 5;
     const dpos = new Float32Array(DN * 3), dop = new Float32Array(DN), dsz = new Float32Array(DN);
@@ -3056,7 +3060,7 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
     dust.renderOrder = 1;                                    // after the stars it shades
     galScene.add(dust);
   }
-  // ---- HII blooms — soft rose glows at the star-forming knots collected above
+  // ---- HII blooms - soft rose glows at the star-forming knots collected above
   {
     const bloomTex = makeDiscTexture('rgba(255,150,180,0.55)', 'rgba(255,90,120,0.10)', 0.4);
     const step = Math.max(1, Math.ceil(hiiiPositions.length / 70));
@@ -3097,7 +3101,7 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
       galScene.add(sp);
     }
   }
-  // Central bulge glow — big orange-yellow additive sprite
+  // Central bulge glow - big orange-yellow additive sprite
   const bulgeMat = new THREE.SpriteMaterial({
     map: makeDiscTexture('rgba(255,220,140,0.70)', 'rgba(220,140,60,0.0)', 0.35),
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
@@ -3119,7 +3123,7 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
     galScene.add(barSp);
   }
 
-  // Sgr A* — the supermassive black hole as a real object you fly to at the galactic
+  // Sgr A* - the supermassive black hole as a real object you fly to at the galactic
   // centre (no separate screen): event-horizon shadow, doppler accretion disk, photon ring.
   {
     const RS = 0.5;
@@ -3134,7 +3138,7 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
         depthTest: true, depthWrite: true }));
     shadow.renderOrder = 4;
     galBH.add(shadow);
-    // accretion disk v2 — static (per the design call: no motion), but detailed:
+    // accretion disk v2 - static (per the design call: no motion), but detailed:
     // an ISCO gap off the shadow, a white-hot inner rim, a temperature gradient
     // falling to ember red, frozen filamentary turbulence sheared along the flow,
     // and strong one-sided relativistic beaming. uTime stays as a fixed phase seed.
@@ -3155,7 +3159,7 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
             + 0.13 * sin(ang * 13.0 - r * 46.0 + uTime * 1.7)
             + 0.09 * sin(ang * 23.0 + r * 74.0 + uTime * 0.6);
           float grain = 0.92 + 0.08 * sin(r * 210.0 + ang * 41.0);
-          // relativistic beaming — approaching side blazes, receding side fades
+          // relativistic beaming - approaching side blazes, receding side fades
           float dopp = 0.30 + 0.85 * pow(0.5 + 0.5 * cos(ang - 1.5708), 1.6);
           // temperature ramp: white-hot inner → amber → ember red at the fringe
           vec3 hot = mix(mix(vec3(1.0, 0.98, 0.94), vec3(1.0, 0.70, 0.30), smoothstep(0.0, 0.45, t)),
@@ -3172,7 +3176,7 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
     disk.renderOrder = 5;
     galBH.add(disk);
     galBH.userData.disk = diskMat;
-    // the lensed ring — light from the disk behind the hole, bent over and under the
+    // the lensed ring - light from the disk behind the hole, bent over and under the
     // shadow (the EHT / Interstellar signature). Static geometry tilted with the disk.
     const lensMat = new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
@@ -3192,7 +3196,7 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
           float ang = atan(vP.y, vP.x);
           float band = smoothstep(${(RS * 1.03).toFixed(3)}, ${(RS * 1.08).toFixed(3)}, r)
                      * (1.0 - smoothstep(${(RS * 1.13).toFixed(3)}, ${(RS * 1.24).toFixed(3)}, r));
-          // keep only the over/under arcs — the ring's side segments would cross the
+          // keep only the over/under arcs - the ring's side segments would cross the
           // shadow's face as a grey band when seen from near the disk plane
           float arc = pow(abs(vP.y) / max(r, 0.001), 1.6);
           // lensed images exist only OUTSIDE the silhouette: cut any fragment whose
@@ -3253,10 +3257,10 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
     const th = th0 + Math.log(r / 3.3) / PITCH;
     return new THREE.Vector3(r * Math.cos(th), 0.6, -r * Math.sin(th));
   };
-  // hidden on close approach — the black hole fills the frame and the info card names it
+  // hidden on close approach - the black hole fills the frame and the info card names it
   galLabel('Sgr A* · galactic centre', new THREE.Vector3(0, 1.2, 0), '#ffce8a', 12).userData.hideBelow = 7;
   galLabel('Sun · you are here', SUN_GAL.clone().setY(1.6), '#ffe9a8', 12);
-  // arm labels only while the disc fills the view — zoomed to satellite scale they
+  // arm labels only while the disc fills the view - zoomed to satellite scale they
   // all collapse onto a thumbnail-sized disc and pile into an unreadable knot
   galLabel('Scutum–Centaurus Arm', armPoint(0, 10.5), '#8fb0e0').userData.hideBeyond = 140;
   galLabel('Sagittarius Arm', armPoint(Math.PI / 2, 9), '#8fb0e0').userData.hideBeyond = 140;
@@ -3291,7 +3295,7 @@ const galCenterGlows = [];   // centre glow layers fade out on close approach to
   labelGroups.galaxy.push(sunRing);
 }
 
-// ---- the real galactic neighborhood — every named glow in the galaxy view is a
+// ---- the real galactic neighborhood - every named glow in the galaxy view is a
 // real galaxy at its true position (galactic l/b + distance). Fills the empty black
 // between the Milky Way and the cosmic web with the actual Local Group: the dwarf
 // satellites being pulled apart by our gravity, Andromeda's companions, and the
@@ -3330,7 +3334,7 @@ const GALAXY_CAT = [
   ['M110', 120.7, -21.1, 820, 'sph', [8, 5, 0.6], true,
     'Andromeda\'s other bright companion', [['Type', 'Dwarf elliptical'], ['Distance', '2.7 million ly'], ['Satellite of', 'Andromeda']],
     'The larger and more diffuse of Andromeda\'s two bright companions, visible in the same binocular field as M31 itself.'],
-  // — the nearest neighbor groups, beyond the Local Group —
+  // - the nearest neighbor groups, beyond the Local Group -
   ['Maffei 1', 135.9, -0.6, 2850, 'len', [16, 12, 0.1], true,
     'The hidden giant next door', [['Type', 'Giant elliptical'], ['Distance', '9.3 million ly'], ['Discovered', '1967, behind the Milky Way']],
     'A giant elliptical galaxy that would be one of the brightest in our sky, if it weren\'t sitting almost exactly behind the Milky Way\'s disc. It hid behind our own dust until 1967.'],
@@ -3352,7 +3356,7 @@ const GALAXY_CAT = [
   ['Centaurus A', 309.5, 19.4, 3800, 'len', [24, 18, 0.2], false,
     'The nearest active galaxy', [['Type', 'Elliptical w/ dust lane'], ['Distance', '12.4 million ly'], ['Core', 'feeding supermassive black hole']],
     'The nearest galaxy with an actively feeding central black hole, wearing a dramatic dust lane, the remains of a spiral galaxy it swallowed whole.'],
-  // existing visuals — cards for the members already drawn in the scene
+  // existing visuals - cards for the members already drawn in the scene
   ['Andromeda Galaxy', 121.2, -21.6, 778, 'none', null, false,
     'The Local Group\'s other giant', [['Type', 'Spiral'], ['Distance', '2.5 million ly'], ['Future', 'merges with the Milky Way in ~4.5 billion yr']],
     'Our twin and our destiny: the Local Group\'s largest galaxy, closing on the Milky Way at 110 km/s. In roughly 4.5 billion years the two will merge into a single giant elliptical.'],
@@ -3392,7 +3396,7 @@ const GALCAT_RT = [];
       lab.position.copy(pos).add(new THREE.Vector3(0, spr[1] * 1.1 + 1.5, 0));
       lab.renderOrder = 9;
       if (d < 300) lab.userData.near = true;    // dwarf labels only at Local-Group zoom
-      // Andromeda's court sits within ~30 kpc of M31 — their labels only untangle
+      // Andromeda's court sits within ~30 kpc of M31 - their labels only untangle
       // when you're zoomed into that corner of the Local Group
       if (['IC 10', 'NGC 185', 'M32', 'M110'].includes(name)) lab.userData.hideBeyond = 700;
       galScene.add(lab);
@@ -3406,7 +3410,7 @@ setLoad(0.95);
 // ---------------------------------------------------------------- cosmic web scene
 // Large-scale structure: galaxy-cluster nodes linked by filaments around voids,
 // reddening with distance (cosmological redshift), wrapped by the CMB shell at the
-// edge of the observable universe. Procedurally generated — units are compressed
+// edge of the observable universe. Procedurally generated - units are compressed
 // comoving distance (origin = Local Group, shell ≈ 46 Gly observable radius).
 const cosGroup = new THREE.Group();
 cosScene.add(cosGroup);
@@ -3427,7 +3431,7 @@ const COS_CMB_R = 92;          // observable-universe / CMB shell radius
     verts.push(x, y, z, c[0] * j, c[1] * j, c[2] * j, s);
   };
 
-  // 1) cluster nodes — denser toward center, thinning into the void-rich outskirts
+  // 1) cluster nodes - denser toward center, thinning into the void-rich outskirts
   const nodes = [];
   const NODES = 150;
   let guard = 0;
@@ -3522,7 +3526,7 @@ const COS_CMB_R = 92;          // observable-universe / CMB shell radius
   web.frustumCulled = false;
   cosGroup.add(web);
 
-  // Filament lines — draw the actual web skeleton as glowing lines
+  // Filament lines - draw the actual web skeleton as glowing lines
   {
     const lineVerts = [];
     for (const key of links) {
@@ -3555,7 +3559,7 @@ const COS_CMB_R = 92;          // observable-universe / CMB shell radius
     }
   }
 
-  // CMB shell — procedural mottled microwave-background sphere at the edge of view
+  // CMB shell - procedural mottled microwave-background sphere at the edge of view
   const cmbCanvas = document.createElement('canvas');
   cmbCanvas.width = 1024; cmbCanvas.height = 512;
   const cx = cmbCanvas.getContext('2d');
@@ -3692,7 +3696,7 @@ function deepForward() {
 }
 function applyDeepCam(dt) {
   window._deepRan = (window._deepRan || 0) + 1;
-  // STEER — cursor is a flight stick; arms once you bring it to centre (same as fly)
+  // STEER - cursor is a flight stick; arms once you bring it to centre (same as fly)
   const dzz = 0.16;
   if (!flyArmed && Math.abs(mouseNDC.x) < dzz && Math.abs(mouseNDC.y) < dzz) { flyArmed = true; flyArmPrompt.classList.remove('show'); }
   if (flyArmed) {
@@ -3702,7 +3706,7 @@ function applyDeepCam(dt) {
   }
   const fwd = deepForward();
   _right.crossVectors(fwd, _wup).normalize();
-  // THRUST — space cruises, hold mouse to thrust, WASD optional; scroll = throttle.
+  // THRUST - space cruises, hold mouse to thrust, WASD optional; scroll = throttle.
   const boost = (heldKeys.has('shift') ? 7 : 1) * flySpeed;
   const F = (heldKeys.has('arrowup') || heldKeys.has('w') ? 1 : 0) - (heldKeys.has('arrowdown') || heldKeys.has('s') ? 1 : 0);
   const S = (heldKeys.has('arrowright') || heldKeys.has('d') ? 1 : 0) - (heldKeys.has('arrowleft') || heldKeys.has('a') ? 1 : 0);
@@ -3711,15 +3715,15 @@ function applyDeepCam(dt) {
   if (auto || F) deep.pos.addScaledVector(fwd, (auto * 0.7 + F) * v);
   if (S) deep.pos.addScaledVector(_right, S * v);
   const dSun = deep.pos.length();
-  // Capture: a small hard radius, OR — once you're inside the approach zone and aimed
-  // roughly at the Sun — a wide cone, so flying "at" the beacon dives you in without
+  // Capture: a small hard radius, OR - once you're inside the approach zone and aimed
+  // roughly at the Sun - a wide cone, so flying "at" the beacon dives you in without
   // having to thread a pixel. toSun points from camera toward the Sun (origin).
   _toSun.copy(deep.pos).multiplyScalar(-1).normalize();
   const aimDot = deepForward().dot(_toSun);
   if (dSun < SUN_DIVE_PC || (dSun < SUN_APPROACH_PC && aimDot > SUN_CONE_DOT)) {
     diveIntoSystem(); return;                                               // arrive at the Sun → planets
   }
-  // FLOATING ORIGIN — the ship/camera sit at the render origin; the world shifts by
+  // FLOATING ORIGIN - the ship/camera sit at the render origin; the world shifts by
   // −camAbs so absolute parsec coordinates never reach float32's danger zone (no wall).
   if (deepCatalog) deepCatalog.position.copy(deep.pos).multiplyScalar(-1);   // Sun at origin → −camAbs
   if (deepSun) {                                                             // home beacon at the Sun
@@ -3727,7 +3731,7 @@ function applyDeepCam(dt) {
     deepSun.position.copy(deep.pos).multiplyScalar(-1);
     const ws = Math.max(dS * 0.05, 0.01);                                    // ~constant apparent size, grows when near
     deepSun.scale.set(ws, ws, 1);
-    // Approach halo — fades/grows in over the last SUN_APPROACH_PC so the system reveals
+    // Approach halo - fades/grows in over the last SUN_APPROACH_PC so the system reveals
     // itself as concentric orbit rings around the Sun while you fly the final stretch in.
     if (deepSunHalo) {
       const near = 1 - Math.min(1, (dS - SUN_DIVE_PC) / (SUN_APPROACH_PC - SUN_DIVE_PC));
@@ -3776,7 +3780,7 @@ function applyDeepCam(dt) {
   try { streamChunks(); } catch (e) { if (!window._scErr) { window._scErr = String(e && e.stack || e); console.error('streamChunks', e); } }
 }
 
-// Arriving at the Sun — from the deep continuum's beacon or the stars view's capture —
+// Arriving at the Sun - from the deep continuum's beacon or the stars view's capture -
 // swaps the surrounding starfield for the detailed planetary system (solScene).
 // Flying back out past the planets emerges into the stars view (flyHandoff).
 function diveIntoSystem() {
@@ -3786,7 +3790,7 @@ function diveIntoSystem() {
   orbits.solar.target.set(0, 0, 0);
   orbits.solar.r = 200; orbits.solar.phi = 1.08; orbits.solar.theta = 0.6;   // ~10 AU: frames the inner system
   // arriving mid-flight (stars view) flyMode is already true and setFlyMode(true) would
-  // keep the old sub-parsec coords — force the re-seat from the orbit framing above
+  // keep the old sub-parsec coords - force the re-seat from the orbit framing above
   flyMode = false;
   setFlyMode(true);
   thirdPerson = true; flyArmed = false; flyThrottle = false; flyCruise = false;
@@ -3802,7 +3806,7 @@ function returnHomeFromDeep() {
   setFlyMode(false);                 // drag-to-look orbit of the system
   flyShowToggle();
 }
-// F in deep space means what it means everywhere else: stop flying, RIGHT HERE —
+// F in deep space means what it means everywhere else: stop flying, RIGHT HERE -
 // not a surprise teleport back to the solar system (that's Escape / the Sun beacon).
 // Deep coords are Sun-centred parsecs on galactic axes (x → galactic centre), which is
 // the galaxy scene's frame; the neighborhood scene uses equatorial axes, so rotate.
@@ -3824,7 +3828,7 @@ function exitDeepInPlace() {
     o.phi = Math.acos(Math.max(-1, Math.min(1, dir.y)));
     o.theta = Math.atan2(dir.z, dir.x);
   } else {
-    // too far out for the stars view — drop into the galaxy map at your position
+    // too far out for the stars view - drop into the galaxy map at your position
     setMode('galaxy', true);
     const o = orbits.galaxy;
     o.follow = null;
@@ -3918,14 +3922,14 @@ function streamChunks() {
 let thirdPerson = false;
 const SHIP_FWD = new THREE.Vector3(0, 0, 1);
 const shipModel = (() => {
-  // WRAITH-class strike fighter — hard-edged, faceted stealth aesthetic.
+  // WRAITH-class strike fighter - hard-edged, faceted stealth aesthetic.
   // The hull is a single lofted body with an angular chined cross-section
   // (flat-shaded so every facet catches light), dense panel/greeble texture,
   // razor swept wings + root extensions, canted twin tails, faceted thrust-
   // vectoring nozzles and spinning intake fans. Nose = +Z.
   const g = new THREE.Group();
 
-  // ── Material library — flat-shaded by default for crisp facets ────────────
+  // ── Material library - flat-shaded by default for crisp facets ────────────
   const M = (hex,o={}) => new THREE.MeshStandardMaterial({
     color:hex, metalness:o.m??0.76, roughness:o.r??0.40,
     emissive:new THREE.Color(o.e??0x000000), emissiveIntensity:o.ei??0,
@@ -3933,7 +3937,7 @@ const shipModel = (() => {
   });
   // Livery: GUNMETAL hull · PLATINUM facet edges · ION-BLUE glow (matches the UI accent).
   // Every hull material carries a self-lit emissive floor so the silhouette always
-  // reads against black space — an unlit black ship just looks broken.
+  // reads against black space - an unlit black ship just looks broken.
   const SKIN   = M(0x3a445a,{m:0.68,r:0.44,e:0x2a3450,ei:0.62});  // gunmetal plating
   const SKIN2  = M(0x48546e,{m:0.70,r:0.50,e:0x303c58,ei:0.56});  // 2nd tone panels
   const TITAN  = M(0xe3e9f2,{m:0.92,r:0.20,e:0x3a4666,ei:0.55});  // platinum facet edges
@@ -4003,7 +4007,7 @@ const shipModel = (() => {
 
   const glows=[], cores=[], spin=[];
 
-  // ── 1. FUSELAGE — faceted chined cross-section lofted nose→tail ───────────
+  // ── 1. FUSELAGE - faceted chined cross-section lofted nose→tail ───────────
   // Hexagonal "diamond" section: flat top, sharp horizontal chines, V keel.
   const CS = [
     [ 0.00, 0.60],   // flat dorsal
@@ -4037,7 +4041,7 @@ const shipModel = (() => {
   add(cyl(0.010,0.010,0.34,4), STEEL, 0,0.0,4.62, PI2);
   add(sph(0.016,8,6), GLOW_C, 0,0.0,4.80);
 
-  // ── 2. WING — razor swept delta with hard notched trailing edge ───────────
+  // ── 2. WING - razor swept delta with hard notched trailing edge ───────────
   const WING = [
     [ 0.28, 0.95],   // root leading
     [ 0.92,-0.30],   // mid leading
@@ -4057,7 +4061,7 @@ const shipModel = (() => {
     [-0.28, 0.95],
   ];
   add(planform(WING,0.07,0.012), SKIN2, 0,-0.02,0);
-  // leading-edge extensions (LERX) — sharp triangles cockpit→wing root
+  // leading-edge extensions (LERX) - sharp triangles cockpit→wing root
   for(const side of[-1,1]){
     add(planform([[0.10,2.30],[0.46,0.40],[0.30,0.85],[0.16,1.60]],0.05,0),
         SKIN2, side<0?0:0, -0.01, 0, 0, side<0?Math.PI:0, 0);
@@ -4102,17 +4106,17 @@ const shipModel = (() => {
   add(cyl(0.03,0.02,0.46,6), DARK, -1.72,-0.06,-0.40, PI2); // underwing pod
   add(cyl(0.03,0.02,0.46,6), DARK,  1.72,-0.06,-0.40, PI2);
 
-  // ── 3. COCKPIT — faceted canopy (angular, low-profile, clearly glass) ─────
+  // ── 3. COCKPIT - faceted canopy (angular, low-profile, clearly glass) ─────
   add(planform([[0.0,2.45],[0.17,2.05],[0.15,1.55],[0.0,1.40],[-0.15,1.55],[-0.17,2.05]],0.26,0),
       STEEL, 0,0.15,0);                              // canopy frame base (faired in)
-  // angular glass — two raked facets, kept low so it doesn't read as a box
+  // angular glass - two raked facets, kept low so it doesn't read as a box
   add(box(0.205,0.085,0.40), GLASS, 0,0.245,2.05, -0.30);  // forward windscreen
   add(box(0.185,0.075,0.30), GLASS, 0,0.225,1.74,  0.12);  // aft canopy
   add(box(0.215,0.018,0.46), STEEL, 0,0.205,2.02, -0.30);  // windscreen frame
   add(box(0.011,0.055,0.62), STEEL, 0,0.27, 1.92);         // canopy centre rib
   add(box(0.013,0.012,0.50), GLOW_C, 0,0.30, 1.92);        // thin dorsal light line
 
-  // ── 4. TWIN CANTED TAIL FINS — compact raked stabilisers ──────────────────
+  // ── 4. TWIN CANTED TAIL FINS - compact raked stabilisers ──────────────────
   const FIN=[[0.34,0.00],[0.20,0.80],[-0.12,0.74],[-0.30,0.00]];   // smaller, neat raked blade
   const finGeo=planform(FIN,0.030,0.008);
   for(const side of[-1,1]){
@@ -4155,7 +4159,7 @@ const shipModel = (() => {
     fan.position.set(x,-0.04,0.84); g.add(fan); spin.push(fan);
   }
 
-  // ── 6. GREEBLE / SURFACE TEXTURE — dense intentional detail ───────────────
+  // ── 6. GREEBLE / SURFACE TEXTURE - dense intentional detail ───────────────
   for(const side of[-1,1]){
     // staggered hull panel plates (two-tone) running along the chine
     for(let i=0;i<7;i++){
@@ -4183,7 +4187,7 @@ const shipModel = (() => {
   add(sph(0.045,8,6), DARK, 0,-0.30,2.2); add(sph(0.030,8,6), GLOW_C, 0,-0.33,2.22);
   for(let i=0;i<5;i++) add(box(0.012,0.012,0.30), ACCENT, 0,-0.20,1.4-i*0.7); // belly centreline
 
-  // ── 7. TWIN VECTORING NOZZLES — faceted, with animated plume ──────────────
+  // ── 7. TWIN VECTORING NOZZLES - faceted, with animated plume ──────────────
   const plumeMat = new THREE.ShaderMaterial({
     transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,
     uniforms:{uThrottle:{value:0},uTime:{value:0}},
@@ -4263,10 +4267,10 @@ function syncOrbitFromFly(m) {
   o.follow = null;
   o.lookOff = null;                    // recomputed framing looks at the target itself
 }
-// Re-anchor an orbit on a new object with ZERO camera motion — position, orientation
+// Re-anchor an orbit on a new object with ZERO camera motion - position, orientation
 // and framing all hold; the click only changes what scroll zooms toward and drag
 // orbits around. prevLook must be the point the camera is ACTUALLY looking at (with
-// a lookOff still active that is target + lookOff·k, not the target — using the
+// a lookOff still active that is target + lookOff·k, not the target - using the
 // target made every click after the first snap-pivot the view).
 function reanchorOrbit(m, pos) {
   const o = orbits[m];
@@ -4280,14 +4284,14 @@ function reanchorOrbit(m, pos) {
   o.lookOffAnchor = o.target.clone();
   o.lookOffR0 = o.r;
 }
-// distance-based scale hand-offs while flying — mirror of applyZoom's chain
+// distance-based scale hand-offs while flying - mirror of applyZoom's chain
 // Hard outer walls per scale, kept well inside float32's precision-loss zone (~1e6+),
 // so you can never fly the camera out to where the ship's vertices scatter / coords go NaN.
 const FLY_WALL = { neighborhood: 6000, galaxy: 2500, cosmic: 160 };
 // Inward Sun captures (mirror of the deep-space beacon's dive: hard radius OR aimed-at-
 // the-Sun cone, so flying "at" home works without threading a pixel).
 const NEI_SUN_DIVE_PC = 0.4;        // stars view: this close to the Sun, dive into the planetary system
-const GAL_SUN_APPROACH_KPC = 1.2;   // galaxy map: aimed-capture range of the Sun marker — capped so the
+const GAL_SUN_APPROACH_KPC = 1.2;   // galaxy map: aimed-capture range of the Sun marker - capped so the
                                     // landing point stays inside the stars view's real catalog (~1.2 kpc)
 function flyHandoff(m) {
   // NaN/Infinity guard: extreme speed × distance could overflow float32 and would otherwise
@@ -4297,9 +4301,9 @@ function flyHandoff(m) {
     flyThrottle = false; flyCruise = false; flySpeed = 1;
     return;
   }
-  if (fly.attach) return;                    // riding a "view from here" vantage — never hand off
+  if (fly.attach) return;                    // riding a "view from here" vantage - never hand off
   // Flying past the planetary system's edge emerges into interstellar space (the stars
-  // view) — the outward mirror of the Sun capture below, so the flight ladder chains
+  // view) - the outward mirror of the Sun capture below, so the flight ladder chains
   // solar ↔ neighborhood ↔ galaxy. The deep "fly forever" continuum stays a special
   // destination (the Sgr A* card's deep approach) rather than the default exit.
   if (m === 'solar') {
@@ -4310,7 +4314,7 @@ function flyHandoff(m) {
       setMode('neighborhood', true);
       const o = orbits.neighborhood;
       o.follow = null; o.target.set(0, 0, 0);
-      fly.pos.copy(dir).multiplyScalar(2.5);   // re-emerge 2.5 pc out — clear of the 1.6 pc inward capture
+      fly.pos.copy(dir).multiplyScalar(2.5);   // re-emerge 2.5 pc out - clear of the 1.6 pc inward capture
       fly.yaw = Math.atan2(f.x, f.z);
       fly.pitch = Math.asin(Math.max(-1, Math.min(1, f.y)));
     }
@@ -4335,7 +4339,7 @@ function flyHandoff(m) {
       fly.pitch = Math.asin(Math.max(-1, Math.min(1, f.y)));
       return;
     }
-    // flying far past the Local Group pops out into the cosmic web — the fly-mode
+    // flying far past the Local Group pops out into the cosmic web - the fly-mode
     // mirror of applyZoom's galaxy→cosmic handoff (fires inside the 2500 kpc wall)
     if (fly.pos.length() > 2000) {
       crossDissolve();
@@ -4351,7 +4355,7 @@ function flyHandoff(m) {
     }
   }
   if (m === 'cosmic' && fly.pos.length() < 3.2) {
-    // dive back into the Local Group — lands at 1500 kpc, clear of the 2000 outward exit
+    // dive back into the Local Group - lands at 1500 kpc, clear of the 2000 outward exit
     crossDissolve();
     const dir = fly.pos.lengthSq() < 0.25 ? new THREE.Vector3(0.3, 0.2, 1).normalize() : fly.pos.clone().normalize();
     const f = flyForward().clone();
@@ -4391,7 +4395,7 @@ function flyHandoff(m) {
     fly.pos.setLength(wall);
     flyThrottle = false; flyCruise = false;
   }
-  if (m === 'galaxy' && fly.pos.length() < 1.15) {   // Sgr A*: hold at the photon ring —
+  if (m === 'galaxy' && fly.pos.length() < 1.15) {   // Sgr A*: hold at the photon ring -
     fly.pos.setLength(1.15);                          // inside the shadow is just black
     flyThrottle = false; flyCruise = false;
   }
@@ -4402,10 +4406,10 @@ function applyFlyCam(m, dt) {
     orbits.solar.target.copy(solBodies[orbits.solar.follow].pos);
   }
   // ride along with an attached body (a "view from here" vantage), so you orbit/move
-  // with it — e.g. circling Earth aboard the ISS. Any manual thrust detaches you.
+  // with it - e.g. circling Earth aboard the ISS. Any manual thrust detaches you.
   if (fly.attach) fly.pos.copy(fly.attach.get()).add(fly.attach.offset);
   const ref = Math.max(0.4, fly.pos.distanceTo(orbits[m].target));
-  // STEERING — the cursor is a flight stick (centre = straight, edges = turn). It stays
+  // STEERING - the cursor is a flight stick (centre = straight, edges = turn). It stays
   // neutral until you first bring the cursor to the centre.
   {
     const dz = 0.16;                                    // central dead-zone
@@ -4422,7 +4426,7 @@ function applyFlyCam(m, dt) {
   }
   const fwd = flyForward();
   _right.crossVectors(fwd, _wup).normalize();
-  // THRUST — Space cruises hands-free, hold mouse to thrust, WASD optional. Any of these
+  // THRUST - Space cruises hands-free, hold mouse to thrust, WASD optional. Any of these
   // detaches a ride-along vantage so you can fly off freely.
   const boost = (heldKeys.has('shift') ? 4.0 : 1) * flySpeed;   // Shift boost × scroll throttle
   const F = (heldKeys.has('arrowup') || heldKeys.has('w') ? 1 : 0) - (heldKeys.has('arrowdown') || heldKeys.has('s') ? 1 : 0);
@@ -4502,10 +4506,10 @@ const flyBtn = document.getElementById('fly-btn');
 const crosshair = document.getElementById('crosshair');
 const flyArmPrompt = document.getElementById('fly-arm');
 const fadeEl = document.getElementById('fade');
-let flyHudHidden = true;                       // spaceship-controls panel off by default — only the menu shows it (not F)
+let flyHudHidden = true;                       // spaceship-controls panel off by default - only the menu shows it (not F)
 function flyShowToggle() {
   const active = (flyMode && FLY_MODES.has(mode)) || mode === 'deep';   // flying is via F / double-click / the touch 🚀 button
-  // on touch the HUD is the only set of flight controls — always show it while flying
+  // on touch the HUD is the only set of flight controls - always show it while flying
   flyHud.classList.toggle('show', active && (!flyHudHidden || TOUCH_UI));
   crosshair.classList.toggle('show', active);
   flyArmPrompt.classList.toggle('show', active && !flyArmed);
@@ -4528,7 +4532,7 @@ function setFlyMode(on) {
   if (on) exitRideAlong();   // rideAlong and fly are mutually exclusive
   if (on && !flyMode) {
     syncFlyFromOrbit(mode); flyThrottle = false; thirdPerson = true;
-    // touch: no persistent cursor to bring to the centre — arm immediately with the
+    // touch: no persistent cursor to bring to the centre - arm immediately with the
     // stick neutral, so nothing turns until a finger is actually down
     flyArmed = TOUCH_UI;
     if (TOUCH_UI) { mouseNDC.x = 0; mouseNDC.y = 0; }
@@ -4543,7 +4547,7 @@ const flyish = () => (flyMode && FLY_MODES.has(mode)) || mode === 'deep';
 function setFlySpeed(mult) { flySpeed = Math.max(0.15, Math.min(12, mult)); flyShowToggle(); }
 document.getElementById('fh-slower').onclick = () => setFlySpeed(flySpeed / 1.4);
 document.getElementById('fh-faster').onclick = () => setFlySpeed(flySpeed * 1.4);
-// touch flight: 🚀 takes the controls with the ship at rest — same as F on desktop.
+// touch flight: 🚀 takes the controls with the ship at rest - same as F on desktop.
 // ⏵ Cruise (or holding a finger) gets it moving; the HUD's buttons stand in for Space / V / F
 flyBtn.onclick = () => { setFlyMode(true); flyShowToggle(); };
 document.getElementById('fh-cruise-btn').onclick = () => {
@@ -4562,7 +4566,7 @@ const _fndc = new THREE.Vector2(), _fray = new THREE.Raycaster();
 function flyToObject(cx, cy) {
   if (!FLY_MODES.has(mode)) return;
   if (!flyMode) setFlyMode(true);
-  // the cursor is wherever the double-click landed — as a live flight stick it would
+  // the cursor is wherever the double-click landed - as a live flight stick it would
   // deflect and cancel this glide next frame; disengage until the user re-centres it
   // (touch has no persistent cursor: the stick is already neutral there)
   if (!TOUCH_UI) flyArmed = false;
@@ -4680,7 +4684,7 @@ let lastTapT = 0, lastTapX = 0, lastTapY = 0;
 addEventListener('pointerup', (e) => {
   dropPointer(e);
   flyThrottle = false;
-  // touch: the finger IS the flight stick — lifting it recentres, so the ship flies
+  // touch: the finger IS the flight stick - lifting it recentres, so the ship flies
   // straight instead of turning forever toward wherever the screen was last touched
   if (e.pointerType === 'touch' && livePointers.size === 0) releaseFlightStick();
   if (!dragging || wasPinch) return;
@@ -4740,12 +4744,12 @@ function applyZoom(f) {
     }
   } else if (mode === 'galaxy') {
     // zoom in → drop to the stellar neighbourhood (so you can always continue inward to the
-    // solar system instead of getting pinned at Sgr A* in the galactic centre) — but only
+    // solar system instead of getting pinned at Sgr A* in the galactic centre) - but only
     // while anchored inside the Milky Way's disc; zooming into a clicked Local Group
     // galaxy (Andromeda &c) closes in on IT rather than teleporting home
     if (o.r < 2.0) {
       // "home" = anchored within 10 kpc of the centre (covers the default centre anchor
-      // and the Sun at 8.2 kpc, excludes every Local Group member — the nearest,
+      // and the Sun at 8.2 kpc, excludes every Local Group member - the nearest,
       // the Sagittarius Dwarf, sits 18 kpc out)
       if (o.target.lengthSq() < 100) { toNeighborhood(2700); return; }
       o.r = Math.max(0.4, o.r);
@@ -4837,7 +4841,7 @@ const btPlay = document.getElementById('bt-play');
 
 function fmtDate(jd) {
   const dt = dateFromJd(jd);
-  if (isNaN(dt)) return '—';
+  if (isNaN(dt)) return '·';
   const p = (n) => String(n).padStart(2, '0');
   return `${dt.getUTCFullYear()}-${p(dt.getUTCMonth() + 1)}-${p(dt.getUTCDate())} ` +
     `${p(dt.getUTCHours())}:${p(dt.getUTCMinutes())} UTC`;
@@ -4961,7 +4965,7 @@ function viewFromObject(pov) {
   if (surfBody) {
     // Standing ON a surface (e.g. a lunar landing site): lift the eye just above the
     // ground so the body's limb doesn't clip into a black sliver, keep the horizon level
-    // (up = surface normal), and look out over the horizon toward Earth — an Earthrise view.
+    // (up = surface normal), and look out over the horizon toward Earth - an Earthrise view.
     const liftR = displayRadius(pov.surfaceBody) * 0.04;       // ~eye height above the surface
     const eyePos = () => { _povN.copy(obj.world).sub(surfBody.pos).normalize();
       return obj.world.clone().addScaledVector(_povN, liftR); };
@@ -4986,12 +4990,12 @@ function viewFromObject(pov) {
     };
     getPos = () => (obj.world ? obj.world.clone() : (obj.pos ? obj.pos.clone() : new THREE.Vector3()));
   }
-  // Exit any existing fly mode — POV is a separate locked-camera state
+  // Exit any existing fly mode - POV is a separate locked-camera state
   if (flyMode) setFlyMode(false);
   rideAlong = { getPos, getLook, up: upGet, label: obj.name || 'object' };
   orbits.solar.follow = null;
   infocard.classList.remove('open');
-  document.body.classList.add('riding');   // the scale readout describes the orbit view — hide it here
+  document.body.classList.add('riding');   // the scale readout describes the orbit view - hide it here
   // Show a small exit banner so the user knows how to get back
   let banner = document.getElementById('ride-exit');
   if (!banner) {
@@ -5098,7 +5102,7 @@ function bodyInfo(name, jd) {
   if (info.extra) rows.push(...info.extra);
   // offer a vantage-point view from any solar body (looks back toward the Sun)
   const pov = solBodies[name] ? { obj: solBodies[name] } : null;
-  // the Sun's card is the front door to the deep continuum near home — drop into
+  // the Sun's card is the front door to the deep continuum near home - drop into
   // free flight a few pc out, facing the home beacon (flying at it dives back in)
   const action = name === 'Sun'
     ? { label: '🚀  Free-fly the solar neighbourhood', fn: () => flyToDeep(2.5, 1.2, 2.5, new THREE.Vector3(0, 0, 0)) }
@@ -5138,7 +5142,7 @@ function handleClick(cx, cy) {
         return;
       }
     }
-    // an erupting historical supernova is the brightest thing in the sky — pick it first
+    // an erupting historical supernova is the brightest thing in the sky - pick it first
     {
       let bs = null;
       for (const S of SUPERNOVAE_RT) {
@@ -5148,7 +5152,7 @@ function handleClick(cx, cy) {
       }
       if (bs) { selectSkyDir(bs.S.dir); showSupernovaInfo(bs.S); return; }
     }
-    // phenomena (pulsars, black holes, quasars, …) — pick the closest within threshold
+    // phenomena (pulsars, black holes, quasars, …) - pick the closest within threshold
     if (phenomGroup.visible) {
       let bp = null;
       for (const { dir, idx } of phenomDirs) {
@@ -5161,7 +5165,7 @@ function handleClick(cx, cy) {
       }
       if (bp) { selectSkyDir(bp.dir); phenomInfo(bp.idx); return; }
     }
-    // exoplanet systems — nearest host star within a generous threshold (scales with zoom so
+    // exoplanet systems - nearest host star within a generous threshold (scales with zoom so
     // they stay easy to click when zoomed in on the Kepler field)
     if (exoGroup.visible) {
       const exoThr = Math.cos(Math.max(1.3, skyCam.fov * 0.05) * DEG);
@@ -5172,7 +5176,7 @@ function handleClick(cx, cy) {
       }
       if (be) { selectSkyDir(exoDirs[be.i]); exoInfo(be.i); return; }
     }
-    // stars (brightest within threshold wins) — all 119k rendered stars are pickable,
+    // stars (brightest within threshold wins) - all 119k rendered stars are pickable,
     // not just the named subset; faint ones get a generic data card from the full arrays
     let bi = -1, bm = 99;
     const lim = starUniforms.uMagLimit.value;
@@ -5198,7 +5202,7 @@ function handleClick(cx, cy) {
     if (best) {
       showInfo(best.G.name, best.G.sub, best.G.rows, best.G.doc);
       // same click semantics as the stars view: ring it, and make it the zoom/orbit
-      // reference without moving the camera — zooming then closes in on that galaxy
+      // reference without moving the camera - zooming then closes in on that galaxy
       galSelMark.position.copy(best.G.pos);
       galSelMark.visible = true;
       reanchorOrbit('galaxy', best.G.pos);
@@ -5223,7 +5227,7 @@ function handleClick(cx, cy) {
         if (px < 14 && (!best || px < best.px)) best = { name: mo.name, px, moon: mo };
       }
     }
-    // satellites & lunar landing sites — clickable when zoomed in (so they don't hijack
+    // satellites & lunar landing sites - clickable when zoomed in (so they don't hijack
     // a click on Earth/Moon from far away), with a generous hit area
     if (satsVisible && orbits.solar.r < 60) {
       for (const s of SATS_RT) {
@@ -5239,7 +5243,7 @@ function handleClick(cx, cy) {
         if (px < 16 && (!best || px < best.px)) best = { px, site: s };
       }
     }
-    // named asteroids — clickable whenever their layer is on, generous hit area
+    // named asteroids - clickable whenever their layer is on, generous hit area
     if (asteroidsVisible) {
       for (const A of ASTEROIDS_RT) {
         v.copy(A.world).project(solCam);
@@ -5300,7 +5304,7 @@ function handleClick(cx, cy) {
       if (best.name === 'Sun') orbits.solar.target.set(0, 0, 0);
     } else {
       // clicking inside Earth's satellite swarm must not fall through to a background
-      // star — the swarm dots look clickable, so snap to the nearest named satellite
+      // star - the swarm dots look clickable, so snap to the nearest named satellite
       if (satsVisible && orbits.solar.r < 60 && solBodies.Earth) {
         const ep = new THREE.Vector3().copy(solBodies.Earth.pos).project(solCam);
         if (ep.z <= 1) {
@@ -5328,7 +5332,7 @@ function handleClick(cx, cy) {
     }
   } else if (mode === 'neighborhood') {
     // Every rendered star is clickable (the old mag>7-unless-named gate made most of
-    // the field dead to clicks — Earth-apparent magnitude means nothing once you've
+    // the field dead to clicks - Earth-apparent magnitude means nothing once you've
     // flown 500 pc from home). Within reach of the cursor, candidates are scored by
     // their apparent brightness FROM THE CAMERA (luminosity over camera-distance²)
     // over pixel distance, so the big star you can see beats a faint background dot
@@ -5381,7 +5385,7 @@ function selectSkyDir(dir) {
 // Pick the brightest catalog star along the click ray against the backdrop
 // starfield (the same direction-based math the old Sky view used, but driven by
 // the active space camera). Star directions in `dirs` are celestial-sphere unit
-// vectors, scale-invariant for distant stars — correct from the solar view outward.
+// vectors, scale-invariant for distant stars - correct from the solar view outward.
 function pickBackdropStar(cam) {
   raycaster.setFromCamera(ndc, cam);
   const rd = raycaster.ray.direction;
@@ -5401,7 +5405,7 @@ function pickBackdropStar(cam) {
 // backdrop starfield, so re-orienting the camera frames them in the one window.
 function frameSkyDir(d) {
   // Search targets (stars, constellations, DSOs, phenomena, exoplanets) all live in the SKY
-  // view, so land there and slew to the object — otherwise the sky-only markers/lines aren't
+  // view, so land there and slew to the object - otherwise the sky-only markers/lines aren't
   // rendered (the old version dropped into solar mode where you couldn't see what you searched).
   if (mode !== 'sky') setMode('sky', true);
   const ra = (Math.atan2(-d.z, d.x) / DEG + 360) % 360;   // invert dirVec → RA / Dec
@@ -5467,9 +5471,9 @@ const searchIndex = [];
     searchIndex.push({ label: ph.name, type: 'phenom', phIdx: i });
     if (ph.id !== ph.name) searchIndex.push({ label: ph.id, type: 'phenom', phIdx: i });
   });
-  // every confirmed exoplanet system (host name) — search "Kepler-11", "TRAPPIST-1", …
+  // every confirmed exoplanet system (host name) - search "Kepler-11", "TRAPPIST-1", …
   EXO.forEach((s, i) => searchIndex.push({ label: s.h, type: 'exo', exoIdx: i }));
-  // Named asteroids — real bodies, fly to the actual position and show its card
+  // Named asteroids - real bodies, fly to the actual position and show its card
   for (const A of ASTEROIDS_RT) searchIndex.push({ label: A.name, type: 'asteroid', asteroid: A });
   for (const C of COMETS_RT) {
     searchIndex.push({ label: C.name, type: 'comet', comet: C });
@@ -5596,7 +5600,7 @@ const TYPE_LABEL = { sat: 'satellite', lunarsite: 'landing site', moon: 'moon', 
   asteroid: 'asteroid', comet: 'comet', tno: 'dwarf planet',
   probe: 'spacecraft', galaxy: 'galaxy', sn: 'supernova', oort: 'comet reservoir',
   exo: 'exoplanet system' };
-// the Sun and Moon share the generic 'body' search type with the planets — name them properly
+// the Sun and Moon share the generic 'body' search type with the planets - name them properly
 const BODY_TYPE_OVERRIDE = { Sun: 'star', Moon: 'moon', Earth: 'planet' };
 function renderSearch(items) {
   searchResults.innerHTML = items
@@ -5751,9 +5755,9 @@ function setMode(m, fromHandoff = false) {
     try { history.replaceState(null, '', m === 'solar' ? location.pathname : '?scale=' + m); } catch (e) {}
   }
 }
-// fly to Sgr A* — the black hole is now a real object at the galaxy centre, not a separate screen
+// fly to Sgr A* - the black hole is now a real object at the galaxy centre, not a separate screen
 function gotoSgrA() {
-  // frame the galactic centre in the galaxy scene — close enough that the centre
+  // frame the galactic centre in the galaxy scene - close enough that the centre
   // glows have faded and the black hole reads clearly
   setFlyMode(false);
   setMode('galaxy');
@@ -5798,13 +5802,13 @@ function flyToDeep(x, y, z, lookOut) {
   for (let i = 0; i < 8; i++) streamChunks();            // arrive with the field built, not popping in
   flyShowToggle();
 }
-// Ambient name for "where am I" — derived from the current scale shell + zoom. Used by the
+// Ambient name for "where am I" - derived from the current scale shell + zoom. Used by the
 // minimap locator (locName). Navigation is via the minimap scale ladder, flying, and search.
 function currentScaleName() {
   if (mode === 'deep') { const d = deep.pos.length(); return d < 80 ? 'Solar Neighbourhood' : d < 4000 ? 'Interstellar Space' : 'Milky Way'; }
   if (mode === 'solar') {
     // name by wherever is "bigger": the view radius, or the camera's actual
-    // heliocentric distance — so following Voyager 1 at 167 AU reads Outer System
+    // heliocentric distance - so following Voyager 1 at 167 AU reads Outer System
     // even though the orbit radius around it is small
     const effAU = Math.max(orbits.solar.r / AUU, camFor('solar').position.length() / AUU);
     return effAU < 1.5 ? 'Inner System' : effAU < 30 ? 'Solar System' : 'Outer System';
@@ -5826,7 +5830,7 @@ const locDist = document.getElementById('loc-dist');
 const locSteps = [...document.querySelectorAll('.loc-step')];
 // The minimap scale ladder doubles as the mode switcher (replaces the removed Explore
 // dropdown). Clicking a step jumps to that discrete scene in orbit/drag view, where the
-// scene-specific toggles apply — Sky → constellations/star names, Galaxy → dark-matter halo.
+// scene-specific toggles apply - Sky → constellations/star names, Galaxy → dark-matter halo.
 const SCALE_R = { solar: 75, neighborhood: 55, galaxy: 40, cosmic: 70 };
 function goToScale(scale) {
   if (flyMode) setFlyMode(false);              // ladder = orbit/drag (or sky) view, not free-flight
@@ -5906,7 +5910,7 @@ function drawLocator() {
   setLadderActive(mode);
 
   if (mode === 'sky') {
-    // looking up from Earth — a position map is meaningless here, so draw a view-direction
+    // looking up from Earth - a position map is meaningless here, so draw a view-direction
     // compass instead: Earth at the centre, a cone sweeping the current RA / field of view.
     locDist.textContent = 'from Earth';
     c.beginPath(); c.arc(cx, cy, R, 0, 7); c.strokeStyle = 'rgba(127,160,220,0.18)'; c.lineWidth = 1.5; c.stroke();
@@ -5970,7 +5974,7 @@ function drawLocator() {
     c.beginPath(); c.arc(cx, cy, 3.2, 0, 7); c.fillStyle = '#9ab0ff'; c.fill();              // Local Group ≈ centre
   }
 
-  // "you are here" — glow dot + heading triangle
+  // "you are here" - glow dot + heading triangle
   const [yx, yy] = M(px, pz);
   if (flyMode) _loff.copy(flyForward()); else vcam.getWorldDirection(_loff);
   const hl = Math.hypot(_loff.x, _loff.z) || 1;
@@ -5986,7 +5990,7 @@ try {
   const savedPanel = JSON.parse(localStorage.getItem('universe-panel') || '{}');
   // one-time migration: the star sliders' defaults moved to full (mag 14 / brightness 3)
   // so every star is visible and clickable out of the box. Stored values that exactly
-  // match the OLD defaults were almost certainly inherited, not chosen — upgrade them.
+  // match the OLD defaults were almost certainly inherited, not chosen - upgrade them.
   if (+savedPanel['rg-mag'] === 6.8) delete savedPanel['rg-mag'];
   if (+savedPanel['rg-size'] === 1.7) delete savedPanel['rg-size'];
   for (const [id, v] of Object.entries(savedPanel)) {
@@ -5994,7 +5998,7 @@ try {
     if (!el) continue;
     if (el.type === 'checkbox') el.checked = !!v; else el.value = v;
   }
-} catch (e) { /* corrupted storage — fall back to defaults */ }
+} catch (e) { /* corrupted storage - fall back to defaults */ }
 const bind = (id, fn) => { const el = document.getElementById(id); el.onchange = () => fn(el); fn(el); };
 bind('ck-lines', (el) => { conGroup.visible = el.checked; });
 bind('ck-labels', (el) => { conLabelGroup.visible = el.checked; });
@@ -6007,7 +6011,7 @@ bind('ck-grid', (el) => { gridGroup.visible = el.checked; });
 bind('ck-twinkle', (el) => { starUniforms.uTwinkle.value = el.checked ? 1 : 0; });
 bind('ck-phenom', (el) => {
   phenomGroup.visible = el.checked;
-  // the category filters only mean something while the layer is on — hide them
+  // the category filters only mean something while the layer is on - hide them
   // otherwise, so checked categories never sit under an off master looking broken
   const cats = document.getElementById('phenom-cats');
   if (cats) cats.style.display = el.checked ? '' : 'none';
@@ -6069,7 +6073,7 @@ document.getElementById('loc-x').onclick = (e) => { e.stopPropagation(); dismiss
 document.getElementById('fh-x').onclick = (e) => { e.stopPropagation(); dismissPanel('ck-flyhud'); };
 document.getElementById('tb-x').onclick = (e) => { e.stopPropagation(); dismissPanel('ck-timebar'); };
 bind('ck-plabels', (el) => { for (const n of Object.keys(solBodies)) solBodies[n].lab.visible = el.checked; });
-// homing pointer to Earth — an on-screen arrow + distance so you can fly back to it
+// homing pointer to Earth - an on-screen arrow + distance so you can fly back to it
 const earthPtrEl = document.getElementById('earth-ptr');
 const epArrow = document.getElementById('ep-arrow');
 const epDist = document.getElementById('ep-dist');
@@ -6120,7 +6124,7 @@ const panelEl = document.getElementById('panel');
   try { sectState = JSON.parse(localStorage.getItem('universe-panel-sections') || '{}'); } catch (e) {}
   for (const sect of panelEl.querySelectorAll('.sect')) {
     const key = sect.dataset.sect;
-    // all sections start collapsed — the panel opens as a clean list of headers
+    // all sections start collapsed - the panel opens as a clean list of headers
     // (per the user; a visitor's own open/closed choices still persist)
     sect.classList.toggle('closed', sectState[key] !== undefined ? !sectState[key] : true);
     sect.querySelector('.sect-head').onclick = () => {
@@ -6181,14 +6185,14 @@ bind('ck-art', (el) => {
   artGroup.visible = el.checked;
 });
 
-// controls panel — opens as a dropdown from the UNIVERSE title (closed by default)
+// controls panel - opens as a dropdown from the UNIVERSE title (closed by default)
 const panel = document.getElementById('panel');
 const titleEl = document.getElementById('title');
 titleEl.onclick = () => { panel.classList.toggle('open'); titleEl.classList.toggle('open'); };
 
 addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT') return;
-  // (mode keys 1–6 removed — it's one continuous window now; use Travel / search / flying)
+  // (mode keys 1–6 removed - it's one continuous window now; use Travel / search / flying)
   if (e.key === 'f' || e.key === 'F') {
     if (mode === 'deep') { e.preventDefault(); exitDeepInPlace(); }      // stop flying, stay here
     else if (FLY_MODES.has(mode)) { e.preventDefault(); setFlyMode(!flyMode); }
@@ -6339,9 +6343,9 @@ function animate(now) {
       // label visibility = zoom tier (0 none · 1 famous · 2 all) + per-frame
       // screen-space declutter, so names never print over each other
       declutterNeiLabels((r < 130 ? 1 : 0) + (r < 34 ? 1 : 0));
-      // Oort cloud only at close zoom — farther out its points stack into a false dot
+      // Oort cloud only at close zoom - farther out its points stack into a false dot
       neiScene.userData.oort.visible = r < 12;
-      // Sun approach halo — fades in over the capture zone (ship in flight, else camera)
+      // Sun approach halo - fades in over the capture zone (ship in flight, else camera)
       const halo = neiScene.userData.sunHalo;
       const dS = (flyMode ? fly.pos : camFor('neighborhood').position).length();
       const near = 1 - Math.min(1, (dS - NEI_SUN_DIVE_PC) / (SUN_APPROACH_PC - NEI_SUN_DIVE_PC));
@@ -6366,7 +6370,7 @@ function animate(now) {
         else if (sp.userData.hideBeyond) sp.visible = gr < sp.userData.hideBeyond;
       }
       galScene.userData.mwFar.material.opacity = THREE.MathUtils.smoothstep(gr, 150, 600) * 0.9;
-      // the accretion disk holds a fixed frame — the swirl animation read as
+      // the accretion disk holds a fixed frame - the swirl animation read as
       // distracting motion at the galaxy's centre (uTime frozen at a good-looking phase)
       galBH.userData.disk.uniforms.uTime.value = 40.0;
       galBH.visible = gr < 60;                                   // only meaningful near the centre
@@ -6395,7 +6399,7 @@ await Promise.race([
   new Promise((r) => setTimeout(r, 12000)),
 ]);
 document.getElementById('loader').classList.add('done');
-releaseUpgrades();                            // scene is live — start streaming the 8K maps
+releaseUpgrades();                            // scene is live - start streaming the 8K maps
 // Open as ONE continuous space view: floating in the solar system, stationary,
 // free-flight (not orbiting anything). The six scenes are now just internal scale
 // shells the camera hands off between as you fly/zoom outward.
@@ -6426,7 +6430,7 @@ window.U = {
 
 // ---------------------------------------------------------------- first-run onboarding + guided tour
 // A welcome card on the first visit offers a scripted "powers of ten" tour that rides the
-// real scale ladder outward — Solar System → stars → galaxy → cosmic web → tonight's sky.
+// real scale ladder outward - Solar System → stars → galaxy → cosmic web → tonight's sky.
 {
   const WELCOME_KEY = 'universe-welcomed';
   const welcomeEl = document.getElementById('welcome');
@@ -6467,13 +6471,13 @@ window.U = {
       title: 'Make it yours',
       text: 'The UNIVERSE menu holds every layer: constellation art, exoplanets, pulsars and quasars, dark matter, even the sky in X-ray or radio, with one-tap presets: Essentials, Clean view, Everything. The minimap’s ladder jumps scales. All of it is remembered.' },
   ];
-  // Touch devices: no keyboard or scroll wheel — adapt the language, and teach
+  // Touch devices: no keyboard or scroll wheel - adapt the language, and teach
   // the touch flight controls (🚀 button) instead of the key bindings.
   const IS_TOUCH = TOUCH_UI;
   if (IS_TOUCH) {
     const hudStop = TOUR.find((t) => t.hud);
     if (hudStop) {
-      delete hudStop.hud;                    // don't force the HUD open — it sits where 🚀 lives
+      delete hudStop.hud;                    // don't force the HUD open - it sits where 🚀 lives
       hudStop.hi = '#fly-btn';               // point at the real thing to tap
       hudStop.text = 'Tap 🚀 Fly any time to take the controls: hold to thrust, drag to steer, ' +
         'pinch for speed, or tap ⏵ Cruise to fly hands-free. Double-tap any planet, ' +
@@ -6543,7 +6547,7 @@ window.U = {
     document.body.classList.add('touring');
   }
   function tourTick() {
-    if (tourStep < 0) return;                            // tour over — stop ticking
+    if (tourStep < 0) return;                            // tour over - stop ticking
     if (tourZoom) {
       const z = tourZoom;
       z.t = Math.min(1, z.t + 1 / (60 * z.dur));
@@ -6571,7 +6575,7 @@ window.U = {
     tourStep = -1; tourZoom = null;
     tourEl.classList.remove('show');
     document.body.classList.remove('touring');
-    if (wasEarly) showHints();                           // bailed out — leave gentle nudges
+    if (wasEarly) showHints();                           // bailed out - leave gentle nudges
   }
   tNext.onclick = () => (tourStep < TOUR.length - 1 ? showTourStep(tourStep + 1) : endTour(false));
   document.getElementById('t-end').onclick = () => endTour(true);
@@ -6599,7 +6603,7 @@ window.U = {
   }
   urlScaleSync = true;
 
-  // First visit: the welcome card offers two paths — the tour, or exploring alone.
+  // First visit: the welcome card offers two paths - the tour, or exploring alone.
   // Return visits go straight into the model; the ✦ Tour button replays it any time.
   if (!localStorage.getItem(WELCOME_KEY)) {
     setTimeout(() => welcomeEl.classList.add('show'), 900);

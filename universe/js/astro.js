@@ -73,7 +73,7 @@ export function orbitalElements(name, jd) {
 function solveKepler(Mdeg, ecc) {
   const M = ((Mdeg % 360) + 360) % 360;
   let E = M + (ecc * 180 / Math.PI) * sin(M);
-  // iterate to convergence — planets settle in a few steps, but near-parabolic
+  // iterate to convergence - planets settle in a few steps, but near-parabolic
   // comets (e ≳ 0.97) need many more near perihelion, so cap generously
   for (let i = 0; i < 60; i++) {
     const dM = M - (E - (ecc * 180 / Math.PI) * sin(E));
@@ -161,7 +161,7 @@ export function moonGeo(jd) {
   return { ra, dec, distKm };
 }
 
-// geocentric ecliptic (J2000-ish) Moon position in AU — used to place the Moon
+// geocentric ecliptic (J2000-ish) Moon position in AU - used to place the Moon
 // as a real body orbiting Earth in the 3D solar-system view
 export function moonEcl(jd) {
   const T = (jd - J2000) / 36525;

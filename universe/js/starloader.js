@@ -1,4 +1,4 @@
-// Star catalog loader — runs in a Web Worker so the 119k-star decode never
+// Star catalog loader - runs in a Web Worker so the 119k-star decode never
 // blocks the main thread. Fetches the binary catalog (see make_star_bin.py for
 // the layout) plus the string metadata, dequantizes, precomputes the per-star
 // GPU attributes (colors, twinkle phases), and transfers everything back as
