@@ -48,7 +48,8 @@
     fig. 1b · the cosmic web, end of the zoom<br>
     fig. 1c · welcome card, first visit<br>
     fig. 1d · night sky + view compass<br>
-    fig. 1e · layer panel, three presets
+    fig. 1e · layer panel, three presets<br>
+    fig. 1f · the same universe, one hand
     <span class="pencil">“Three presets replaced thirty-five toggles.”</span>
     <span class="pencil">“The minimap has to be right at every scale.”</span>
   </aside>
@@ -75,13 +76,21 @@
       <figcaption>FIG. 1D · the night sky from Earth, tonight. The minimap has become a view-direction compass: Earth at the center, a cone where you're looking.</figcaption>
     </figure>
     <h2><span>DECISION 03</span>Three presets instead of thirty-five toggles</h2>
-    <p>The old panel had thirty-five raw toggles. Most visitors need three good defaults. I rebuilt the panel into collapsible groups (Sky &amp; Stars, Solar System, Phenomena, Sci-Fi &amp; Physics, Interface) under three one-tap presets: <b>Essentials</b> (the balanced view), <b>Clean view</b> (just the universe, labels off), and <b>Everything</b>. Change any single toggle and the preset highlight turns off. Every choice persists between visits, so the model opens the way you left it.</p>
+    <p>The old panel had thirty-five raw toggles. Most visitors need three good defaults. I rebuilt the panel into collapsible groups (Sky &amp; Stars, Solar System, Phenomena, Physics, Interface) under three one-tap presets: <b>Essentials</b> (the balanced view), <b>Clean view</b> (just the universe, labels off), and <b>Everything</b>. Change any single toggle and the preset highlight turns off. Every choice persists between visits, so the model opens the way you left it.</p>
     <figure class="plate">
-      <img class="plate-img" src="../assets/uni-panel.jpg" alt="The layer panel open over the Solar System: Essentials, Clean view, and Everything preset buttons above grouped toggles — Sky & Stars, EM Spectrum, Solar System, Phenomena, Sci-Fi & Physics, Interface">
+      <img class="plate-img" src="../assets/uni-panel.jpg" alt="The layer panel open over the Solar System: Essentials, Clean view, and Everything preset buttons above grouped toggles — Sky & Stars, EM Spectrum, Solar System, Phenomena, Physics, Interface">
       <figcaption>FIG. 1E · the rebuilt panel: three presets over thirty-five layers in five groups, with the EM spectrum one tap away.</figcaption>
     </figure>
     <h2><span>DECISION 04</span>Load only what the first minute needs</h2>
     <p>The heaviest UX problem was the loading bar. The scene gated on tens of megabytes of 8K planet textures a first-time visitor couldn't yet see the value of. The fix is progressive: the loader now waits only for lightweight 2K stand-ins, then the full-resolution maps stream in one at a time behind the already-live scene and swap in invisibly. Time-to-interactive dropped roughly five-fold, and nothing pops or flashes. The first Jupiter you see is a slightly softer version of the one you can orbit a minute later.</p>
+    <h2><span>DECISION 05</span>The same universe, one hand</h2>
+    <p>Half of first visits arrive on a phone, so the phone couldn't be a cut-down port: it had to be the same universe with a different input model. The core move was mapping touch onto the model's existing physics rather than adding a parallel mobile mode. Pinch feeds the exact same continuous-zoom chain as the scroll wheel, so two fingers carry you from Saturn's rings out to the cosmic web through every scale hand-off; two-finger drag pans, a tap selects, and a double-tap flies you to whatever you tapped. Because a pinch always ends with a finger lifting, the tap-recognizer has to know the difference between “selected a star” and “finished zooming” — a distinction no desktop input ever forced.</p>
+    <p>Flight needed real redesign, not translation. The desktop ship is flown with a keyboard; on touch, a 🚀 button appears instead, the ship starts at rest (motion you didn't ask for is disorientation), holding a finger is thrust, and lifting it recenters the flight stick. The keyboard legend gives way to a three-button HUD — Cruise, View, Exit. The guided tour adapts the same way: on a phone it teaches the 🚀 button and says “tap” and “pinch,” and info cards become full-width bottom sheets that slide over the sky instead of floating panels beside it.</p>
+    <figure class="plate" style="text-align:center">
+      <img class="plate-img" style="max-width:min(320px,100%);display:inline-block" src="../assets/uni-mobile.jpg" alt="The Universe app at phone width: the night sky with the minimap compass, and a full-width bottom-sheet card for the star Mirach listing its distance, spectral type, its known planet, and a 'View the planetary system' action">
+      <figcaption>FIG. 1F · the same model at 390px: bottom-sheet cards, the minimap compass, and a tapped star's card — including its known exoplanet and a one-tap jump to its planetary system.</figcaption>
+    </figure>
+    <p>The rest of the mobile pass was root-cause work rather than breakpoint patching. The minimap's scale ladder overflowed its card on real phones — not a sizing bug but a min-content one: enlarging the touch targets with horizontal padding made the row wider than its container, so touch chips grow vertically only. Render resolution is capped lower on touch devices to protect battery and thermals, the progressive 2K-texture loading matters twice as much over cellular, form inputs hold 16px so iOS stops zooming the page on focus, the layout respects notch safe-areas, reduced-motion preferences turn the star twinkle off by default, and if WebGL isn't available the loader says so instead of spinning forever.</p>
     <h2><span>THE DETAILS</span>Getting the small things right</h2>
     <p>The same principle runs under the surface: search closes when you click away and reopens where you left it; keyboard shortcuts survive the search box; the scale readout always tells you how wide the view is and how long light takes to cross it; star cards tell you when the light you're seeing left its star. Nobody asks for these features, but they're what make the model feel dependable.</p>
     <div class="blocks">
@@ -101,7 +110,9 @@
           <li><b>6</b> scales, one continuous zoom</li>
           <li><b>9</b>-stop guided tour, self-paced</li>
           <li><b>3</b> presets over 35 layers, persistent</li>
-          <li>JPL ephemerides, valid 1800–2050</li>
+          <li><b>207</b> curated phenomena, 12 categories</li>
+          <li><b>1</b> input model, mouse to pinch &amp; touch</li>
+          <li>JPL ephemerides, valid years 1000–3000</li>
         </ul>
       </div>
     </div>

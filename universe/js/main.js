@@ -3,7 +3,7 @@ import {
   J2000, DEG, AU_KM, PC_LY, jdFromDate, dateFromJd, planetHelio, geoRaDec,
   moonGeo, moonEcl, moonPhase, orbitalElements, posFromElements, PLANET_INFO, bvToRgb, galToEq, gmst,
 } from './astro.js?v=2';
-import { PHENOMENA, PHENOM_CATS } from './phenomena.js?v=1';
+import { PHENOMENA, PHENOM_CATS } from './phenomena.js?v=2';
 
 const R_SKY = 1000;
 const AUU = 20;                       // world units per AU in solar mode
@@ -772,7 +772,7 @@ function phenomInfo(idx) {
   const ph = PHENOMENA[idx];
   const rows = [['Category', PHENOM_CATS[ph.cat].label.replace(/s$/, '')], ['Distance', ph.dist],
     ['RA / Dec', `${(ph.ra / 15).toFixed(2)}h / ${ph.dec.toFixed(1)}°`], ...(ph.facts || [])];
-  showInfo(ph.name, ph.id, rows, ph.doc);
+  showInfo(ph.name, ph.id !== ph.name ? ph.id : PHENOM_CATS[ph.cat].label.replace(/s$/, ''), rows, ph.doc);
 }
 
 // ---------------------------------------------------------------- historical supernovae

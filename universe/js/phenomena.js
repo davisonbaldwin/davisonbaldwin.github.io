@@ -16,6 +16,8 @@ export const PHENOM_CATS = {
   star:        { label: 'Extreme stars',         color: '#ffe9a8' },
   exoplanet:   { label: 'Exoplanet systems',     color: '#9fffb0' },
   gw:          { label: 'Gravitational waves',   color: '#b0c0ff' },
+  radio:       { label: 'Radio transients',      color: '#d8ff7a' },
+  grb:         { label: 'Gamma-ray bursts',      color: '#ff7ad9' },
 };
 
 // helper to keep entries terse: [id, name, cat, raDeg, dec, dist, doc, facts]
@@ -641,4 +643,29 @@ export const PHENOMENA = [
   P('GW190814', 'GW190814', 'gw', 12.0, -25.0, '790 Mly',
     'A black hole swallowing a 2.6-solar-mass mystery object — too heavy to be any known neutron star, too light to be any known black hole. It sits exactly in the "mass gap".',
     [['Mystery object', '2.6 M☉'], ['Class', 'Mass-gap merger']]),
+
+  // ---- Radio transients (fast radio bursts & famous signals) ----
+  P('FRB 010724', 'Lorimer Burst', 'radio', 19.53, -75.2, '~3 Gly',
+    'The first fast radio burst ever found, spotted in 2007 in archival pulsar data: a 5-millisecond radio flash from far beyond the galaxy that opened an entirely new mystery.',
+    [['Duration', '~5 ms'], ['Found', '2007 (archival)'], ['Class', 'First FRB']]),
+  P('FRB 121102', 'First Repeating FRB', 'radio', 82.99, 33.15, '~3 Gly',
+    'The first fast radio burst seen to repeat, which let astronomers pin it to a dwarf galaxy three billion light-years away — proving FRBs are real cosmic sources, not glitches.',
+    [['Repeats', 'Yes'], ['Host', 'Dwarf galaxy'], ['Localized', '2017']]),
+  P('FRB 20180916B', 'FRB 20180916B', 'radio', 29.50, 65.72, '460 Mly',
+    'A repeating fast radio burst with a strict 16.35-day activity cycle — the first periodic FRB, hinting at an orbiting or precessing source.',
+    [['Period', '16.35 days'], ['Class', 'Periodic repeater']]),
+  P('Wow! Signal', 'Wow! Signal', 'radio', 291.38, -26.95, 'Unknown',
+    'A 72-second narrowband radio burst caught by Ohio State\'s "Big Ear" telescope in 1977, so striking the astronomer wrote "Wow!" on the printout. Never detected again; its origin is still unexplained. (Position is one of two candidate beams.)',
+    [['Detected', 'Aug 15, 1977'], ['Duration', '72 s'], ['Repeated', 'Never']]),
+
+  // ---- Gamma-ray bursts ----
+  P('GRB 221009A', 'The BOAT — Brightest Burst Ever', 'grb', 288.26, 19.77, '2.4 Gly',
+    'The Brightest Of All Time: a 2022 gamma-ray burst so intense it saturated detectors and measurably disturbed Earth\'s ionosphere from 2.4 billion light-years away — likely a once-in-10,000-years event.',
+    [['Nickname', 'The BOAT'], ['Ionosphere', 'Disturbed'], ['Rarity', '~1 in 10,000 yr']]),
+  P('GRB 080319B', 'GRB 080319B', 'grb', 217.92, 36.30, '7.5 Gly',
+    'For about 30 seconds in 2008 this dying star was visible to the naked eye from 7.5 billion light-years away — the most distant object human eyes have ever been able to see.',
+    [['Naked-eye', '~30 s'], ['Peak mag', '5.3'], ['Record', 'Farthest visible object']]),
+  P('GRB 090423', 'GRB 090423', 'grb', 148.89, 18.15, '~13 Gly',
+    'The death of a star when the universe was only 630 million years old — for a time the most distant object ever observed, a beacon from the era of the first stars.',
+    [['Redshift', 'z = 8.2'], ['Universe age', '630 Myr']]),
 ];
