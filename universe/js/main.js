@@ -974,6 +974,14 @@ function updateSkyBodies(jd) {
     b.dir.copy(dirVec(rd.ra, rd.dec));
     b.disc.position.copy(b.dir).multiplyScalar(R_SKY * 0.97);
     b.lab.position.copy(b.disc.position);
+    // True apparent size once you zoom in: each disc renders at its real angular
+    // diameter (the Sun and Moon both ~0.53 deg - the eclipse coincidence) whenever
+    // that exceeds its fixed landmark size, so zooming in works like a telescope.
+    // At wide fields the fixed minimum keeps them legible, as they are to the eye.
+    const angDeg = 2 * Math.asin(Math.min(1, PLANET_INFO[name].radius / (rd.r * AU_KM))) / DEG;
+    const truePx = angDeg / skyCam.fov * innerHeight;
+    const px = Math.max(SKY_BODY_PX[name], truePx);
+    b.disc.userData.pxW = px; b.disc.userData.pxH = px;
   }
 }
 
@@ -5137,11 +5145,15 @@ function handleClick(cx, cy) {
     const win = (frac, minDeg, maxDeg) =>
       Math.cos(Math.max(minDeg, Math.min(maxDeg, skyCam.fov * frac)) * DEG);
     const thr = win(0.018, 0.05, 1.1);
-    // planets first
+    // planets first - the window covers at least the body's true rendered disc, so a
+    // zoomed-in Moon or Sun is clickable across its whole face, not just dead centre
     let best = null;
     for (const name of SKY_BODIES) {
-      const dot = skyBodies[name].dir.dot(rd);
-      if (dot > win(0.02, 0.08, 1.2) && (!best || dot > best.dot)) best = { name, dot };
+      const b = skyBodies[name];
+      const angR = Math.asin(Math.min(1, PLANET_INFO[name].radius / (b.raDec.r * AU_KM))) / DEG;
+      const wDeg = Math.max(Math.max(0.08, Math.min(1.2, skyCam.fov * 0.02)), angR * 1.15);
+      const dot = b.dir.dot(rd);
+      if (dot > Math.cos(wDeg * DEG) && (!best || dot > best.dot)) best = { name, dot };
     }
     if (best && skyPlanetGroup.visible) {
       selectSkyDir(skyBodies[best.name].dir);
