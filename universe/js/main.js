@@ -604,7 +604,7 @@ function buildArt() {
     const tex = loader.load('data/illustrations/' + file);
     tex.colorSpace = THREE.SRGBColorSpace;
     const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
-      map: tex, transparent: true, opacity: 0.32, depthTest: false, depthWrite: false,
+      map: tex, transparent: true, opacity: 0.55, depthTest: false, depthWrite: false,
       blending: THREE.AdditiveBlending, side: THREE.DoubleSide,
     }));
     mesh.renderOrder = 2;
@@ -4258,14 +4258,23 @@ function syncFlyFromOrbit(m) {
 // back to the orbit target.
 function syncOrbitFromFly(m) {
   const o = orbits[m];
-  const camPos = camFor(m).position;
+  const cam = camFor(m);
+  const camPos = cam.position;
   const rel = camPos.clone().sub(o.target);
   o.r = Math.max(0.001, rel.length());
   const dir = rel.clone().normalize();
   o.phi = Math.acos(Math.max(-1, Math.min(1, dir.y)));
   o.theta = Math.atan2(dir.z, dir.x);
   o.follow = null;
-  o.lookOff = null;                    // recomputed framing looks at the target itself
+  // Keep the current gaze. Without this, exiting flight held the camera's position but
+  // snapped the view to face the orbit anchor - the whole sky whipped around, which
+  // reads as being teleported. A lookOff at the current gaze point preserves the
+  // orientation exactly, then eases toward the anchor only as the user zooms.
+  const gaze = new THREE.Vector3();
+  cam.getWorldDirection(gaze);
+  o.lookOff = camPos.clone().addScaledVector(gaze, o.r).sub(o.target);
+  o.lookOffAnchor = o.target.clone();
+  o.lookOffR0 = o.r;
 }
 // Re-anchor an orbit on a new object with ZERO camera motion - position, orientation
 // and framing all hold; the click only changes what scroll zooms toward and drag
@@ -5121,21 +5130,44 @@ function handleClick(cx, cy) {
     // picking math lives in the equatorial frame; undo the horizon rotation
     const rd = raycaster.ray.direction.clone()
       .applyQuaternion(skyGroup.quaternion.clone().invert());
-    const thr = Math.cos(Math.max(0.45, skyCam.fov * 0.018) * DEG);
+    // Every pick window scales with zoom (a fraction of the field of view, clamped).
+    // The old windows were FIXED sky angles - fine at fov 60, but zoomed in to fov 2
+    // a 1-degree planet window covered half the screen, so a planet silently won every
+    // click near it and stars/exoplanets became unclickable.
+    const win = (frac, minDeg, maxDeg) =>
+      Math.cos(Math.max(minDeg, Math.min(maxDeg, skyCam.fov * frac)) * DEG);
+    const thr = win(0.018, 0.05, 1.1);
     // planets first
     let best = null;
     for (const name of SKY_BODIES) {
       const dot = skyBodies[name].dir.dot(rd);
-      if (dot > Math.cos(Math.max(1.0, skyCam.fov * 0.02) * DEG) && (!best || dot > best.dot)) best = { name, dot };
+      if (dot > win(0.02, 0.08, 1.2) && (!best || dot > best.dot)) best = { name, dot };
     }
     if (best && skyPlanetGroup.visible) {
       selectSkyDir(skyBodies[best.name].dir);
       bodyInfo(best.name, time.jd);
       return;
     }
+    // Scan the stars up front. Two rings: inside the small precise window the NEAREST
+    // star wins (a faint star right under the cursor beats a bright neighbour); in the
+    // forgiving outer window the brightest wins. The precise star also COMPETES with
+    // the marker layers below: a marker only takes the click if it is closer to the
+    // cursor than that star, so in dense fields (Kepler) every rendered star stays
+    // clickable while a dead-on marker click still opens the marker.
+    let bi = -1, bm = 99, ni = -1, nd = -1;
+    const thrNear = win(0.004, 0.02, 0.24);
+    const lim = starUniforms.uMagLimit.value;
+    for (let i = 0; i < N; i++) {
+      if (STARS.mag[i] > lim) continue;
+      const dot = dirs[i * 3] * rd.x + dirs[i * 3 + 1] * rd.y + dirs[i * 3 + 2] * rd.z;
+      if (dot <= thr) continue;
+      if (dot > thrNear && dot > nd) { nd = dot; ni = i; }
+      if (STARS.mag[i] < bm) { bm = STARS.mag[i]; bi = i; }
+    }
     // DSOs
     for (let i = 0; i < dsoDirs.length; i++) {
-      if (dsoDirs[i].dot(rd) > Math.cos(1.1 * DEG) && dsoGroup.visible) {
+      const d = dsoDirs[i].dot(rd);
+      if (d > win(0.02, 0.1, 1.1) && d > nd && dsoGroup.visible) {
         const [id, name, , , type, distStr] = DSOS[i];
         selectSkyDir(dsoDirs[i]);
         showInfo(name, `${id} · ${type}`, [['Distance', distStr], ['Type', type]]);
@@ -5148,7 +5180,7 @@ function handleClick(cx, cy) {
       for (const S of SUPERNOVAE_RT) {
         if (S.mag > 6) continue;                          // only while actually shining
         const dot = S.dir.dot(rd);
-        if (dot > Math.cos(1.2 * DEG) && (!bs || dot > bs.dot)) bs = { S, dot };
+        if (dot > win(0.02, 0.1, 1.2) && dot > nd && (!bs || dot > bs.dot)) bs = { S, dot };
       }
       if (bs) { selectSkyDir(bs.S.dir); showSupernovaInfo(bs.S); return; }
     }
@@ -5158,33 +5190,25 @@ function handleClick(cx, cy) {
       for (const { dir, idx } of phenomDirs) {
         if (!phenomGroup.children.length) break;
         const dot = dir.dot(rd);
-        if (dot > Math.cos(1.0 * DEG) && (!bp || dot > bp.dot)) {
+        if (dot > win(0.018, 0.1, 1.0) && dot > nd && (!bp || dot > bp.dot)) {
           // skip categories the user has hidden
           if (phenomByCat[PHENOMENA[idx].cat][0].visible) bp = { dir, idx, dot };
         }
       }
       if (bp) { selectSkyDir(bp.dir); phenomInfo(bp.idx); return; }
     }
-    // exoplanet systems - nearest host star within a generous threshold (scales with zoom so
-    // they stay easy to click when zoomed in on the Kepler field)
+    // exoplanet systems - nearest host star within a zoom-scaled threshold
     if (exoGroup.visible) {
-      const exoThr = Math.cos(Math.max(1.3, skyCam.fov * 0.05) * DEG);
+      const exoThr = win(0.022, 0.08, 1.3);
       let be = null;
       for (let i = 0; i < exoDirs.length; i++) {
         const dot = exoDirs[i].dot(rd);
-        if (dot > exoThr && (!be || dot > be.dot)) be = { i, dot };
+        if (dot > exoThr && dot > nd && (!be || dot > be.dot)) be = { i, dot };
       }
       if (be) { selectSkyDir(exoDirs[be.i]); exoInfo(be.i); return; }
     }
-    // stars (brightest within threshold wins) - all 119k rendered stars are pickable,
-    // not just the named subset; faint ones get a generic data card from the full arrays
-    let bi = -1, bm = 99;
-    const lim = starUniforms.uMagLimit.value;
-    for (let i = 0; i < N; i++) {
-      if (STARS.mag[i] > lim) continue;
-      const dot = dirs[i * 3] * rd.x + dirs[i * 3 + 1] * rd.y + dirs[i * 3 + 2] * rd.z;
-      if (dot > thr && STARS.mag[i] < bm) { bm = STARS.mag[i]; bi = i; }
-    }
+    // stars - all 119k rendered stars are pickable, not just the named subset
+    if (ni >= 0) bi = ni;
     if (bi >= 0) {
       selectSkyDir(new THREE.Vector3(dirs[bi * 3], dirs[bi * 3 + 1], dirs[bi * 3 + 2]));
       starInfo(bi);
@@ -5417,18 +5441,25 @@ function frameSkyDir(d) {
 // Teleport the free-flight camera to frame a world-space point (a body, moon,
 // satellite, probe…) from a few frame-radii away, looking at it. The
 // single travel primitive for "jump to a place" now that there are no modes.
-const _jp = new THREE.Vector3();
 function jumpToPoint(pos, frameR, follow = null, scale = 'solar') {
   if (mode !== scale) setMode(scale, true);
-  if (!flyMode) setFlyMode(true);
-  thirdPerson = true;                       // arrive in your ship beside the object
-  fly.attach = null; fly.goto = null; flyArmed = false;
-  const off = new THREE.Vector3(frameR * 3.0, frameR * 1.1, frameR * 3.0);
-  fly.pos.copy(pos).add(off);
-  _jp.copy(pos).sub(fly.pos).normalize();
-  fly.yaw = Math.atan2(_jp.x, _jp.z);
-  fly.pitch = Math.asin(Math.max(-1, Math.min(1, _jp.y)));
-  if (scale === 'solar') orbits.solar.follow = follow;
+  if (flyMode) setFlyMode(false);   // search arrives in the calm orbit view, never the ship
+  const o = orbits[scale];
+  o.follow = (scale === 'solar') ? follow : null;
+  const anchor = (o.follow && solBodies[o.follow]) ? solBodies[o.follow].pos.clone() : pos.clone();
+  o.target.copy(anchor);
+  o.lookOff = null;
+  const rel = pos.clone().sub(anchor);
+  const d = rel.length();
+  o.r = Math.max(frameR * 4.5, d * 1.25);
+  if (d > 1e-6) {
+    // seat the camera on the far side of the object, so it sits framed between
+    // the camera and its anchor (a satellite in front of Earth, Io before Jupiter)
+    const dir = rel.normalize();
+    o.phi = Math.acos(Math.max(-1, Math.min(1, dir.y)));
+    o.theta = Math.atan2(dir.z, dir.x);
+    if (o.phi < 0.15) o.phi = 0.35;
+  }
 }
 
 // ---------------------------------------------------------------- search
@@ -5504,14 +5535,41 @@ function gotoTarget(t) {
     return;
   }
   if (t.type === 'star') {
-    // frame the star against the backdrop in the one window, then show its card
     const i = t.i;
+    // in the stars view the star is a real 3D point around you: ring it and
+    // re-anchor the zoom on it in place, instead of jumping to the sky view
+    if (mode === 'neighborhood') {
+      const idxs = neiScene.userData.starIdxs;
+      let j = -1;
+      for (let k = 0; k < idxs.length; k++) if (idxs[k] === i) { j = k; break; }
+      if (j >= 0) {
+        let pts = null;
+        neiScene.traverse((o) => {
+          if (!pts && o.isPoints && o.geometry.getAttribute('position').count === idxs.length) pts = o;
+        });
+        const a = pts.geometry.getAttribute('position');
+        const spos = new THREE.Vector3(a.getX(j), a.getY(j), a.getZ(j));
+        reanchorOrbit('neighborhood', spos);
+        neiSelMark.position.copy(spos);
+        neiSelMark.visible = true;
+        starInfo(i);
+        return;
+      }
+    }
+    // otherwise frame it against the sky backdrop
     frameSkyDir(new THREE.Vector3(dirs[i * 3], dirs[i * 3 + 1], dirs[i * 3 + 2]));
     starInfo(i);
   } else if (t.type === 'constellation') {
     frameSkyDir(dirVec(t.c.label[0], t.c.label[1]));
     showInfo(t.c.name, 'Constellation', []);
   } else if (t.type === 'body') {
+    // in sky mode the planets, Sun and Moon are already overhead: point at them
+    // where the user is, instead of yanking them into the solar-system view
+    if (mode === 'sky' && skyBodies[t.name]) {
+      frameSkyDir(skyBodies[t.name].dir);
+      bodyInfo(t.name, time.jd);
+      return;
+    }
     const pos = t.name === 'Sun' ? new THREE.Vector3() : solBodies[t.name].pos.clone();
     const rd = t.name === 'Sun' ? 2.2 : displayRadius(t.name);
     jumpToPoint(pos, rd, t.name === 'Sun' ? null : t.name);
@@ -5775,9 +5833,18 @@ function gotoSgrA() {
   { label: '🚀  Fly the deep approach', fn: () => flyToDeep(GC_PC.x - 300, GC_PC.y, GC_PC.z, GC_PC.clone()) });
 }
 // freeze the outgoing view and CSS-dissolve it into the new scene (robust, frame-independent)
+let _dissolveCv = null;
 function crossDissolve() {
   try {
-    fadeEl.style.backgroundImage = `url(${renderer.domElement.toDataURL('image/jpeg', 0.6)})`;
+    // capture the veil at quarter resolution: it only shows for 0.32s while fading,
+    // and a full-res readback + JPEG encode of a Retina canvas was most of the
+    // visible hitch on scale changes
+    const src = renderer.domElement;
+    const w = Math.max(2, src.width >> 2), h = Math.max(2, src.height >> 2);
+    if (!_dissolveCv) _dissolveCv = document.createElement('canvas');
+    if (_dissolveCv.width !== w) { _dissolveCv.width = w; _dissolveCv.height = h; }
+    _dissolveCv.getContext('2d').drawImage(src, 0, 0, w, h);
+    fadeEl.style.backgroundImage = `url(${_dissolveCv.toDataURL('image/jpeg', 0.6)})`;
     fadeEl.style.backgroundSize = 'cover';
   } catch (e) { fadeEl.style.backgroundImage = 'none'; }
   fadeEl.style.transition = 'none';
@@ -5858,7 +5925,7 @@ function setLadderActive(eff) {
     st.classList.toggle('active', s === eff || (s === 'more' && (eff === 'galaxy' || eff === 'cosmic')));
   }
 }
-const LOCS = 372;                       // internal canvas resolution (≈2× CSS px for crispness)
+const LOCS = 372;                       // default internal resolution (2× CSS px for crispness)
 const _loff = new THREE.Vector3();
 function locSpiral(c, cx, cy, R) {       // schematic two-arm spiral for the galaxy view
   c.strokeStyle = 'rgba(150,170,235,0.20)'; c.lineWidth = 2;
@@ -5883,7 +5950,7 @@ function locWeb(c, cx, cy, R) {           // schematic cosmic-web node field (st
 }
 function drawLocator() {
   if (locatorEl.style.display === 'none') return;        // minimap hidden → skip the per-frame canvas redraw
-  const c = locCtx, S = LOCS, cx = S / 2, cy = S / 2, R = S * 0.44;
+  const c = locCtx, S = locCanvas.width, cx = S / 2, cy = S / 2, R = S * 0.44;
   c.clearRect(0, 0, S, S);
   locName.textContent = currentScaleName();
 
@@ -6063,6 +6130,37 @@ bind('ck-probes', (el) => {
 bind('ck-helio', (el) => { helioVisible = el.checked; });
 // hideable UI panels: minimap (#locator) + spaceship controls (#fly-hud)
 const locatorEl = document.getElementById('locator');
+// User-resizable minimap: drag the grip on the map's corner; the choice persists.
+// The canvas backing store tracks 2× the CSS size so the map stays crisp at any size.
+{
+  const grip = document.getElementById('loc-grip');
+  const setLocatorSize = (cssW, save) => {
+    const maxW = Math.min(340, innerWidth - 24);
+    cssW = Math.max(140, Math.min(maxW, Math.round(cssW)));
+    const pad = (locatorEl.offsetWidth && locCanvas.offsetWidth)
+      ? locatorEl.offsetWidth - locCanvas.offsetWidth : 20;
+    locatorEl.style.width = cssW + 'px';
+    const cw = cssW - pad;
+    locCanvas.style.width = locCanvas.style.height = cw + 'px';
+    const backing = Math.round(cw * 2);
+    if (locCanvas.width !== backing) { locCanvas.width = locCanvas.height = backing; }
+    if (save) try { localStorage.setItem('universe-minimap-w', String(cssW)); } catch (e) {}
+  };
+  const saved = parseInt(localStorage.getItem('universe-minimap-w') || '', 10);
+  if (saved) setLocatorSize(saved, false);
+  let g0 = null;
+  grip.addEventListener('pointerdown', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    g0 = { x: e.clientX, w: locatorEl.offsetWidth };
+    grip.setPointerCapture(e.pointerId);
+  });
+  grip.addEventListener('pointermove', (e) => {
+    if (g0) setLocatorSize(g0.w + (e.clientX - g0.x), false);
+  });
+  const gEnd = () => { if (g0) { g0 = null; setLocatorSize(locatorEl.offsetWidth, true); } };
+  grip.addEventListener('pointerup', gEnd);
+  grip.addEventListener('pointercancel', gEnd);
+}
 const timebarEl = document.getElementById('timebar');
 bind('ck-minimap', (el) => { locatorEl.style.display = el.checked ? '' : 'none'; });
 bind('ck-flyhud', (el) => { flyHudHidden = !el.checked; flyShowToggle(); });
@@ -6233,6 +6331,46 @@ applySkyCam();
 refreshTimeUI();
 rescaleLabels('sky'); rescaleLabels('solar'); rescaleLabels('neighborhood'); rescaleLabels('galaxy');
 setLoad(1);
+// Warm every scene while the page is idle so the FIRST visit to a mode doesn't
+// stutter: compile the shader programs, then upload each texture to the GPU
+// (both are otherwise lazy, and together they paused sky → solar visibly).
+{
+  const scenes = [[solScene, solCam], [neiScene, neiCam], [galScene, galCam],
+    [cosScene, cosCam], [deepScene, deepCam]];
+  const jobs = scenes.map(([sc, cam]) => () => renderer.compile(sc, cam));
+  const seen = new Set();
+  for (const [sc] of scenes) sc.traverse((o) => {
+    const mats = Array.isArray(o.material) ? o.material : (o.material ? [o.material] : []);
+    for (const m of mats) {
+      for (const k of ['map', 'alphaMap', 'emissiveMap', 'normalMap']) {
+        const tx = m[k];
+        if (tx && !seen.has(tx)) { seen.add(tx); jobs.push(() => renderer.initTexture(tx)); }
+      }
+      if (m.uniforms) for (const u of Object.values(m.uniforms)) {
+        const tx = (u && u.value && u.value.isTexture) ? u.value : null;
+        if (tx && !seen.has(tx)) { seen.add(tx); jobs.push(() => renderer.initTexture(tx)); }
+      }
+    }
+  });
+  // last: one 2x2 offscreen render per scene uploads the remaining lazy state
+  // (vertex buffers) so the real first frame of each mode is only a frame
+  {
+    const rt = new THREE.WebGLRenderTarget(2, 2);
+    for (const [sc, cam] of scenes) jobs.push(() => {
+      renderer.setRenderTarget(rt);
+      renderer.render(sc, cam);
+      renderer.setRenderTarget(null);
+    });
+  }
+  const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 200));
+  const step = () => {
+    const j = jobs.shift();
+    if (!j) return;
+    try { j(); } catch (e) {}
+    idle(step);
+  };
+  idle(step);
+}
 
 // ---- adaptive quality: hold the frame rate by stepping the render resolution ----
 // A smoothed FPS estimate drives the renderer's pixel ratio between 1.0 and the
@@ -6319,6 +6457,15 @@ function animate(now) {
     }
     updateSkyBodies(time.jd);
     updateHorizonFrame(time.jd);
+    // Exoplanet dots scale with zoom: at wide fields thousands of additive points
+    // stack up (the Kepler field burned into a solid slab); smaller + dimmer when
+    // zoomed out keeps the field a resolved cluster of gold points, and zooming in
+    // restores full size for clicking individual systems.
+    if (exoGroup.visible) {
+      const m = exoGroup.children[0].material;
+      m.size = Math.min(7.0, Math.max(2.6, 110 / skyCam.fov));
+      m.opacity = Math.min(0.92, Math.max(0.45, 22 / skyCam.fov));
+    }
     applySkyCam();
     POST.present(skyScene, skyCam);
   } else if (mode === 'solar') {

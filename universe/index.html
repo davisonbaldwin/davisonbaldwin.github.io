@@ -78,8 +78,16 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
   #loc-dist { font-size: 10px; color: var(--dim); font-variant-numeric: tabular-nums;
     white-space: nowrap; flex-shrink: 0; margin-left: auto; }
-  #loc-canvas { width: 196px; height: 196px; display: block; margin: 7px 0 7px; border-radius: 9px;
+  #loc-map { position: relative; margin: 7px 0 7px; }
+  #loc-canvas { width: 196px; height: 196px; display: block; border-radius: 9px;
     background: radial-gradient(circle at 50% 50%, rgba(20,30,52,0.55), rgba(6,9,16,0.65)); }
+  /* resize grip on the card's bottom-right edge: drag to the size you want (persists) */
+  #loc-grip { position: absolute; right: 1px; bottom: 1px; width: 18px; height: 18px;
+    cursor: nwse-resize; opacity: 0.5; border-bottom-right-radius: 10px; touch-action: none;
+    background: repeating-linear-gradient(135deg, transparent 0 4px,
+      rgba(138,160,192,0.75) 4px 5px) content-box; padding: 8px 3px 3px 8px; box-sizing: border-box; }
+  #loc-grip:hover { opacity: 1; }
+  #loc-ladder { padding-right: 15px; }
   #loc-ladder { display: flex; gap: 3px; }
   .loc-step { flex: 1; font-size: 8.5px; text-align: center; padding: 3px 0; border-radius: 5px;
     color: var(--dim); background: rgba(255,255,255,0.045); letter-spacing: 0.2px;
@@ -294,8 +302,9 @@
   @media (max-width: 640px) {
     #searchbox { top: calc(58px + env(safe-area-inset-top, 0px)); left: 12px; right: 12px; width: auto; }
     #topbar { top: calc(10px + env(safe-area-inset-top, 0px)); left: 12px; }
-    #locator { top: calc(108px + env(safe-area-inset-top, 0px)); left: 12px; width: 178px; padding: 8px 9px 7px; }
-    #loc-canvas { width: 160px; height: 160px; margin: 6px 0 5px; }
+    #locator { top: calc(108px + env(safe-area-inset-top, 0px)); left: 12px; width: 146px; padding: 7px 8px 6px; }
+    #loc-map { margin: 5px 0 4px; }
+    #loc-canvas { width: 130px; height: 130px; }
     #loc-name { font-size: 10px; letter-spacing: 0.2px; }
     #loc-head .panel-x { padding: 4px 6px; }
     .loc-step { font-size: 9px; }
@@ -318,8 +327,9 @@
   }
   /* ---- short landscape windows (phones rotated): drop the chrome lower & tighter ---- */
   @media (max-height: 500px) {
-    #locator { top: 60px; width: 178px; padding: 8px 9px 7px; }
-    #loc-canvas { width: 160px; height: 160px; margin: 6px 0 5px; }
+    #locator { top: 60px; width: 146px; padding: 7px 8px 6px; }
+    #loc-map { margin: 5px 0 4px; }
+    #loc-canvas { width: 130px; height: 130px; }
     #loc-name { font-size: 10px; letter-spacing: 0.2px; }
     #panel { top: 60px; max-height: calc(100vh - 80px); }
     #infocard { top: 60px; max-height: calc(100vh - 76px); }
@@ -334,6 +344,9 @@
     .kbd-note { display: none; }
     /* the HUD shows itself while flying on touch - the visibility toggle row would only strand people */
     #panel .row:has(#ck-flyhud) { display: none; }
+    /* same reason the HUD can't be dismissed while flying on touch: its ✕ would be a dead
+       control here, so it doesn't render. Flight closes via the ✕ Exit button instead. */
+    #fh-x { display: none; }
     /* flight works by touch here: key-binding help out, touch buttons in */
     .fh-grid { display: none; }
     #fh-touch { display: block; }
@@ -345,6 +358,7 @@
     .loc-more-item { padding: 8px 14px; }
     .tbtn { padding: 7px 7px; font-size: 14px; }
     .panel-x, #info-close { padding: 6px 9px; font-size: 14px; }
+    #loc-grip { width: 28px; height: 28px; padding: 15px 3px 3px 15px; }
     #panel .row { min-height: 34px; }
     #panel input[type="checkbox"] { width: 17px; height: 17px; }
     /* iOS zooms the page when a focused input's font is under 16px */
@@ -372,7 +386,7 @@
 
 <div id="locator" class="card">
   <div id="loc-head"><span id="loc-name">Solar System</span><span id="loc-dist"></span><button class="panel-x" id="loc-x" title="Hide minimap">✕</button></div>
-  <canvas id="loc-canvas" width="372" height="372"></canvas>
+  <div id="loc-map"><canvas id="loc-canvas" width="372" height="372"></canvas></div>
   <div id="loc-ladder">
     <div class="loc-step" data-scale="sky">Sky</div>
     <div class="loc-step" data-scale="solar">Solar</div>
@@ -383,6 +397,7 @@
     <div class="loc-more-item" data-scale="galaxy">Milky Way Galaxy</div>
     <div class="loc-more-item" data-scale="cosmic">Cosmic Web</div>
   </div>
+  <div id="loc-grip" title="Drag to resize"></div>
 </div>
 
 <div id="searchbox">
@@ -413,6 +428,9 @@
   <div class="row"><label for="ck-twinkle">Twinkle</label><input type="checkbox" id="ck-twinkle" checked></div>
   <div class="row"><label>Mag limit</label><input type="range" id="rg-mag" min="3" max="14" step="0.1" value="14"></div>
   <div class="row"><label>Brightness</label><input type="range" id="rg-size" min="0.6" max="3" step="0.05" value="3"></div>
+  <div class="sub-label">Phenomena</div>
+  <div class="row"><label for="ck-phenom">Exotic objects</label><input type="checkbox" id="ck-phenom" checked></div>
+  <div id="phenom-cats"></div>
   <div class="sub-label">EM Spectrum</div>
   <div class="row" style="flex-wrap:wrap;gap:4px">
     <button class="spec-btn active" onclick="window.U&&window.U.setSpectrum(0)" title="Visible light: normal B–V star colours">Visible</button>
@@ -441,13 +459,6 @@
   </div>
   </div>
 
-  <div class="sect" data-sect="phenom">
-  <button class="sect-head" type="button">Phenomena<span class="sect-caret">▾</span></button>
-  <div class="sect-body">
-  <div class="row"><label for="ck-phenom">Exotic objects</label><input type="checkbox" id="ck-phenom" checked></div>
-  <div id="phenom-cats"></div>
-  </div>
-  </div>
 
   <div class="sect" data-sect="advanced">
   <button class="sect-head" type="button">Physics<span class="sect-caret">▾</span></button>
@@ -566,6 +577,6 @@
 </div>
 
 <script src="vendor/satellite.min.js"></script>
-<script type="module" src="js/main.js?v=16"></script>
+<script type="module" src="js/main.js?v=25"></script>
 </body>
 </html>

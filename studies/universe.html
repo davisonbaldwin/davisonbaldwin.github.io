@@ -67,9 +67,33 @@
     </figure>
     <figure class="plate">
       <div class="plate-video">
-        <video controls muted playsinline preload="none" poster="../assets/uni-zoom-poster.jpg"
-               src="../assets/uni-zoom.mp4" style="position:absolute;inset:0;width:100%;height:100%;border:0;background:#05070d"></video>
+        <video id="zoomvid" controls muted playsinline preload="metadata" poster="../assets/uni-zoom-poster.jpg"
+               style="position:absolute;inset:0;width:100%;height:100%;border:0;background:#05070d"></video>
+        <div id="zoomvid-loading" style="position:absolute;inset:auto 0 46px 0;display:none;text-align:center;pointer-events:none">
+          <span style="background:rgba(5,7,13,0.75);color:#9fc4ff;font:12px/1 var(--mono,monospace);letter-spacing:0.12em;padding:7px 14px;border-radius:6px;border:1px solid rgba(127,180,255,0.3)">LOADING&#8230;</span>
+        </div>
       </div>
+      <script>
+        (() => {
+          const v = document.getElementById('zoomvid');
+          const busy = document.getElementById('zoomvid-loading');
+          // phones get a 720p rendition (4.6MB) so play starts fast on cellular;
+          // larger screens get the full 4K master (20MB)
+          const small = Math.min(screen.width, screen.height) <= 820 && matchMedia('(pointer: coarse)').matches;
+          v.src = small ? '../assets/uni-zoom-mobile.mp4' : '../assets/uni-zoom.mp4';
+          let t = null;
+          const show = () => { clearTimeout(t); t = setTimeout(() => { busy.style.display = 'block'; }, 250); };
+          const hide = () => { clearTimeout(t); busy.style.display = 'none'; };
+          v.addEventListener('waiting', show);
+          v.addEventListener('stalled', show);
+          v.addEventListener('loadstart', () => { if (!v.paused) show(); });
+          v.addEventListener('play', () => { if (v.readyState < 3) show(); });
+          v.addEventListener('playing', hide);
+          v.addEventListener('canplay', hide);
+          v.addEventListener('pause', hide);
+          v.addEventListener('error', () => { hide(); });
+        })();
+      </script>
       <figcaption>FIG. 1C · arriving from interstellar space, captured from the live model: the Sun is one point of light among thousands, and as you close in, the named stars of our neighborhood surface one by one until Sirius, Vega, and Rigil Kentaurus hang around home. Every star in frame is a real catalog entry, clickable in the app.</figcaption>
     </figure>
     <h2><span>DECISION 01</span>The tour rides the real camera</h2>
