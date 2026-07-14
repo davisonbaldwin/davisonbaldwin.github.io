@@ -270,6 +270,17 @@ a { color: var(--acc); }
 .about .about-links { margin-top: 12px; font-family: var(--ui); font-size: 13px; }
 .about a { color: var(--acc); text-decoration: none; }
 .about a:hover { color: var(--ink); }
+/* expandable full bio under the one-line About */
+.about-more { margin-top: 10px; max-width: 58ch; }
+.about-more summary { list-style: none; cursor: pointer; font-family: var(--ui);
+  font-size: 13px; color: var(--acc); display: inline-flex; align-items: center; gap: 6px;
+  -webkit-user-select: none; user-select: none; }
+.about-more summary::-webkit-details-marker { display: none; }
+.about-more summary:hover { color: var(--ink); }
+.about-caret { display: inline-block; transition: transform 0.2s; font-size: 12px; }
+.about-more[open] .about-caret { transform: rotate(90deg); }
+.about-more[open] summary { margin-bottom: 8px; }
+.about-more p { font-size: 15px; line-height: 1.65; color: var(--sub); }
 
 /* ---------- skeleton: token strip ---------- */
 .tokens { display: flex; gap: 24px; align-items: baseline; flex-wrap: wrap;
