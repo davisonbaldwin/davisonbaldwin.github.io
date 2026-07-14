@@ -618,6 +618,7 @@ for (const c of CONS) {
   const sp = makeTextSprite(c.name, { size: 13, color: '#6f93bd', alpha: 0.85 });
   sp.position.copy(dirVec(c.label[0], c.label[1]).multiplyScalar(R_SKY * 0.98));
   sp.renderOrder = 7;
+  sp.userData.dPri = 40;                       // sky declutter: constellations above markers
   conLabelGroup.add(sp);
   labelGroups.sky.push(sp);
 }
@@ -632,6 +633,7 @@ for (const [idxStr, name] of Object.entries(STARS.names)) {
   sp.center.set(0.5, 1.5);
   sp.position.set(dirs[i * 3] * R_SKY * 0.99, dirs[i * 3 + 1] * R_SKY * 0.99, dirs[i * 3 + 2] * R_SKY * 0.99);
   sp.renderOrder = 7;
+  sp.userData.dPri = 20 + STARS.mag[i];        // sky declutter: brighter names win
   starNameGroup.add(sp);
   labelGroups.sky.push(sp);
 }
@@ -708,6 +710,7 @@ const dsoDirs = [];
     dsoGroup.add(mark);
     labelGroups.sky.push(mark);
     const lab = makeTextSprite(name, { size: 10, color: dsoColors[type], alpha: 0.8 });
+    lab.userData.dPri = 60;                    // sky declutter: below star & constellation names
     lab.center.set(0.5, 2.0);
     lab.position.copy(mark.position);
     lab.renderOrder = 7;
@@ -761,6 +764,8 @@ function makeMarkerTexture(color) {
     lab.center.set(0.5, 1.9);
     lab.position.copy(mark.position);
     lab.renderOrder = 8;
+    lab.userData.dPri = 80;                    // sky declutter: yield to star/constellation names
+    lab.userData.dGate = () => mark.visible;   // category toggles own the mark; follow it
     phenomGroup.add(lab);
     labelGroups.sky.push(lab);
     phenomByCat[ph.cat].push(mark, lab);
@@ -958,6 +963,7 @@ for (const name of SKY_BODIES) {
   const lab = makeTextSprite(name, { size: 11, color: col, alpha: 0.95 });
   lab.center.set(0.5, 1.6);
   lab.renderOrder = 7;
+  lab.userData.dPri = 1;                       // sky declutter: planets always keep their names
   skyPlanetGroup.add(disc, lab);
   labelGroups.sky.push(disc, lab);
   skyBodies[name] = { disc, lab, dir: new THREE.Vector3(1, 0, 0), raDec: { ra: 0, dec: 0, r: 1 } };
@@ -2806,6 +2812,47 @@ const neiStarLabels = [];
 // resolves into whatever actually fits instead of printing into one knot.
 let _neiDeclutterList = null;
 const _dlV = new THREE.Vector3();
+// Sky labels compete for screen space the same way the stars view's do: sorted by
+// priority (planets, then bright star names, constellations, DSOs, phenomena), each
+// label claims its on-screen box and lower-priority overlaps are hidden. Labels whose
+// layer is off (parent group hidden, or a phenomena category unchecked) neither show
+// nor reserve space, and their toggle state is never overwritten.
+let _skyDeclutterList = null;
+// the fixed interface panels claim their screen space first, so no label ever
+// prints underneath the search bar, minimap, info card, tour card or time bar
+const _chromeIds = ['topbar', 'searchbox', 'locator', 'infocard', 'timebar', 'scalebar', 'fly-hud', 'tour', 'panel'];
+function declutterSkyLabels() {
+  if (!_skyDeclutterList) {
+    _skyDeclutterList = labelGroups.sky
+      .filter((sp) => sp.userData.dPri !== undefined)
+      .sort((a, b) => a.userData.dPri - b.userData.dPri);
+  }
+  const placed = [];
+  for (const id of _chromeIds) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    const cs = getComputedStyle(el);
+    if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity === 0) continue;
+    const r = el.getBoundingClientRect();
+    if (!r.width || !r.height) continue;
+    placed.push({ x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height });
+  }
+  for (const sp of _skyDeclutterList) {
+    if (!sp.parent || !sp.parent.visible) continue;          // layer off: leave it alone
+    if (sp.userData.dGate && !sp.userData.dGate()) continue; // category off: same
+    _dlV.copy(sp.position).applyQuaternion(skyGroup.quaternion).project(skyCam);
+    if (_dlV.z > 1) { sp.visible = false; continue; }
+    const w = sp.userData.pxW + 6, h = sp.userData.pxH + 4;
+    const x = (_dlV.x + 1) / 2 * innerWidth + (0.5 - sp.center.x) * sp.userData.pxW;
+    const y = (-_dlV.y + 1) / 2 * innerHeight + (sp.center.y - 0.5) * sp.userData.pxH;
+    let hit = false;
+    for (const q of placed) {
+      if (Math.abs(x - q.x) * 2 < w + q.w && Math.abs(y - q.y) * 2 < h + q.h) { hit = true; break; }
+    }
+    sp.visible = !hit;
+    if (!hit) placed.push({ x, y, w, h });
+  }
+}
 function declutterNeiLabels(state) {
   if (!_neiDeclutterList) {
     _neiDeclutterList = labelGroups.neighborhood
@@ -6469,6 +6516,7 @@ function animate(now) {
     }
     updateSkyBodies(time.jd);
     updateHorizonFrame(time.jd);
+    declutterSkyLabels();
     // Exoplanet dots scale with zoom: at wide fields thousands of additive points
     // stack up (the Kepler field burned into a solid slab); smaller + dimmer when
     // zoomed out keeps the field a resolved cluster of gold points, and zooming in
