@@ -12,7 +12,7 @@
 <meta property="og:image" content="https://davisonbaldwin.github.io/assets/og.jpg">
 <meta property="og:url" content="https://davisonbaldwin.github.io/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%E2%9C%B6%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 <style>
   /* --- the machine of worlds: three generative slices in a clockwork gear ring --- */
   .landing-planet { perspective: 1000px; }
@@ -31,7 +31,117 @@
     .landing-planet svg { transition: none; }
     #rim-ring { stroke-dashoffset: 0; }
   }
+
+  /* true-center the tagline: equal flex on both flanks of the bar */
+  .bar > span:first-child { flex: 1 1 0; }
+  .bar .tagline { white-space: nowrap; }
+  .bar nav { flex: 1 1 0; text-align: right; }
+
+  /* --- the world: when WebGL boots, the whole page becomes deep space -------
+     landing3d.js draws a fixed full-page canvas behind everything and adds
+     .world-on to <body>; these rules float the content inside that world.
+     Without WebGL none of this applies and the page stays as it was. -------- */
+  body.world-on { background: #05070d; }
+  body.world-on .tex { display: none; }              /* the canvas is the sky now */
+  body.world-on .wrap { pointer-events: none; }      /* space is draggable through the text */
+  body.world-on .wrap :is(a, button, summary) { pointer-events: auto; }
+  body.world-on .about { pointer-events: auto; }
+
+  /* the bar speaks the world's own starlight: glowing mono, a rule that
+     dissolves at its ends instead of a hard line */
+  body.world-on .bar { border-bottom: none; position: relative; }
+  body.world-on .bar::after { content: ''; position: absolute; left: 0; right: 0;
+    bottom: 0; height: 1px;
+    background: linear-gradient(90deg, transparent,
+      rgba(216, 226, 242, 0.22) 18%, rgba(216, 226, 242, 0.22) 82%, transparent); }
+  body.world-on .bar .who { color: #eef2fa;
+    text-shadow: 0 0 12px rgba(127, 180, 255, 0.35); }
+  body.world-on .bar .tagline { color: #ccd7e8; letter-spacing: 0.2em;
+    text-shadow: 0 0 8px rgba(4, 6, 11, 0.9), 0 0 14px rgba(127, 180, 255, 0.22); }
+  body.world-on .bar nav a { font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: #aab8d0;
+    text-shadow: 0 0 8px rgba(4, 6, 11, 0.9); }
+  body.world-on .bar nav a:hover { color: #eef2fa;
+    text-shadow: 0 0 12px rgba(127, 180, 255, 0.5); }
+
+  /* the planet is the center of the world; the text floats around it in space,
+     sharing one perspective so the tilts read as depth, not decoration */
+  body.world-on .landing { display: block; position: relative;
+    min-height: calc(100svh - 132px); padding: 0;
+    perspective: 1200px; perspective-origin: 50% 42%; }
+  body.world-on .landing-planet { position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%); width: min(62vh, 46vw);
+    aspect-ratio: 1 / 1; }                             /* the slot the planet flies in */
+  /* the about section lives inside a star: hidden until the star is clicked,
+     then it opens as a panel floating over the world */
+  body.world-on .about { display: none; }
+  body.world-on.about-open .about { display: block; position: fixed; z-index: 60;
+    left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: min(540px, calc(100vw - 44px)); max-height: 80svh; overflow: auto;
+    background: rgba(56, 66, 92, 0.98); border: 1px solid rgba(216, 226, 242, 0.5);
+    border-radius: 14px; padding: 28px 32px 24px;
+    box-shadow: 0 24px 90px rgba(0, 0, 0, 0.65),
+      inset 0 1px 0 rgba(238, 243, 250, 0.14); }
+  body.world-on.about-open .about summary { display: none; }
+  /* the panel floats over deep space: the words need real light */
+  body.world-on.about-open .about p,
+  body.world-on.about-open .about .about-more p { color: #f4f7fd;
+    font-size: 17px; }
+  body.world-on.about-open .about .eyebrow { color: #b9ceff; font-size: 12.5px; }
+  body.world-on.about-open .about .about-links { font-size: 14.5px; }
+  body.world-on.about-open .about .about-links a { color: #cbdcff; }
+  body.world-on.about-open .about-close { color: #c8d2e2; }
+  .about-backdrop { display: none; }
+  body.world-on.about-open .about-backdrop { display: block; position: fixed;
+    inset: 0; z-index: 59; background: rgba(4, 6, 11, 0.6); }
+  .about-close { display: none; }
+  body.world-on.about-open .about-close { display: block; position: absolute;
+    top: 10px; right: 12px; background: none; border: 0; color: var(--sub);
+    font-size: 15px; cursor: pointer; padding: 6px; }
+  body.world-on.about-open .about-close:hover { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    /* phones: back to flow, the planet centered in it */
+    body.world-on .landing { display: flex; flex-direction: column;
+      justify-content: flex-start; align-items: stretch;
+      min-height: calc(100svh - 120px); padding: 18px 0 46px; }
+    body.world-on .landing-planet { position: relative; left: auto; top: auto;
+      transform: none; width: 100%; max-width: 240px; margin: 150px auto 0; }
+  }
+
+  /* every hero word's body lives in the 3D scene; the DOM nodes stay for
+     screen readers and keyboard focus only (these rules must come last so
+     they win at every width) */
+  body.world-on .landing-planet .planet-caption { position: absolute;
+    width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
+    white-space: nowrap; margin: 0; left: auto; right: auto; }
+  body.world-on .landing-text { display: block; position: absolute;
+    width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
+    white-space: nowrap; }
+  body.world-on .landing-text .eyebrow, body.world-on .landing-text h1,
+  body.world-on .landing-text .brief, body.world-on .landing-text .ctas {
+    position: static; transform: none !important; }
+
+  /* while the 3D world boots, the SVG fallback stays veiled so a reload
+     never flashes the old page; landing3d.js lifts the veil either way */
+  html.pre3d .tex, html.pre3d .landing, html.pre3d .about { visibility: hidden; }
+  html.pre3d body { background: #05070d; }
 </style>
+<script>
+  // decide before first paint: if WebGL is available the 3D world will
+  // take over, so hide the SVG landing now rather than flash it. A timer
+  // lifts the veil if the world somehow never arrives.
+  try {
+    var glc = document.createElement('canvas');
+    if (glc.getContext('webgl2') || glc.getContext('webgl')) {
+      document.documentElement.classList.add('pre3d');
+      setTimeout(function () {
+        if (!document.body.classList.contains('world-on'))
+          document.documentElement.classList.remove('pre3d');
+      }, 4000);
+    }
+  } catch (e) {}
+</script>
 </head>
 <body>
 
@@ -44,7 +154,6 @@
   <nav>
     <a href="rooms.html">The worlds</a>
     <a href="resume.html">Resume</a>
-    <a href="mailto:davison.baldwin@gmail.com">Contact</a>
   </nav>
 </header>
 
@@ -52,11 +161,8 @@
   <div class="landing-text">
     <div class="eyebrow">PRODUCT DESIGN · THREE WORLDS</div>
     <h1>Every work here is designed as its own world.</h1>
-    <p class="brief">Each has its own palette, type, and design, built from the work
-    itself. The planet is all three together.</p>
     <div class="ctas">
       <a class="go" href="rooms.html">Enter the worlds</a>
-      <a class="alt" href="studies/universe.html">Start with the Universe</a>
     </div>
   </div>
 
@@ -118,7 +224,7 @@
       <g id="gearing"></g>
       </g>
     </svg>
-    <div class="planet-caption" id="planet-caption">THREE WORLDS, ONE PLANET · ENTER ANY SLICE</div>
+    <div class="planet-caption" id="planet-caption">THREE WORLDS, ONE PLANET · DRAG TO SPIN · CLICK TO ENTER</div>
   </div>
 </main>
 
@@ -276,6 +382,8 @@
 
     let last = performance.now(), t = 0;
     function frame(now) {
+      // once the 3D world boots (body.world-on), this SVG is hidden; stop animating it
+      if (document.body.classList.contains('world-on')) return;
       const dt = Math.min(0.05, (now - last) / 1000); last = now; t += dt;
       // stars
       for (const s of stars) {
@@ -316,5 +424,6 @@
     requestAnimationFrame(frame);
   })();
 </script>
+<script type="module" src="landing3d.js"></script>
 </body>
 </html>
