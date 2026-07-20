@@ -1524,6 +1524,22 @@ function init() {
     if (touchy) return;
     if (hoverIdx !== -1) { hoverIdx = -1; announce(restCaption, CAP_REST); caption.classList.remove('lit'); }
   });
+
+  // The GPU evicts WebGL contexts under memory pressure (many heavy tabs) and
+  // mobile browsers reclaim them when the tab is backgrounded. Without opting
+  // in the browser never restores, so the scene would stay a blank canvas
+  // until a manual reload. These listeners are dormant in normal use and only
+  // fire on an actual loss: pause the loop so it does not spin on a dead
+  // context, then rebuild the world the way a fresh load does once the GPU is
+  // handed back.
+  let contextLost = false;
+  el.addEventListener('webglcontextlost', (e) => {
+    e.preventDefault();                 // required, or 'restored' never fires
+    contextLost = true;
+  }, false);
+  el.addEventListener('webglcontextrestored', () => {
+    location.reload();
+  }, false);
   el.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') { planet.rotation.y -= 0.35; lastInput = performance.now(); }
     if (e.key === 'ArrowRight') { planet.rotation.y += 0.35; lastInput = performance.now(); }
@@ -1618,6 +1634,8 @@ function init() {
   const clock = new THREE.Clock();
   let entranceT = reduced ? 1 : 0, t = 0, lastPaint = -1;
   function frame() {
+    if (contextLost) return;            // stop drawing on a dead context; a
+                                        // restore reloads the page from scratch
     const dt = Math.min(0.05, clock.getDelta());
     t += dt;
     // self-heal: if the viewport changed without a resize event (background
