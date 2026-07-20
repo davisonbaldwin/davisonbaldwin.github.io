@@ -13,6 +13,11 @@
 <meta property="og:url" content="https://davisonbaldwin.github.io/studies/stock-evaluator.html">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%E2%9C%B6%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="../style.css?v=5">
+<style>
+  /* the arithmetic section subheads */
+  .prose h3 { font-family: var(--face); font-size: 17px; font-weight: 700;
+    color: var(--ink); margin: 30px 0 10px; max-width: 62ch; }
+</style>
 </head>
 <body>
 
@@ -36,7 +41,7 @@
 
 <figure class="plate">
   <div class="plate-app"><iframe src="https://stock-evaluator-mp72.onrender.com" title="Stock Evaluator · live application" loading="lazy"></iframe></div>
-  <figcaption>LIVE · this is the actual application. Type a ticker and evaluate it right here.</figcaption>
+  <figcaption>FIG. 2A · live: this is the actual application. Type a ticker and evaluate it right here.</figcaption>
   <a class="live" href="https://stock-evaluator-mp72.onrender.com" target="_blank" rel="noopener">Open the app full-screen ↗</a>
 </figure>
 
@@ -51,7 +56,7 @@
     <span class="pencil">“The first question: would the index have done better?”</span>
   </aside>
   <div class="prose">
-    <div class="question"><span class="qlbl">The insight</span><p>The odds are public, and almost every tool ignores them.</p></div>
+    <div class="question"><span class="qlbl">The insight</span><p>Most stock pickers lose to an index fund, and the tools they use never mention it.</p></div>
     <p>Over long horizons, the overwhelming majority of professionally managed funds fail to beat a simple index fund (S&amp;P's SPIVA scorecards have found it year after year), and individual investors, a large body of research has shown, tend to trail the market further still once their own buying and selling is counted. For almost everyone, the rational default is to buy the index and hold it. Consumer stock tools still lead with screeners, price targets, and “strong buy” badges, all optimized for action. The odds rarely appear in them anywhere.</p>
     <div class="question"><span class="qlbl">The design question</span><p>Is this stock actually better than just buying the index fund?</p></div>
     <p>So I built one around a single rule: <em>every number is presented against the alternative of just holding a total-market index fund.</em> Every verdict starts from one question: does this stock beat the index you could have bought instead? The product answers that before anything else.</p>
@@ -70,7 +75,12 @@
       <img class="plate-img" src="../assets/eval-analytics.jpg" alt="The dossier's analysis cards: calendar-year returns bar chart, a ten-year forecast cone with Monte Carlo percentile markers, scenario price targets from bear to bull, the Monte Carlo table of 10,000 simulated futures, alpha and capture ratios versus an index investor, and rolling holding periods for every historical entry point">
       <figcaption>FIG. 2C · the analysis in one spread: the forecast cone with its Monte Carlo markers, scenario targets with the assumptions printed under them, and the rolling windows from every entry point.</figcaption>
     </figure>
-    <h2><span>DECISION 04</span>From command line to something you can try</h2>
+    <h2><span>DECISION 04</span>The score is an opinion, written down</h2>
+    <p>The score is six pillars, weighted: growth, valuation and quality at 20% each, risk and the measured edge over the index at 15% each, and momentum last at 10%, since momentum is the number most easily mistaken for a signal. Inside each pillar, every raw metric passes through bands I wrote by hand, and those bands carry most of the judgment in the product. A gross margin of 30% scores 25 and 75% scores 100. A forward P/E of 12 scores 100, and 70 scores zero. The growth a reverse DCF says is <em>already</em> priced into today's share price scores 100 at 5% and 10 at 30%, on the reasoning that the more the market has assumed, the less is left for a buyer. Values between the anchors interpolate.</p>
+    <p>Keeping the thresholds as data rather than burying them in conditionals means I can disagree with last month's version and change one line, and it means anyone reading the code can see exactly what the tool considers good.</p>
+    <h2><span>DECISION 05</span>What the score does when it doesn't know</h2>
+    <p>Company fundamentals arrive with holes in them. A tool that scores a hole as a zero will mark a good company down for a gap in someone else's data, so a missing metric scores a neutral 50 instead. That creates the opposite problem: enough neutral values will drag a weak stock up toward the middle. The score therefore also reports how much of itself it could compute. Each pillar tracks the fraction of its metrics that had data, and the composite reports the weighted figure as coverage, printed next to the weight for every pillar. A 62 built on complete data and a 62 built on half of it are different claims.</p>
+    <h2><span>DECISION 06</span>From command line to something you can try</h2>
     <p>The tool began as a CLI: one command, a full dossier and chart. The web app above is the same engine with one control in front of it: a ticker. While it works, the status line names each stage, and a note says the first run on a ticker takes ten to thirty seconds before the cache makes it instant. Results lead with the verdict: a 0–100 score and one sentence, every table beneath it. Comparison is built in: type up to ten tickers and you get one chart where everyone starts at $10,000 on the same date, with a table ranked by score. Click any row for that stock's full dossier.</p>
     <figure class="plate">
       <img class="plate-img" src="../assets/eval-compare.jpg" alt="Compare mode: AAPL, MSFT, and NVDA growth-of-$10,000 lines overlaid on a log chart with VOO as a dashed grey baseline, above a table ranking the three by score with each verdict printed under its row">
@@ -80,6 +90,51 @@
       <img class="plate-img" src="../assets/eval-report-aapl.png" alt="The original CLI report: a four-panel matplotlib chart of AAPL versus VTI, log growth of $10,000, drawdowns from running peak, calendar-year returns, and the forecast cone with Monte Carlo markers">
       <figcaption>FIG. 2E · where it began: the CLI's report chart, one command in a terminal. The web app above is the same engine.</figcaption>
     </figure>
+    <h2><span>THE ARITHMETIC</span>Every calculation, and why it is there</h2>
+    <p>This is the whole engine written out. None of it is needed to understand the product, and the decisions above are the design work. What follows is what sits underneath them: what each part computes, the constants it uses, and why it was built that way. Where a number is a judgment call rather than a standard, I have said so.</p>
+
+    <h3>Where the numbers come from</h3>
+    <p>Prices, company information and filings come from Yahoo Finance through yfinance. The risk-free rate is read live from the 13-week US Treasury bill (ticker ^IRX), bounded to a plausible 0 to 15% and falling back to 4% if the fetch fails. Fama-French factor returns come from Ken French's data library at Dartmouth.</p>
+    <p>The risk-free rate matters more than it looks: Sharpe ratios and the CAPM regression both need one, and a hardcoded rate would keep producing plausible numbers long after it stopped being true. If the factor library is unreachable, that analysis is skipped rather than estimated, and the score is not penalised for its absence.</p>
+    <p>Every fetch is cached to disk for 12 hours, so market data refreshes about twice a day. That is why the first evaluation of a ticker takes ten to thirty seconds and every one after it is immediate. Daily bars do not change during the day, so a shorter cache would buy nothing but rate-limit errors.</p>
+
+    <h3>What it measures about the stock on its own</h3>
+    <p>All of this runs on the full daily price history, using the standard convention of 252 trading days per year.</p>
+    <p><b>Returns.</b> Compound annual growth over 1, 3, 5 and 10 years and the full history, plus trailing returns over fixed windows. The CAGR function will not report a horizon longer than the data supports, so a company with four years of history gets no ten-year figure at all rather than one computed from four.</p>
+    <p><b>Volatility and risk-adjusted return.</b> Volatility is the standard deviation of the stock's daily returns, scaled up to an annual figure by the square root of 252. Sharpe takes the stock's return above the live risk-free rate and divides it by that volatility, so it reads as return earned per unit of turbulence, measured over five years. Sortino does the same but counts only the downside moves in the denominator, because Sharpe penalises a sharp gain exactly as hard as a sharp loss, which does not match how owning the stock feels.</p>
+    <p><b>Drawdowns.</b> The deepest peak-to-trough fall in the whole history, the number of days it took to recover, whether it has recovered at all, and how far below its all-time high it trades today. Depth on its own is misleading: a 50% fall that recovers in eight months and one that takes six years are the same number and a completely different experience, so the recovery time is reported next to it. The Calmar ratio divides return by that worst fall.</p>
+    <p><b>Rolling holding periods.</b> Every possible 1, 3 and 5-year holding window in the stock's history, reporting the worst, median and best outcome and the share that ended positive. A single backtest can be made to say almost anything by choosing its start date; the full set of start dates cannot.</p>
+
+    <h3>What it measures against the index</h3>
+    <p>Both price series are aligned to their common trading dates first, so every comparison covers exactly the same days.</p>
+    <p><b>CAPM regression.</b> The stock's monthly returns above the risk-free rate are fitted against the index's, over the last five years and requiring at least 24 months of data. Beta is the slope of that fit, how far the stock moves for each unit the index moves. Alpha is the intercept, annualised, the slice of return the index does not account for. R&sup2; is how much of the movement the index explains at all. Monthly rather than daily, because daily returns are mostly noise, and the 24-month floor stops a newly listed company from being handed a confident beta computed off a handful of points.</p>
+    <p><b>Fama-French three-factor.</b> The same regression run against the market, a size factor and a value factor together, producing a stricter alpha and three factor loadings. Plain alpha flatters any stock that happens to be small or cheap, because those traits have paid off on their own historically. This asks what survives once market direction, size and value have each taken their share of the credit. When the two alphas disagree, that gap is worth more than either number alone.</p>
+    <p><b>Capture ratios.</b> Monthly returns are split by the index's direction, and the stock's average move in each group is divided by the index's. Both sides need at least six months before either is reported. Capturing 120% of the upside and 80% of the downside is a different proposition from capturing 120% of both, which is just leverage, and a single beta blurs the two together.</p>
+    <p><b>Information ratio.</b> The active return is how much the stock beat the index by in an average year. The tracking error is how much that margin bounced around from day to day, annualised. The information ratio is the first divided by the second. Beating the index by three points a year steadily and beating it by three points on average with wild swings either side are different things, and the ratio tells them apart.</p>
+    <p><b>Rolling win rates.</b> Across every rolling 1, 3 and 5-year window, the share in which the stock finished ahead of the index. This feeds the vs Index pillar, and it is the closest thing the tool has to a plain historical base rate.</p>
+
+    <h3>How it projects forward</h3>
+    <p><b>The expected return everything else is built on.</b> Two estimates are averaged. The first is the stock's own history, the mean of its 5- and 10-year compound growth rates, but held to a ceiling of 25% a year no matter how fast it grew. The second is what the market's own risk pricing implies: the risk-free rate plus the stock's beta times a 4.5% equity risk premium, with beta falling back to 1.2 when it cannot be computed. The base expectation is a straight 50/50 blend of the two.</p>
+    <p>The 25% cap is the most opinionated number in the tool. Extrapolating hypergrowth is the standard way forecasting tools embarrass themselves: a company that compounded at 60% for five years will not do it for ten more, and a model that assumes otherwise produces confident nonsense. The 4.5% equity risk premium is a standard long-run figure. Blending the two halves means neither the company's own past nor the theory decides alone.</p>
+    <p><b>The five scenarios.</b> They fan out around that base expectation by a shock set to half the stock's volatility, capped at 25 points. Bear is the base minus that shock, with a floor of &minus;15% a year. Conservative is the lower of the base and the index's own return, standing in for the do-nothing choice. Optimistic is the base plus half the shock. Bull takes the same capped historical growth, raises it by a quarter, and is never allowed past 40% a year. Each of the five is then compounded out to 1, 3, 5 and 10 years, which is all the scenario table and the coloured lines on the cone chart are. Scaling the spread by the stock's own volatility means a placid utility gets a narrow range and a volatile chip designer a wide one without my picking either by hand, and the floor and ceiling exist because unbounded arithmetic eventually produces a price target not worth printing.</p>
+    <p><b>Monte Carlo.</b> Ten thousand ten-year paths are assembled by drawing 21-day blocks at random from the last decade of daily returns, taking the stock and the index from the same days on every draw, and re-centring the average drift onto the base scenario. The random seed is fixed. The output is the 5th, 25th, 50th, 75th and 95th percentile price at each horizon, plus the share of paths that lost money, doubled, or finished ahead of the index.</p>
+    <p>Blocks rather than single days, because shuffling one day at a time destroys the structure that matters: crashes cluster and volatility arrives in runs. Drawing the index from the same days keeps the correlation intact, so the probability of beating the index means anything at all. Re-centring the drift is the important part. History supplies the shape of the risk, the conservative blend supplies the central tendency, so a stock coming off a spectacular decade is not allowed to assume another one. The seed is fixed so runs are reproducible, which matters when you are trying to tell whether a number moved because the market moved or because you changed the model.</p>
+    <p>The same percentiles are also computed analytically from a lognormal model as a cross-check. If the simulation and the closed-form formula disagree badly, something in my code is wrong.</p>
+    <p><b>Reverse DCF.</b> An ordinary discounted cash flow starts from a growth assumption and produces a fair value. This one runs backwards: it holds today's market value fixed and solves for the single constant free-cash-flow growth rate that would justify it, discounting ten years of growing cash flows at 10% a year and adding a terminal value that grows at 2.5% thereafter. The answer is the growth the current share price already assumes. It is the fifth metric inside the valuation pillar, scored so that more implied growth counts against the stock. Every other valuation metric asks what you are paying; this one asks what you are being asked to believe. It also declines to answer rather than inventing a figure: if no plausible growth rate justifies the price it says so, and if the company is priced below its own run-off value it says that instead.</p>
+
+    <h3>What it reads from the filings</h3>
+    <p>Three groups, all optional, any of which can be missing for a given company.</p>
+    <p><b>Valuation:</b> trailing and forward P/E, PEG, price to sales, EV/EBITDA, free-cash-flow yield (free cash flow over market capitalisation) and dividend yield.</p>
+    <p><b>Growth:</b> year-over-year revenue and earnings growth, plus multi-year compound rates for revenue, net income and free cash flow computed from the filings on hand.</p>
+    <p><b>Quality:</b> gross, operating and net margin, return on equity, debt to equity, and the Rule of 40, the software-industry rule of thumb that adds the revenue growth rate to the free-cash-flow margin and checks the total clears 40.</p>
+    <p>One note on working with financial data. yfinance changed the units of its dividend yield field partway through, reporting 0.5 to mean 0.5% rather than 50%. Handling that explicitly is a one-line fix and the difference between a sensible number and a nonsensical one. A fair share of the work here is that kind of thing rather than statistics.</p>
+
+    <h3>Testing the calculations</h3>
+    <p>Twenty-two unit tests across the scoring, forecast, history and factor modules, written against hand-computed expectations rather than recorded output, so a wrong answer cannot quietly become the baseline.</p>
+    <p>Two of them are named after bugs they caught, and both bugs were in the same place. Metric direction is authored into the scoring anchors, so a cheap P/E is written as a high score. An early version then inverted every lower-is-better metric a second time, so the tool spent a while rewarding expensive, volatile stocks and punishing cheap, stable ones, while still producing verdicts that read as perfectly reasonable English.</p>
+    <p>The second was the same trap approached from the other side. Because those bands run from their best anchor downward, any value below the first threshold scored a flawless 100, and a negative number is below every threshold. A company losing money has a negative price-to-earnings ratio, so unprofitable companies were being scored as maximally cheap, and a company with negative shareholders' equity was scored as carrying ideal debt. On Rivian the valuation pillar was reporting 70 out of 100 when it should have been reporting 10. The fix treats a negative where a positive is required as missing rather than perfect, which sends it down the neutral-score path and correctly drops that pillar's data coverage.</p>
+    <p>Neither bug would have been caught by looking at the output, because in both cases the output looked fine.</p>
+
     <div class="blocks">
       <div class="block">
         <h3>My role</h3>
