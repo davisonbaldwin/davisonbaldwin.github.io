@@ -30,13 +30,29 @@ function init() {
   }
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const narrowMq = matchMedia('(max-width: 900px)');
+  // the caption system is sized once at load (NARROW0 below); if the
+  // viewport later crosses the phone boundary (tablet rotation, window
+  // resize), a fresh load re-sizes it to match the new layout
+  narrowMq.addEventListener('change', () => location.reload(), { once: true });
 
   const WORLDS = [
     { name: '01 · UNIVERSE', href: 'studies/universe.html', color: 0x7fb4ff },
     { name: '02 · STOCK EVALUATOR', href: 'studies/stock-evaluator.html', color: 0xffb454 },
     { name: '03 · MUSIC TECHNOLOGY', href: 'studies/music-technology.html', color: 0xd9a96a },
   ];
-  const restCaption = 'THREE WORLDS, ONE PLANET · DRAG TO SPIN · CLICK TO ENTER';
+  // phones read the caption at arm's length: fewer words in larger type on
+  // a wider arc (CAPS scales the whole caption system; sized at load)
+  const NARROW0 = narrowMq.matches;
+  const restCaption = NARROW0
+    ? 'THREE WORLDS, ONE PLANET · TAP TO ENTER'
+    : 'THREE WORLDS, ONE PLANET · DRAG TO SPIN · CLICK TO ENTER';
+  // on phones the planet is the whole show: the caption hugs it on a
+  // tighter arc so the larger type still fits the narrow screen
+  const CAPS = NARROW0 ? 1.2 : 1;
+  const CAPPX = NARROW0 ? 38 : 24;
+  const CAPGAP = NARROW0 ? 8 : 6;
+  const R_CAP = (NARROW0 ? 1.18 : 1.45) * CAPS;
+  caption.textContent = restCaption;           // one voice for both variants
 
   // ---- the surface: one living equirectangular canvas, one third per world --
   // Painted fresh ~30 times a second. The base is built once offscreen with a
@@ -889,9 +905,9 @@ function init() {
   capTex.colorSpace = THREE.SRGBColorSpace;
   const setArcText = (text, color) => {
     capCtx.clearRect(0, 0, 1536, 72);
-    capCtx.font = '600 24px Menlo, monospace';
+    capCtx.font = `600 ${CAPPX}px Menlo, monospace`;
     const chars = [...text];
-    const gap = 6;
+    const gap = CAPGAP;
     let total = 0;
     for (const ch of chars) total += capCtx.measureText(ch).width + gap;
     const x0 = (1536 - total) / 2;
@@ -914,7 +930,7 @@ function init() {
   setArcText(restCaption, CAP_REST);
   const ARC = 1.9;
   const capArc = new THREE.Mesh(
-    new THREE.CylinderGeometry(1.45, 1.45, 0.13, 64, 1, true, -ARC / 2, ARC),
+    new THREE.CylinderGeometry(R_CAP, R_CAP, 0.13 * CAPS, 64, 1, true, -ARC / 2, ARC),
     new THREE.MeshBasicMaterial({ map: capTex, transparent: true,
       opacity: reduced ? 1 : 0, depthWrite: false })
   );
@@ -940,15 +956,18 @@ function init() {
     { r: 1.5, tilt: [0.55, 0, 0.12], sp: 0.3 },
     { r: 1.74, tilt: [0.08, 0, -0.5], sp: -0.24 },
   ];
+  // the larger phone planet leaves less sky: tuck the rings in so the
+  // orbiting letters stay on screen
+  if (NARROW0) ORBITS.forEach((o) => { o.r = Math.max(1.14, o.r * 0.7); });
   const mkLetterSet = (text, color, hold, orbit) => {
     const meas = document.createElement('canvas').getContext('2d');
-    meas.font = '600 24px Menlo, monospace';
+    meas.font = `600 ${CAPPX}px Menlo, monospace`;
     const chars = [...text];
-    const gap = 6;
+    const gap = CAPGAP;
     let total = 0;
     for (const ch of chars) total += meas.measureText(ch).width + gap;
     let lx = (1536 - total) / 2;
-    const UPX = (1.45 * ARC) / 1536;             // world units per canvas px
+    const UPX = (R_CAP * ARC) / 1536;            // world units per canvas px
     const LT = 2;                                // letter supersample
     const set = { letters: [], clock: 0, away: 0, faded: true, hold, n: 0,
       orbR: orbit.r, sp: orbit.sp,
@@ -968,7 +987,7 @@ function init() {
       const lcv = document.createElement('canvas');
       lcv.width = w2; lcv.height = h2 * 2;
       const lg = lcv.getContext('2d');
-      lg.font = `600 ${24 * LT}px Menlo, monospace`;
+      lg.font = `600 ${CAPPX * LT}px Menlo, monospace`;
       lg.shadowColor = 'rgba(4,6,11,0.95)'; lg.shadowBlur = 8 * LT;
       lg.fillStyle = 'rgba(4,6,11,0.9)';
       lg.fillText(ch, pad * LT, 46 * LT);
@@ -980,11 +999,11 @@ function init() {
       const ltex = new THREE.CanvasTexture(lcv);
       ltex.colorSpace = THREE.SRGBColorSpace;
       ltex.anisotropy = 4;
-      const gw = (cw + pad * 2) * UPX, gh = 0.13;
+      const gw = (cw + pad * 2) * UPX, gh = 0.13 * CAPS;
       const geo = new THREE.BufferGeometry();
       const P = [], U = [], C = [], I = [];
       // built back to front so the layers blend correctly face-on
-      [[-0.009, 0.3], [-0.003, 0.4], [0.003, 0.52], [0.009, 1]].forEach(([z, s], li) => {
+      [[-0.009 * CAPS, 0.3], [-0.003 * CAPS, 0.4], [0.003 * CAPS, 0.52], [0.009 * CAPS, 1]].forEach(([z, s], li) => {
         const face = li === 3;
         const v0 = face ? 0.5 : 0, v1 = face ? 1 : 0.5;
         const o = li * 4;
@@ -1390,13 +1409,15 @@ function init() {
       aboutBase = 0.04 * k;
     };
     if (!narrowMq.matches) {
+      miniG.visible = true;
       placeMini(cl + 92, hero.top + hero.height * 0.82);
       placeStar(0.84, 0.24);
       placeAbout(0.88, 0.84);
     } else {
-      const slot = host.getBoundingClientRect();
-      placeMini(innerWidth / 2, slot.bottom + 104);
-      placeStar(0.85, 0.185);
+      // phones give the whole stage to the one planet: no mini world, just
+      // the quiet beacons where they fit
+      miniG.visible = false;
+      placeStar(0.85, 0.16);
       placeAbout(0.86, 0.93);
     }
   };
@@ -1410,12 +1431,20 @@ function init() {
   const ray = new THREE.Raycaster();
   const ndc = new THREE.Vector2();
   let dragging = false, moved = 0, lastX = 0, lastY = 0;
+  // touch has no hover, so a world's name never wakes on a phone; there the
+  // first tap arms a world (name, letters, highlight) and the second enters.
+  // armedAt guards the gap: one physical tap can echo as a second synthetic
+  // event on iOS, so an "enter" tap only counts well after the arming one
+  let touchy = matchMedia('(hover: none)').matches, armedWorld = -1, armedAt = 0;
   let velY = 0, rotX = 0, hoverIdx = -1, lastInput = 0;
 
   const pick = (e) => {
     ndc.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
     ray.setFromCamera(ndc, cam);
-    const hit = ray.intersectObjects([miniHit, sunHit, aboutHit, globe])[0];
+    // the mini world sits out of the cast when hidden (phones): raycasts
+    // ignore visibility, and its idle hit sphere would swallow planet taps
+    const hit = ray.intersectObjects(miniG.visible
+      ? [miniHit, sunHit, aboutHit, globe] : [sunHit, aboutHit, globe])[0];
     if (!hit) return { world: -1, mini: false, star: false, about: false };
     if (hit.object === globe) return { world: Math.min(2, Math.floor(hit.uv.x * 3)), mini: false, star: false, about: false };
     if (hit.object === sunHit) return { world: -1, mini: false, star: true, about: false };
@@ -1465,12 +1494,34 @@ function init() {
       if (p2.star) goHref('studies/universe.html');
       else if (p2.about) openAbout();
       else if (p2.mini) goHref('rooms.html');
-      else if (p2.world >= 0) enter(p2.world);
+      else if (p2.world >= 0) {
+        if (!touchy) enter(p2.world);
+        else if (armedWorld === p2.world) {
+          // the echo of the arming tap arrives within a blink; only a
+          // deliberate second tap enters
+          if (performance.now() - armedAt > 400) enter(p2.world);
+        } else {
+          armedWorld = p2.world;
+          armedAt = performance.now();
+          hoverIdx = p2.world;
+          announce(WORLDS[p2.world].name + ' · ENTER', capColors[p2.world]);
+          caption.classList.add('lit');
+        }
+      } else if (touchy && armedWorld !== -1) {
+        // a tap on empty sky stands the armed world down
+        armedWorld = -1;
+        hoverIdx = -1;
+        announce(restCaption, CAP_REST);
+        caption.classList.remove('lit');
+      }
     }
   };
   el.addEventListener('pointerup', release);
   el.addEventListener('pointercancel', () => { dragging = false; });
   el.addEventListener('pointerleave', () => {
+    // on touch a lifted finger "leaves" after every tap: that is not a
+    // mouse wandering off, and the armed world keeps its name up
+    if (touchy) return;
     if (hoverIdx !== -1) { hoverIdx = -1; announce(restCaption, CAP_REST); caption.classList.remove('lit'); }
   });
   el.addEventListener('keydown', (e) => {
@@ -1559,6 +1610,7 @@ function init() {
     announce(restCaption, CAP_REST);
     caption.classList.remove('lit');
     hoverIdx = -1;
+    armedWorld = -1;
     lastInput = performance.now();
   });
 
@@ -1647,7 +1699,7 @@ function init() {
           else if (!vT) { L.mesh.visible = false; continue; }
           L.mesh.visible = true;
           L.mat.opacity = L.vis;
-          _vHome.set(Math.sin(L.theta) * 1.45, 0, Math.cos(L.theta) * 1.45)
+          _vHome.set(Math.sin(L.theta) * R_CAP, 0, Math.cos(L.theta) * R_CAP)
             .applyQuaternion(_qFrame).add(capArc.position);
           _qHome.setFromEuler(_eu.set(0, L.theta, 0)).premultiply(_qFrame);
           if (L.state === 0) {
@@ -1655,7 +1707,7 @@ function init() {
             L.mesh.quaternion.copy(_qHome);
             continue;
           }
-          const slot = L.theta * (1.45 / S.orbR) - S.sp * t;
+          const slot = L.theta * (R_CAP / S.orbR) - S.sp * t;
           if (L.state === 2) {
             // riding the ring, adrift: each letter keeps turning in its own
             // time (the turn eases in so the catch does not snap)
@@ -1771,6 +1823,8 @@ function init() {
   window.__world = { anchor, cam, planet, sets: LETTER_SETS, renderer,
     get activeSet() { return activeSet; },
     warpCap(v) { if (activeSet) activeSet.clock = v; },
+    forceTouch(v) { touchy = v; },              // the pane can't fake (hover: none)
+    get tapState() { return { touchy, armedWorld, dragging, moved }; },
     get slotScale() { return slotScale; },
     warp(v) { t = v; } };                       // debug handle
 }

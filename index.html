@@ -12,7 +12,7 @@
 <meta property="og:image" content="https://davisonbaldwin.github.io/assets/og.jpg">
 <meta property="og:url" content="https://davisonbaldwin.github.io/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%E2%9C%B6%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 <style>
   /* --- the machine of worlds: three generative slices in a clockwork gear ring --- */
   .landing-planet { perspective: 1000px; }
@@ -101,12 +101,20 @@
   body.world-on.about-open .about-close:hover { color: var(--ink); }
 
   @media (max-width: 900px) {
-    /* phones: back to flow, the planet centered in it */
+    /* phones: the planet is the whole show, centered in the stage (the
+       small top margin leaves headroom for the caption arcing above it),
+       and the page is one fixed screen: nothing to scroll to */
+    /* pinning the body is the only scroll lock iOS reliably honors */
+    body.world-on { position: fixed; inset: 0; overflow: hidden; }
     body.world-on .landing { display: flex; flex-direction: column;
-      justify-content: flex-start; align-items: stretch;
-      min-height: calc(100svh - 120px); padding: 18px 0 46px; }
-    body.world-on .landing-planet { position: relative; left: auto; top: auto;
-      transform: none; width: 100%; max-width: 240px; margin: 150px auto 0; }
+      justify-content: center; align-items: stretch;
+      min-height: calc(100svh - 130px); padding: 12px 0 24px; }
+    /* the slot breaks out of the wrap's side padding: centered on the
+       screen itself, as wide as the viewport allows */
+    body.world-on .landing-planet { position: relative; left: 50%; top: auto;
+      transform: translateX(-50%); max-width: none;
+      width: min(100vw, 380px, calc(100svh - 220px));   /* landscape-safe */
+      margin: 40px 0 0; }
   }
 
   /* every hero word's body lives in the 3D scene; the DOM nodes stay for
@@ -424,6 +432,6 @@
     requestAnimationFrame(frame);
   })();
 </script>
-<script type="module" src="landing3d.js"></script>
+<script type="module" src="landing3d.js?v=4"></script>
 </body>
 </html>

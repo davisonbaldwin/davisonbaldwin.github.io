@@ -217,6 +217,30 @@ a { color: var(--acc); }
   transition: color 0.5s ease; }
 .row:hover, .row.on { border-left-color: var(--acc); }
 .row.on .nm { color: var(--acc); }
+/* the flagship: 01 Universe wears starlight gold in every world, so the
+   eye finds the main model first no matter which skin is dressed. A soft
+   gold light lives in the row's backdrop, and every few seconds a sheen
+   sweeps across it, the way starlight catches a lens */
+.row.feat { position: relative; overflow: hidden;
+  background: linear-gradient(90deg, rgba(242, 201, 121, 0.07), rgba(242, 201, 121, 0.02) 55%, transparent 80%); }
+.row.feat::before { content: ''; position: absolute; top: 0; bottom: 0;
+  left: -45%; width: 45%; pointer-events: none;
+  background: linear-gradient(100deg, transparent,
+    rgba(244, 207, 126, 0.10) 38%, rgba(255, 236, 190, 0.22) 50%,
+    rgba(244, 207, 126, 0.10) 62%, transparent);
+  animation: featSheen 5.8s ease-in-out infinite; }
+.row.feat .nm { color: #f4cd80; text-shadow: 0 0 16px rgba(242, 201, 121, 0.45); }
+.row.feat .nm::after { content: '✶'; margin-left: 9px; font-size: 12px;
+  color: #ffd9a0; display: inline-block; vertical-align: 1px;
+  animation: featTwinkle 3.2s ease-in-out infinite; }
+.row.feat:hover, .row.feat.on { border-left-color: #f2c979; }
+@keyframes featTwinkle { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+@keyframes featSheen { 0% { transform: translateX(0); }
+  46%, 100% { transform: translateX(340%); } }
+@media (prefers-reduced-motion: reduce) {
+  .row.feat .nm::after, .row.feat::before { animation: none; }
+  .row.feat::before { display: none; }
+}
 
 .stage { position: relative; padding: 56px 0 40px 52px; display: flex;
   flex-direction: column; justify-content: center; min-height: 480px; }
