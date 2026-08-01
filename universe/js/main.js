@@ -4010,6 +4010,102 @@ const shipModel = (() => {
   const GRN_L  = new THREE.MeshBasicMaterial({color:0x28ff66});
   const RUN_L  = new THREE.MeshBasicMaterial({color:0x9fd0ff});
 
+  // plating: a near-white panel map (the material color supplies the hue)
+  // with seam lines, per-panel tonal drift, rivets and faint wear, doubling
+  // as a bump map so the seams catch the fill light up close. Lifted from
+  // the portfolio homepage so both ships are the same craft.
+  // (the 2d context is `ctx`, never `g`: `g` is the ship Group in this scope)
+  const mkPlateTex = (repeat) => {
+    const s = 512, pcv = document.createElement('canvas');
+    pcv.width = pcv.height = s;
+    const ctx = pcv.getContext('2d');
+    ctx.fillStyle = '#c9cdd6'; ctx.fillRect(0, 0, s, s);
+    let y = 0;
+    while (y < s) {
+      const ph = 26 + Math.random() * 46;
+      let x = -Math.random() * 30;
+      while (x < s) {
+        const pw = 34 + Math.random() * 68;
+        const v = (198 + Math.random() * 26) | 0;
+        ctx.fillStyle = `rgb(${v},${v + 2},${v + 7})`;
+        ctx.fillRect(x, y, pw, ph);
+        ctx.strokeStyle = 'rgba(64,72,92,0.55)';
+        ctx.lineWidth = 1.4;
+        ctx.strokeRect(x + 0.5, y + 0.5, pw, ph);
+        if (Math.random() < 0.4) {                 // rivets in the corners
+          ctx.fillStyle = 'rgba(64,72,92,0.6)';
+          for (const [rx, ry] of [[x + 5, y + 5], [x + pw - 5, y + 5], [x + 5, y + ph - 5], [x + pw - 5, y + ph - 5]]) {
+            ctx.beginPath(); ctx.arc(rx, ry, 1.4, 0, Math.PI * 2); ctx.fill();
+          }
+        }
+        if (Math.random() < 0.18) {                // an access hatch
+          ctx.fillStyle = 'rgba(120,128,146,0.5)';
+          ctx.fillRect(x + pw * 0.25, y + ph * 0.25, pw * 0.5, ph * 0.5);
+          ctx.strokeRect(x + pw * 0.25, y + ph * 0.25, pw * 0.5, ph * 0.5);
+        }
+        x += pw;
+      }
+      y += ph;
+    }
+    for (let i = 0; i < 60; i++) {                 // faint streaks of wear
+      ctx.strokeStyle = `rgba(${Math.random() < 0.5 ? '235,238,244' : '96,104,124'},${(0.05 + Math.random() * 0.09).toFixed(2)})`;
+      ctx.lineWidth = 0.8;
+      const wx = Math.random() * s, wy = Math.random() * s, wl = 14 + Math.random() * 60;
+      ctx.beginPath(); ctx.moveTo(wx, wy); ctx.lineTo(wx + wl, wy + (Math.random() - 0.5) * 6); ctx.stroke();
+    }
+    const t = new THREE.CanvasTexture(pcv);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.repeat.set(repeat, repeat);
+    t.anisotropy = 8;
+    return t;
+  };
+  // GOLD is declared above but no mesh uses it in either ship, so it is left
+  // unplated rather than paying for a texture nothing samples
+  // One paint, seven materials. A clone shares its source image, so this
+  // uploads a single 512 canvas instead of seven (about 6 MB of VRAM and as
+  // much retained canvas RAM back, which is real money on a phone) while
+  // each material still carries its own repeat.
+  const plateBase = mkPlateTex(1);
+  for (const [mat, rep, bump] of [[SKIN, 1, 0.012], [SKIN2, 1.6, 0.01], [STEEL, 2.4, 0.008],
+    [FACET, 2, 0.008], [DARK, 2.2, 0.006], [CARBON, 2, 0.006], [TITAN, 3, 0.006]]) {
+    const t = rep === 1 ? plateBase : plateBase.clone();
+    t.repeat.set(rep, rep);
+    t.needsUpdate = true;
+    mat.map = t;
+    mat.bumpMap = t;
+    mat.bumpScale = bump;
+    // the plating rides the emissive floor too, so the shadowed belly
+    // shows panels instead of one flat self-lit tone
+    mat.emissiveMap = t;
+    // the panel map averages ~0.83, and it multiplies the emissive floor as
+    // well as the diffuse. Out past the solar system this ship is lit by
+    // almost nothing but that floor, so lift it back to where it was
+    mat.emissiveIntensity = mat.emissiveIntensity / 0.83;
+    mat.needsUpdate = true;
+  }
+  // the throats and heat halos burn unevenly, like metal, not poster ink
+  const mkHeatTex = () => {
+    const s = 256, hc = document.createElement('canvas');
+    hc.width = hc.height = s;
+    const ctx = hc.getContext('2d');
+    ctx.fillStyle = '#dcdcdc'; ctx.fillRect(0, 0, s, s);
+    for (let i = 0; i < 1100; i++) {
+      const v = (150 + Math.random() * 105) | 0;
+      ctx.fillStyle = `rgba(${v},${v},${v},0.55)`;
+      ctx.fillRect(Math.random() * s, Math.random() * s, 1 + Math.random() * 2.5, 6 + Math.random() * 22);
+    }
+    const t = new THREE.CanvasTexture(hc);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    return t;
+  };
+  const heat = mkHeatTex();
+  for (const mat of [GLOW_O, GLOW_W, GLOW_C, ACCENT]) {
+    mat.map = heat;
+    mat.emissiveMap = heat;
+    mat.emissiveIntensity = mat.emissiveIntensity / 0.86;
+    mat.needsUpdate = true;
+  }
+
   const cyl  = (rt,rb,h,s=8,hs=1,op=false) => new THREE.CylinderGeometry(rt,rb,h,s,hs,op); // low-seg = faceted
   const box  = (w,h,d) => new THREE.BoxGeometry(w,h,d);
   const cone = (r,h,s=6) => new THREE.ConeGeometry(r,h,s);
@@ -4024,11 +4120,17 @@ const shipModel = (() => {
   // Loft an angular cross-section polygon along z-stations → one faceted hull.
   // cs: unit polygon [[x,y]...]; stations: [{z,sx,sy,oy?}]
   const loft = (cs, stations, mat) => {
-    const n=cs.length, V=[], I=[];
-    for(const st of stations){
+    // UVs wrap the section (u) and run the length (v), so the hull can wear
+    // the plating texture. Without them the lofted fuselage, the largest
+    // surface on the ship, samples one texel and renders as a flat swatch
+    const n=cs.length, V=[], I=[], U=[];
+    stations.forEach((st, si) => {
       const oy=st.oy||0;
-      for(let i=0;i<n;i++) V.push(cs[i][0]*st.sx, cs[i][1]*st.sy+oy, st.z);
-    }
+      for(let i=0;i<n;i++){
+        V.push(cs[i][0]*st.sx, cs[i][1]*st.sy+oy, st.z);
+        U.push((i / n) * 3, (si / (stations.length - 1)) * 2.2);
+      }
+    });
     for(let r=0;r<stations.length-1;r++)
       for(let i=0;i<n;i++){
         const a=r*n+i, b=r*n+(i+1)%n, c=(r+1)*n+i, d=(r+1)*n+(i+1)%n;
@@ -4040,11 +4142,13 @@ const shipModel = (() => {
       const oy=stations[s].oy||0;
       for(let i=0;i<n;i++){cx+=cs[i][0]*stations[s].sx; cy+=cs[i][1]*stations[s].sy+oy;}
       V.push(cx/n,cy/n,stations[s].z);
+      U.push(0.5, 0.5);
       for(let i=0;i<n;i++){ const a=off+i,b=off+(i+1)%n; if(flip) I.push(base,b,a); else I.push(base,a,b); }
     };
     cap(0,true); cap(stations.length-1,false);
     const geo=new THREE.BufferGeometry();
     geo.setAttribute('position',new THREE.Float32BufferAttribute(V,3));
+    geo.setAttribute('uv',new THREE.Float32BufferAttribute(U,2));
     geo.setIndex(I); geo.computeVertexNormals();
     const m=new THREE.Mesh(geo,mat); g.add(m); return m;
   };
@@ -6623,7 +6727,7 @@ window.U = {
   THREE, renderer, skyScene, solScene, neiScene, galScene, cosScene,
   skyCam, solCam, neiCam, galCam, cosCam,
   labelGroups, starUniforms, skyView, orbits, time, setMode, flyTo, jumpTo, rescaleLabels,
-  skyGroup, horizon, buildArt, solBodies, applyZoom,
+  skyGroup, horizon, buildArt, solBodies, applyZoom, shipModel,
   STARS, handleClick, starInfo, fly, setFlyMode, flyToObject, EXO, exoDirs, skyCam, get flyMode() { return flyMode; },
   applyFlyCam, heldKeys, mouseNDC, MOONS_RT, SATS_RT, LUNAR_RT, ASTEROIDS_RT, COMETS_RT, updateComets,
   TNOS_RT, updateTNOs, PROBES_RT, updateProbes, helioMesh, showProbeInfo, viewFromObject, GALCAT_RT,

@@ -12,7 +12,10 @@
 <meta property="og:image" content="https://davisonbaldwin.github.io/assets/og.jpg">
 <meta property="og:url" content="https://davisonbaldwin.github.io/rooms.html">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%E2%9C%B6%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=9">
+<!-- three.js is 1.27 MB and sat at the end of a serial waterfall behind
+     the module; preloading it lets it download alongside the page -->
+<link rel="modulepreload" href="vendor/three.module.js">
 <style>
   /* subtle dynamism (self-contained here; remove this block + #roomglow + the
      glow script to revert): a breathing, cursor-reactive accent glow that
@@ -25,6 +28,144 @@
     #roomglow { animation: none; }
   }
 </style>
+<style>
+  /* --- the world: when WebGL boots, this page becomes the spinning planet
+     of three worlds (landing3d.js), the scene the homepage wore before it
+     became the deep approach. The flat board below remains the page for
+     browsers without WebGL, and the rows stay the screen-reader layer. --- */
+  .landing { display: none; }
+  body.world-on { background: #05070d; }
+  body.world-on .tex, body.world-on #roomglow { display: none; }
+  body.world-on .wrap { pointer-events: none; }
+  body.world-on .wrap :is(a, button, summary) { pointer-events: auto; }
+  body.world-on .about { pointer-events: auto; }
+
+  /* the bar speaks the world's own starlight */
+  body.world-on .bar { border-bottom: none; position: relative; }
+  body.world-on .bar::after { content: ''; position: absolute; left: 0; right: 0;
+    bottom: 0; height: 1px;
+    background: linear-gradient(90deg, transparent,
+      rgba(216, 226, 242, 0.22) 18%, rgba(216, 226, 242, 0.22) 82%, transparent); }
+  body.world-on .bar .who { color: #eef2fa;
+    text-shadow: 0 0 12px rgba(127, 180, 255, 0.35); }
+  body.world-on .bar .tagline { color: #ccd7e8; letter-spacing: 0.2em;
+    text-shadow: 0 0 8px rgba(4, 6, 11, 0.9), 0 0 14px rgba(127, 180, 255, 0.22); }
+  body.world-on .bar nav a { font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase; color: #aab8d0;
+    text-shadow: 0 0 8px rgba(4, 6, 11, 0.9); }
+  body.world-on .bar nav a:hover { color: #eef2fa;
+    text-shadow: 0 0 12px rgba(127, 180, 255, 0.5); }
+
+  /* the planet's slot: centered in the stage the board used to fill */
+  body.world-on .landing { display: block; position: relative;
+    min-height: calc(100svh - 132px); padding: 0;
+    perspective: 1200px; perspective-origin: 50% 42%; }
+  body.world-on .landing-planet { position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%); width: min(62vh, 46vw);
+    aspect-ratio: 1 / 1; }
+  body.world-on .landing-planet .planet-caption { position: absolute;
+    width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
+    white-space: nowrap; margin: 0; }
+
+  /* the board and tokens fold away while the world is on; the rows remain
+     real links for keyboards and screen readers */
+  body.world-on .board, body.world-on .tokens { position: absolute;
+    width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
+    white-space: nowrap; padding: 0; margin: 0; border: 0; min-height: 0; }
+  /* the canvas fills the viewport, so a normal outline draws at the screen
+     edge where nobody sees it. An inset ring puts the focus state where the
+     eye already is: this canvas is focusable and its arrows really do work */
+  #worldCanvas:focus-visible { outline: none;
+    box-shadow: inset 0 0 0 3px rgba(127, 180, 255, 0.9); }
+
+  /* the swatches are decoration but the email in that strip is not, so it
+     surfaces on focus rather than staying an invisible tab stop */
+  body.world-on .tokens:focus-within { position: fixed; clip-path: none;
+    overflow: visible; left: 18px; bottom: 18px; top: auto; right: auto;
+    width: auto; height: auto; padding: 10px 12px; border-radius: 12px;
+    z-index: 70; background: rgba(12, 16, 26, 0.97);
+    border: 1px solid rgba(238, 243, 250, 0.16); }
+  body.world-on .tokens:focus-within > :not(.mail) { display: none; }
+  body.world-on .tokens:focus-within .mail a { font-family: var(--mono);
+    font-size: 12px; letter-spacing: 0.08em; color: #cbdcff; }
+  /* clipped is fine until someone tabs into it: the focus ring was being
+     clipped away too, so a keyboard visitor crossed the site's only list of
+     case studies as six invisible stops. Focus brings the board back */
+  body.world-on .board:focus-within { position: fixed; clip-path: none;
+    overflow: visible; top: 62px; left: 18px; right: auto;
+    width: min(300px, calc(100vw - 36px)); height: auto;
+    padding: 10px 12px; border-radius: 12px; z-index: 70;
+    background: rgba(12, 16, 26, 0.97);
+    border: 1px solid rgba(238, 243, 250, 0.16);
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.6); }
+  /* only the index of worlds surfaces: the feature panel behind it would
+     spill off a phone and is not what the keyboard visitor came for */
+  body.world-on .board:focus-within > :not(.idx) { display: none; }
+  body.world-on .board:focus-within .idx { display: block; }
+  body.world-on .board:focus-within .row { display: block; width: auto;
+    padding: 6px 2px; border: 0; background: none;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: #cbdcff; }
+  body.world-on .board:focus-within .row .k { display: none; }
+
+  /* the about panel, floating over the world when its star is opened */
+  body.world-on .about { display: none; }
+  body.world-on.about-open .about { display: block; position: fixed; z-index: 60;
+    left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: min(540px, calc(100vw - 44px)); max-height: 80svh; overflow: auto;
+    background: rgba(56, 66, 92, 0.98); border: 1px solid rgba(216, 226, 242, 0.5);
+    border-radius: 14px; padding: 28px 32px 24px;
+    box-shadow: 0 24px 90px rgba(0, 0, 0, 0.65),
+      inset 0 1px 0 rgba(238, 243, 250, 0.14); }
+  body.world-on.about-open .about summary { display: none; }
+  body.world-on.about-open .about p,
+  body.world-on.about-open .about .about-more p { color: #f4f7fd;
+    font-size: 17px; }
+  body.world-on.about-open .about .eyebrow { color: #b9ceff; font-size: 12.5px; }
+  body.world-on.about-open .about .about-links { font-size: 14.5px; }
+  body.world-on.about-open .about .about-links a { color: #cbdcff; }
+  .about-backdrop { display: none; }
+  body.world-on.about-open .about-backdrop { display: block; position: fixed;
+    inset: 0; z-index: 59; background: rgba(4, 6, 11, 0.6); }
+  .about-close { display: none; }
+  body.world-on.about-open .about-close { display: block; position: absolute;
+    top: 10px; right: 12px; background: none; border: 0; color: var(--sub);
+    font-size: 15px; cursor: pointer; padding: 6px; }
+  body.world-on.about-open .about-close:hover { color: var(--ink); }
+
+  @media (max-width: 900px) {
+    /* phones: the planet is the whole show, one fixed screen */
+    body.world-on { position: fixed; inset: 0; overflow: hidden; }
+    body.world-on .landing { display: flex; flex-direction: column;
+      justify-content: center; align-items: stretch;
+      min-height: calc(100svh - 130px); padding: 12px 0 24px; }
+    body.world-on .landing-planet { position: relative; left: 50%; top: auto;
+      transform: translateX(-50%); max-width: none;
+      width: min(100vw, 380px, calc(100svh - 220px));
+      margin: 40px 0 0; }
+  }
+
+  /* while the 3D world boots, the flat page stays veiled so a reload never
+     flashes it; landing3d.js lifts the veil either way */
+  html.pre3d .tex, html.pre3d #roomglow, html.pre3d .board,
+  html.pre3d .tokens, html.pre3d .landing, html.pre3d .about { visibility: hidden; }
+  html.pre3d body { background: #05070d; }
+</style>
+<script>
+  // decide before first paint: if WebGL is available the planet world will
+  // take over, so veil the flat board now rather than flash it. A timer
+  // lifts the veil if the world somehow never arrives.
+  try {
+    var glc = document.createElement('canvas');
+    if (glc.getContext('webgl2') || glc.getContext('webgl')) {
+      document.documentElement.classList.add('pre3d');
+      setTimeout(function () {
+        if (!document.body.classList.contains('world-on'))
+          document.documentElement.classList.remove('pre3d');
+      }, 4000);
+    }
+  } catch (e) {}
+</script>
 </head>
 <body>
 
@@ -45,11 +186,14 @@
 </header>
 
 <main class="board">
-  <div class="idx" id="idx" role="list">
-    <a class="row on feat" role="listitem" data-i="0" href="studies/universe.html"><span class="no">01</span><span class="nm">Universe</span><span class="k">INTERACTIVE · LIVE</span></a>
-    <a class="row" role="listitem" data-i="1" href="studies/stock-evaluator.html"><span class="no">02</span><span class="nm">Stock Evaluator</span><span class="k">LIVE APP</span></a>
-    <a class="row" role="listitem" data-i="2" href="studies/music-technology.html"><span class="no">03</span><span class="nm">Music Technology</span><span class="k">SIX CHAPTERS</span></a>
-  </div>
+  <!-- role="listitem" on the anchors replaced their link role, so a screen
+       reader announced three list items and never said any of them was a
+       link. The nav landmark carries the grouping instead. -->
+  <nav class="idx" id="idx" aria-label="The three worlds">
+    <a class="row on feat" data-i="0" href="studies/universe.html"><span class="no">01</span><span class="nm">Universe</span><span class="k">INTERACTIVE · LIVE</span></a>
+    <a class="row" data-i="1" href="studies/stock-evaluator.html"><span class="no">02</span><span class="nm">Stock Evaluator</span><span class="k">LIVE APP</span></a>
+    <a class="row" data-i="2" href="studies/music-technology.html"><span class="no">03</span><span class="nm">Music Technology</span><span class="k">SIX CHAPTERS</span></a>
+  </nav>
 
   <section class="stage">
     <div class="eyebrow" id="st-eyebrow">WORLD 01 · INTERACTIVE MODEL · LIVE</div>
@@ -62,6 +206,31 @@
     </div>
   </section>
 </main>
+
+<div class="landing">
+  <div class="landing-planet">
+    <svg viewBox="0 0 10 10" aria-hidden="true"></svg>
+    <div class="planet-caption" id="planet-caption" role="status" aria-live="polite">THREE WORLDS, ONE PLANET · DRAG TO SPIN · CLICK TO ENTER</div>
+  </div>
+</div>
+
+<section class="about">
+  <div class="eyebrow">ABOUT</div>
+  <p>I design and build products end to end.</p>
+  <details class="about-more">
+    <summary>More about Davis <span class="about-caret">→</span></summary>
+    <p>Davis Baldwin is a product designer and builder who completed a Bachelor of Humanities
+    and Arts at Carnegie Mellon University (May 2026), combining Music Technology and Hispanic
+    Studies. He has worked as a software engineering intern at Gamma Technologies and as a
+    research fellow at Carnegie Mellon studying improvisational composition. His portfolio
+    centers on an interactive planetarium built from real astronomical catalogs, alongside a
+    live stock-analysis web app and a body of original music technology.</p>
+  </details>
+  <p class="about-links">
+    <a href="resume.html">Resume</a> ·
+    <a href="mailto:davison.baldwin@gmail.com">davison.baldwin@gmail.com</a>
+  </p>
+</section>
 
 <footer class="tokens" id="tokens">
   <span>THIS WORLD'S DESIGN:</span>
@@ -151,5 +320,6 @@
     });
   });
 </script>
+<script type="module" src="landing3d.js?v=21"></script>
 </body>
 </html>

@@ -12,7 +12,10 @@
 <meta property="og:image" content="https://davisonbaldwin.github.io/assets/og.jpg">
 <meta property="og:url" content="https://davisonbaldwin.github.io/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%E2%9C%B6%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=9">
+<!-- three.js is 1.27 MB and sat at the end of a serial waterfall behind
+     the module; preloading it lets it download alongside the page -->
+<link rel="modulepreload" href="vendor/three.module.js">
 <style>
   /* --- the machine of worlds: three generative slices in a clockwork gear ring --- */
   .landing-planet { perspective: 1000px; }
@@ -45,7 +48,6 @@
   body.world-on .tex { display: none; }              /* the canvas is the sky now */
   body.world-on .wrap { pointer-events: none; }      /* space is draggable through the text */
   body.world-on .wrap :is(a, button, summary) { pointer-events: auto; }
-  body.world-on .about { pointer-events: auto; }
 
   /* the bar speaks the world's own starlight: glowing mono, a rule that
      dissolves at its ends instead of a hard line */
@@ -72,33 +74,12 @@
   body.world-on .landing-planet { position: absolute; left: 50%; top: 50%;
     transform: translate(-50%, -50%); width: min(62vh, 46vw);
     aspect-ratio: 1 / 1; }                             /* the slot the planet flies in */
-  /* the about section lives inside a star: hidden until the star is clicked,
-     then it opens as a panel floating over the world */
+  /* the about section is the flat page's; with the world on it is hidden.
+     The dialog CSS that used to sit here (about-open, its backdrop and
+     close button) was orphaned when the About nav link was removed: nothing
+     on THIS page can set that class, only rooms.html does. Deleted rather
+     than left as a rumour of a feature. */
   body.world-on .about { display: none; }
-  body.world-on.about-open .about { display: block; position: fixed; z-index: 60;
-    left: 50%; top: 50%; transform: translate(-50%, -50%);
-    width: min(540px, calc(100vw - 44px)); max-height: 80svh; overflow: auto;
-    background: rgba(56, 66, 92, 0.98); border: 1px solid rgba(216, 226, 242, 0.5);
-    border-radius: 14px; padding: 28px 32px 24px;
-    box-shadow: 0 24px 90px rgba(0, 0, 0, 0.65),
-      inset 0 1px 0 rgba(238, 243, 250, 0.14); }
-  body.world-on.about-open .about summary { display: none; }
-  /* the panel floats over deep space: the words need real light */
-  body.world-on.about-open .about p,
-  body.world-on.about-open .about .about-more p { color: #f4f7fd;
-    font-size: 17px; }
-  body.world-on.about-open .about .eyebrow { color: #b9ceff; font-size: 12.5px; }
-  body.world-on.about-open .about .about-links { font-size: 14.5px; }
-  body.world-on.about-open .about .about-links a { color: #cbdcff; }
-  body.world-on.about-open .about-close { color: #c8d2e2; }
-  .about-backdrop { display: none; }
-  body.world-on.about-open .about-backdrop { display: block; position: fixed;
-    inset: 0; z-index: 59; background: rgba(4, 6, 11, 0.6); }
-  .about-close { display: none; }
-  body.world-on.about-open .about-close { display: block; position: absolute;
-    top: 10px; right: 12px; background: none; border: 0; color: var(--sub);
-    font-size: 15px; cursor: pointer; padding: 6px; }
-  body.world-on.about-open .about-close:hover { color: var(--ink); }
 
   @media (max-width: 900px) {
     /* phones: the planet is the whole show, centered in the stage (the
@@ -120,15 +101,38 @@
   /* every hero word's body lives in the 3D scene; the DOM nodes stay for
      screen readers and keyboard focus only (these rules must come last so
      they win at every width) */
-  body.world-on .landing-planet .planet-caption { position: absolute;
-    width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
-    white-space: nowrap; margin: 0; left: auto; right: auto; }
+  /* the flat page's planet caption describes a planet this page no longer
+     shows, and it contradicted the canvas label. Hidden outright with the
+     world on, rather than merely clipped where a reader would still read it */
+  body.world-on .landing-planet .planet-caption { display: none; }
+  /* the hero text stays for screen readers, but nothing in it is focusable
+     any more: its one link duplicated the bar's, and clipped focus rings
+     made it an invisible tab stop */
   body.world-on .landing-text { display: block; position: absolute;
     width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
     white-space: nowrap; }
+  body.world-on .landing-text .ctas { display: none; }
   body.world-on .landing-text .eyebrow, body.world-on .landing-text h1,
   body.world-on .landing-text .brief, body.world-on .landing-text .ctas {
     position: static; transform: none !important; }
+
+  /* the world index: only needed once the 3D world has hidden the SVG's
+     own links. Clipped away for the eye, present for the tab key, and it
+     drops into view as a real panel the instant anything in it is focused,
+     so a sighted keyboard user never loses the focus ring */
+  .world-index { display: none; }
+  body.world-on .world-index { display: block; position: fixed;
+    top: 0; left: 0; width: 1px; height: 1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap; z-index: 70; }
+  body.world-on .world-index:focus-within { width: auto; height: auto;
+    clip-path: none; overflow: visible; top: 62px; left: 18px;
+    padding: 12px 14px; border-radius: 12px;
+    background: rgba(12, 16, 26, 0.96);
+    border: 1px solid rgba(238, 243, 250, 0.16);
+    box-shadow: 0 18px 60px rgba(0, 0, 0, 0.6); }
+  body.world-on .world-index a { display: block; padding: 5px 2px;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: #cbdcff; }
 
   /* while the 3D world boots, the SVG fallback stays veiled so a reload
      never flashes the old page; landing3d.js lifts the veil either way */
@@ -165,6 +169,16 @@
   </nav>
 </header>
 
+<!-- With the world on, the SVG that carries the case study links is hidden,
+     which took the studies out of the tab order and out of the screen
+     reader's reach entirely. These keep all three one Tab from the top of
+     the page, and they surface visibly the moment they take focus. -->
+<nav class="world-index" aria-label="The three worlds">
+  <a href="studies/universe.html">01 Universe</a>
+  <a href="studies/stock-evaluator.html">02 Stock Evaluator</a>
+  <a href="studies/music-technology.html">03 Music Technology</a>
+</nav>
+
 <main class="landing">
   <div class="landing-text">
     <div class="eyebrow">PRODUCT DESIGN · THREE WORLDS</div>
@@ -180,9 +194,13 @@
         <clipPath id="s1"><path d="M250,250 L250,40 A210,210 0 0 1 431.9,355 Z"/></clipPath>
         <clipPath id="s2"><path d="M250,250 L431.9,355 A210,210 0 0 1 68.1,355 Z"/></clipPath>
         <clipPath id="s3"><path d="M250,250 L68.1,355 A210,210 0 0 1 250,40 Z"/></clipPath>
-        <linearGradient id="gasj" x1="0" y1="0" x2="0.5" y2="1">
-          <stop offset="0%" stop-color="#eef1f6"/><stop offset="55%" stop-color="#9d8767"/>
-          <stop offset="100%" stop-color="#241b12"/>
+        <!-- world 03's own palette. This slice used to be filled with the
+             A Soul's Journey gradient, a leftover from the nine-room planet
+             where slice 3 was that chapter, so Music Technology wore another
+             world's colours in the no-WebGL fallback -->
+        <linearGradient id="gmus" x1="0" y1="0" x2="0.5" y2="1">
+          <stop offset="0%" stop-color="#d9a96a"/><stop offset="55%" stop-color="#4a3a52"/>
+          <stop offset="100%" stop-color="#141114"/>
         </linearGradient>
         <radialGradient id="rim" cx="35%" cy="30%" r="80%">
           <stop offset="70%" stop-color="rgba(0,0,0,0)"/>
@@ -211,7 +229,7 @@
       <!-- 03 Music Technology: sound generated live from the core -->
       <a href="studies/music-technology.html"><g class="slice"><title>03 · Music Technology</title>
         <g clip-path="url(#s3)">
-          <rect x="36" y="36" width="220" height="326" fill="url(#gasj)"/>
+          <rect x="36" y="36" width="220" height="326" fill="url(#gmus)"/>
           <g id="mus-fx"></g>
         </g></g></a>
 
@@ -232,11 +250,11 @@
       <g id="gearing"></g>
       </g>
     </svg>
-    <div class="planet-caption" id="planet-caption">THREE WORLDS, ONE PLANET · DRAG TO SPIN · CLICK TO ENTER</div>
+    <div class="planet-caption" id="planet-caption">THREE WORLDS, ONE PLANET · CLICK A WORLD TO ENTER</div>
   </div>
 </main>
 
-<section class="about">
+<section class="about" id="about">
   <div class="eyebrow">ABOUT</div>
   <p>I design and build products end to end.</p>
   <details class="about-more">
@@ -390,8 +408,16 @@
 
     let last = performance.now(), t = 0;
     function frame(now) {
-      // once the 3D world boots (body.world-on), this SVG is hidden; stop animating it
-      if (document.body.classList.contains('world-on')) return;
+      // While the 3D world is up this SVG is hidden, so there is no point
+      // drawing it. It must keep TICKING though: if the world ever throws,
+      // home3d's fallBack strips world-on and reveals this planet again, and
+      // a loop that had returned for good would leave the visitor looking at
+      // frozen art. Idle instead of dying.
+      if (document.body.classList.contains('world-on')) {
+        last = now;
+        requestAnimationFrame(frame);
+        return;
+      }
       const dt = Math.min(0.05, (now - last) / 1000); last = now; t += dt;
       // stars
       for (const s of stars) {
@@ -432,6 +458,9 @@
     requestAnimationFrame(frame);
   })();
 </script>
-<script type="module" src="landing3d.js?v=5"></script>
+<!-- the deep approach: the fly-through homepage world. landing3d.js (the
+     spinning planet) now lives on rooms.html; the SVG planet below remains
+     the no-WebGL fallback for this page. -->
+<script type="module" src="home3d.js?v=41"></script>
 </body>
 </html>

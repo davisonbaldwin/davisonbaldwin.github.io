@@ -12,7 +12,7 @@
 <meta property="og:image" content="https://davisonbaldwin.github.io/assets/og.jpg">
 <meta property="og:url" content="https://davisonbaldwin.github.io/studies/universe.html">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%E2%9C%B6%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="../style.css?v=5">
+<link rel="stylesheet" href="../style.css?v=9">
 </head>
 <body>
 
@@ -21,7 +21,7 @@
 
 <header class="bar">
   <span><a class="who" href="../index.html">Davis Baldwin</a></span>
-  <span class="tagline">WORLD 01 OF 03</span>
+  <span class="tagline">WORLD 01 OF 03 · <a href="stock-evaluator.html">02 EVALUATOR</a> · <a href="music-technology.html">03 MUSIC</a></span>
   <nav>
     <a href="../rooms.html">The worlds</a>
     <a href="../resume.html">Resume</a>
@@ -35,7 +35,7 @@
 </section>
 
 <figure class="plate">
-  <img class="plate-img" src="../assets/uni-opening.jpg" alt="The Universe app's opening view: the Solar System with textured planets on their orbits, a minimap in the top-left, a search bar, and a time bar reading real time">
+  <img class="plate-img" src="../assets/uni-opening.jpg" alt="The Universe app's opening view: the Solar System with textured planets on their orbits, a minimap in the top-left, a search bar, and a time bar reading real time" width="2400" height="1500">
   <figcaption>FIG. 1A · the opening view, captured from the live model. Planet positions computed from real orbital elements for today's date; the minimap and clock already running.</figcaption>
   <a class="live" href="../universe/" target="_blank" rel="noopener">Open the live model ↗</a>
 </figure>
@@ -64,7 +64,7 @@
     <h2><span>THE AUDIT</span>The problems, in the first minute</h2>
     <p>A first-time visitor landed in a beautiful, silent solar system with no hint that they could drag, scroll, click a star, or (the whole point) keep scrolling out until the Milky Way became a dot in the cosmic web. The single best feature was invisible. The controls panel read like a debug menu: thirty-five raw toggles, “Minimap” sitting next to “Alcubierre Warp.” And small things were just wrong: the minimap in sky view showed a cosmic-web map from a different scale, orbit view pinned “you are here” to the Sun at a distance of zero, and the search dropdown hung open over the sky after you'd looked away. They were small errors, but they made the model feel less trustworthy.</p>
     <figure class="plate">
-      <img class="plate-img" src="../assets/uni-cosmic.jpg" alt="The cosmic web view: galaxy clusters and voids in blue and rust, with the Local Group labeled 'you are here' and superclusters named across the frame">
+      <img class="plate-img" src="../assets/uni-cosmic.jpg" alt="The cosmic web view: galaxy clusters and voids in blue and rust, with the Local Group labeled 'you are here' and superclusters named across the frame" loading="lazy" decoding="async" width="2400" height="1500">
       <figcaption>FIG. 1B · the far end of the continuous zoom: the cosmic web, 71 billion light-years across. The Local Group is still labeled “you are here.”</figcaption>
     </figure>
     <figure class="plate">
@@ -101,20 +101,20 @@
     <h2><span>DECISION 01</span>The tour rides the real camera</h2>
     <p>I designed the first minute deliberately. A welcome card offers two paths: take the guided tour, or explore alone (skippers get three hint chips that fade on their own). The tour rides the product's real camera through nine self-paced stops: the Solar System, the running clock, a satellite's seat, your own spaceship, then outward through the stellar neighborhood, the Milky Way, and the cosmic web, and home to tonight's sky, drifting slowly outward at each stop while you read. By the last stop you've already traveled the whole model once. A small ✦ Tour button keeps it replayable.</p>
     <figure class="plate">
-      <img class="plate-img" src="../assets/uni-welcome.jpg" alt="The first-visit welcome card over a dimmed Solar System: 'Take the tour, 9 stops, skip any time' and 'Explore on my own', with the hint line 'drag to orbit, scroll to zoom, click anything'">
+      <img class="plate-img" src="../assets/uni-welcome.jpg" alt="The first-visit welcome card over a dimmed Solar System: 'Take the tour, 9 stops, skip any time' and 'Explore on my own', with the hint line 'drag to orbit, scroll to zoom, click anything'" loading="lazy" decoding="async" width="2400" height="1500">
       <figcaption>FIG. 1D · the first minute, as shipped: two paths, with the model already running behind the card.</figcaption>
     </figure>
     <h2><span>DECISION 02</span>A minimap that's right at every scale</h2>
     <p>The “you are here” minimap only works if it is right at every scale. I rebuilt it: in orbit it tracks the actual camera (the old one tracked an unused flight camera, so “you” sat on the Sun); across the solar system, the stars, the galaxy, and the cosmic web it redraws its map to the scale you're in; and in the night-sky view, where a position map is meaningless because you're standing on Earth looking up, it becomes a view-direction compass: Earth at the center, a cone sweeping the sky as you turn.</p>
     <figure class="plate">
-      <img class="plate-img" src="../assets/uni-sky.jpg" alt="The night-sky view: constellation lines and names, the Moon, Mars, nebulae and star names over Earth's sky, and the minimap turned into a view-direction compass showing a cone sweeping from Earth">
+      <img class="plate-img" src="../assets/uni-sky.jpg" alt="The night-sky view: constellation lines and names, the Moon, Mars, nebulae and star names over Earth's sky, and the minimap turned into a view-direction compass showing a cone sweeping from Earth" loading="lazy" decoding="async" width="2400" height="1500">
       <figcaption>FIG. 1E · the night sky from Earth, tonight. The minimap has become a view-direction compass: Earth at the center, a cone where you're looking.</figcaption>
     </figure>
     <h2><span>DECISION 03</span>Three presets instead of thirty-five toggles</h2>
-    <p>The old panel had thirty-five raw toggles. Most visitors need three good defaults. I rebuilt the panel into collapsible groups (Sky &amp; Stars, Solar System, Phenomena, Physics, Interface) under three one-tap presets: <b>Essentials</b> (the balanced view), <b>Clean view</b> (just the universe, labels off), and <b>Everything</b>. Change any single toggle and the preset highlight turns off. Every choice persists between visits, so the model opens the way you left it.</p>
+    <p>The old panel had thirty-five raw toggles. Most visitors need three good defaults. I rebuilt the panel into four collapsible groups (Sky &amp; Stars, Solar System, Physics, Interface), with the phenomena catalog and the EM spectrum folded into Sky &amp; Stars as sub-groups, under three one-tap presets: <b>Essentials</b> (the balanced view), <b>Clean view</b> (just the universe, labels off), and <b>Everything</b>. Change any single toggle and the preset highlight turns off. Every choice persists between visits, so the model opens the way you left it.</p>
     <figure class="plate">
-      <img class="plate-img" src="../assets/uni-panel.jpg" alt="The layer panel open over the Solar System: Essentials, Clean view, and Everything preset buttons above grouped toggles, Sky & Stars, EM Spectrum, Solar System, Phenomena, Physics, Interface">
-      <figcaption>FIG. 1F · the rebuilt panel: three presets over thirty-five layers in five groups, with the EM spectrum one tap away.</figcaption>
+      <img class="plate-img" src="../assets/uni-panel.jpg" alt="The layer panel open over the Solar System: Essentials, Clean view, and Everything preset buttons above four collapsible groups, Sky & Stars, Solar System, Physics, and Interface, with the Solar System group expanded to show its toggles" loading="lazy" decoding="async" width="2400" height="1500">
+      <figcaption>FIG. 1F · the rebuilt panel: three presets over forty layers in four groups, each group one tap from folded to open.</figcaption>
     </figure>
     <h2><span>DECISION 04</span>Load only what the first minute needs</h2>
     <p>The heaviest UX problem was the loading bar. The scene gated on tens of megabytes of 8K planet textures a first-time visitor couldn't yet see the value of. The fix is progressive: the loader now waits only for lightweight 2K stand-ins, then the full-resolution maps stream in one at a time behind the already-live scene and swap in invisibly. Time-to-interactive dropped roughly five-fold, and nothing pops or flashes. The first Jupiter you see is a slightly softer version of the one you can orbit a minute later.</p>
@@ -123,7 +123,7 @@
     <p>Half of first visits arrive on a phone, so the phone version had to carry the full universe. I mapped touch onto the physics the model already had. Pinch feeds the same continuous zoom as the scroll wheel, so two fingers carry you from Saturn's rings out to the cosmic web. Two-finger drag pans, a tap selects, and a double-tap flies you to whatever you tapped. One wrinkle: a pinch always ends with a finger lifting, so the app has to tell “selected a star” apart from “finished zooming.”</p>
     <p>Flight was the one part I had to redesign. The desktop ship is flown with a keyboard. On a phone, a 🚀 button appears instead, and the ship starts at rest, because motion you didn't ask for is disorienting. Holding a finger down is thrust, and lifting it recenters the flight stick. The keyboard legend becomes a three-button HUD: Cruise, View, Exit. The guided tour adapts too. On a phone it teaches the 🚀 button, says “tap” and “pinch,” and info cards become full-width bottom sheets that slide over the sky instead of floating panels beside it.</p>
     <figure class="plate" style="text-align:center">
-      <img class="plate-img" style="max-width:min(320px,100%);display:inline-block" src="../assets/uni-mobile.jpg" alt="The Universe app at phone width: the night sky with the minimap compass, and a full-width bottom-sheet card for the star Mirach listing its distance, spectral type, its known planet, and a 'View the planetary system' action">
+      <img class="plate-img" style="max-width:min(320px,100%);display:inline-block" src="../assets/uni-mobile.jpg" alt="The Universe app at phone width: the night sky with the minimap compass, and a full-width bottom-sheet card for the star Mirach listing its distance, spectral type, its known planet, and a 'View the planetary system' action" loading="lazy" decoding="async" width="780" height="1688">
       <figcaption>FIG. 1G · the same model at 390px: bottom-sheet cards, the minimap compass, and a tapped star's card, including its known exoplanet and a one-tap jump to its planetary system.</figcaption>
     </figure>
     <p>The rest of the mobile pass chased each bug to its cause. The minimap's scale ladder overflowed its card on actual phones: enlarging the touch targets with horizontal padding had made the row wider than its container, so the touch chips now grow vertically only. Render resolution is capped lower on phones to save battery and heat. The progressive 2K textures matter twice as much over cellular. Form inputs hold 16px so iOS stops zooming the page when you tap them, the layout respects the notch, the star twinkle turns itself off for people who prefer reduced motion, and if WebGL isn't available the loader says so instead of spinning forever.</p>
@@ -135,8 +135,8 @@
     <h2><span>DECISION 08</span>Labels compete for their place</h2>
     <p>Two hundred phenomena, eighty-eight constellations, hundreds of star names, nebulae, and planets all want to print on the same sky. For a long time they all did, and dense regions like Perseus became a pile of text. The fix is a competition run every frame. Every label carries a priority: planets first, then bright stars by magnitude, constellations, deep-sky objects, phenomena. Labels claim screen space in that order, and any label that would overlap a winner stays hidden. Its marker remains visible and clickable, and its name appears as you zoom in and room opens up. The interface panels claim their space before any label does, so names never print underneath the minimap or bleed through an open card. Turning a layer off removes its labels from the contest entirely. At the default view roughly a third of the labels earn a spot, and every one of them is readable.</p>
     <figure class="plate">
-      <img class="plate-img" src="../assets/uni-labels-before.jpg" alt="The Perseus region before the label system: phenomena, star, and constellation names printing on top of each other in a dense pile">
-      <img class="plate-img" style="margin-top:6px" src="../assets/uni-labels-after.jpg" alt="The identical Perseus region after the label system: each label cleanly separated, lower-priority names hidden with their markers still visible">
+      <img class="plate-img" src="../assets/uni-labels-before.jpg" alt="The Perseus region before the label system: phenomena, star, and constellation names printing on top of each other in a dense pile" loading="lazy" decoding="async" width="2560" height="1440">
+      <img class="plate-img" style="margin-top:6px" src="../assets/uni-labels-after.jpg" alt="The identical Perseus region after the label system: each label cleanly separated, lower-priority names hidden with their markers still visible" loading="lazy" decoding="async" width="2560" height="1440">
       <figcaption>FIG. 1H · the same Perseus sky, before and after the label system. The before frame is the actual prior build, served from version history. Losing labels keep their markers and return as you zoom in.</figcaption>
     </figure>
     <h2><span>THE FEEDBACK LOOP</span>Symptoms are not causes</h2>
@@ -144,7 +144,7 @@
     <h2><span>THE HONEST SKY</span>When the data looks wrong, explain it</h2>
     <p>With the exoplanet layer on, a giant golden square hangs in Cygnus, and it looks like a rendering bug. It is real. The Kepler space telescope stared at that one patch of sky for nine years and found planets around thousands of the stars that fell on its camera, a mosaic of square sensors with gaps between them. The map of discoveries carries the camera's outline, gaps and all, because the model plots every discovery where it truly is. Planets exist all over the sky. We have only stared that hard at one square of it.</p>
     <figure class="plate">
-      <img class="plate-img" src="../assets/uni-kepler.jpg" alt="The Kepler field in Cygnus with the exoplanet layer on: thousands of gold points forming a square with grid gaps, surrounded by labeled systems like Kepler-16, Kepler-90, and Tabby's Star">
+      <img class="plate-img" src="../assets/uni-kepler.jpg" alt="The Kepler field in Cygnus with the exoplanet layer on: thousands of gold points forming a square with grid gaps, surrounded by labeled systems like Kepler-16, Kepler-90, and Tabby's Star" loading="lazy" decoding="async" width="2560" height="1440">
       <figcaption>FIG. 1I · the Kepler field with the exoplanet layer on. The square is the telescope's camera, drawn in nine years of discoveries. Every dot is a confirmed planetary system at its true position.</figcaption>
     </figure>
     <p>The same commitment shapes smaller choices. The Sun and Moon render at their true apparent sizes, about half a degree each, which is the coincidence that makes total eclipses possible, and zooming into the Moon works like a telescope because the disc grows the way a real disc would. The star count is 119,625 because that is every star in the catalog once the Sun is modeled as a body. A round number would have meant somebody chose it.</p>

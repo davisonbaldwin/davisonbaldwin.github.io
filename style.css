@@ -24,7 +24,9 @@ html[data-skin="eval"] {
   --line: rgba(237, 227, 207, 0.16); --face: Menlo, monospace;
 }
 html[data-skin="asj"] {
-  --bg: #e9edf3; --ink: #2a3040; --sub: #6e7a90; --acc: #b0791b;
+  /* sub and acc were 3.69:1 and 3.19:1 on this background, under the 4.5:1
+     floor every dark skin already clears at 10.5-13px. Now 4.80 and 4.85 */
+  --bg: #e9edf3; --ink: #2a3040; --sub: #5d6879; --acc: #8a5e0e;
   --line: rgba(42, 48, 64, 0.15); --face: Optima, "Gill Sans", sans-serif;
 }
 html[data-skin="sitw"] {
@@ -32,7 +34,8 @@ html[data-skin="sitw"] {
   --line: rgba(243, 231, 228, 0.15); --face: "Iowan Old Style", Charter, Georgia, serif;
 }
 html[data-skin="ttf"] {
-  --bg: #eaf2f8; --ink: #16303f; --sub: #5a7183; --acc: #1e7fd1;
+  /* acc was 3.70:1 here and sub sat exactly on 4.50; now 5.26 and 4.91 */
+  --bg: #eaf2f8; --ink: #16303f; --sub: #546b7d; --acc: #1266ad;
   --line: rgba(22, 48, 63, 0.15); --face: Futura, "Avenir Next", sans-serif;
 }
 html[data-skin="ywlmb"] {
@@ -81,11 +84,6 @@ a { color: var(--acc); }
   radial-gradient(ellipse 60% 40% at 78% 26%, rgba(31, 48, 84, 0.85) 0%, transparent 65%),
   radial-gradient(ellipse 50% 60% at 12% 78%, rgba(58, 34, 66, 0.5) 0%, transparent 65%); }
 
-/* Room 02 - the journey: light of rest descending to Franco's dark, a sun rising low */
-.tex-asj { background:
-  radial-gradient(ellipse 70% 30% at 50% 0%, rgba(255, 255, 255, 0.95) 0%, transparent 60%),
-  radial-gradient(circle at 50% 88%, rgba(255, 196, 74, 0.9) 0 4vw, rgba(232, 160, 32, 0.5) 8vw, rgba(232, 160, 32, 0.18) 16vw, transparent 32vw),
-  linear-gradient(180deg, #eef1f6 0%, #dde2ea 32%, #9d8767 58%, #4a3a26 76%, #241b12 100%); }
 
 /* Room 03 - the terminal: scanlines, a grid, one amber line going up */
 .tex-eval { background:
@@ -195,6 +193,9 @@ a { color: var(--acc); }
   text-decoration: none; transition: color 0.5s ease; }
 .bar .tagline { font-family: var(--mono); font-size: 10.5px; color: var(--sub);
   letter-spacing: 0.06em; transition: color 0.5s ease; }
+/* the tagline doubles as the world switcher on case-study pages */
+.bar .tagline a { color: var(--acc); text-decoration: none; }
+.bar .tagline a:hover { color: var(--ink); }
 .bar nav { font-family: var(--ui); font-size: 12.5px; }
 .bar nav a { color: var(--sub); text-decoration: none; margin-left: 20px;
   transition: color 0.5s ease; }
@@ -326,7 +327,7 @@ a { color: var(--acc); }
   color: var(--sub); margin-bottom: 14px; }
 .room-head .eyebrow b { color: var(--ink); font-weight: 400; }
 .room-head .eyebrow .series { color: var(--acc); }
-.room-head h1 { font-family: var(--face); font-size: clamp(32px, 4.6vw, 46px);
+.room-head h1, .room-head h2 { font-family: var(--face); font-size: clamp(32px, 4.6vw, 46px);
   line-height: 1.1; font-weight: 700; letter-spacing: -0.01em; text-wrap: balance; }
 .room-head .dek { margin-top: 14px; font-size: 17px; font-style: italic;
   color: var(--sub); max-width: 56ch; line-height: 1.55; }
@@ -344,6 +345,20 @@ a { color: var(--acc); }
   border: 0; }
 /* the evaluator's live-app embed */
 .plate-app { position: relative; height: 680px; background: #15130d; }
+/* sits under the iframe and is removed on load: a free-tier app can take
+   most of a minute to wake, and an empty plate reads as a broken embed */
+.plate-waking { position: absolute; inset: 0; z-index: 0; display: flex;
+  flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--sub); text-align: center; padding: 0 24px; }
+.plate-waking small { font-size: 10px; letter-spacing: 0.1em; opacity: 0.7;
+  text-transform: none; font-family: var(--body); }
+.plate-waking .pulse { width: 7px; height: 7px; border-radius: 50%;
+  background: var(--acc); animation: plateWake 1.4s ease-in-out infinite; }
+@keyframes plateWake { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .plate-waking .pulse { animation: none; } }
+/* the frame paints over the note once it has something to show */
+.plate-app iframe { z-index: 1; }
 .plate-app iframe { position: absolute; inset: 0; width: 100%; height: 100%;
   border: 0; }
 @media (max-width: 700px) { .plate-app { height: 540px; } }
@@ -374,7 +389,7 @@ a { color: var(--acc); }
 
 .blocks { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 30px;
   padding-top: 22px; border-top: 1px solid var(--line); max-width: 62ch; }
-.block h3 { font-family: var(--ui); font-size: 10.5px; letter-spacing: 0.14em;
+.block h2, .block h3 { font-family: var(--ui); font-size: 10.5px; letter-spacing: 0.14em;
   text-transform: uppercase; color: var(--acc); font-weight: 600; margin-bottom: 9px; }
 .block ul { list-style: none; }
 .block li { font-family: var(--ui); font-size: 13px; color: var(--sub);
@@ -493,7 +508,7 @@ html[data-skin="asj"] .stage h1 { text-shadow:
     rgba(240, 170, 44, 0.45) 9vw, rgba(232, 160, 32, 0.18) 17vw,
     rgba(232, 160, 32, 0.06) 26vw, transparent 38vw); }
 .part .wrap { position: relative; z-index: 1; }
-.part-ii .room-head h1 { font-style: italic; font-size: clamp(40px, 6vw, 72px); }
+.part-ii .room-head h1, .part-ii .room-head h2 { font-style: italic; font-size: clamp(40px, 6vw, 72px); }
 .part .part-eyebrow { font-family: var(--mono); font-size: 11px;
   letter-spacing: 0.18em; color: var(--acc); text-transform: uppercase;
   padding-top: 44px; }
@@ -523,16 +538,19 @@ html[data-skin="ttf"] .room-head h1,
 html[data-skin="ttf"] .stage h1 { text-transform: uppercase;
   letter-spacing: 0.05em; }
 html[data-skin="ttf"] .room-head .dek { margin-left: auto; margin-right: auto; }
+/* the flanking rules are drawn, not typed: same look as the old dash
+   characters with no dash characters in the copy */
 html[data-skin="ttf"] .room-head .eyebrow::before,
-html[data-skin="ttf"] .room-head .eyebrow::after { content: " ———— ";
-  color: var(--acc); letter-spacing: 0; }
+html[data-skin="ttf"] .room-head .eyebrow::after { content: "";
+  display: inline-block; width: 3.2em; height: 1px;
+  background: var(--acc); vertical-align: middle; margin: 0 12px; }
 html[data-skin="ttf"] .pao > div > span::before { display: block;
   font-family: var(--face); font-size: 15px; color: var(--ink); margin-bottom: 2px; }
 html[data-skin="ttf"] .pao > div:nth-child(1) > span::before { content: "ACT I"; }
 html[data-skin="ttf"] .pao > div:nth-child(2) > span::before { content: "ACT II"; }
 html[data-skin="ttf"] .pao > div:nth-child(3) > span::before { content: "ACT III"; }
 html[data-skin="ttf"] .blocks { grid-template-columns: 1fr; text-align: center; }
-html[data-skin="ttf"] .block h3 { letter-spacing: 0.3em; }
+html[data-skin="ttf"] .block h2, html[data-skin="ttf"] .block h3 { letter-spacing: 0.3em; }
 html[data-skin="ttf"] .block li { padding: 6px 0; font-size: 14px; }
 html[data-skin="ttf"] .block li b { display: block; font-size: 10px;
   letter-spacing: 0.16em; text-transform: uppercase; color: var(--sub);
@@ -580,6 +598,9 @@ html[data-skin="snc"] .pao > div:nth-child(2) span { color: #f2b04f; }
   .wrap { padding: 0 18px; }
   .bar { padding: 18px 0 12px; }
   .bar .tagline { display: none; }
+  /* except the world switcher: on case-study pages the tagline carries the
+     links between worlds, and phones need those most */
+  .bar .tagline:has(a) { display: block; width: 100%; order: 3; }
   .bar nav a { margin-left: 14px; }
   .row { padding: 13px 8px 13px 10px; gap: 12px; }
   .row .k { display: none; }
@@ -608,10 +629,6 @@ html[data-skin="snc"] .pao > div:nth-child(2) span { color: #f2b04f; }
       rgba(232, 160, 32, 0.06) 190px, transparent 280px); }
   .part-ii .room-head h1 { font-size: clamp(32px, 9vw, 44px); }
   /* keep the room imagery present at phone scale */
-  .tex-asj { background:
-    radial-gradient(ellipse 70% 30% at 50% 0%, rgba(255, 255, 255, 0.95) 0%, transparent 60%),
-    radial-gradient(circle at 50% 88%, rgba(255, 196, 74, 0.9) 0 44px, rgba(232, 160, 32, 0.5) 88px, rgba(232, 160, 32, 0.18) 160px, transparent 320px),
-    linear-gradient(180deg, #eef1f6 0%, #dde2ea 32%, #9d8767 58%, #4a3a26 76%, #241b12 100%); }
   .tex-snc { background:
     radial-gradient(circle at 18% 22%, rgba(79, 216, 196, 0.5) 0 52px, rgba(79, 216, 196, 0.16) 110px, transparent 240px),
     radial-gradient(circle at 84% 76%, rgba(242, 176, 79, 0.45) 0 52px, rgba(242, 176, 79, 0.14) 110px, transparent 240px),

@@ -17,7 +17,23 @@ import * as THREE from './vendor/three.module.js';
 const host = document.querySelector('.landing-planet');
 const svg = host && host.querySelector('svg');
 const caption = document.getElementById('planet-caption');
-if (host && svg && caption) init();
+
+// Falling back has to be loud and immediate, the same contract home3d.js
+// keeps. It matters more here: once world-on is set this page clips its
+// whole board of case study links to 1px, so a frozen canvas would hide
+// every route into the work with the flat page sitting right underneath.
+function fallBack(err) {
+  console.error('[landing3d] the world failed to run; showing the flat page', err);
+  document.body.classList.remove('world-on');
+  document.documentElement.classList.remove('pre3d');
+  if (svg) { svg.style.display = ''; svg.removeAttribute('aria-hidden'); }
+  const c = document.querySelector('canvas');
+  if (c && c.parentNode === document.body) c.remove();
+}
+
+if (host && svg && caption) {
+  try { init(); } catch (e) { fallBack(e); }
+}
 
 function init() {
   let renderer;
@@ -58,7 +74,10 @@ function init() {
   // Painted fresh ~30 times a second. The base is built once offscreen with a
   // seeded random so the composition is designed, not rolled per visit; each
   // frame composites it and draws the moving parts on top.
-  const W = 2048, H = 1024, S = W / 3;
+  // this canvas is repainted and re-uploaded 30 times a second, so its size
+  // is a per-second bandwidth cost, not a one-off. Half on coarse pointers,
+  // where nothing can get close enough to resolve the difference
+  const W = matchMedia('(pointer: coarse)').matches ? 1024 : 2048, H = W / 2, S = W / 3;
   const cv = document.createElement('canvas');
   cv.width = W; cv.height = H;
   const c = cv.getContext('2d');
@@ -859,6 +878,11 @@ function init() {
   const tex = new THREE.CanvasTexture(cv);
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = 8;
+  // a full mip chain was being regenerated on every one of those uploads.
+  // The planet is a few hundred pixels across, so anisotropy already covers
+  // what mips would have bought here
+  tex.generateMipmaps = false;
+  tex.minFilter = THREE.LinearFilter;
 
   // ---- the scene -------------------------------------------------------------
   const Z0 = 3.55;
@@ -877,24 +901,424 @@ function init() {
   scene.add(anchor);
 
   const planet = new THREE.Group();
-  const globe = new THREE.Mesh(
-    new THREE.SphereGeometry(1, 96, 64),
+  // the globe is built as its three worlds outright: one sphere segment per
+  // third, riding its own group, so the planet can breathe apart into three
+  // distinct slices and each project reads as its own piece
+  const sliceMat = new THREE.MeshLambertMaterial({ map: tex,
     // the worlds glow from within; the key light only adds the roundness
-    new THREE.MeshLambertMaterial({ map: tex,
-      emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.55 })
-  );
-  planet.add(globe);
-
-  // hover highlights: one translucent shell segment per world
-  const highlights = WORLDS.map((w, i) => {
+    emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.55 });
+  // the cut faces wear the worlds' own material, the art running clean
+  // through the planet like strata, a shade dimmer than the surface
+  const cutMat = new THREE.MeshLambertMaterial({ map: tex,
+    emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.42,
+    side: THREE.DoubleSide });
+  const slices = WORLDS.map((w, i) => {
+    const g = new THREE.Group();
+    const mesh = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 32, 64, i * TAU / 3, TAU / 3), sliceMat);
+    // a partial sphere restarts its texture coordinates at zero, which would
+    // dress every slice in all three worlds; remap each to its own third
+    const suv = mesh.geometry.attributes.uv;
+    for (let k2 = 0; k2 < suv.count; k2++) suv.setX(k2, (i + suv.getX(k2)) / 3);
+    g.add(mesh);
+    // the slice's outward line, taken from its own geometry so no sphere
+    // convention can betray it
+    mesh.geometry.computeBoundingBox();
+    const dir = new THREE.Vector3();
+    mesh.geometry.boundingBox.getCenter(dir);
+    dir.y = 0;
+    if (dir.lengthSq() < 1e-6) dir.set(0, 0, 1);
+    dir.normalize();
+    // hover highlight: a translucent shell over this slice alone
     const seg = new THREE.Mesh(
-      new THREE.SphereGeometry(1.012, 48, 32, i * TAU / 3, TAU / 3),
+      new THREE.SphereGeometry(1.012, 32, 32, i * TAU / 3, TAU / 3),
       new THREE.MeshBasicMaterial({ color: w.color, transparent: true, opacity: 0,
         blending: THREE.AdditiveBlending, depthWrite: false })
     );
-    planet.add(seg);
-    return seg;
+    g.add(seg);
+    // the cut faces: two half-rings close the wedge along its meridians
+    // (the center left open for the heart), so edge-on the slice reads as
+    // a thick solid piece of planet, not a shell. Each face leans a hair
+    // into its own wedge so closed neighbors never share a plane.
+    for (const [p, eps] of [[i * TAU / 3, 0.004], [(i + 1) * TAU / 3, -0.004]]) {
+      const face = new THREE.Mesh(
+        new THREE.RingGeometry(0.5, 0.995, 24, 1, Math.PI / 2, Math.PI),
+        cutMat);
+      // planar-map this slice's own third across the cut, so the section
+      // shows the same world the surface wears
+      const fuv = face.geometry.attributes.uv;
+      for (let k3 = 0; k3 < fuv.count; k3++) fuv.setX(k3, (i + fuv.getX(k3) * 2) / 3);
+      face.rotation.y = p + eps;
+      g.add(face);
+    }
+    planet.add(g);
+    return { g, mesh, seg, dir };
   });
+  const highlights = slices.map((s) => s.seg);
+  // the heart of the planet: what the cuts reveal when the slices open.
+  // Two hearts are built and one is lit: 'star', a white-hot core beaming
+  // through the gaps, or 'mech', the machined inner world. Swap live with
+  // __world.setHeart('star' | 'mech').
+  const hearts = {};
+  {
+    const starG = new THREE.Group();
+    // the core star, designed: limb-darkened from a white-hot heart to an
+    // amber rim, its surface alive with a quiet drifting granulation
+    const starMat = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: `
+        varying vec3 vN; varying vec3 vV; varying vec2 vUv;
+        void main() {
+          vN = normalMatrix * normal;
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          vV = -mv.xyz;
+          vUv = uv;
+          gl_Position = projectionMatrix * mv;
+        }`,
+      fragmentShader: `
+        uniform float uTime;
+        varying vec3 vN; varying vec3 vV; varying vec2 vUv;
+        void main() {
+          float ndv = clamp(dot(normalize(vN), normalize(vV)), 0.0, 1.0);
+          float limb = pow(ndv, 0.55);
+          // frequencies are whole turns in u, so the pattern meets itself
+          // where the sphere wraps and shows no seam
+          float g = sin(vUv.x * 43.9823 + uTime * 0.31) * sin(vUv.y * 34.0 - uTime * 0.23)
+                  + sin(vUv.x * 25.1327 - uTime * 0.17) * sin(vUv.y * 51.0 + uTime * 0.19);
+          g *= 0.045;
+          vec3 hot = vec3(1.0, 0.985, 0.93);
+          vec3 warm = vec3(1.0, 0.72, 0.38);
+          vec3 c = mix(warm, hot, limb) * (1.0 + g);
+          gl_FragColor = vec4(c, 1.0);
+        }`,
+    });
+    const starBody = new THREE.Mesh(new THREE.SphereGeometry(0.46, 48, 32), starMat);
+    starG.add(starBody);
+    // a corona that hugs the star alone, never washing past the planet
+    const hcv = document.createElement('canvas');
+    hcv.width = hcv.height = 256;
+    const hg = hcv.getContext('2d');
+    const hgrad = hg.createRadialGradient(128, 128, 0, 128, 128, 128);
+    hgrad.addColorStop(0, 'rgba(255,246,224,0.9)');
+    hgrad.addColorStop(0.34, 'rgba(255,226,168,0.5)');
+    hgrad.addColorStop(0.55, 'rgba(255,196,110,0.08)');
+    hgrad.addColorStop(0.8, 'rgba(255,196,110,0)');
+    hgrad.addColorStop(1, 'rgba(255,196,110,0)');
+    hg.fillStyle = hgrad; hg.fillRect(0, 0, 256, 256);
+    const corona = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: new THREE.CanvasTexture(hcv), transparent: true,
+      blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.5 }));
+    corona.scale.setScalar(1.2);
+    starG.add(corona);
+    planet.add(starG);
+    hearts.star = { g: starG, body: starBody, mat: starMat, corona };
+
+    // the machined heart's skin, at true watch-movement fidelity: a 2k
+    // plate that survives the loupe. Layered plates with chamfered
+    // bevels, inset sub-panels, crisp rivet heads, brushed-metal grain,
+    // engraved scribe circles with index ticks, vent slits, service
+    // hatches, long pipe runs, twin conduit systems (ion blue and
+    // service amber), and the quiet grime of a working machine. A bump
+    // twin is painted in lockstep so every edge also stands in relief.
+    // Its own seeded stream: the machining never rerolls, and the
+    // planet's designed composition never feels it draw
+    let mseed = 20260801;
+    const mrnd = () => {                         // mulberry32, stable per build
+      mseed |= 0; mseed = mseed + 0x6D2B79F5 | 0;
+      let z = Math.imul(mseed ^ mseed >>> 15, 1 | mseed);
+      z = z + Math.imul(z ^ z >>> 7, 61 | z) ^ z;
+      return ((z ^ z >>> 14) >>> 0) / 4294967296;
+    };
+    // 2048 is what a desktop zoom can actually resolve on this core; a phone
+    // never gets close enough to tell, and two maps at that size cost it
+    // ~16 MB of VRAM plus the retained canvases. Half on coarse pointers.
+    const MW = matchMedia('(pointer: coarse)').matches ? 1024 : 2048, MH = MW / 2;
+    const mcv = document.createElement('canvas');
+    mcv.width = MW; mcv.height = MH;
+    const mg = mcv.getContext('2d');
+    const mbcv = document.createElement('canvas'); // the relief twin
+    mbcv.width = MW; mbcv.height = MH;
+    const mb = mbcv.getContext('2d');
+    mg.fillStyle = '#12151d'; mg.fillRect(0, 0, MW, MH);
+    mb.fillStyle = '#787878'; mb.fillRect(0, 0, MW, MH);
+    let my = 0;
+    while (my < MH) {
+      const ph = 52 + mrnd() * 92;
+      let mx = -mrnd() * 60;
+      while (mx < MW) {
+        const pw = 68 + mrnd() * 140;
+        const v = (18 + mrnd() * 14) | 0;
+        const bv = 118 + (v - 18) * 2;             // this plate's height
+        mg.fillStyle = `rgb(${v},${v + 3},${v + 9})`;
+        mg.fillRect(mx, my, pw, ph);
+        mb.fillStyle = `rgb(${bv},${bv},${bv})`;
+        mb.fillRect(mx, my, pw, ph);
+        // the seam, cut deep, with ao pooling just inside it
+        mg.strokeStyle = 'rgba(8,10,16,0.95)';
+        mg.lineWidth = 2;
+        mg.strokeRect(mx + 1, my + 1, pw - 2, ph - 2);
+        mg.strokeStyle = 'rgba(4,6,10,0.16)';
+        mg.lineWidth = 7;
+        mg.strokeRect(mx + 4.5, my + 4.5, pw - 9, ph - 9);
+        mb.strokeStyle = 'rgba(20,20,20,0.9)';
+        mb.lineWidth = 2;
+        mb.strokeRect(mx + 1, my + 1, pw - 2, ph - 2);
+        // the machinist's chamfer: a 1px lit crown on top and left, a
+        // 1px shade on bottom and right
+        mg.strokeStyle = 'rgba(150,160,180,0.22)';
+        mg.lineWidth = 1;
+        mg.beginPath(); mg.moveTo(mx + 2.5, my + ph - 2.5); mg.lineTo(mx + 2.5, my + 2.5); mg.lineTo(mx + pw - 2.5, my + 2.5); mg.stroke();
+        mg.strokeStyle = 'rgba(5,7,12,0.55)';
+        mg.beginPath(); mg.moveTo(mx + pw - 2.5, my + 2.5); mg.lineTo(mx + pw - 2.5, my + ph - 2.5); mg.lineTo(mx + 2.5, my + ph - 2.5); mg.stroke();
+        mb.strokeStyle = 'rgba(235,235,235,0.4)';
+        mb.lineWidth = 1;
+        mb.strokeRect(mx + 2.5, my + 2.5, pw - 5, ph - 5);
+        // a raised inner plate on most panels, machined a shade lighter
+        if (mrnd() < 0.6 && pw > 60 && ph > 44) {
+          const v2 = v + 6;
+          mg.fillStyle = `rgb(${v2},${v2 + 3},${v2 + 10})`;
+          mg.fillRect(mx + 10, my + 10, pw - 20, ph - 20);
+          mg.strokeStyle = 'rgba(8,10,16,0.7)';
+          mg.lineWidth = 1.5;
+          mg.strokeRect(mx + 10.5, my + 10.5, pw - 21, ph - 21);
+          mg.strokeStyle = 'rgba(150,160,180,0.16)';
+          mg.lineWidth = 1;
+          mg.beginPath(); mg.moveTo(mx + 11.5, my + ph - 11.5); mg.lineTo(mx + 11.5, my + 11.5); mg.lineTo(mx + pw - 11.5, my + 11.5); mg.stroke();
+          mb.fillStyle = `rgb(${bv + 14},${bv + 14},${bv + 14})`;
+          mb.fillRect(mx + 10, my + 10, pw - 20, ph - 20);
+          mb.strokeStyle = 'rgba(30,30,30,0.7)';
+          mb.lineWidth = 1.5;
+          mb.strokeRect(mx + 10.5, my + 10.5, pw - 21, ph - 21);
+        }
+        // rivets: a drop shadow low, a seated rim, a specular dot high
+        if (mrnd() < 0.55) {
+          for (const [bx, by] of [[mx + 8, my + 8], [mx + pw - 8, my + 8], [mx + 8, my + ph - 8], [mx + pw - 8, my + ph - 8]]) {
+            mg.fillStyle = 'rgba(4,6,10,0.8)';
+            mg.beginPath(); mg.arc(bx + 1.2, by + 1.4, 3.6, 0, Math.PI * 2); mg.fill();
+            mg.fillStyle = 'rgb(52,58,74)';
+            mg.beginPath(); mg.arc(bx, by, 3.4, 0, Math.PI * 2); mg.fill();
+            mg.strokeStyle = 'rgba(8,10,16,0.85)';
+            mg.lineWidth = 1;
+            mg.beginPath(); mg.arc(bx, by, 3.4, 0, Math.PI * 2); mg.stroke();
+            mg.fillStyle = 'rgba(178,188,208,0.9)';
+            mg.beginPath(); mg.arc(bx - 1.1, by - 1.2, 1.1, 0, Math.PI * 2); mg.fill();
+            mb.fillStyle = 'rgba(30,30,30,0.8)';
+            mb.beginPath(); mb.arc(bx, by, 4.4, 0, Math.PI * 2); mb.fill();
+            mb.fillStyle = 'rgba(225,225,225,0.95)';
+            mb.beginPath(); mb.arc(bx, by, 2.9, 0, Math.PI * 2); mb.fill();
+          }
+        }
+        // vent slits, each with a lit lower lip
+        if (mrnd() < 0.18 && pw > 68) {
+          for (let s3 = 0; s3 < 5; s3++) {
+            const vy2 = my + ph * 0.3 + s3 * 6.8;
+            if (vy2 > my + ph - 8) break;
+            mg.strokeStyle = 'rgba(6,8,13,0.9)';
+            mg.lineWidth = 2.6;
+            mg.beginPath(); mg.moveTo(mx + pw * 0.28, vy2); mg.lineTo(mx + pw * 0.72, vy2); mg.stroke();
+            mg.strokeStyle = 'rgba(150,160,180,0.14)';
+            mg.lineWidth = 1;
+            mg.beginPath(); mg.moveTo(mx + pw * 0.28, vy2 + 1.8); mg.lineTo(mx + pw * 0.72, vy2 + 1.8); mg.stroke();
+            mb.strokeStyle = 'rgba(25,25,25,0.85)';
+            mb.lineWidth = 2.6;
+            mb.beginPath(); mb.moveTo(mx + pw * 0.28, vy2); mb.lineTo(mx + pw * 0.72, vy2); mb.stroke();
+          }
+        }
+        // engraved work: a hairline scribe circle ringed with index
+        // ticks, the marks a movement wears around its jewels
+        if (mrnd() < 0.1 && pw > 84 && ph > 64) {
+          const cx4 = mx + pw / 2, cy4 = my + ph / 2;
+          const cr = Math.min(pw, ph) * 0.26;
+          mg.lineWidth = 1;
+          mg.strokeStyle = 'rgba(5,7,12,0.6)';
+          mg.beginPath(); mg.arc(cx4, cy4 + 0.7, cr, 0, Math.PI * 2); mg.stroke();
+          mg.strokeStyle = 'rgba(150,160,180,0.2)';
+          mg.beginPath(); mg.arc(cx4, cy4, cr, 0, Math.PI * 2); mg.stroke();
+          mg.strokeStyle = 'rgba(5,7,12,0.7)';
+          for (let tk = 0; tk < 12; tk++) {
+            const ta = tk * Math.PI / 6;
+            const t1 = cr + (tk % 3 === 0 ? 7 : 4);
+            mg.beginPath();
+            mg.moveTo(cx4 + Math.cos(ta) * (cr + 2), cy4 + Math.sin(ta) * (cr + 2));
+            mg.lineTo(cx4 + Math.cos(ta) * t1, cy4 + Math.sin(ta) * t1);
+            mg.stroke();
+          }
+          mb.strokeStyle = 'rgba(40,40,40,0.5)';
+          mb.lineWidth = 1;
+          mb.beginPath(); mb.arc(cx4, cy4, cr, 0, Math.PI * 2); mb.stroke();
+        }
+        // a service hatch now and then: a round cover, six perimeter
+        // rivets, a keyed slot for the wrench
+        if (mrnd() < 0.06 && pw > 110 && ph > 84) {
+          const hx = mx + pw / 2, hy = my + ph / 2, hr = Math.min(pw, ph) * 0.3;
+          const v3 = v + 3;
+          mg.fillStyle = `rgb(${v3},${v3 + 3},${v3 + 9})`;
+          mg.beginPath(); mg.arc(hx, hy, hr, 0, Math.PI * 2); mg.fill();
+          mg.strokeStyle = 'rgba(8,10,16,0.95)';
+          mg.lineWidth = 2;
+          mg.beginPath(); mg.arc(hx, hy, hr, 0, Math.PI * 2); mg.stroke();
+          mg.strokeStyle = 'rgba(150,160,180,0.18)';
+          mg.lineWidth = 1;
+          mg.beginPath(); mg.arc(hx, hy, hr - 2, Math.PI * 0.75, Math.PI * 1.6); mg.stroke();
+          for (let hb = 0; hb < 6; hb++) {
+            const ha = hb * Math.PI / 3 + 0.26;
+            const rbx = hx + Math.cos(ha) * (hr - 7), rby = hy + Math.sin(ha) * (hr - 7);
+            mg.fillStyle = 'rgba(4,6,10,0.8)';
+            mg.beginPath(); mg.arc(rbx + 0.8, rby + 1, 2.4, 0, Math.PI * 2); mg.fill();
+            mg.fillStyle = 'rgb(52,58,74)';
+            mg.beginPath(); mg.arc(rbx, rby, 2.2, 0, Math.PI * 2); mg.fill();
+            mg.fillStyle = 'rgba(178,188,208,0.85)';
+            mg.beginPath(); mg.arc(rbx - 0.7, rby - 0.8, 0.8, 0, Math.PI * 2); mg.fill();
+          }
+          mg.strokeStyle = 'rgba(6,8,13,0.9)';
+          mg.lineWidth = 2.4;
+          mg.beginPath(); mg.moveTo(hx - hr * 0.34, hy); mg.lineTo(hx + hr * 0.34, hy); mg.stroke();
+          mb.fillStyle = 'rgba(160,160,160,0.9)';
+          mb.beginPath(); mb.arc(hx, hy, hr, 0, Math.PI * 2); mb.fill();
+          mb.strokeStyle = 'rgba(25,25,25,0.9)';
+          mb.lineWidth = 2;
+          mb.beginPath(); mb.arc(hx, hy, hr, 0, Math.PI * 2); mb.stroke();
+        }
+        // the conduits: ion blue mostly, service amber sometimes, some
+        // turning a corner mid-panel
+        if (mrnd() < 0.2) {
+          const amber = mrnd() < 0.3;
+          mg.strokeStyle = amber ? 'rgba(255,180,84,0.8)' : 'rgba(127,180,255,0.85)';
+          mg.shadowColor = amber ? '#ffb454' : '#7fb4ff';
+          mg.shadowBlur = 9;
+          mg.lineWidth = 2.2;
+          mg.beginPath();
+          if (mrnd() < 0.4) {                        // an L-run
+            mg.moveTo(mx, my + ph / 2); mg.lineTo(mx + pw / 2, my + ph / 2); mg.lineTo(mx + pw / 2, my + (mrnd() < 0.5 ? 0 : ph));
+          } else if (mrnd() < 0.5) { mg.moveTo(mx, my + ph / 2); mg.lineTo(mx + pw, my + ph / 2); }
+          else { mg.moveTo(mx + pw / 2, my); mg.lineTo(mx + pw / 2, my + ph); }
+          mg.stroke();
+          mg.shadowBlur = 0;
+        }
+        mx += pw;
+      }
+      my += ph;
+    }
+    // brushed grain in the rolling direction: hairlines so faint they
+    // only read as sheen until the camera leans in
+    mg.lineWidth = 1;
+    for (let bs = 0; bs < 900; bs++) {
+      const gy = ((mrnd() * MH) | 0) + 0.5, gx = mrnd() * MW, gl = 90 + mrnd() * 420;
+      mg.strokeStyle = mrnd() < 0.5
+        ? `rgba(150,160,180,${(0.015 + mrnd() * 0.03).toFixed(3)})`
+        : `rgba(5,7,12,${(0.02 + mrnd() * 0.04).toFixed(3)})`;
+      mg.beginPath(); mg.moveTo(gx, gy); mg.lineTo(gx + gl, gy); mg.stroke();
+    }
+    // long pipe runs riding over the plates, bracketed every so often
+    for (let pr = 0; pr < 7; pr++) {
+      const horiz = mrnd() < 0.6;
+      const at = mrnd() * (horiz ? MH : MW);
+      const p0 = mrnd() * (horiz ? MW : MH) * 0.4;
+      const p1 = p0 + 360 + mrnd() * 840;
+      mg.strokeStyle = 'rgba(10,13,20,0.95)';
+      mg.lineWidth = 10;
+      mg.beginPath();
+      horiz ? (mg.moveTo(p0, at), mg.lineTo(p1, at)) : (mg.moveTo(at, p0), mg.lineTo(at, p1));
+      mg.stroke();
+      mg.strokeStyle = 'rgba(96,106,128,0.55)';      // the lit crown of the pipe
+      mg.lineWidth = 2.2;
+      mg.beginPath();
+      horiz ? (mg.moveTo(p0, at - 2.4), mg.lineTo(p1, at - 2.4)) : (mg.moveTo(at - 2.4, p0), mg.lineTo(at - 2.4, p1));
+      mg.stroke();
+      mb.strokeStyle = 'rgba(200,200,200,0.8)';
+      mb.lineWidth = 8;
+      mb.beginPath();
+      horiz ? (mb.moveTo(p0, at), mb.lineTo(p1, at)) : (mb.moveTo(at, p0), mb.lineTo(at, p1));
+      mb.stroke();
+      for (let bq = p0 + 40; bq < p1; bq += 120 + mrnd() * 100) {
+        mg.fillStyle = 'rgba(40,46,60,1)';           // brackets, each bolted
+        horiz ? mg.fillRect(bq, at - 8, 10, 16) : mg.fillRect(at - 8, bq, 16, 10);
+        mg.fillStyle = 'rgba(178,188,208,0.8)';
+        horiz ? mg.fillRect(bq + 4, at - 6, 2, 2) : mg.fillRect(at - 6, bq + 4, 2, 2);
+      }
+    }
+    // the grime of use: faint stains and hairline scratches
+    for (let gi = 0; gi < 26; gi++) {
+      mg.fillStyle = `rgba(4,5,9,${(0.05 + mrnd() * 0.09).toFixed(2)})`;
+      mg.save();
+      mg.translate(mrnd() * MW, mrnd() * MH);
+      mg.scale(1, 0.3 + mrnd() * 0.5);
+      mg.beginPath(); mg.arc(0, 0, 16 + mrnd() * 52, 0, Math.PI * 2); mg.fill();
+      mg.restore();
+    }
+    for (let gi = 0; gi < 60; gi++) {
+      mg.strokeStyle = `rgba(150,160,180,${(0.04 + mrnd() * 0.07).toFixed(2)})`;
+      mg.lineWidth = 0.8;
+      const sx2 = mrnd() * MW, sy2 = mrnd() * MH, sl = 16 + mrnd() * 80;
+      mg.beginPath(); mg.moveTo(sx2, sy2); mg.lineTo(sx2 + sl, sy2 + (mrnd() - 0.5) * 10); mg.stroke();
+    }
+    const mtex = new THREE.CanvasTexture(mcv);
+    mtex.colorSpace = THREE.SRGBColorSpace;
+    mtex.wrapS = mtex.wrapT = THREE.RepeatWrapping;
+    // full anisotropy so the plates stay crisp at grazing angles, and
+    // default trilinear mips so the bands never shimmer at distance
+    mtex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    const mbump = new THREE.CanvasTexture(mbcv);
+    mbump.wrapS = mbump.wrapT = THREE.RepeatWrapping;
+    mbump.anisotropy = mtex.anisotropy;
+    // not a ball but a MACHINE: a machined core turning inside three
+    // counter-rotating gimbal bands on tilted axes, an axle through the
+    // poles, everything seamed with lit conduits. Sized to live inside
+    // the cut faces' hollow.
+    // the emissive map is the color map itself, so the conduits' glow
+    // can never drift off its painted lines; the bump twin gives the
+    // key light real bevels and rivets to catch
+    const mechMat = new THREE.MeshLambertMaterial({ map: mtex,
+      bumpMap: mbump, bumpScale: 0.04,
+      emissive: 0xffffff, emissiveMap: mtex, emissiveIntensity: 0.9 });
+    const mechBandMat = new THREE.MeshLambertMaterial({ map: mtex,
+      bumpMap: mbump, bumpScale: 0.04,
+      emissive: 0xffffff, emissiveMap: mtex, emissiveIntensity: 0.9,
+      side: THREE.DoubleSide });
+    const mechG = new THREE.Group();
+    const mCore = new THREE.Mesh(new THREE.SphereGeometry(0.24, 32, 24), mechMat);
+    mechG.add(mCore);
+    const mkBand = (r, h, tiltX, tiltZ) => {
+      const holder = new THREE.Group();
+      holder.rotation.x = tiltX;
+      holder.rotation.z = tiltZ;
+      const band = new THREE.Mesh(
+        new THREE.CylinderGeometry(r, r, h, 32, 1, true), mechBandMat);
+      holder.add(band);
+      mechG.add(holder);
+      return band;
+    };
+    const mBandA = mkBand(0.33, 0.10, 0, 0);
+    const mBandB = mkBand(0.40, 0.07, 0.9, 0.2);
+    const mBandC = mkBand(0.465, 0.05, -0.5, 1.1);
+    const axle = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.95, 8), mechMat);
+    mechG.add(axle);
+    for (const s2 of [-1, 1]) {
+      const cap2 = new THREE.Mesh(new THREE.SphereGeometry(0.032, 12, 8), mechMat);
+      cap2.position.y = s2 * 0.475;
+      mechG.add(cap2);
+    }
+    planet.add(mechG);
+    hearts.mech = { g: mechG, core: mCore, bandA: mBandA, bandB: mBandB, bandC: mBandC };
+  }
+  // the heart's own light: it catches the cut edges of the slices when the
+  // planet opens, so the interior reads as glowing, not hollow
+  const heartLight = new THREE.PointLight(0xffe9c0, 0, 4);
+  planet.add(heartLight);
+  // a padded, unseen shell around the whole formation: while the pointer is
+  // anywhere over the planet, its gaps, or its heart, the planet stays open
+  const planetHit = new THREE.Mesh(new THREE.SphereGeometry(1.25, 16, 12),
+    new THREE.MeshBasicMaterial({ visible: false }));
+  planet.add(planetHit);
+  let heartMode = 'star';
+  const setHeart = (m) => {
+    heartMode = m;
+    hearts.star.g.visible = m === 'star';
+    hearts.mech.g.visible = m === 'mech';
+    heartLight.color.set(m === 'star' ? 0xffe9c0 : 0x9fc4ff);
+  };
+  setHeart('mech');                                  // the machine ships
+  let sepCur = 0;
 
   // ---- the caption, written into the world: an orbit label curving under
   // the planet. The DOM caption stays for screen readers; this is its body.
@@ -1182,11 +1606,15 @@ function init() {
   }
 
   // ---- mount: a fixed full-page canvas behind the content --------------------
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  const MAX_PIXEL_RATIO = matchMedia('(pointer: coarse)').matches ? 1.75 : 2;
+  renderer.setPixelRatio(Math.min(devicePixelRatio, MAX_PIXEL_RATIO));
   const el = renderer.domElement;
   el.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block;touch-action:pan-y;opacity:0;transition:opacity 1.1s ease-out';
   el.setAttribute('role', 'img');
-  el.setAttribute('aria-label', 'A spinning planet made of three worlds floating in space. Drag to rotate, click a world to enter it. The worlds are also linked in the navigation.');
+  el.setAttribute('aria-label', 'A spinning planet made of three worlds floating in space. '
+    + 'Drag or press the left and right arrow keys to turn it, then press Enter to open the '
+    + 'world facing you. The three worlds are also listed as links just after this image.');
+  el.id = 'worldCanvas';
   el.tabIndex = 0;
   document.body.insertBefore(el, document.body.firstChild);
   document.body.classList.add('world-on');
@@ -1300,8 +1728,9 @@ function init() {
     // a generous, invisible hit target
     miniHit = new THREE.Mesh(new THREE.SphereGeometry(2.6, 12, 8), new THREE.MeshBasicMaterial({ visible: false }));
     miniG.add(miniHit);
-    // its name, a light U bend perfectly beneath it
-    worldsArc = mkCurvedLabel('THE WORLDS');
+    // its name, a light U bend perfectly beneath it. On this page the little
+    // world leads home, back to the ship on its approach.
+    worldsArc = mkCurvedLabel('HOME');
     worldsArc.position.y = -2.1;
     miniG.add(worldsArc);
   }
@@ -1377,8 +1806,10 @@ function init() {
     aboutLabel2.material.opacity = 0;
     aboutG.add(aboutLabel2);
   }
-  // keyboard focus on the real link lights the little world
-  document.querySelectorAll('.landing-text .ctas a').forEach((a) => {
+  // keyboard focus on the bar's Home link lights the beacon it stands for.
+  // This used to target '.landing-text .ctas a', which is index.html markup:
+  // that page loads home3d.js, not this module, so it matched nothing here
+  document.querySelectorAll('.bar nav a[href="index.html"]').forEach((a) => {
     a.addEventListener('focus', () => { miniFocus = true; });
     a.addEventListener('blur', () => { miniFocus = false; });
   });
@@ -1409,8 +1840,9 @@ function init() {
       aboutBase = 0.04 * k;
     };
     if (!narrowMq.matches) {
-      miniG.visible = true;
-      placeMini(cl + 92, hero.top + hero.height * 0.82);
+      // the little home world retired: the bar's Home link carries that
+      // duty now, and the sky keeps one less thing to explain
+      miniG.visible = false;
       placeStar(0.84, 0.24);
       placeAbout(0.88, 0.84);
     } else {
@@ -1430,36 +1862,49 @@ function init() {
   // ---- interaction -----------------------------------------------------------
   const ray = new THREE.Raycaster();
   const ndc = new THREE.Vector2();
-  let dragging = false, moved = 0, lastX = 0, lastY = 0;
+  let dragging = false, dragId = -1, moved = 0, lastX = 0, lastY = 0;
   // touch has no hover, so a world's name never wakes on a phone; there the
   // first tap arms a world (name, letters, highlight) and the second enters.
   // armedAt guards the gap: one physical tap can echo as a second synthetic
   // event on iOS, so an "enter" tap only counts well after the arming one
   let touchy = matchMedia('(hover: none)').matches, armedWorld = -1, armedAt = 0;
-  let velY = 0, rotX = 0, hoverIdx = -1, lastInput = 0;
+  let velY = 0, rotX = 0, hoverIdx = -1, hoverNear = false, lastInput = 0;
 
   const pick = (e) => {
     ndc.set((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
     ray.setFromCamera(ndc, cam);
     // the mini world sits out of the cast when hidden (phones): raycasts
     // ignore visibility, and its idle hit sphere would swallow planet taps
+    const near = ray.intersectObject(planetHit).length > 0;
+    const sliceMeshes = slices.map((s) => s.mesh);
     const hit = ray.intersectObjects(miniG.visible
-      ? [miniHit, sunHit, aboutHit, globe] : [sunHit, aboutHit, globe])[0];
-    if (!hit) return { world: -1, mini: false, star: false, about: false };
-    if (hit.object === globe) return { world: Math.min(2, Math.floor(hit.uv.x * 3)), mini: false, star: false, about: false };
-    if (hit.object === sunHit) return { world: -1, mini: false, star: true, about: false };
-    if (hit.object === aboutHit) return { world: -1, mini: false, star: false, about: true };
-    return { world: -1, mini: true, star: false, about: false };
+      ? [miniHit, sunHit, aboutHit, ...sliceMeshes] : [sunHit, aboutHit, ...sliceMeshes])[0];
+    if (!hit) return { world: -1, mini: false, star: false, about: false, near };
+    const si = slices.findIndex((s) => s.mesh === hit.object);
+    if (si >= 0) return { world: si, mini: false, star: false, about: false, near };
+    if (hit.object === sunHit) return { world: -1, mini: false, star: true, about: false, near };
+    if (hit.object === aboutHit) return { world: -1, mini: false, star: false, about: true, near };
+    return { world: -1, mini: true, star: false, about: false, near };
   };
 
+  // Every live finger, by id. One shared anchor meant a second finger
+  // teleported it and whipped the planet, and lifting either finger stranded
+  // the drag. Two fingers now mean "no rotation", the same rule the home page
+  // uses, so a pinch gesture never spins the world by accident.
+  const pointers = new Map();
   el.addEventListener('pointerdown', (e) => {
-    dragging = true; moved = 0; lastX = e.clientX; lastY = e.clientY;
-    el.setPointerCapture(e.pointerId);
+    pointers.set(e.pointerId, 1);
+    if (pointers.size > 1) { dragging = false; return; }
+    dragging = true; dragId = e.pointerId; moved = 0; lastX = e.clientX; lastY = e.clientY;
+    // a pointer that has already been cancelled or lifted throws here, and
+    // an uncaught throw would abandon the rest of this handler mid-drag
+    try { el.setPointerCapture(e.pointerId); } catch (err) { /* drag still works */ }
     lastInput = performance.now();
   });
   el.addEventListener('pointermove', (e) => {
     lastInput = performance.now();
-    if (dragging) {
+    if (pointers.size > 1) return;                   // a pinch, not a turn
+    if (dragging && e.pointerId === dragId) {
       const dx = e.clientX - lastX, dy = e.clientY - lastY;
       moved += Math.abs(dx) + Math.abs(dy);
       planet.rotation.y += dx * 0.006;
@@ -1474,12 +1919,16 @@ function init() {
       hoverStar = p2.star;
       hoverAbout = p2.about;
       hoverIdx = idx;
-      const want = p2.mini ? ['ENTER THE WORLDS', ACC]
+      hoverNear = p2.near || idx >= 0;
+      const want = p2.mini ? ['RETURN HOME', ACC]
         : p2.star ? ['ENTER THE UNIVERSE', '#7fb4ff']
         : p2.about ? ['ABOUT DAVIS · OPEN', '#ffd9a0']
         : idx >= 0 ? [WORLDS[idx].name + ' · ENTER', capColors[idx]]
         : [restCaption, CAP_REST];
-      if (want[0] !== caption.textContent) {
+      // crossing an open gap or resting on the heart holds the current
+      // caption; the rest text only returns once the pointer truly leaves
+      const overGap = idx === -1 && p2.near && !p2.mini && !p2.star && !p2.about;
+      if (!overGap && want[0] !== caption.textContent) {
         announce(want[0], want[1]);
         caption.classList.toggle('lit', want[0] !== restCaption);
       }
@@ -1493,7 +1942,7 @@ function init() {
       const p2 = pick(e);
       if (p2.star) goHref('studies/universe.html');
       else if (p2.about) openAbout();
-      else if (p2.mini) goHref('rooms.html');
+      else if (p2.mini) goHref('index.html');
       else if (p2.world >= 0) {
         if (!touchy) enter(p2.world);
         else if (armedWorld === p2.world) {
@@ -1516,12 +1965,19 @@ function init() {
       }
     }
   };
-  el.addEventListener('pointerup', release);
-  el.addEventListener('pointercancel', () => { dragging = false; });
+  el.addEventListener('pointerup', (e) => {
+    pointers.delete(e.pointerId);
+    if (e.pointerId === dragId) release(e); else dragging = false;
+  });
+  el.addEventListener('pointercancel', (e) => {
+    pointers.delete(e.pointerId);
+    dragging = false;
+  });
   el.addEventListener('pointerleave', () => {
     // on touch a lifted finger "leaves" after every tap: that is not a
     // mouse wandering off, and the armed world keeps its name up
     if (touchy) return;
+    hoverNear = false;
     if (hoverIdx !== -1) { hoverIdx = -1; announce(restCaption, CAP_REST); caption.classList.remove('lit'); }
   });
 
@@ -1536,6 +1992,10 @@ function init() {
   el.addEventListener('webglcontextlost', (e) => {
     e.preventDefault();                 // required, or 'restored' never fires
     contextLost = true;
+    // if the GPU never comes back (a driver reset, or a hidden tab that is
+    // never restored) parking the loop alone would leave world-on set and
+    // the board of links clipped to nothing. Show the flat page instead
+    fallBack(new Error('WebGL context lost'));
   }, false);
   el.addEventListener('webglcontextrestored', () => {
     location.reload();
@@ -1636,11 +2096,12 @@ function init() {
   function frame() {
     if (contextLost) return;            // stop drawing on a dead context; a
                                         // restore reloads the page from scratch
+    try {
     const dt = Math.min(0.05, clock.getDelta());
     t += dt;
     // self-heal: if the viewport changed without a resize event (background
     // load, bfcache restore), the canvas size disagrees with the window; re-fit
-    if (innerWidth > 2 && el.width !== Math.round(innerWidth * renderer.getPixelRatio())) size();
+    if (innerWidth > 2 && el.width !== Math.floor(innerWidth * renderer.getPixelRatio())) size();
     // re-anchor every frame so the planet and every word ride the scroll as
     // one body, never a frame apart
     alignToSlot();
@@ -1673,6 +2134,34 @@ function init() {
       else if (idle && !reduced && !leaving) planet.rotation.y += dt * 0.07;
     }
     if (!reduced) planet.rotation.z = -0.12 + Math.sin(t * 0.13) * 0.02;   // slow precession
+    // the slices answer intent: the planet drifts apart as the pointer
+    // reaches toward it and breathes back together when it leaves (on
+    // touch, arming a world opens it)
+    // patient in both directions: it opens with an easy grace and closes
+    // even more slowly, and stays open while the pointer is anywhere over
+    // the planet, its gaps, or its heart
+    const wantSep = (touchy ? armedWorld !== -1 : (hoverIdx >= 0 || hoverNear)) ? 1 : 0;
+    const sepRate = wantSep > sepCur ? 1.8 : 1.0;
+    sepCur += (wantSep - sepCur) * Math.min(1, dt * (reduced ? 30 : sepRate));
+    const sepE = sepCur * sepCur * (3 - 2 * sepCur);
+    for (const S2 of slices) S2.g.position.copy(S2.dir).multiplyScalar(sepE * 0.2);
+    // the heart answers too: the star swells and breathes in the opened
+    // cuts, its light catching the slice edges; the machined heart turns
+    heartLight.intensity = sepE * (heartMode === 'star' ? 2.0 : 1.2);
+    if (heartMode === 'star') {
+      hearts.star.mat.uniforms.uTime.value = t;
+      const breathe = reduced ? 0 : 0.03 * Math.sin(t * 2.1);
+      hearts.star.body.scale.setScalar(1 + breathe + sepE * 0.08);
+      hearts.star.corona.material.opacity = 0.5 + sepE * 0.25 + (reduced ? 0 : 0.06 * Math.sin(t * 1.7));
+      hearts.star.corona.scale.setScalar(1.2 + sepE * 0.12);
+    } else if (!reduced) {
+      // the machine at work: core and bands each keeping their own time
+      const M2 = hearts.mech;
+      M2.core.rotation.y += dt * 0.5;
+      M2.bandA.rotation.y -= dt * 0.7;
+      M2.bandB.rotation.y += dt * 0.55;
+      M2.bandC.rotation.y -= dt * 0.4;
+    }
     if (!reduced) capArc.rotation.y = Math.sin(t * 0.35) * 0.05;           // the label sways
     // the baked arc lights only for texts without a letter set. A set's
     // cascade is scheduled only while its text is showing, but every letter
@@ -1833,12 +2322,18 @@ function init() {
       }
     }
 
-    renderer.render(scene, cam);
+      renderer.render(scene, cam);
+    } catch (e) {
+      // one bad frame is survivable; a broken world is not. Hand the page
+      // back to the flat board rather than freeze on the last good pixel
+      fallBack(e);
+      return;
+    }
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
   requestAnimationFrame(() => { el.style.opacity = '1'; });
-  window.__world = { anchor, cam, planet, sets: LETTER_SETS, renderer,
+  window.__world = { anchor, cam, planet, sets: LETTER_SETS, renderer, setHeart, slices,
     get activeSet() { return activeSet; },
     warpCap(v) { if (activeSet) activeSet.clock = v; },
     forceTouch(v) { touchy = v; },              // the pane can't fake (hover: none)
