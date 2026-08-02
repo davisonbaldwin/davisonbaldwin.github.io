@@ -4935,8 +4935,13 @@ renderer.domElement.addEventListener('wheel', (e) => {
   const pinch = e.ctrlKey || e.metaKey;                  // trackpad pinch gesture
   const pan = !pinch && Math.abs(e.deltaX) > 0.5;        // two-finger trackpad pan
   if (flyish() && !pan) {
-    // scroll is a throttle: sets the cruise/thrust speed multiplier (shown in the HUD)
-    flySpeed = Math.max(0.15, Math.min(12, flySpeed * Math.exp(-e.deltaY * 0.0012)));
+    // Scroll is a throttle: it sets the cruise/thrust multiplier in the HUD.
+    // The sign is deliberate. macOS natural scrolling (the default, and what
+    // this is demoed on) sends a POSITIVE deltaY when you scroll UP, so
+    // positive means faster. The classic-looking -e.deltaY reads correct in
+    // code and feels backwards on the machine that matters; nothing in JS can
+    // read the OS setting. The portfolio's home3d.js holds the same line.
+    flySpeed = Math.max(0.15, Math.min(12, flySpeed * Math.exp(e.deltaY * 0.0012)));
     flyShowToggle();
     return;
   }

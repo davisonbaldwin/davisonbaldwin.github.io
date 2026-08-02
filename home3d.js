@@ -59,7 +59,10 @@ function init() {
     return;
   }
   const MAX_PIXEL_RATIO = matchMedia('(pointer: coarse)').matches ? 1.75 : 2;
-  const TOUCH_UI = matchMedia('(hover: none) and (pointer: coarse)').matches;
+  // ?touch forces the touch UI on: the audit pane cannot emulate the
+  // media query, and without this the touch branch is unverifiable here
+  const TOUCH_UI = matchMedia('(hover: none) and (pointer: coarse)').matches
+    || new URLSearchParams(location.search).has('touch');
   renderer.setPixelRatio(Math.min(devicePixelRatio, MAX_PIXEL_RATIO));
   renderer.setSize(innerWidth, innerHeight);
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -978,6 +981,13 @@ function init() {
   const mouseNDC = { x: 0, y: 0 };
   let flyArmed = TOUCH_UI;
   let flyThrottle = false, flyCruise = false, flySpeed = 1;
+  // the touch pad's held buttons. Separate from flyThrottle on purpose:
+  // lifting a steering finger empties the canvas's pointer map and kills
+  // flyThrottle, and a button held on another thumb must survive that
+  let padThrottle = false, padFire = false;
+  // drops every pad hold AND repaints. The touch block replaces the stub
+  // with the real reset; every releaseAll caller then stays consistent
+  let padRelease = () => { padThrottle = false; padFire = false; };
   // F parks the ship and hands you the universe's orbit camera: drag to
   // look around the world, scroll to zoom, F again to take the stick back.
   // The page OPENS in the observer's seat, circling the parked ship; the
@@ -1036,7 +1046,18 @@ function init() {
   // pinch the caption promises: there is no wheel on a touch screen, so
   // without this "pinch to zoom" was a lie
   const pointers = new Map();
-  let lastTouch = null, orbitDrag = null, pinchD = 0;
+  let orbitDrag = null, pinchD = 0;
+  // the touch stick floats: the finger's landing point becomes its center
+  // and deflection from there is a HELD turn rate (the desktop cursor
+  // stick's grammar), so a long bank is one leaning thumb instead of
+  // repeated swipes. The ring and nub only exist on the touch UI.
+  const stick = { id: null, dx: 0, dy: 0 };
+  const STICK_R = 70;
+  let stickRing = null, stickNub = null, stickAX = 0, stickAY = 0;
+  const stickHide = () => {
+    stick.id = null; stick.dx = stick.dy = 0;
+    if (stickRing) { stickRing.style.display = 'none'; stickNub.style.display = 'none'; }
+  };
   const pinchSpan = () => {
     const p = [...pointers.values()];
     return p.length < 2 ? 0 : Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
@@ -1045,11 +1066,32 @@ function init() {
     // hold the pointer so a release outside the canvas still reaches us
     try { el.setPointerCapture(e.pointerId); } catch (err) { /* drag still works */ }
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-    if (pointers.size === 2) { pinchD = pinchSpan(); orbitDrag = null; return; }
+    if (pointers.size === 2) {
+      pinchD = pinchSpan(); orbitDrag = null;
+      // two fingers: zoom, never turn. The held-rate stick must let go
+      // too, or a stray palm edge freezes the ship into a permanent bank
+      if (stick.id !== null) {
+        stick.dx = stick.dy = 0;
+        if (stickNub) {
+          stickNub.style.left = (stickAX - 17) + 'px';
+          stickNub.style.top = (stickAY - 17) + 'px';
+        }
+      }
+      return;
+    }
     if (pointers.size > 2) return;
     if (!flyMode) { orbitDrag = { x: e.clientX, y: e.clientY, id: e.pointerId }; return; }
-    if (TOUCH_UI) lastTouch = { x: e.clientX, y: e.clientY, id: e.pointerId };
-    else flyThrottle = true;
+    if (TOUCH_UI) {
+      stick.id = e.pointerId; stick.dx = stick.dy = 0;
+      stickAX = e.clientX; stickAY = e.clientY;
+      if (stickRing) {
+        stickRing.style.display = 'block'; stickNub.style.display = 'block';
+        stickRing.style.left = (stickAX - STICK_R) + 'px';
+        stickRing.style.top = (stickAY - STICK_R) + 'px';
+        stickNub.style.left = (stickAX - 17) + 'px';
+        stickNub.style.top = (stickAY - 17) + 'px';
+      }
+    } else flyThrottle = true;
   });
   el.addEventListener('pointermove', (e) => {
     if (pointers.has(e.pointerId)) pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -1070,23 +1112,28 @@ function init() {
       orbitDrag = { x: e.clientX, y: e.clientY, id: e.pointerId };
       return;
     }
-    if (!TOUCH_UI || !lastTouch || lastTouch.id !== e.pointerId) return;  // touch drags the stick
-    steer((e.clientX - lastTouch.x) * 0.0035, -(e.clientY - lastTouch.y) * 0.003);
-    lastTouch = { x: e.clientX, y: e.clientY, id: e.pointerId };
+    if (!TOUCH_UI || stick.id !== e.pointerId) return;  // that finger holds the stick
+    stick.dx = e.clientX - stickAX;
+    stick.dy = e.clientY - stickAY;
+    if (stickNub) {                                  // the nub stays inside the ring
+      const m = Math.hypot(stick.dx, stick.dy), k = m > STICK_R ? STICK_R / m : 1;
+      stickNub.style.left = (stickAX + stick.dx * k - 17) + 'px';
+      stickNub.style.top = (stickAY + stick.dy * k - 17) + 'px';
+    }
   });
   // Two different releases. Lifting the mouse only ends the mouse: wiping
   // the keys here would cancel a held Shift boost the moment you stopped
   // click-thrusting. Losing the window ends everything, because a browser
   // sends no keyup for a key that was down when you alt-tabbed, and without
   // that the ship flies on and the beam keeps firing at nobody.
-  const releasePointer = () => { flyThrottle = false; lastTouch = null; orbitDrag = null; pinchD = 0; };
-  const releaseAll = () => { releasePointer(); pointers.clear(); heldKeys.clear(); };
+  const releasePointer = () => { flyThrottle = false; stickHide(); orbitDrag = null; pinchD = 0; };
+  const releaseAll = () => { releasePointer(); pointers.clear(); heldKeys.clear(); padRelease(); };
   // only the finger that actually lifted is forgotten; the other one keeps
   // its drag instead of the whole gesture dying with it
   const liftOne = (e) => {
     pointers.delete(e.pointerId);
     if (orbitDrag && orbitDrag.id === e.pointerId) orbitDrag = null;
-    if (lastTouch && lastTouch.id === e.pointerId) lastTouch = null;
+    if (stick.id === e.pointerId) stickHide();
     pinchD = 0;
     if (pointers.size === 0) flyThrottle = false;
     try { el.releasePointerCapture(e.pointerId); } catch (err) { /* never captured */ }
@@ -1097,8 +1144,18 @@ function init() {
   document.addEventListener('visibilitychange', () => { if (document.hidden) releaseAll(); });
   el.addEventListener('wheel', (e) => {
     e.preventDefault();
-    if (!flyMode) { orbitOwned = true; orbit.r = Math.max(0.15, Math.min(3, orbit.r * Math.exp(e.deltaY * 0.0012))); }
-    else flySpeed = Math.max(0.15, Math.min(12, flySpeed * Math.exp(-e.deltaY * 0.0012)));  // scroll up = faster
+    // Zoom, on the same convention as the throttle below: scrolling UP
+    // (positive deltaY under natural scrolling) pulls the ship closer,
+    // so one gesture means "more" everywhere on this page
+    if (!flyMode) { orbitOwned = true; orbit.r = Math.max(0.15, Math.min(3, orbit.r * Math.exp(-e.deltaY * 0.0012))); }
+    // Throttle. The sign is deliberate and has been "corrected" the wrong
+    // way before: on a Mac with natural scrolling (the default, and what
+    // this site is demoed on) pushing the wheel or swiping UP sends a
+    // POSITIVE deltaY, so positive must mean faster. Flipping this to the
+    // classic convention makes the gesture feel backwards here. Nothing in
+    // JS can read the OS setting, and the control self-corrects in a
+    // moment either way, so it is tuned for the machine that matters.
+    else flySpeed = Math.max(0.15, Math.min(12, flySpeed * Math.exp(e.deltaY * 0.0012)));
   }, { passive: false });
   addEventListener('keydown', (e) => {
     // auto-repeat must not toggle: holding F used to flip the mode thirty
@@ -1110,7 +1167,12 @@ function init() {
     const onControl = e.target && e.target.closest
       && e.target.closest('a, button, input, textarea, select, [contenteditable]');
     if (onControl && (e.key === ' ' || e.key === 'Enter')) return;
-    if (e.key === ' ') { e.preventDefault(); if (flyMode) flyCruise = !flyCruise; return; }
+    // the caption and the pad both state cruise, so both must hear the key
+    if (e.key === ' ') {
+      e.preventDefault();
+      if (flyMode) { flyCruise = !flyCruise; say(restCaption()); syncTouchUI(); }
+      return;
+    }
     if (e.key === 'f' || e.key === 'F') { toggleObserve(); return; }
     if (e.key === 'h' || e.key === 'H') { capHidden = !capHidden; applyCapVis(); return; }
     heldKeys.add(e.key.toLowerCase());
@@ -1123,6 +1185,8 @@ function init() {
     orbitOwned = true;                               // the stick has been taken at least once
     if (!flyMode) {
       flyThrottle = false; flyCruise = false;
+      padRelease();                                  // a held THRUST must not burn while parked
+      stickHide();                                   // nor the ring float over the observed ship
       const p = deepCam.position;
       orbit.r = Math.max(0.15, p.length());
       orbit.phi = Math.acos(Math.max(-1, Math.min(1, p.y / orbit.r)));
@@ -1131,6 +1195,7 @@ function init() {
     } else {
       say(flyArmed ? CAP_REST : CAP_ARM);
     }
+    syncTouchUI();
   }
 
   // ---- caption: the arming prompt and the controls line. Dismissable (the
@@ -1148,10 +1213,13 @@ function init() {
   // make the live region unusable, so speech lives in its own node and only
   // states worth hearing are written to it.
   const liveEl = document.createElement('span');
+  liveEl.className = 'home3d-chrome';
   liveEl.setAttribute('aria-live', 'polite');
   liveEl.style.cssText = 'position:absolute;width:1px;height:1px;overflow:hidden;'
     + 'clip-path:inset(50%);white-space:nowrap';
-  capWrap.appendChild(liveEl);
+  // on body, NOT in capWrap: hiding the caption must dim the paint, never
+  // the speech, or HIDE mutes every announcement for a reader
+  document.body.appendChild(liveEl);
   const announce = (txt) => { if (liveEl.textContent !== txt) liveEl.textContent = txt; };
   const hideBtn = document.createElement('button');
   hideBtn.textContent = 'HIDE';
@@ -1181,18 +1249,240 @@ function init() {
   hideBtn.addEventListener('click', () => { capHidden = true; applyCapVis(); });
   showBtn.addEventListener('click', () => { capHidden = false; applyCapVis(); });
   applyCapVis();
+
+  // ---- the touch flight pad: a phone has no F, no W and no X, so the
+  // stick comes with buttons. FLY takes the stick (flyArmed is already
+  // true on touch: there is no cursor to bring to center), THRUST and
+  // FIRE are hold-to-run and only exist while flying. All three carry
+  // home3d-chrome so a fallback sweeps them with the rest.
+  let syncTouchUI = () => {};
+  if (TOUCH_UI && !reduced) {
+    const mkPad = (label, css) => {
+      const b = document.createElement('button');
+      b.className = 'home3d-chrome';
+      b.textContent = label;
+      b.style.cssText = 'position:fixed;z-index:3;pointer-events:auto;cursor:pointer;' +
+        'font:600 10px Menlo,monospace;letter-spacing:0.14em;color:#ccd7e8;' +
+        'background:rgba(2,3,10,0.55);border:1px solid rgba(204,215,232,0.35);' +
+        'text-shadow:0 0 8px rgba(2,3,10,0.95);-webkit-tap-highlight-color:transparent;' +
+        'user-select:none;-webkit-user-select:none;touch-action:none;' + css;
+      document.body.appendChild(b);
+      return b;
+    };
+    const flyBtn = mkPad('FLY', 'left:14px;bottom:70px;border-radius:4px;padding:13px 18px');
+    flyBtn.setAttribute('aria-label', 'Toggle between flying and observing');
+    const fireBtn = mkPad('FIRE', 'right:14px;bottom:70px;width:62px;height:62px;border-radius:50%;display:none');
+    fireBtn.setAttribute('aria-label', 'Hold to fire the beam');
+    const thrustBtn = mkPad('THRUST', 'right:14px;bottom:146px;width:62px;height:62px;border-radius:50%;display:none');
+    thrustBtn.setAttribute('aria-label', 'Hold to thrust forward');
+    // one finger owns a button: a second finger brushing it must not
+    // rebase the gesture, and only the owner's lift releases the hold.
+    // Space/Enter mirror the hold for a paired hardware keyboard.
+    const hold = (btn, set) => {
+      let ownId = null;
+      const on = () => { set(true); btn.style.background = 'rgba(127,180,255,0.3)'; };
+      const off = (e) => {
+        if (e && e.pointerId !== undefined && e.pointerId !== ownId) return;
+        ownId = null; set(false); btn.style.background = 'rgba(2,3,10,0.55)';
+      };
+      btn.addEventListener('pointerdown', (e) => {
+        e.preventDefault();                          // no long-press menu, no ghost click
+        if (ownId !== null) return;
+        ownId = e.pointerId;
+        try { btn.setPointerCapture(e.pointerId); } catch (err) { /* hold still works */ }
+        on();
+      });
+      btn.addEventListener('pointerup', off);
+      btn.addEventListener('pointercancel', off);
+      btn.addEventListener('keydown', (e) => {
+        if (e.repeat || (e.key !== ' ' && e.key !== 'Enter')) return;
+        e.preventDefault(); on();
+      });
+      btn.addEventListener('keyup', (e) => {
+        if (e.key !== ' ' && e.key !== 'Enter') return;
+        e.preventDefault();
+        if (ownId !== null) return;                  // a key never releases a finger's hold
+        off();
+      });
+      // Focus can leave mid-hold: Tab, or a click anywhere else. The keyup
+      // then lands on whatever took focus and this button never hears it,
+      // so without a release here the hold latches with no key down and
+      // the beam keeps firing at a door until it opens on its own.
+      btn.addEventListener('blur', () => { if (ownId === null) off(); });
+      return () => off();                            // unconditional release for the reset paths
+    };
+    const mkStickEl = (size, css) => {
+      const d = document.createElement('div');
+      d.className = 'home3d-chrome';
+      d.style.cssText = 'position:fixed;z-index:3;pointer-events:none;display:none;' +
+        'border-radius:50%;width:' + size + 'px;height:' + size + 'px;' + css;
+      document.body.appendChild(d);
+      return d;
+    };
+    stickRing = mkStickEl(STICK_R * 2, 'border:1px solid rgba(204,215,232,0.3)');
+    stickNub = mkStickEl(34, 'background:rgba(127,180,255,0.35);border:1px solid rgba(204,215,232,0.5)');
+    // THRUST is a whole throttle, not a momentary switch: hold to burn,
+    // TAP to lock cruise (the lit CRUISE state frees the thumb to steer),
+    // SLIDE up or down while holding to change power through the same
+    // range the desktop wheel drives
+    // the slide's affordance: a faint vertical axis wakes BESIDE the
+    // button while it is held (the thumb is covering the button itself),
+    // and retires for good once the visitor has actually slid
+    let slideLearned = false;
+    try { slideLearned = localStorage.getItem('homeSlideLearned') === '1'; } catch (err) {}
+    const chev = document.createElement('div');
+    chev.className = 'home3d-chrome';
+    // U+25B4/U+25BE and ASCII | : Menlo Bold owns all three (the carets
+    // and U+2502 it does not, and fell to mismatched fallback fonts)
+    chev.textContent = '▴\n|\n▾';
+    chev.setAttribute('aria-hidden', 'true');        // decorative; nonsense to a reader
+    chev.style.cssText = 'position:fixed;right:84px;bottom:154px;z-index:3;pointer-events:none;' +
+      'font:600 10px Menlo,monospace;line-height:1.5;text-align:center;white-space:pre;' +
+      'color:#ccd7e8;text-shadow:0 0 8px rgba(2,3,10,0.95);opacity:0;transition:opacity 0.35s';
+    document.body.appendChild(chev);
+    let chevTimer = 0, powerTimer = 0;
+    const slideDone = () => {
+      slideLearned = true;
+      clearTimeout(chevTimer);
+      chev.style.opacity = '0';
+      try { localStorage.setItem('homeSlideLearned', '1'); } catch (err) {}
+    };
+    const thrustPaint = () => {
+      clearTimeout(powerTimer);                      // a pending restore must not clobber this paint
+      thrustBtn.textContent = flyCruise ? 'CRUISE' : 'THRUST';
+      thrustBtn.setAttribute('aria-label', flyCruise
+        ? 'Cruise locked: tap to cut, hold to burn'
+        : 'Thrust: hold to burn, tap to lock cruise, slide for power');
+      thrustBtn.setAttribute('aria-pressed', flyCruise ? 'true' : 'false');
+      thrustBtn.style.borderColor = flyCruise ? 'rgba(127,180,255,0.8)' : 'rgba(204,215,232,0.35)';
+      thrustBtn.style.background = padThrottle ? 'rgba(127,180,255,0.3)'
+        : (flyCruise ? 'rgba(127,180,255,0.16)' : 'rgba(2,3,10,0.55)');
+    };
+    // POWER lives on the button as well as the caption: a visitor who
+    // hid the caption still deserves a readout under their thumb
+    const showPower = () => {
+      thrustBtn.textContent = '×' + flySpeed.toFixed(1);
+      sayBriefly('POWER ×' + flySpeed.toFixed(1));
+      // the readout dwells and then the button names itself again, on the
+      // caption's own beat. A finger lift repaints immediately; the arrow
+      // keys have no lift, so without this the label stuck on a number
+      clearTimeout(powerTimer);
+      powerTimer = setTimeout(() => {
+        if (!padThrottle && thrustId === null) thrustPaint();
+      }, 2600);
+    };
+    let thrustT0 = 0, thrustY0 = 0, thrustSpeed0 = 1, thrustDragged = false, thrustId = null;
+    thrustBtn.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      if (thrustId !== null) return;                 // one finger owns the throttle
+      thrustId = e.pointerId;
+      try { thrustBtn.setPointerCapture(e.pointerId); } catch (err) { /* hold still works */ }
+      padThrottle = true;
+      thrustT0 = performance.now(); thrustY0 = e.clientY;
+      thrustSpeed0 = flySpeed; thrustDragged = false;
+      // armed, not shown: a cruise tap should never flash the affordance
+      if (!slideLearned) {
+        clearTimeout(chevTimer);
+        chevTimer = setTimeout(() => { chev.style.opacity = '1'; }, 250);
+      }
+      thrustPaint();
+    });
+    thrustBtn.addEventListener('pointermove', (e) => {
+      if (!padThrottle || e.pointerId !== thrustId) return;
+      const dy = thrustY0 - e.clientY;                 // up = more power
+      // 14px of slop before a press becomes a slide (a wobbly tap is
+      // still a tap), 30px of travel before the affordance retires
+      if (Math.abs(dy) > 14 && !thrustDragged) thrustDragged = true;
+      if (!thrustDragged) return;
+      if (!slideLearned && Math.abs(dy) > 30) slideDone();
+      flySpeed = Math.max(0.15, Math.min(12, thrustSpeed0 * Math.exp(dy * 0.012)));
+      showPower();
+    });
+    const thrustOff = (e) => {
+      if (e && e.pointerId !== undefined && e.pointerId !== thrustId) return;
+      // no cruise latch from the observer's seat or mid-door: the toggle
+      // only means something while actually flying
+      const wasTap = flyMode && !leaving && padThrottle && !thrustDragged
+        && e && e.type === 'pointerup' && performance.now() - thrustT0 < 300;
+      thrustId = null;
+      padThrottle = false;
+      clearTimeout(chevTimer);
+      chev.style.opacity = '0';
+      if (wasTap) {
+        flyCruise = !flyCruise;
+        sayBriefly(flyCruise ? 'CRUISE LOCKED · TAP AGAIN TO CUT' : 'CRUISE OFF');
+      }
+      thrustPaint();
+    };
+    thrustBtn.addEventListener('pointerup', thrustOff);
+    thrustBtn.addEventListener('pointercancel', thrustOff);
+    // the throttle for a paired keyboard: hold Space/Enter to burn, a
+    // quick press taps cruise, arrows step power without steering
+    thrustBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault(); e.stopPropagation();     // adjust power, do not pitch the ship
+        flySpeed = Math.max(0.15, Math.min(12, flySpeed * (e.key === 'ArrowUp' ? 1.25 : 0.8)));
+        showPower();
+        return;
+      }
+      if (e.repeat || (e.key !== ' ' && e.key !== 'Enter') || padThrottle) return;
+      e.preventDefault();
+      padThrottle = true; thrustT0 = performance.now(); thrustDragged = false;
+      thrustPaint();
+    });
+    thrustBtn.addEventListener('keyup', (e) => {
+      if (e.key !== ' ' && e.key !== 'Enter') return;
+      e.preventDefault();
+      if (thrustId !== null) return;                 // a key never releases a finger's hold
+      thrustOff({ type: 'pointerup' });              // same tap-or-hold judgement
+    });
+    // the throttle's half of the same latch. A plain reset, never
+    // thrustOff: losing focus inside the 300 ms tap window would
+    // otherwise be judged a tap and lock cruise on the way out
+    thrustBtn.addEventListener('blur', () => {
+      if (thrustId !== null || !padThrottle) return;
+      padThrottle = false;
+      clearTimeout(chevTimer);
+      chev.style.opacity = '0';
+      thrustPaint();
+    });
+    const fireRelease = hold(fireBtn, (v) => { padFire = v; });
+    flyBtn.addEventListener('click', () => { if (!leaving) toggleObserve(); });
+    // the real reset: blur, visibilitychange, mode exits and door entries
+    // all land here through releaseAll/toggleObserve/enterStudy
+    padRelease = () => {
+      fireRelease();
+      thrustId = null; padThrottle = false; padFire = false;
+      clearTimeout(chevTimer);
+      chev.style.opacity = '0';
+      thrustPaint();
+    };
+    syncTouchUI = () => {
+      flyBtn.textContent = flyMode ? 'OBSERVE' : 'FLY';
+      flyBtn.setAttribute('aria-label', flyMode ? 'Stop flying and observe the ship' : 'Take the stick and fly');
+      flyBtn.setAttribute('aria-pressed', flyMode ? 'true' : 'false');
+      thrustBtn.style.display = fireBtn.style.display = flyMode ? 'block' : 'none';
+      thrustPaint();                                 // leaving flight drops cruise; unlight it
+    };
+    thrustPaint();                                   // correct aria state from the first paint
+    flyBtn.setAttribute('aria-pressed', 'false');
+  }
   // the mouse already teaches itself: pointing steers and clicking thrusts,
   // so naming them only crowds the line. W and the arrows still work, and
   // the canvas label carries them for anyone who cannot use a mouse
   const CAP_REST = TOUCH_UI
-    ? 'DRAG TO STEER · A PORTAL AHEAD, A RIFT OFF EACH WING'
+    ? 'TILT TO STEER · TAP THRUST TO CRUISE, SLIDE IT FOR POWER'
     : 'HOLD CLICK TO THRUST · SHIFT TO BOOST · SPACE TO CRUISE · X TO FIRE · F TO OBSERVE';
+  // once cruise is locked the same tap CUTS it: the line must not keep
+  // promising a lock that the next tap would in fact undo
+  const CAP_REST_CRUISE = 'TILT TO STEER · TAP CRUISE TO CUT, SLIDE IT FOR POWER';
   const CAP_ARM = 'BRING YOUR CURSOR TO THE CENTER TO TAKE THE STICK';
-  // flight is keyboard-gated (F takes the stick), so a phone has no way into
-  // it: never tell a visitor with no keyboard to press a key. They orbit the
-  // ship here and take the worlds from the bar
+  // never tell a visitor with no keyboard to press a key, and never name
+  // a FLY button that reduced motion left uncreated
   const CAP_OBSERVE = TOUCH_UI
-    ? 'DRAG TO ORBIT THE SHIP · PINCH TO ZOOM · THE WORLDS ARE IN THE MENU'
+    ? (reduced
+      ? 'DRAG TO ORBIT · PINCH TO ZOOM · THE WORLDS ARE IN THE MENU'
+      : 'DRAG TO ORBIT · PINCH TO ZOOM · TAP FLY TO TAKE THE STICK')
     : 'OBSERVING · DRAG TO ORBIT · SCROLL TO ZOOM · F TO FLY';
   const say = (txt) => {
     if (capEl.textContent !== txt) capEl.textContent = txt;
@@ -1202,7 +1492,9 @@ function init() {
   // on "HULL 82%" for the rest of the session, so the controls a visitor
   // needs were replaced forever by a number about something they shot once.
   let sayTimer = 0;
-  const restCaption = () => (flyMode ? (flyArmed ? CAP_REST : CAP_ARM) : CAP_OBSERVE);
+  const restCaption = () => (flyMode
+    ? (flyArmed ? (TOUCH_UI && flyCruise ? CAP_REST_CRUISE : CAP_REST) : CAP_ARM)
+    : CAP_OBSERVE);
   const sayBriefly = (txt) => {
     // painted, not spoken: a running percentage is noise in a live region
     if (capEl.textContent !== txt) capEl.textContent = txt;
@@ -1220,7 +1512,7 @@ function init() {
   function enterStudy(i) {
     if (leaving) return;
     leaving = true;
-    flyThrottle = false; flyCruise = false;
+    flyThrottle = false; flyCruise = false; padRelease();
     say(WORLDS[i].name + ' · ENTERING');
     const fadeEl = document.createElement('div');
     fadeEl.style.cssText = 'position:fixed;inset:0;background:' + WORLDS[i].bg +
@@ -1245,6 +1537,17 @@ function init() {
       const stick = (v) => { const a = Math.abs(v); return a < dzz ? 0 : Math.sign(v) * (a - dzz) / (1 - dzz); };
       const sx = stick(mouseNDC.x), sy = stick(mouseNDC.y);
       steer(sx * 1.5 * dt, sy * 1.3 * dt);
+      turnIn += sx;
+      if (sx || sy) steerActive = true;
+    }
+    // the touch stick steers per frame while held, same dead zone and
+    // rates as the cursor stick; screen-down on the nub dives, like the
+    // old drag did
+    if (flyMode && flyArmed && TOUCH_UI && !reduced && stick.id !== null) {
+      const s = (v) => { const a = Math.abs(v); return a < dzz ? 0 : Math.sign(v) * (a - dzz) / (1 - dzz); };
+      const sx = s(Math.max(-1, Math.min(1, stick.dx / STICK_R)));
+      const sy = s(Math.max(-1, Math.min(1, stick.dy / STICK_R)));
+      steer(sx * 1.5 * dt, -sy * 1.3 * dt);
       turnIn += sx;
       if (sx || sy) steerActive = true;
     }
@@ -1279,7 +1582,7 @@ function init() {
       const boost = (heldKeys.has('shift') ? 7 : 1) * flySpeed;
       const F = (heldKeys.has('w') ? 1 : 0) - (heldKeys.has('s') ? 1 : 0);
       const S = (heldKeys.has('d') ? 1 : 0) - (heldKeys.has('a') ? 1 : 0);
-      const auto = (flyThrottle || flyCruise) ? 1 : 0;
+      const auto = (flyThrottle || flyCruise || padThrottle) ? 1 : 0;
       const v = DEEP_PCPERSEC * boost * dt;
       if (!reduced) {
         if (auto || F) deep.pos.addScaledVector(fwd, (auto * 0.7 + F) * v);
@@ -1399,7 +1702,7 @@ function init() {
     deepFillLight.intensity = 2.2 * closeK;
     underFill.position.set(0, 0, 0).addScaledVector(fwd, -camDist * 0.4).addScaledVector(shipUp, -camDist * 0.6);
     underFill.intensity = 0.7 * closeK;
-    const throttleOn = flyThrottle || flyCruise;
+    const throttleOn = flyThrottle || flyCruise || padThrottle;
     const nowS = performance.now() / 1000;
     const eo = (throttleOn ? 0.78 : 0.12) + Math.sin(performance.now() / 80) * 0.06;
     for (const gl of shipModel.userData.glows) {
@@ -1409,7 +1712,7 @@ function init() {
     for (const s of shipModel.userData.spin) s.rotation.z = nowS * 0.4;
     // the beam: alive while X is held, eased in and out so it ignites and
     // dies rather than toggling. One ray from the nose decides everything
-    const wantBeam = flyMode && !reduced && !leaving && !committed && heldKeys.has('x');
+    const wantBeam = flyMode && !reduced && !leaving && !committed && (heldKeys.has('x') || padFire);
     beam.on += ((wantBeam ? 1 : 0) - beam.on) * Math.min(1, dt * 14);
     if (beam.on > 0.02) {
       const rayHit = (center, R) => {                // scene space, origin at the nose
@@ -1467,13 +1770,17 @@ function init() {
   // the scene is decorative to a screen reader, but it must not be a void:
   // name what is out there and how to reach it, the way rooms.html does
   el.setAttribute('role', 'img');
-  // the key list is a lie on a phone, where flight cannot be entered at all,
-  // so the label describes what that device can actually do
+  // the label describes what THIS device can do: keys on a desktop, the
+  // touch pad's buttons on a phone (absent under reduced motion, where
+  // only the orbit and the menu remain)
   el.setAttribute('aria-label',
     'A starship parked in deep space. A portal hangs ahead of it and a rift off each wing, '
     + 'one for each of the three case studies. '
     + (TOUCH_UI
-      ? 'Drag to orbit the ship and pinch to zoom. '
+      ? (reduced
+        ? 'Drag to orbit the ship and pinch to zoom. '
+        : 'Drag to orbit the ship and pinch to zoom, or use the Fly button to take the stick: '
+          + 'hold Thrust to move, tilt a held finger to steer, hold Fire to shoot. ')
       : 'Press F to fly, the arrow keys to steer, W to thrust and X to fire. ')
     + 'The three worlds are also links at the top of this page.');
   document.body.insertBefore(el, document.body.firstChild);

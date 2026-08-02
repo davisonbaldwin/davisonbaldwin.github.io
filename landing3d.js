@@ -65,8 +65,11 @@ function init() {
   // on phones the planet is the whole show: the caption hugs it on a
   // tighter arc so the larger type still fits the narrow screen
   const CAPS = NARROW0 ? 1.2 : 1;
-  const CAPPX = NARROW0 ? 38 : 24;
-  const CAPGAP = NARROW0 ? 8 : 6;
+  // 38 crowded the phone: the arc ran edge to edge and the orbiting
+  // letters read as shouting. Smaller type on the SAME arc, so the words
+  // still hug the planet, they just take less of the sky
+  const CAPPX = NARROW0 ? 32 : 24;
+  const CAPGAP = NARROW0 ? 7 : 6;
   const R_CAP = (NARROW0 ? 1.18 : 1.45) * CAPS;
   caption.textContent = restCaption;           // one voice for both variants
 
