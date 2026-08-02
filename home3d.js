@@ -1325,31 +1325,37 @@ function init() {
     // TAP to lock cruise (the lit CRUISE state frees the thumb to steer),
     // SLIDE up or down while holding to change power through the same
     // range the desktop wheel drives
-    // the slide's affordance: a faint vertical axis wakes BESIDE the
-    // button while it is held (the thumb is covering the button itself),
-    // and retires for good once the visitor has actually slid
-    let slideLearned = false;
-    try { slideLearned = localStorage.getItem('homeSlideLearned') === '1'; } catch (err) {}
-    const chev = document.createElement('div');
-    chev.className = 'home3d-chrome';
-    // U+25B4/U+25BE and ASCII | : Menlo Bold owns all three (the carets
-    // and U+2502 it does not, and fell to mismatched fallback fonts)
-    chev.textContent = '▴\n|\n▾';
-    chev.setAttribute('aria-hidden', 'true');        // decorative; nonsense to a reader
-    chev.style.cssText = 'position:fixed;right:84px;bottom:154px;z-index:3;pointer-events:none;' +
-      'font:600 10px Menlo,monospace;line-height:1.5;text-align:center;white-space:pre;' +
-      'color:#ccd7e8;text-shadow:0 0 8px rgba(2,3,10,0.95);opacity:0;transition:opacity 0.35s';
-    document.body.appendChild(chev);
-    let chevTimer = 0, powerTimer = 0;
-    const slideDone = () => {
-      slideLearned = true;
-      clearTimeout(chevTimer);
-      chev.style.opacity = '0';
-      try { localStorage.setItem('homeSlideLearned', '1'); } catch (err) {}
+    // the slide's affordance lives IN the button: ▴ above the label and
+    // ▾ below it (U+25B4/25BE; Menlo Bold owns both, the carets it does
+    // not). Visible whenever the button is (the pad hides itself in
+    // observe), brightening while the throttle is held. They sit inside
+    // because the space below the button belongs to FIRE, and because
+    // always-on visibility means they teach while the thumb is OFF it
+    thrustBtn.textContent = '';
+    thrustBtn.style.flexDirection = 'column';
+    thrustBtn.style.alignItems = 'center';
+    thrustBtn.style.justifyContent = 'center';
+    thrustBtn.style.lineHeight = '1';
+    const mkThrustSpan = (txt, css) => {
+      const s = document.createElement('span');
+      s.textContent = txt;
+      s.setAttribute('aria-hidden', 'true');         // the button's aria-label speaks
+      s.style.cssText = 'pointer-events:none;' + css;
+      thrustBtn.appendChild(s);
+      return s;
+    };
+    const chevUp = mkThrustSpan('▴', 'font-size:9px;opacity:0.55;transition:opacity 0.35s');
+    const thrustLabel = mkThrustSpan('THRUST', 'margin:3px 0');
+    const chevDown = mkThrustSpan('▾', 'font-size:9px;opacity:0.55;transition:opacity 0.35s');
+    let powerTimer = 0;
+    const chevPaint = () => {
+      const o = padThrottle ? '1' : '0.55';
+      chevUp.style.opacity = o;
+      chevDown.style.opacity = o;
     };
     const thrustPaint = () => {
       clearTimeout(powerTimer);                      // a pending restore must not clobber this paint
-      thrustBtn.textContent = flyCruise ? 'CRUISE' : 'THRUST';
+      thrustLabel.textContent = flyCruise ? 'CRUISE' : 'THRUST';
       thrustBtn.setAttribute('aria-label', flyCruise
         ? 'Cruise locked: tap to cut, hold to burn'
         : 'Thrust: hold to burn, tap to lock cruise, slide for power');
@@ -1361,7 +1367,7 @@ function init() {
     // POWER lives on the button as well as the caption: a visitor who
     // hid the caption still deserves a readout under their thumb
     const showPower = () => {
-      thrustBtn.textContent = '×' + flySpeed.toFixed(1);
+      thrustLabel.textContent = '×' + flySpeed.toFixed(1);
       sayBriefly('POWER ×' + flySpeed.toFixed(1));
       // the readout dwells and then the button names itself again, on the
       // caption's own beat. A finger lift repaints immediately; the arrow
@@ -1380,21 +1386,16 @@ function init() {
       padThrottle = true;
       thrustT0 = performance.now(); thrustY0 = e.clientY;
       thrustSpeed0 = flySpeed; thrustDragged = false;
-      // armed, not shown: a cruise tap should never flash the affordance
-      if (!slideLearned) {
-        clearTimeout(chevTimer);
-        chevTimer = setTimeout(() => { chev.style.opacity = '1'; }, 250);
-      }
+      chevPaint();
       thrustPaint();
     });
     thrustBtn.addEventListener('pointermove', (e) => {
       if (!padThrottle || e.pointerId !== thrustId) return;
       const dy = thrustY0 - e.clientY;                 // up = more power
       // 14px of slop before a press becomes a slide (a wobbly tap is
-      // still a tap), 30px of travel before the affordance retires
+      // still a tap)
       if (Math.abs(dy) > 14 && !thrustDragged) thrustDragged = true;
       if (!thrustDragged) return;
-      if (!slideLearned && Math.abs(dy) > 30) slideDone();
       flySpeed = Math.max(0.15, Math.min(12, thrustSpeed0 * Math.exp(dy * 0.012)));
       showPower();
     });
@@ -1406,8 +1407,7 @@ function init() {
         && e && e.type === 'pointerup' && performance.now() - thrustT0 < 300;
       thrustId = null;
       padThrottle = false;
-      clearTimeout(chevTimer);
-      chev.style.opacity = '0';
+      chevPaint();
       if (wasTap) {
         flyCruise = !flyCruise;
         sayBriefly(flyCruise ? 'CRUISE LOCKED · TAP AGAIN TO CUT' : 'CRUISE OFF');
@@ -1442,8 +1442,7 @@ function init() {
     thrustBtn.addEventListener('blur', () => {
       if (thrustId !== null || !padThrottle) return;
       padThrottle = false;
-      clearTimeout(chevTimer);
-      chev.style.opacity = '0';
+      chevPaint();
       thrustPaint();
     });
     const fireRelease = hold(fireBtn, (v) => { padFire = v; });
@@ -1453,15 +1452,16 @@ function init() {
     padRelease = () => {
       fireRelease();
       thrustId = null; padThrottle = false; padFire = false;
-      clearTimeout(chevTimer);
-      chev.style.opacity = '0';
+      chevPaint();
       thrustPaint();
     };
     syncTouchUI = () => {
       flyBtn.textContent = flyMode ? 'OBSERVE' : 'FLY';
       flyBtn.setAttribute('aria-label', flyMode ? 'Stop flying and observe the ship' : 'Take the stick and fly');
       flyBtn.setAttribute('aria-pressed', flyMode ? 'true' : 'false');
-      thrustBtn.style.display = fireBtn.style.display = flyMode ? 'block' : 'none';
+      thrustBtn.style.display = flyMode ? 'flex' : 'none';  // flex: it stacks ▴ / label / ▾
+      fireBtn.style.display = flyMode ? 'block' : 'none';
+      chevPaint();                                   // the axis lives and dies with the pad
       thrustPaint();                                 // leaving flight drops cruise; unlight it
     };
     thrustPaint();                                   // correct aria state from the first paint
@@ -1472,7 +1472,7 @@ function init() {
   // the canvas label carries them for anyone who cannot use a mouse
   const CAP_REST = TOUCH_UI
     ? 'TILT TO STEER · TAP THRUST TO CRUISE, SLIDE IT FOR POWER'
-    : 'HOLD CLICK TO THRUST · SHIFT TO BOOST · SPACE TO CRUISE · X TO FIRE · F TO OBSERVE';
+    : 'HOLD CLICK TO THRUST · SHIFT TO BOOST · SPACE TO CRUISE · SCROLL FOR SPEED · X TO FIRE · F TO OBSERVE';
   // once cruise is locked the same tap CUTS it: the line must not keep
   // promising a lock that the next tap would in fact undo
   const CAP_REST_CRUISE = 'TILT TO STEER · TAP CRUISE TO CUT, SLIDE IT FOR POWER';
