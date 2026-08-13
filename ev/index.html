@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EV·01 · complete vehicle engineering model</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Boot state, and it is in the STATIC html on purpose.
+     The browser gets its first rendering opportunity about 50 ms after the
+     parse and js/main.js does not finish building the car for another
+     350 ms, so without this the first thing the page says, for a third of a
+     second, is that the vehicle has 0 systems, 0 parts, 0 kg and 0 miles of
+     range. Those zeros are hard-coded below and they are not a loading
+     state, they are a wrong answer. main.js lifts this on the first
+     rendered frame; the timeout is the escape hatch for a page whose module
+     never ran, because a broken app is still better than a splash screen
+     that never leaves. -->
+<div id="boot">
+  <div class="boot-in">
+    <b>EV·01</b>
+    <span>building the vehicle</span>
+    <i></i>
+  </div>
+</div>
+<script>setTimeout(function(){document.body.classList.add('booted');}, 6000);</script>
+
+<canvas id="gl"></canvas>
+
+<!-- One faceplate across the top, divided by hairlines into three groups:
+     which car, how disassembled, how viewed. -->
+<header id="topbar">
+  <div class="brand">
+    <b>EV·01</b>
+    <span>vehicle engineering model</span>
+  </div>
+
+  <div class="grp" id="pGen"></div>
+
+  <!-- A deterministic flex line break. The faceplate needs 560 px of its own
+       and never reflowed, so on a 375 px phone the four view switches sat
+       between x 385 and x 560, outside the window, with body{overflow:hidden}
+       and no way to scroll to them: four of the eight top-level controls did
+       not exist. Below 580 px the bar becomes two rows and this is where it
+       breaks, so which controls share a row is a decision rather than an
+       accident of label widths. Display:none above that. -->
+  <span class="brk" aria-hidden="true"></span>
+
+  <label class="grp" id="pExp">
+    <small>explode</small>
+    <span class="slider"><input id="exp" type="range" min="0" max="100" value="0"></span>
+    <b id="expVal">0%</b>
+  </label>
+
+  <!-- The finish. Its own group rather than a fifth control inside #pView,
+       because #pView styles `button` by element and would set a 48 px tall
+       tab with 9 px small caps on a dropdown that is neither. -->
+  <div class="grp" id="pPaint"></div>
+
+  <div class="grp" id="pView">
+    <button id="btnSpin" class="icon on" title="Auto-rotate when idle">⟳</button>
+    <button id="btnXray" title="Fade the body shell">X-ray</button>
+    <button id="btnDrive" title="Spin wheels, rotors, fans">Drive</button>
+    <button id="btnHome" title="Reset view">Home</button>
+  </div>
+</header>
+
+<nav id="rail">
+  <div class="r-head">Vehicle systems</div>
+  <!-- The index that did not exist. Until this, finding a part meant already
+       knowing which of 53 modules owned it, and the 232,633 words of written
+       engineering behind those parts were reachable only by opening them one
+       at a time. The placeholder is written by js/main.js from the real
+       counts, because a number about the size of the model that is typed
+       into the HTML is a number that goes stale. -->
+  <div class="r-find">
+    <input id="railFind" type="search" autocomplete="off" spellcheck="false"
+           aria-label="Search parts and their written engineering">
+  </div>
+  <div id="railList"></div>
+</nav>
+<button id="railToggle" title="Hide or show the systems panel">‹</button>
+
+<aside id="panel">
+  <button id="panelClose" aria-label="Close">×</button>
+  <div id="panelIn"></div>
+</aside>
+
+<!-- The readout: every number about the active configuration, on one scale -->
+<aside id="eff">
+  <div class="e-stats">
+    <div class="stat"><small>systems</small><b id="stSys">0</b></div>
+    <div class="stat"><small>parts</small><b id="stParts">0</b></div>
+    <div class="stat"><small>curb mass</small><b id="stMass">0 kg</b></div>
+  </div>
+
+  <div class="e-head"><span>Efficiency budget</span>
+    <div class="e-units">
+      <button id="unitImp" class="on">mi</button><button id="unitMet">km</button>
+    </div>
+  </div>
+  <div id="effRows"></div>
+  <!-- the bars are drawn on one absolute scale for the whole ladder, so the
+       scale has to be printed or shorter bars mean nothing -->
+  <div class="e-axis"><span>0</span><b id="effScale">0</b></div>
+
+  <!-- Range is the display moment. The whole point of the ladder is that
+       this number climbs from 430 to 1,688 miles, so it is the one figure
+       allowed to be large. Consumption drops to the sub-row beside pack. -->
+  <div class="e-out">
+    <small>estimated range</small>
+    <div class="e-big"><b id="effRange">0</b><i id="effRangeU">mi</i></div>
+  </div>
+  <!-- EFFICIENCY, NOT CONSUMPTION. It is the same measurement read the way
+       every other figure on this card reads. Wh/mi was the one number here
+       that got SMALLER as the car got better, 228.2 at Gen 1 down to 97.9 at
+       Gen 11, while range, pack and every count beside it climbed. mi/kWh is
+       1000/(Wh/mi) and ascends 4.38 to 10.22 over the same eleven rungs, so
+       Gen 11 reads as the first rung past 10 miles per kWh instead of the
+       first under 100 Wh/mi.
+       Wh/mi stays, small, underneath it, because the waterfall above IS a
+       Wh/mi decomposition and its five rows sum to exactly that number.
+       Aero, rolling, stop-go, auxiliary and battery losses are shares of
+       where the energy goes; inverting each one on its own would mean
+       nothing. So the breakdown keeps the consumption unit and only the
+       headline turns over. -->
+  <div class="e-sub">
+    <div class="e-cell">
+      <small>efficiency</small><b id="effRate">0</b><i id="effRateU">mi/kWh</i>
+      <span class="e-alt" id="effTotal">0 Wh/mi</span>
+    </div>
+    <div class="e-cell"><small>pack</small><b id="effKwh">0</b><i>kWh</i></div>
+  </div>
+  <!-- The pack in real time. Drive spends it at the rate computeBudget
+       actually gives; parked, the stage ring becomes a charger and fills it
+       at whatever the hv module's own spec row declares. Both figures are
+       read out of the model, never assumed. -->
+  <div class="e-pack">
+    <div class="e-head"><span>Pack</span><b id="ergMode">charging</b></div>
+    <div class="e-soc"><i id="ergFill"></i></div>
+    <div class="e-erg">
+      <span id="ergState">0 kWh</span><b id="ergRate">0 kW</b>
+    </div>
+    <div class="e-erg sub"><span id="ergLeft"></span><b id="ergClock"></b></div>
+  </div>
+
+  <div class="e-note">mixed-cycle estimate</div>
+</aside>
+<button id="effToggle" title="Hide or show the efficiency card">›</button>
+
+<div id="hoverTag"></div>
+
+<footer id="hint">drag to orbit · scroll to zoom · right-drag to pan · click any part</footer>
+
+<!-- ── ACCESS GATE ──────────────────────────────────────────────────────
+     Injected by tools/sync-ev.py; do not hand-edit ev/index.html, it is a
+     generated file. Obscurity, not security: see the note in that script.
+     The app module is injected on success, so a locked page never builds
+     the car and never takes a WebGL context. -->
+<div id="gate">
+  <form id="gateForm" autocomplete="off">
+    <b>EV&middot;01</b>
+    <span>vehicle engineering model</span>
+    <label for="gateCode">access code</label>
+    <input id="gateCode" type="password" inputmode="numeric" autocomplete="off"
+           spellcheck="false" aria-label="Access code">
+    <i id="gateMsg" role="status">&nbsp;</i>
+  </form>
+</div>
+<style>
+  #gate {
+    position: fixed; inset: 0; z-index: 100;
+    display: grid; place-items: center;
+    background: #05070a;
+    font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+  }
+  #gateForm { display: grid; justify-items: center; gap: 14px; width: 232px; }
+  #gateForm b { font: 500 15px/1 inherit; letter-spacing: 0.34em;
+                text-indent: 0.34em; color: #ccd3db; }
+  #gateForm span { font: 400 9px/1 inherit; letter-spacing: 0.2em;
+                   text-transform: uppercase; color: #4e5866; }
+  #gateForm label { margin-top: 10px; font: 500 9px/1 inherit;
+                    letter-spacing: 0.2em; text-transform: uppercase; color: #4e5866; }
+  #gateCode {
+    width: 100%; height: 34px; padding: 0 10px;
+    background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 2px; color: #f0f3f6;
+    font: 500 16px/1 inherit; letter-spacing: 0.5em; text-align: center;
+    transition: border-color 120ms ease;
+  }
+  #gateCode:focus { outline: none; border-color: #d4a24c; }
+  #gateMsg { font: 400 9px/1 inherit; letter-spacing: 0.16em;
+             text-transform: uppercase; color: #8a4a3a; font-style: normal; }
+  #gate.wrong #gateCode { border-color: #8a4a3a; }
+</style>
+<script>
+(function () {
+  var KEY = 'ev01-unlocked';
+  var gate = document.getElementById('gate');
+  var form = document.getElementById('gateForm');
+  var code = document.getElementById('gateCode');
+  var msg = document.getElementById('gateMsg');
+
+  function boot() {
+    gate.parentNode.removeChild(gate);
+    var s = document.createElement('script');
+    s.type = 'module';
+    s.src = 'js/main.js';
+    document.body.appendChild(s);
+  }
+
+  /* remembered for the session only, so a reload while reading does not ask
+     again and a new visit does */
+  try { if (sessionStorage.getItem(KEY) === '1') { boot(); return; } } catch (e) {}
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (code.value.trim() === '007') {
+      try { sessionStorage.setItem(KEY, '1'); } catch (e2) {}
+      boot();
+      return;
+    }
+    gate.className = 'wrong';
+    msg.textContent = 'not that';
+    code.value = '';
+    code.focus();
+  });
+  code.focus();
+})();
+</script>
+</body>
+</html>

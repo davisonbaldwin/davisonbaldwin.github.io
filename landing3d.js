@@ -963,6 +963,12 @@ function init() {
   // through the gaps, or 'mech', the machined inner world. Swap live with
   // __world.setHeart('star' | 'mech').
   const hearts = {};
+  /* the machined heart's hit proxy. Declared HERE and not down with the other
+     hit spheres, because the heart is BUILT above them and `let` is not
+     hoisted: assigning it from the builder while the declaration sat 400 lines
+     lower threw "Cannot access coreHit before initialization" and took the
+     whole page with it. */
+  let coreHit = null;
   {
     const starG = new THREE.Group();
     // the core star, designed: limb-darkened from a white-hot heart to an
@@ -1301,6 +1307,15 @@ function init() {
       cap2.position.y = s2 * 0.475;
       mechG.add(cap2);
     }
+    // THE MACHINE IS A DOOR. It is the one thing in here the cuts reveal and
+    // the only object on this page with nothing behind it, so it carries a hit
+    // proxy of its own: an invisible sphere a little proud of the 0.24 core,
+    // riding mechG so it turns with the machine. Reachable only once the
+    // slices have opened, because a closed planet puts a solid slice between
+    // the pointer and the centre and intersectObjects returns the nearest.
+    coreHit = new THREE.Mesh(new THREE.SphereGeometry(0.30, 16, 12),
+                             new THREE.MeshBasicMaterial({ visible: false }));
+    mechG.add(coreHit);
     planet.add(mechG);
     hearts.mech = { g: mechG, core: mCore, bandA: mBandA, bandB: mBandB, bandC: mBandC };
   }
@@ -1880,14 +1895,29 @@ function init() {
     // ignore visibility, and its idle hit sphere would swallow planet taps
     const near = ray.intersectObject(planetHit).length > 0;
     const sliceMeshes = slices.map((s) => s.mesh);
+    // THE MACHINE IS TESTED FIRST, and it has to be. Each slice's `mesh` is
+    // a coarse PICK SHELL rather than the cut geometry you can see: measured
+    // along the planet's centre line, slice0's shell alone answers every ray
+    // from x 576 to 829, so the three of them enclose the heart completely
+    // and a nearest-hit test can never reach it however far the planet opens.
+    // Priority instead of distance, gated on the planet actually being open,
+    // so the centre only becomes a door once the cuts have revealed what is
+    // behind them. 0.55 is past the midpoint of the easing, which is where
+    // the machine is unmistakably on screen rather than a glint in a seam.
+    if (coreHit && hearts.mech && hearts.mech.g.visible && sepCur > 0.55 &&
+        ray.intersectObject(coreHit).length) {
+      return { world: -1, mini: false, star: false, about: false, core: true, near: true };
+    }
     const hit = ray.intersectObjects(miniG.visible
-      ? [miniHit, sunHit, aboutHit, ...sliceMeshes] : [sunHit, aboutHit, ...sliceMeshes])[0];
-    if (!hit) return { world: -1, mini: false, star: false, about: false, near };
+      ? [miniHit, sunHit, aboutHit, ...sliceMeshes]
+      : [sunHit, aboutHit, ...sliceMeshes])[0];
+    if (!hit) return { world: -1, mini: false, star: false, about: false, core: false, near };
     const si = slices.findIndex((s) => s.mesh === hit.object);
-    if (si >= 0) return { world: si, mini: false, star: false, about: false, near };
-    if (hit.object === sunHit) return { world: -1, mini: false, star: true, about: false, near };
-    if (hit.object === aboutHit) return { world: -1, mini: false, star: false, about: true, near };
-    return { world: -1, mini: true, star: false, about: false, near };
+    if (si >= 0) return { world: si, mini: false, star: false, about: false, core: false, near };
+    if (hit.object === sunHit) return { world: -1, mini: false, star: true, about: false, core: false, near };
+    if (hit.object === aboutHit) return { world: -1, mini: false, star: false, about: true, core: false, near };
+    if (hit.object === coreHit) return { world: -1, mini: false, star: false, about: false, core: true, near };
+    return { world: -1, mini: true, star: false, about: false, core: false, near };
   };
 
   // Every live finger, by id. One shared anchor meant a second finger
@@ -1924,18 +1954,19 @@ function init() {
       hoverIdx = idx;
       hoverNear = p2.near || idx >= 0;
       const want = p2.mini ? ['RETURN HOME', ACC]
+        : p2.core ? ['THE MACHINE \u00b7 LOCKED', '#d4a24c']
         : p2.star ? ['ENTER THE UNIVERSE', '#7fb4ff']
         : p2.about ? ['ABOUT DAVIS · OPEN', '#ffd9a0']
         : idx >= 0 ? [WORLDS[idx].name + ' · ENTER', capColors[idx]]
         : [restCaption, CAP_REST];
       // crossing an open gap or resting on the heart holds the current
       // caption; the rest text only returns once the pointer truly leaves
-      const overGap = idx === -1 && p2.near && !p2.mini && !p2.star && !p2.about;
+      const overGap = idx === -1 && p2.near && !p2.mini && !p2.star && !p2.about && !p2.core;
       if (!overGap && want[0] !== caption.textContent) {
         announce(want[0], want[1]);
         caption.classList.toggle('lit', want[0] !== restCaption);
       }
-      el.style.cursor = (p2.mini || p2.star || p2.about) ? 'pointer' : idx >= 0 ? 'grab' : 'default';
+      el.style.cursor = (p2.mini || p2.star || p2.about || p2.core) ? 'pointer' : idx >= 0 ? 'grab' : 'default';
     }
   });
   const release = (e) => {
@@ -1943,7 +1974,8 @@ function init() {
     dragging = false;
     if (moved < 7) {
       const p2 = pick(e);
-      if (p2.star) goHref('studies/universe.html');
+      if (p2.core) goHref('ev/index.html');
+      else if (p2.star) goHref('studies/universe.html');
       else if (p2.about) openAbout();
       else if (p2.mini) goHref('index.html');
       else if (p2.world >= 0) {
@@ -2336,7 +2368,11 @@ function init() {
   }
   requestAnimationFrame(frame);
   requestAnimationFrame(() => { el.style.opacity = '1'; });
-  window.__world = { anchor, cam, planet, sets: LETTER_SETS, renderer, setHeart, slices,
+  // sep(): read or force the slice separation. The heart is only a door once
+  // the planet is open, and an automated check cannot hover for two seconds
+  // in a throttled tab, so the state it gates on is reachable from script.
+  const sep = (v) => { if (v != null) sepCur = Math.max(0, Math.min(1, v)); return sepCur; };
+  window.__world = { anchor, cam, planet, sets: LETTER_SETS, renderer, setHeart, slices, sep,
     get activeSet() { return activeSet; },
     warpCap(v) { if (activeSet) activeSet.clock = v; },
     forceTouch(v) { touchy = v; },              // the pane can't fake (hover: none)

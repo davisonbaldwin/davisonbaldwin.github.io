@@ -1,0 +1,1701 @@
+/* EV·01 · INSTRUMENT
+   The car is a measuring device, so the chrome around it is one too.
+   A graded neutral scale does the work. Hairlines instead of shadows.
+   Every number tabular. Everything on a 4 px grid. One accent, and it
+   is the model's own selection colour, so it only ever means "current". */
+
+:root {
+  /* neutral scale, cool, zeroed on the scene fog (0x0a0d11) */
+  --n00: #05070a;
+  --n05: #080b0e;
+  --n10: #0b0e12;
+  --n15: #0f1318;
+  --n20: #141920;
+  --n25: #1a2029;
+  --n30: #222932;
+  --n40: #333c47;
+  --n50: #4e5866;
+  --n60: #6d7784;
+  --n70: #8d97a3;
+  --n80: #aeb7c1;
+  --n90: #ccd3db;
+  --n99: #f0f3f6;
+
+  /* the one accent, and it still means exactly one thing: "current". It is
+     what the generation dropdown, the explode track and the busy sweep are
+     drawn in, none of which belong to a system. */
+  --acc: #d4a24c;
+  --acc-dim: rgba(212, 162, 76, 0.5);
+  --acc-wash: rgba(212, 162, 76, 0.1);
+
+  /* THE SELECTION COLOUR, which is the accent until something is selected.
+     Every module declares SYSTEM.color and the tree holds nine slot hues;
+     js/main.js writes the focused one onto the document element and clears
+     it again on close, so the rail row, the panel rules and the light on
+     the part in the 3D scene are the same colour at the same instant.
+     Declared here as a fallback rather than left undefined, which is what
+     keeps the resting interface monochrome: with nothing open these two
+     resolve to the amber and not one pixel moves. */
+  --sel: var(--acc);
+  --sel-wash: var(--acc-wash);
+
+  --edge: rgba(255, 255, 255, 0.09);
+  --rule: rgba(255, 255, 255, 0.055);
+  --rule-hi: rgba(255, 255, 255, 0.16);
+  --tick: rgba(255, 255, 255, 0.13);
+  --well: rgba(0, 0, 0, 0.3);
+  --wash: rgba(255, 255, 255, 0.045);
+
+  --plate: rgba(9, 12, 16, 0.86);
+  --plate-hi: rgba(10, 13, 18, 0.93);
+  --plate-op: rgba(9, 12, 16, 0.97);
+
+  --r: 2px;
+  --t: 120ms;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, "Roboto Mono", monospace;
+  --sans: "Helvetica Neue", Helvetica, Inter, "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Every figure in this product lines up in a column, in prose as much as in
+   the readout. This has to be !important and it has to be universal: the
+   `font:` shorthand resets font-variant-numeric to normal, so any rule that
+   sets type the short way silently loses tabular figures. Declaring the
+   invariant once here means a new rule cannot quietly break it. */
+* { font-variant-numeric: tabular-nums !important; }
+
+html, body {
+  height: 100%;
+  /* A photographic cyclorama rather than a gradient preset. The scene's own
+     floor plane covers the lower two thirds, so the light belongs on the
+     HORIZON where the backdrop is actually visible behind the car, with the
+     corners falling away. The warmth is held to a low saturation so it reads
+     as a lit backdrop rather than a colour wash, and so it agrees with the
+     amber accent instead of fighting the cool neutral scale. The last stop
+     still lands on the scene fog 0x0a0d11 so the horizon does not seam. */
+  background:
+    radial-gradient(70% 44% at 50% 31%,
+      rgba(178, 150, 116, 0.17) 0%, rgba(118, 100, 78, 0.07) 46%, rgba(0, 0, 0, 0) 78%),
+    radial-gradient(120% 94% at 50% 34%, rgba(0, 0, 0, 0) 30%, rgba(4, 6, 8, 0.62) 100%),
+    radial-gradient(125% 92% at 50% 100%, #121820 0%, #0b0f14 44%, #07090c 100%);
+  background-attachment: fixed;
+  color: var(--n90);
+  font: 400 13px/1.55 var(--sans);
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+#gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+
+/* Film grain, behind the canvas. A pure gradient is flat at any size; a
+   little noise is what makes a backdrop read as photographed. Soft-light so
+   it modulates the gradient rather than greying it. */
+body::before {
+  content: "";
+  position: fixed; inset: -6%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.26;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+
+/* a soft optical falloff over the scene, the way a lens loses the corners.
+   It sits above the canvas and below every plate, and it is the one place
+   the interface touches the image: it holds attention on the car. */
+body::after {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(118% 88% at 50% 52%, rgba(0, 0, 0, 0) 42%, rgba(3, 5, 7, 0.58) 100%);
+}
+
+button { font-family: var(--sans); color: inherit; }
+:focus-visible { outline: 1px solid var(--acc); outline-offset: 1px; }
+
+/* plates read as machined objects: hairline border, a dark keyline outside
+   so they hold their edge over the bright car, one highlight along the top */
+.plate,
+#topbar, #rail, #panel, #eff, #railToggle, #effToggle {
+  background: var(--plate);
+  backdrop-filter: blur(8px) saturate(115%);
+  -webkit-backdrop-filter: blur(8px) saturate(115%);
+  border: 1px solid var(--edge);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+::-webkit-scrollbar { width: 2px; height: 2px; }
+::-webkit-scrollbar-thumb { background: var(--n40); }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* small caps section label with a rule running out to the right margin */
+.r-head, #panelIn h5, .e-head {
+  display: flex; align-items: center; gap: 12px;
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--n60);
+}
+#panelIn h5::after, .e-head::after {
+  content: ""; flex: 1; height: 1px; background: var(--rule);
+}
+
+/* ── Faceplate ─────────────────────────────────────────────────────── */
+
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 48px;
+  display: flex; align-items: stretch;
+  border-width: 0 0 1px;
+  border-radius: 0;
+  z-index: 10;
+}
+
+.brand { display: flex; align-items: center; gap: 12px; padding: 0 16px; }
+.brand b {
+  font: 700 15px/1 var(--mono);
+  letter-spacing: 0.16em;
+  color: var(--n99);
+}
+.brand span {
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--n50);
+  padding-left: 12px;
+  border-left: 1px solid var(--rule);
+  white-space: nowrap;
+}
+
+/* one group per question, divided by a hairline rather than floated apart */
+.grp {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 16px;
+  border-left: 1px solid var(--rule);
+}
+#pGen { margin-left: auto; }
+.grp > small {
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--n50);
+  white-space: nowrap;
+}
+
+.gen { display: flex; align-items: center; gap: 4px; }
+.gen-step {
+  width: 24px; height: 24px;
+  display: grid; place-items: center;
+  background: var(--well);
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  color: var(--n70);
+  font: 400 12px/1 var(--mono);
+  cursor: pointer;
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease),
+              background var(--t) var(--ease);
+}
+.gen-step:hover:not(:disabled) { color: var(--n99); border-color: var(--rule-hi); background: var(--wash); }
+.gen-step:disabled { opacity: 0.3; cursor: default; }
+
+/* explode: a slider with a real scale under it */
+.slider { position: relative; width: 148px; height: 24px; flex: none; }
+.slider::before {
+  content: "";
+  position: absolute; left: 2px; right: 2px; top: 8px; height: 2px;
+  background: linear-gradient(90deg,
+    var(--acc) 0 var(--v, 0%), var(--n30) var(--v, 0%) 100%);
+}
+.slider::after {
+  content: "";
+  position: absolute; left: 2px; right: 2px; top: 13px; height: 5px;
+  background-image:
+    repeating-linear-gradient(90deg, var(--tick) 0 1px, transparent 1px 25%),
+    linear-gradient(var(--tick), var(--tick));
+  background-size: 100% 100%, 1px 100%;
+  background-position: 0 0, 100% 0;
+  background-repeat: repeat, no-repeat;
+}
+.slider input {
+  -webkit-appearance: none; appearance: none;
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  background: transparent;
+  cursor: pointer;
+}
+.slider input::-webkit-slider-runnable-track { height: 24px; background: transparent; }
+.slider input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 4px; height: 16px;
+  margin-top: 4px;
+  border: none; border-radius: 1px;
+  background: var(--n99);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.65);
+}
+.slider input::-moz-range-track { height: 24px; background: transparent; }
+.slider input::-moz-range-thumb {
+  width: 4px; height: 16px;
+  border: none; border-radius: 1px;
+  background: var(--n99);
+}
+#pExp b {
+  font: 500 11px/1 var(--mono);
+  color: var(--n90);
+  width: 32px; text-align: right;
+  flex: none;
+}
+
+/* view switches: labels on the plate, an amber segment lights under the
+   active one, sitting on the faceplate's own bottom hairline */
+#pView { gap: 0; padding: 0 6px 0 16px; }
+#pView button {
+  height: 48px;
+  padding: 0 10px;
+  background: none; border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--n60);
+  font: 500 9px/48px var(--mono);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease);
+}
+#pView button:hover { color: var(--n90); }
+#pView button.on { color: var(--n99); border-bottom-color: var(--acc); }
+#pView button.icon {
+  width: 28px; padding: 0;
+  font: 400 13px/48px var(--sans);
+  margin-right: 8px;
+}
+
+/* ── Dropdown ──────────────────────────────────────────────────────── */
+
+.dd {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 24px; padding: 0 8px;
+  background: var(--well);
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  color: var(--n90);
+  font: 500 11px/1 var(--mono);
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease),
+              background var(--t) var(--ease);
+}
+.dd:hover, .dd.open { border-color: var(--rule-hi); background: var(--wash); color: var(--n99); }
+.dd i { font-style: normal; font-size: 7px; color: var(--n50); margin-left: auto; }
+.dd-gen { min-width: 92px; }
+.dd-slot { height: 22px; font-size: 10px; color: var(--n80); max-width: 100%; }
+.dd-slot span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@keyframes dd-in { from { opacity: 0; } to { opacity: 1; } }
+.dd-menu {
+  position: fixed; z-index: 40;
+  background: rgba(9, 12, 16, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--rule-hi);
+  border-radius: var(--r);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.6);
+  padding: 4px;
+  overflow-y: auto;
+  min-width: 184px; max-width: 320px;
+  animation: dd-in 90ms var(--ease);
+}
+.dd-group {
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--n50);
+  padding: 10px 10px 6px;
+}
+.dd-item {
+  display: block; width: 100%;
+  background: none; border: none;
+  border-left: 2px solid transparent;
+  padding: 7px 10px;
+  text-align: left; cursor: pointer;
+  transition: background var(--t) var(--ease);
+}
+.dd-item:hover { background: var(--wash); }
+.dd-item.on { background: var(--acc-wash); border-left-color: var(--acc); }
+.dd-item b {
+  display: block;
+  font: 500 11px/1.3 var(--mono);
+  letter-spacing: 0.02em;
+  color: var(--n90);
+}
+.dd-item.on b { color: var(--acc); }
+.dd-item span {
+  display: block;
+  font: 400 10px/1.42 var(--sans);
+  color: var(--n60);
+  margin-top: 3px;
+}
+
+/* ── Swatches ──────────────────────────────────────────────────────────
+   A paint chip reads as paint only if it is not a flat disc of colour: the
+   inner shadow gives it an edge and the outer hairline separates it from
+   the plate the way every other control here is separated. */
+.sw {
+  display: block;
+  width: 11px; height: 11px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--sw, var(--n40));
+  box-shadow: inset 0 -3px 4px rgba(0, 0, 0, 0.45),
+              inset 0 1px 1px rgba(255, 255, 255, 0.28),
+              0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+.dd-item.has-sw {
+  display: grid;
+  grid-template-columns: 11px 1fr;
+  column-gap: 10px;
+  align-items: center;
+}
+/* the chip sits on the first line, so an option with a note keeps its chip
+   beside the NAME rather than floating in the middle of two lines */
+.dd-item.has-sw .sw { grid-row: 1; }
+.dd-item.has-sw b, .dd-item.has-sw span { grid-column: 2; }
+
+/* The paint control is the colour it sets. The name lives in the menu and
+   in the button's title, so the faceplate spends 26 px on it instead of the
+   90 the longest colour name would need. */
+/* The finish control IS the finish: the base coat as the chip and the pearl
+   as a ring around it, so the button shows the combination rather than the
+   name of half of it. --pearl resolves to transparent when the car is solid,
+   which draws no ring at all rather than a black one. */
+.dd-paint { width: 26px; padding: 0; justify-content: center; gap: 0; }
+.dd-paint span, .dd-paint i { display: none; }
+.dd-paint .sw {
+  width: 11px; height: 11px;
+  box-shadow: inset 0 -3px 4px rgba(0, 0, 0, 0.45),
+              inset 0 1px 1px rgba(255, 255, 255, 0.28),
+              0 0 0 1px rgba(0, 0, 0, 0.7),
+              0 0 0 3px var(--pearl, transparent);
+}
+
+/* ── The finish popover ────────────────────────────────────────────────
+   Two coats and a strength do not fit an option list, so this is a small
+   panel. It rides the same .dd-menu plate as the option list, so it is the
+   same object in the same material, and it borrows mountMenu for placement,
+   dismissal and the follow-the-scroll. */
+.fin { padding: 12px 14px 14px; width: 268px; }
+.fin-h {
+  display: flex; align-items: center; gap: 10px;
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--n60);
+  margin: 4px 0 10px;
+}
+.fin-h::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+.fin-h ~ .fin-h { margin-top: 18px; }
+.fin-g {
+  font: 400 9px/1 var(--mono);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--n50);
+  margin: 0 0 6px;
+}
+.fin-g ~ .fin-g { margin-top: 10px; }
+.fin-note {
+  font: 400 10px/1.45 var(--sans);
+  color: var(--n60);
+  margin: -4px 0 10px;
+}
+.sw-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+/* 20 px chips at 6 px gaps put nine on a 240 px row, which is what sets the
+   268 px width of this panel: three even rows of the warm and cool families
+   rather than a ragged wrap. */
+.sw-grid .sw-pick { width: 20px; height: 20px; }
+.sw-grid .sw-pick::before { width: 10px; height: 10px; }
+
+/* solid or metallic, on any colour. A segmented pair rather than a checkbox,
+   because neither state is the absence of the other. */
+.fin-seg {
+  display: flex;
+  margin: 2px 0 4px;
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+.fin-seg button {
+  flex: 1;
+  height: 24px;
+  background: none; border: none;
+  font: 500 9px/24px var(--mono);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--n60);
+  cursor: pointer;
+  transition: color var(--t) var(--ease), background var(--t) var(--ease);
+}
+.fin-seg button + button { border-left: 1px solid var(--edge); }
+.fin-seg button:hover { color: var(--n90); }
+.fin-seg button.on { background: var(--wash); color: var(--acc); }
+.fin-seg button:focus-visible { outline-offset: -2px; }
+
+/* the panels that differ, named rather than counted */
+.fin-over { display: block; }
+.fin-orow {
+  display: grid;
+  grid-template-columns: 11px 1fr auto;
+  align-items: center;
+  column-gap: 9px;
+  width: calc(100% + 8px);
+  margin-left: -4px;
+  padding: 6px 4px;
+  background: none; border: none;
+  text-align: left; cursor: pointer;
+  transition: background var(--t) var(--ease);
+}
+.fin-orow:hover { background: var(--wash); }
+.fin-orow:focus-visible { outline-offset: -2px; }
+.fin-orow b { font: 500 11px/1.3 var(--sans); color: var(--n90); }
+.fin-orow span {
+  grid-column: 2;
+  font: 400 9px/1.3 var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--n50);
+}
+.fin-orow u {
+  grid-column: 3; grid-row: 1 / span 2;
+  text-decoration: none;
+  font: 400 9px/1 var(--mono);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--n50);
+}
+.fin-orow:hover u { color: var(--acc); }
+.fin-reset {
+  display: block; width: 100%;
+  margin-top: 8px;
+  padding: 7px 8px;
+  background: var(--well);
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  font: 400 10px/1.3 var(--sans);
+  color: var(--n70);
+  cursor: pointer;
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease);
+}
+.fin-reset:hover { color: var(--n99); border-color: var(--rule-hi); }
+
+.fin-amt {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 12px;
+  transition: opacity var(--t) var(--ease);
+}
+.fin-amt > span:first-child {
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--n50);
+  white-space: nowrap;
+}
+.fin-amt .slider { flex: 1; width: auto; }
+.fin-amt b {
+  font: 500 11px/1 var(--mono);
+  color: var(--n90);
+  width: 34px; text-align: right; flex: none;
+}
+/* a strength with no pearl to apply it to is not a control, and saying so by
+   fading it beats leaving a live slider that changes nothing */
+.fin-amt.off { opacity: 0.35; pointer-events: none; }
+
+/* The per-panel finish row, in the part panel. Chips are 26 px because that
+   is the reach floor this stylesheet already settled on, and they wrap: ten
+   of them need 332 px against the 300 the panel has inside its gutters, so
+   the row is two lines by design rather than by accident. */
+.sw-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.sw-pick {
+  position: relative;
+  width: 26px; height: 26px;
+  display: grid; place-items: center;
+  background: none;
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: border-color var(--t) var(--ease);
+}
+.sw-pick::before {
+  content: "";
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--sw, transparent);
+  box-shadow: inset 0 -3px 4px rgba(0, 0, 0, 0.45),
+              inset 0 1px 1px rgba(255, 255, 255, 0.28),
+              0 0 0 1px rgba(0, 0, 0, 0.6);
+}
+.sw-pick:hover { border-color: var(--rule-hi); }
+/* the current one takes the selection colour, which in an open part panel is
+   that part's own system hue, so the chip agrees with the rest of the panel */
+.sw-pick.on { border-color: var(--sel); }
+/* "match the body" is the ABSENCE of a colour and is drawn as one: an empty
+   well with a stroke through it, not a tenth colour that happens to be grey */
+.sw-none::before { background: var(--n15); box-shadow: inset 0 0 0 1px var(--n40); }
+.sw-none::after {
+  content: "";
+  position: absolute;
+  width: 15px; height: 1px;
+  background: var(--n60);
+  transform: rotate(-45deg);
+}
+
+/* ── Systems rail ──────────────────────────────────────────────────── */
+
+/* sized to its contents, so it reads as an object on the plate rather than
+   a full-height chrome column with nothing in the bottom half */
+#rail {
+  position: fixed; top: 60px; left: 12px;
+  max-height: calc(100vh - 72px);
+  width: 280px;
+  border-radius: var(--r);
+  overflow-y: auto;
+  z-index: 9;
+  padding-bottom: 8px;
+  transition: transform 240ms var(--ease);
+}
+body.rail-hidden #rail { transform: translateX(calc(-100% - 16px)); }
+
+.r-head {
+  position: sticky; top: 0; z-index: 2;
+  height: 32px; padding: 0 12px;
+  background: var(--plate-op);
+  border-bottom: 1px solid var(--rule);
+}
+
+/* ── Search ────────────────────────────────────────────────────────────
+   The field sits under the rail's own heading and above the list it filters,
+   because it IS the index for that list. It is sticky with the heading so a
+   long result set never scrolls its own query out of sight. */
+.r-find {
+  position: sticky; top: 32px; z-index: 2;
+  padding: 8px 12px;
+  background: var(--plate-op);
+  border-bottom: 1px solid var(--rule);
+}
+.r-find input {
+  width: 100%; height: 26px;
+  padding: 0 8px;
+  background: var(--well);
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  color: var(--n90);
+  font: 400 11px/1 var(--sans);
+  transition: border-color var(--t) var(--ease);
+}
+.r-find input::placeholder { color: var(--n50); }
+.r-find input:focus { outline: none; border-color: var(--sel); }
+.r-find input::-webkit-search-cancel-button { -webkit-appearance: none; }
+
+/* the count line, which is where the size of the model shows up without
+   anybody having to boast about it */
+.r-count {
+  padding: 10px 12px;
+  font: 400 11px/1.5 var(--sans);
+  color: var(--n60);
+  border-bottom: 1px solid var(--rule);
+}
+.r-count b { color: var(--n99); font-weight: 500; }
+.r-count.more { border-bottom: none; color: var(--n50); font-size: 10px; }
+
+.r-hit {
+  display: block; width: 100%;
+  padding: 9px 12px 10px;
+  background: none; border: none;
+  border-bottom: 1px solid var(--rule);
+  border-left: 2px solid var(--sys, transparent);
+  text-align: left; cursor: pointer;
+  transition: background var(--t) var(--ease);
+}
+.r-hit:hover { background: var(--wash); }
+.r-hit:focus-visible { outline-offset: -2px; }
+.r-hit b {
+  display: block;
+  font: 500 12px/1.3 var(--sans);
+  color: var(--n90);
+}
+.r-hit:hover b { color: var(--n99); }
+.r-hit u {
+  display: block;
+  text-decoration: none;
+  margin-top: 2px;
+  font: 400 9px/1.4 var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--n50);
+}
+.r-hit span {
+  display: block;
+  margin-top: 5px;
+  font: 400 11px/1.45 var(--sans);
+  color: var(--n60);
+}
+/* the matched run itself, marked in the selection colour rather than in a
+   highlighter yellow that belongs to no part of this palette */
+.r-hit mark {
+  background: var(--acc-wash);
+  color: var(--n99);
+  padding: 0 1px;
+}
+/* a part from a rung that is not on screen: labelled, never hidden */
+.r-hit em {
+  display: block;
+  margin-top: 5px;
+  font-style: normal;
+  font: 400 9px/1.4 var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--n50);
+}
+.r-hit.off b { color: var(--n70); }
+/* the result you opened, marked the way the system list marks a part, so
+   coming back from the panel does not lose your place in 23 hits */
+.r-hit.on { background: var(--sel-wash); }
+.r-hit.on b { color: var(--n99); }
+
+@keyframes row-in { from { opacity: 0; } to { opacity: 1; } }
+/* Only the FIRST build gets the staggered entry. The rail is rebuilt from
+   scratch on every variant change, and replaying a 160 ms fade on 27 rows
+   with delays out to 324 ms made a one-slot swap look like the whole panel
+   reloading. main.js adds .intro for the opening build and takes it off. */
+#railList.intro > * { animation: row-in 160ms linear backwards; }
+
+.r-sys {
+  position: relative;
+  width: 100%;
+  display: flex; align-items: flex-start; gap: 6px;
+  min-height: 32px;
+  padding: 8px 12px;
+  background: none; border: none;
+  border-top: 1px solid var(--rule);
+  color: var(--n90);
+  font: 500 12px/1.33 var(--sans);
+  text-align: left; cursor: pointer;
+  transition: background var(--t) var(--ease), color var(--t) var(--ease);
+}
+#railList > .r-sys:first-child { border-top: none; }
+.r-sys:hover { background: var(--wash); color: var(--n99); }
+.r-sys.open { color: var(--n99); }
+
+/* colour key as an index tab on the plate edge, not a glowing bead. The row
+   carries --sys, so opening a system grows its own tab the full height of
+   the row instead of lighting a second, differently coloured thing. */
+.r-sys .dot {
+  position: absolute; left: 0; top: 8px; width: 3px; height: 16px;
+  background: var(--sys, var(--n40));
+  transition: top 160ms var(--ease), height 160ms var(--ease);
+}
+.r-sys.open .dot, .r-sys:hover .dot { top: 0; height: 100%; }
+/* the index number takes the system colour when its list is open, which is
+   the one place in the rail where a number can carry the key without
+   turning nine rows of type into nine colours */
+.r-sys.open .ix { color: var(--sys, var(--n50)); }
+.r-sys .car {
+  flex: none; width: 8px;
+  font: 400 7px/16px var(--sans); color: var(--n50);
+  transition: transform 160ms var(--ease);
+}
+.r-sys.open .car { transform: rotate(90deg); }
+.r-sys .ix {
+  flex: none; width: 14px; margin-left: 2px;
+  font: 400 9px/16px var(--mono); color: var(--n50);
+}
+.r-sys .nm { flex: 1; margin-left: 2px; }
+.r-sys .n {
+  flex: none; min-width: 20px; margin-left: auto;
+  font: 400 10px/16px var(--mono); color: var(--n60);
+  text-align: right;
+}
+
+.r-var { display: flex; align-items: center; gap: 8px; padding: 0 12px 8px 48px; }
+.r-carry {
+  font: 400 9px/1 var(--mono);
+  letter-spacing: 0.04em;
+  color: var(--n50);
+  white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+
+.r-parts { display: none; padding: 2px 0 6px; }
+.r-sys.open + .r-parts, .r-sys.open + .r-var + .r-parts { display: block; }
+
+.r-item {
+  width: 100%; display: block;
+  height: 26px; line-height: 26px;
+  padding: 0 12px 0 46px;
+  background: none; border: none;
+  border-left: 2px solid transparent;
+  color: var(--n70);
+  font: 400 12px var(--sans);
+  text-align: left;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  cursor: pointer;
+  transition: color var(--t) var(--ease), background var(--t) var(--ease);
+}
+.r-item:hover { color: var(--n99); background: var(--wash); }
+/* the selected part, in the colour it is glowing in out on the car */
+.r-item.on { color: var(--n99); background: var(--sel-wash); border-left-color: var(--sel); }
+
+/* latch tabs: they belong to the plate they open, so they sit flush to it */
+#railToggle, #effToggle {
+  position: fixed;
+  width: 18px; height: 32px;
+  display: grid; place-items: center;
+  color: var(--n60);
+  font: 400 12px/1 var(--mono);
+  cursor: pointer;
+  z-index: 12;
+  transition: left 240ms var(--ease), right 240ms var(--ease),
+              color var(--t) var(--ease), background var(--t) var(--ease);
+}
+#railToggle:hover, #effToggle:hover { color: var(--n99); background: var(--n20); }
+
+#railToggle { top: 60px; left: 292px; border-left: none; border-radius: 0 var(--r) var(--r) 0; }
+body.rail-hidden #railToggle { left: 12px; border-left: 1px solid var(--edge); border-radius: var(--r); }
+
+#effToggle { bottom: 12px; right: 292px; border-right: none; border-radius: var(--r) 0 0 var(--r); }
+body.eff-hidden #effToggle { right: 12px; border-right: 1px solid var(--edge); border-radius: var(--r); }
+#panel.on ~ #effToggle { display: none; }
+
+/* ── Part panel ────────────────────────────────────────────────────── */
+
+#panel {
+  position: fixed; top: 60px; right: 12px;
+  max-height: calc(100vh - 72px);
+  width: 380px;
+  background: var(--plate-hi);
+  border-radius: var(--r);
+  z-index: 11;
+  transform: translateX(calc(100% + 16px));
+  transition: transform 240ms var(--ease);
+  /* a flex column whose CONTENT scrolls, not the plate. The plate holding
+     still is what lets the close button be absolutely positioned against it
+     and stay in the corner; see the note on #panelClose. */
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+#panel.on { transform: none; }
+
+/* THE CLOSE BUTTON LEFT THE SCROLLING AREA, and it had to.
+
+   It was `position: sticky` on a `float: right`, which works exactly once:
+   at the top of the panel. A float's wrap zone is computed at the float's
+   STATIC position, so it never follows the sticky offset, and the moment the
+   panel is scrolled the button stays pinned 12 px down while the text it was
+   supposed to be wrapping slides underneath it. On a long panel it lands in
+   the middle of a paragraph, and on the compare panel it landed on top of
+   the waterfall figures.
+
+   The fix is structural rather than a nudge: #panel stops being the scroll
+   container and becomes a flex column, #panelIn scrolls inside it, and the
+   button is absolutely positioned against #panel, which no longer scrolls.
+   .p-nav already reserves 32 px of right padding for it, so nothing moves. */
+#panelClose {
+  position: absolute;
+  top: 12px; right: 12px;
+  z-index: 3;
+  width: 24px; height: 24px;
+  display: grid; place-items: center;
+  background: var(--well);
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  color: var(--n60);
+  font: 400 14px/1 var(--sans);
+  cursor: pointer;
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease),
+              background var(--t) var(--ease);
+}
+#panelClose:hover { color: var(--n99); border-color: var(--rule-hi); background: var(--wash); }
+
+#panelIn { flex: 1; overflow-y: auto; padding: 20px 20px 24px; }
+
+.p-nav {
+  display: flex; align-items: flex-start; gap: 12px;
+  min-height: 24px;
+  margin-bottom: 20px;
+  padding-right: 32px;
+}
+/* the system tag: colour key as a 3 px tab, label in the neutral scale */
+.p-sys {
+  display: inline-block;
+  padding-left: 8px;
+  border-left: 3px solid var(--sys, var(--n40));
+  font: 500 9px/1.55 var(--mono);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--n70);
+  text-align: left;
+  background: none;
+  transition: color var(--t) var(--ease);
+}
+.p-back {
+  display: inline-flex; align-items: flex-start; gap: 8px;
+  background: none; border: none; padding: 0;
+  cursor: pointer;
+  min-width: 0;
+}
+.p-back i { font-style: normal; font: 400 12px/1.2 var(--mono); color: var(--n50); flex: none; }
+.p-back:hover .p-sys, .p-back:hover i { color: var(--n99); }
+
+.p-steps { display: flex; align-items: center; gap: 2px; margin-left: auto; flex: none; }
+.p-steps button {
+  width: 22px; height: 22px;
+  display: grid; place-items: center;
+  background: var(--well);
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  color: var(--n70);
+  font: 400 11px/1 var(--mono);
+  cursor: pointer;
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease);
+}
+.p-steps button:hover:not(:disabled) { color: var(--n99); border-color: var(--rule-hi); }
+.p-steps button:disabled { opacity: 0.25; cursor: default; }
+.p-steps span {
+  font: 400 9px/1 var(--mono);
+  letter-spacing: 0.1em;
+  color: var(--n60);
+  padding: 0 8px;
+}
+
+#panelIn h3 {
+  font: 500 26px/1.14 var(--sans);
+  letter-spacing: -0.018em;
+  color: var(--n99);
+  margin-bottom: 8px;
+  padding-right: 16px;
+}
+.p-tag { font: 400 13px/1.5 var(--sans); color: var(--n70); margin-bottom: 16px; }
+
+/* key figures as a ruled data strip, not floating chips */
+.chips {
+  display: flex; flex-wrap: wrap;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.chip {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 8px 16px 8px 0;
+  margin-right: 16px;
+  border-right: 1px solid var(--rule);
+  font: 500 12px/1 var(--mono);
+  color: var(--n90);
+}
+.chip:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+.chip small {
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--n50);
+}
+
+/* ── Cross-references ──────────────────────────────────────────────────
+   2,988 of these in the tree, in 65 percent of the parts. At rest they are
+   the running text with a dotted rule under them, because a paragraph that
+   names four modules must not become four coloured words. The TARGET's
+   system colour arrives on hover, so where the link goes is answered by
+   pointing at it. */
+.xref {
+  color: var(--n90);
+  border-bottom: 1px dotted var(--n50);
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease);
+}
+.xref:hover { color: var(--sys, var(--acc)); border-bottom-color: var(--sys, var(--acc)); }
+.xref:focus-visible { outline-offset: 1px; }
+.spec-t .xref { color: var(--n99); }
+
+/* the same web read backwards, handed to the search */
+.p-back-ref {
+  display: block; width: calc(100% + 12px);
+  margin: 16px 0 0 -12px;
+  padding: 9px 12px;
+  background: none;
+  border: none;
+  border-left: 2px solid var(--sel);
+  text-align: left; cursor: pointer;
+  font: 400 11px/1.4 var(--sans);
+  color: var(--n70);
+  transition: background var(--t) var(--ease), color var(--t) var(--ease);
+}
+.p-back-ref b { color: var(--n99); font-weight: 500; }
+.p-back-ref:hover { background: var(--wash); color: var(--n90); }
+.p-back-ref:focus-visible { outline-offset: -2px; }
+
+#panelIn h5 { margin: 28px 0 12px; }
+#panelIn p { font: 400 13px/1.62 var(--sans); color: var(--n80); margin-bottom: 12px; }
+#panelIn p:last-child { margin-bottom: 0; }
+#panelIn p b { color: var(--n99); font-weight: 500; }
+
+.spec-t { width: 100%; border-collapse: collapse; }
+.spec-t td { padding: 8px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.spec-t tr:last-child td { border-bottom: none; }
+.spec-t td:first-child {
+  width: 42%; padding-right: 16px;
+  font: 400 11px/1.45 var(--sans); color: var(--n60);
+}
+.spec-t td:last-child { font: 400 11px/1.45 var(--mono); color: var(--n90); }
+
+ul.fail { list-style: none; }
+ul.fail li {
+  position: relative;
+  padding: 7px 0 7px 20px;
+  border-bottom: 1px solid var(--rule);
+  font: 400 12px/1.5 var(--sans);
+  color: var(--n80);
+}
+ul.fail li:last-child { border-bottom: none; }
+ul.fail li::before {
+  content: "";
+  position: absolute; left: 0; top: 14px;
+  width: 8px; height: 1px;
+  background: var(--n50);
+}
+
+/* the system's parts as a numbered schedule */
+.p-part {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  column-gap: 12px;
+  width: calc(100% + 2px);
+  margin-left: -2px;
+  padding: 10px 10px 10px 0;
+  background: none; border: none;
+  border-bottom: 1px solid var(--rule);
+  border-left: 2px solid transparent;
+  text-align: left; cursor: pointer;
+  transition: background var(--t) var(--ease), border-color var(--t) var(--ease);
+}
+.p-part:first-of-type { border-top: 1px solid var(--rule); }
+/* inside a system overview every row belongs to the open system, so the
+   hover rule is that system's colour */
+.p-part:hover { background: var(--wash); border-left-color: var(--sel); }
+.p-part u {
+  grid-column: 1; grid-row: 1 / 3;
+  text-decoration: none;
+  font: 400 9px/1.6 var(--mono);
+  color: var(--n50);
+}
+.p-part b {
+  grid-column: 2;
+  font: 500 12px/1.35 var(--sans);
+  color: var(--n90);
+  margin-bottom: 3px;
+}
+.p-part:hover b { color: var(--n99); }
+.p-part span {
+  grid-column: 2;
+  font: 400 11px/1.45 var(--sans);
+  color: var(--n60);
+}
+
+/* ── Compare ───────────────────────────────────────────────────────────
+   The thesis of the model is the ladder, so the control that puts two rungs
+   together sits in the generation group with the stepper, and the reading
+   surface is the same panel a part uses. No new plate, no modal, no second
+   layout: compare is a question about generations asked where generations
+   are already chosen. */
+
+.gen-step.cmp {
+  width: auto; padding: 0 8px;
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.16em; text-transform: uppercase;
+}
+.gen-step.cmp.on {
+  color: var(--n99);
+  border-color: var(--acc);
+  background: var(--acc-wash);
+}
+/* the second rung appears only once there is a comparison to make */
+.dd-cmp { display: none; }
+body.cmp .dd-cmp { display: inline-flex; }
+
+#panelIn h3 .cmp-to {
+  font-style: normal;
+  font: 400 13px/1 var(--mono);
+  letter-spacing: 0.1em;
+  color: var(--n50);
+  padding: 0 11px;
+}
+
+.cmp-lede {
+  font: 400 12px/1.5 var(--sans);
+  color: var(--n70);
+  margin-top: -4px;
+}
+.cmp-lede b { color: var(--n99); font-weight: 500; }
+
+/* from, to, and what moved, on one ruled strip like every other figure */
+.cmp-t { width: 100%; border-collapse: collapse; }
+.cmp-t td { padding: 8px 0; border-bottom: 1px solid var(--rule); vertical-align: baseline; }
+.cmp-t tr:last-child td { border-bottom: none; }
+.cmp-t td:first-child {
+  padding-right: 12px; white-space: nowrap;
+  font: 400 11px/1.45 var(--sans); color: var(--n60);
+}
+.cmp-ab { width: 99%; font: 400 11px/1.45 var(--mono); color: var(--n90); }
+.cmp-ab i, .cmp-ab em { font-style: normal; color: var(--n50); }
+.cmp-ab i { padding: 0 7px; }
+.cmp-ab em { padding-left: 7px; }
+.cmp-d {
+  padding-left: 12px; text-align: right; white-space: nowrap;
+  font: 500 11px/1.45 var(--mono); color: var(--n99);
+}
+/* a figure that did not move says so in words, and says it quietly */
+.cmp-d.zero { color: var(--n50); font-weight: 400; }
+
+/* ── The cross-generation waterfall ────────────────────────────────────
+   Before and after on one scale. The shared part is solid; the difference is
+   drawn beyond it, hatched away when the term shrank and solid when it grew,
+   so which term a generation moved is a shape and not a number to compare. */
+.wf-row { display: flex; align-items: center; gap: 10px; height: 22px; }
+.wf-row span {
+  flex: none; width: 74px;
+  font: 400 11px/1 var(--sans); color: var(--n70);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.wf-row u {
+  flex: none; width: 52px; text-align: right;
+  text-decoration: none;
+  font: 500 10px/1 var(--mono); color: var(--n80);
+}
+.wf-bar {
+  position: relative;
+  flex: 1; height: 8px;
+  background-color: var(--n20);
+  background-image:
+    repeating-linear-gradient(90deg, var(--tick) 0 1px, transparent 1px 25%),
+    linear-gradient(var(--tick), var(--tick));
+  background-size: 100% 100%, 1px 100%;
+  background-position: 0 0, 100% 0;
+  background-repeat: repeat, no-repeat;
+  overflow: hidden;
+}
+.wf-bar i { position: absolute; top: 0; height: 100%; display: block; }
+.wf-keep { left: 0; background: var(--n60); }
+/* what the newer rung gave back, drawn as taken away rather than as absence */
+.wf-diff.gone {
+  background-image: repeating-linear-gradient(-45deg,
+    var(--n40) 0 2px, transparent 2px 4px);
+  border-right: 1px solid var(--n50);
+}
+/* and what it spent, which on an ascending ladder is the rarer case */
+.wf-diff.added { background: var(--acc-dim); }
+/* the term this generation actually moved */
+.wf-top span, .wf-top u { color: var(--n99); }
+.wf-top .wf-keep { background: var(--n80); }
+
+.cmp-foot {
+  margin-top: 10px;
+  font: 400 10px/1.5 var(--sans);
+  color: var(--n60);
+}
+
+/* Every slot, every time, changed or not. The coloured rule is the system's
+   own key from the rail, so the list reads as the same nine things. */
+.cmp-slot {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 12px;
+  width: calc(100% + 12px);
+  margin-left: -12px;
+  padding: 10px 10px 10px 10px;
+  background: none; border: none;
+  border-bottom: 1px solid var(--rule);
+  border-left: 2px solid var(--sys, transparent);
+  text-align: left; cursor: pointer;
+  transition: background var(--t) var(--ease);
+}
+.cmp-slot:first-of-type { border-top: 1px solid var(--rule); }
+.cmp-slot:hover { background: var(--wash); }
+.cmp-slot:focus-visible { outline-offset: -2px; }
+.cmp-slot b { grid-column: 1; font: 500 12px/1.35 var(--sans); color: var(--n90); }
+.cmp-slot u {
+  grid-column: 2; grid-row: 1;
+  text-decoration: none; text-align: right; white-space: nowrap;
+  font: 500 10px/1.35 var(--mono); color: var(--n90);
+}
+.cmp-slot u i { font-style: normal; color: var(--n60); padding-left: 9px; }
+.cmp-slot span {
+  grid-column: 1 / -1;
+  margin-top: 3px;
+  font: 400 11px/1.45 var(--sans); color: var(--n60);
+}
+.cmp-slot span .cmp-to {
+  font-style: normal;
+  font: 400 9px/1 var(--mono);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--n50);
+  padding: 0 7px;
+}
+.cmp-slot:hover b { color: var(--n99); }
+/* A carried slot is STATED and not hidden. It keeps its row, its rule drops
+   to a hairline and its type drops one step, so nine rows stay nine rows and
+   the two that did not move are visibly the two that did not move. */
+.cmp-slot.carry { border-left-color: var(--rule-hi); }
+.cmp-slot.carry b { color: var(--n60); }
+.cmp-slot.carry u { color: var(--n50); font-weight: 400; }
+.cmp-slot.carry span { color: var(--n50); }
+
+/* ── Readout ───────────────────────────────────────────────────────── */
+
+#eff {
+  position: fixed; right: 12px; bottom: 12px;
+  width: 280px;
+  border-radius: var(--r);
+  padding: 12px 16px 12px;
+  z-index: 8;
+  transition: transform 240ms var(--ease), opacity 160ms linear;
+}
+#panel.on ~ #eff { display: none; }
+body.eff-hidden #eff {
+  transform: translateX(calc(100% + 20px));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.e-stats { display: flex; padding-bottom: 12px; border-bottom: 1px solid var(--rule); }
+.stat {
+  flex: 1;
+  display: flex; flex-direction: column; gap: 5px;
+  padding-left: 12px;
+  border-left: 1px solid var(--rule);
+}
+.stat:first-child { border-left: none; padding-left: 0; }
+.stat small {
+  font: 500 8px/1 var(--mono);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--n50);
+  white-space: nowrap;
+}
+.stat b { font: 500 12px/1 var(--mono); color: var(--n90); white-space: nowrap; }
+
+.e-head { margin: 12px 0 10px; }
+.e-units {
+  display: flex; flex: none; height: 18px;
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+.e-units button {
+  background: none; border: none;
+  padding: 0 7px;
+  font: 500 9px/16px var(--mono);
+  letter-spacing: 0.1em;
+  color: var(--n60);
+  cursor: pointer;
+  transition: color var(--t) var(--ease), background var(--t) var(--ease);
+}
+.e-units button + button { border-left: 1px solid var(--edge); }
+.e-units button:hover { color: var(--n90); }
+.e-units button.on { background: var(--wash); color: var(--acc); }
+
+.e-row {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; height: 22px;
+  background: none; border: none;
+  text-align: left; cursor: pointer;
+}
+.e-row span {
+  flex: none; width: 74px;
+  font: 400 11px/1 var(--sans); color: var(--n70);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: color var(--t) var(--ease);
+}
+.e-row b {
+  flex: none; width: 28px; text-align: right;
+  font: 500 11px/1 var(--mono); color: var(--n80);
+  transition: color var(--t) var(--ease);
+}
+.e-row:hover span, .e-row:hover b { color: var(--n99); }
+
+/* every bar measured against the same printed scale */
+.e-bar {
+  position: relative;
+  flex: 1; height: 8px;
+  background-color: var(--n20);
+  background-image:
+    repeating-linear-gradient(90deg, var(--tick) 0 1px, transparent 1px 25%),
+    linear-gradient(var(--tick), var(--tick));
+  background-size: 100% 100%, 1px 100%;
+  background-position: 0 0, 100% 0;
+  background-repeat: repeat, no-repeat;
+  overflow: hidden;
+}
+.e-bar i {
+  display: block; height: 100%;
+  background: var(--n70);
+  /* ease-out cubic, the curve main.js tweens its numbers on, so the bar and
+     the figure beside it hold the same value at every instant of the 500 ms
+     rather than agreeing only at the ends */
+  transition: width 500ms cubic-bezier(0.215, 0.61, 0.355, 1),
+              background var(--t) var(--ease);
+}
+.e-row:hover .e-bar i { background: var(--n90); }
+.e-bar::after {
+  content: "";
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.45) 0 1px, transparent 1px 25%);
+}
+
+/* the printed end of the scale, aligned to the bar column above it */
+.e-axis {
+  display: flex; justify-content: space-between;
+  margin: 3px 38px 0 84px;
+  font: 400 8px/1 var(--mono);
+  letter-spacing: 0.1em;
+  color: var(--n50);
+}
+
+.e-out { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.e-out > small, .e-cell small {
+  display: block;
+  font: 500 8px/1 var(--mono);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--n50);
+  margin-bottom: 6px;
+}
+.e-big { display: flex; align-items: baseline; gap: 9px; margin-top: 2px; }
+/* The one figure allowed to be large. Set in the sans rather than the mono
+   because at 46 px the mono's fixed advance opens gaps a proportional face
+   closes, and set light because weight at this size reads as shouting.
+   tabular-nums is inherited from the universal rule, so 1,688 and 430 stay
+   in the same column as the ladder steps. */
+.e-big b {
+  font: 200 46px/0.92 var(--sans);
+  letter-spacing: -0.03em;
+  color: var(--n99);
+}
+.e-big i {
+  font-style: normal;
+  font: 500 10px/1 var(--mono);
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--acc-dim);
+}
+
+.e-sub { display: flex; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--rule); }
+.e-cell { flex: 1; padding-left: 12px; border-left: 1px solid var(--rule); }
+.e-cell:first-child { padding-left: 0; border-left: none; }
+.e-cell b { font: 500 13px/1 var(--mono); color: var(--n90); }
+.e-cell i { font-style: normal; font: 400 10px/1 var(--mono); color: var(--n60); margin-left: 5px; }
+/* the consumption figure the five bars above sum to. It is not deleted, it
+   is demoted: it is the unit the breakdown is drawn in and the unit the
+   printed bar scale carries, so the card would contradict itself without it
+   on show somewhere. One step down the type scale and one step down the
+   neutral ramp is the whole difference between a headline and a footnote. */
+.e-cell .e-alt {
+  display: block;
+  margin-top: 7px;
+  font: 400 9px/1 var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--n50);
+}
+
+/* ── The pack in real time ─────────────────────────────────────────────
+   Drive spends it, the stage ring fills it. One bar, two lines of figures,
+   and the mode named in a word rather than inferred from a moving bar. */
+.e-pack { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.e-pack .e-head { margin: 0 0 8px; }
+#ergMode {
+  flex: none;
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--n60);
+  transition: color var(--t) var(--ease);
+}
+/* charging is the accent because the ring on the floor is; driving is the
+   bright neutral, because that is the car working rather than being served */
+#ergMode[data-mode="charging"] { color: var(--acc); }
+#ergMode[data-mode="driving"] { color: var(--n99); }
+#ergMode[data-mode="holding"] { color: var(--n70); }
+
+.e-soc {
+  position: relative;
+  height: 8px;
+  background-color: var(--n20);
+  background-image:
+    repeating-linear-gradient(90deg, var(--tick) 0 1px, transparent 1px 25%),
+    linear-gradient(var(--tick), var(--tick));
+  background-size: 100% 100%, 1px 100%;
+  background-position: 0 0, 100% 0;
+  background-repeat: repeat, no-repeat;
+  overflow: hidden;
+}
+#ergFill {
+  display: block; height: 100%;
+  background: var(--n70);
+  transition: background var(--t) var(--ease);
+}
+/* no width transition: this bar is driven every frame, and a 500 ms ease on
+   a value that moves every 16 ms fights itself and lags the figure beside it */
+body.driving #ergFill { background: var(--n90); }
+#ergMode[data-mode="charging"] ~ .e-soc #ergFill { background: var(--acc-dim); }
+
+.e-erg {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  margin-top: 7px;
+  font: 500 11px/1 var(--mono);
+  color: var(--n90);
+}
+.e-erg em {
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--n50);
+  margin-left: 3px;
+}
+.e-erg.sub { margin-top: 5px; font-weight: 400; font-size: 9px; color: var(--n50); }
+.e-erg.sub b { font-weight: 400; color: var(--n60); }
+
+.e-note {
+  margin-top: 10px;
+  font: 400 8px/1 var(--mono);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--n50);
+}
+
+/* ── Hover tag and hint ────────────────────────────────────────────── */
+
+#hoverTag {
+  /* anchored at the viewport origin and moved by transform only: js/main.js
+     repositions this every frame the pointer is on the car, and left and top
+     would dirty layout on each of them */
+  position: fixed; left: 0; top: 0; z-index: 12;
+  display: flex; align-items: baseline; gap: 8px;
+  background: rgba(6, 8, 11, 0.92);
+  border: 1px solid var(--rule-hi);
+  border-radius: var(--r);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
+  padding: 5px 9px;
+  font: 500 11px/1 var(--sans);
+  color: var(--n99);
+  pointer-events: none;
+  transform: translate(-50%, -190%);
+  opacity: 0;
+  transition: opacity 100ms linear;
+  white-space: nowrap;
+}
+#hoverTag.on { opacity: 1; }
+/* the system name in the system's own colour, which is the colour the part
+   under the pointer is lit in, so the label and the light agree */
+#hoverTag small {
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--sys, var(--n50));
+}
+
+#hint {
+  position: fixed; bottom: 14px; left: 50%;
+  transform: translateX(-50%);
+  font: 400 9px/1 var(--mono);
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--n50);
+  z-index: 8;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ── Narrower plates ───────────────────────────────────────────────── */
+
+@media (max-width: 1180px) {
+  .brand span { display: none; }
+  .grp { gap: 10px; padding: 0 12px; }
+  .slider { width: 112px; }
+}
+@media (max-width: 980px) {
+  #panel { width: 340px; }
+  #rail { width: 248px; }
+  #railToggle { left: 260px; }
+  #eff { width: 248px; }
+  #effToggle { right: 260px; }
+  #hint { display: none; }
+}
+@media (max-width: 640px) {
+  #panel { width: auto; left: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Boot and busy ─────────────────────────────────────────────────────
+   Two states, both of them answers to the same question: is the thing
+   still working, or is that the answer? The readout is full of zeros until
+   main.js has built the car, and a cold rung of the ladder blocks the main
+   thread for up to 294 ms while its modules build, during which nothing
+   moves and no cursor changes. */
+
+#boot {
+  position: fixed; inset: 0;
+  z-index: 40;
+  display: grid; place-items: center;
+  background: var(--n10);
+  transition: opacity 260ms var(--ease);
+}
+body.booted #boot { opacity: 0; pointer-events: none; }
+
+.boot-in { display: grid; justify-items: center; gap: 14px; }
+.boot-in b {
+  font: 500 15px/1 var(--mono);
+  letter-spacing: 0.34em; text-indent: 0.34em;
+  color: var(--n90);
+}
+.boot-in span {
+  font: 400 9px/1 var(--mono);
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--n50);
+}
+/* an indeterminate sweep, because the build reports no progress and a
+   fake percentage would be another wrong number */
+.boot-in i {
+  position: relative;
+  display: block; width: 168px; height: 1px;
+  background: var(--rule-hi);
+  overflow: hidden;
+}
+.boot-in i::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: var(--acc);
+  transform-origin: left center;
+  animation: boot-sweep 1150ms var(--ease) infinite;
+}
+@keyframes boot-sweep {
+  0%   { transform: translateX(-100%) scaleX(0.35); }
+  100% { transform: translateX(168px) scaleX(0.35); }
+}
+
+/* The same signal for a rung that has to build before it can be shown.
+   It rides the topbar hairline so it reads as the instrument working
+   rather than as a modal interruption.
+
+   THE SWEEP MUST NOT BE ANIMATED ON left AND width, which is how it was
+   first written. Those are layout properties, so the animation can only run
+   on the main thread, and the main thread is the exact thing this indicator
+   exists to report as blocked: a cold Gen 9 builds for 318 ms measured on
+   this machine, and for all 318 of those milliseconds the amber line stood
+   still. An indicator that freezes during the freeze it is signalling tells
+   the user the page is dead, which is the reading it was added to prevent.
+   transform and opacity are the two properties Chrome can run on the
+   compositor, so the sweep keeps moving while the build blocks. It is also
+   cheaper when it does run: timed over 300 iterations on a probe styled
+   exactly like this pseudo-element, left plus width cost 57.0 us a frame
+   against 3.3 us for the equivalent transform, a factor of 17.
+   The geometry is unchanged. The element is now full width and scaled about
+   its left edge, so translateX(22%) scaleX(0.34) draws exactly the bar that
+   left: 22%; width: 34% drew, and it still needs no overflow rule that
+   would clip anything else on the faceplate. */
+#topbar::after {
+  content: "";
+  position: absolute; left: 0; bottom: -1px;
+  width: 100%; height: 1px;
+  background: var(--acc);
+  /* full width now, so it would otherwise take the clicks in the 1 px row
+     under the faceplate */
+  pointer-events: none;
+  transform-origin: left center;
+  transform: scaleX(0);
+  opacity: 0;
+}
+body.busy #topbar::after {
+  opacity: 1;
+  animation: busy-sweep 900ms var(--ease) infinite;
+}
+@keyframes busy-sweep {
+  0%   { transform: translateX(0)    scaleX(0); }
+  45%  { transform: translateX(22%)  scaleX(0.34); }
+  100% { transform: translateX(100%) scaleX(0); }
+}
+body.busy { cursor: progress; }
+body.busy #gl { cursor: progress; }
+
+/* ── Reach ─────────────────────────────────────────────────────────────
+   Everything below is one class of defect: a control a person cannot get
+   to, or can only get to by aiming better than a hand aims. Every figure
+   here was measured in the page at 1440x900 unless another size is named.
+
+   1. THE FACEPLATE RAN OFF THE SCREEN. Its intrinsic width is 785 px and it
+      never reflowed, so at 768 px the Home button was already 11 px past the
+      right edge and at 375 px the explode slider and all four view switches
+      sat between x 418 and x 779, entirely outside a 375 px window, with
+      body{overflow:hidden} leaving no way to scroll to them. Four of the
+      product's eight top-level controls did not exist on a phone.
+   2. THE READOUT RAN OFF THE TOP. #eff is 381 px tall, anchored 12 px from
+      the bottom, with no max-height and overflow:visible. At 844x390, a
+      phone in landscape, its top edge measured y -3 and its stats strip
+      (systems, parts, curb mass) sat at y 10 to 48, wholly behind the
+      opaque faceplate. Anything shorter than 441 px loses part of the card.
+   3. THE RAIL SAT ON TOP OF THE READOUT. Two 248 px plates and 24 px of
+      margin need 520 px. At 375 px the rail spanned x 12 to 260 and the
+      card x 115 to 363: 145 px of a 248 px card covered, and because the
+      rail is z-index 9 against the card's 8, elementFromPoint at the card's
+      top left returned .r-sys. The waterfall rows were not merely hidden
+      there, they were taking the taps.
+   4. SMALL TARGETS. Measured hit rectangles: unit toggle 27x16 and 28x16,
+      rail and readout latch tabs 18x32, waterfall rows 214x22, slot
+      dropdowns 138x22, panel part-stepper 22x22. The line for a mouse is
+      about 24 px and for a finger about 44.
+   5. FOCUS RINGS CLIPPED. :focus-visible draws 1 px at 1 px offset, so the
+      ring lands 2 px outside the border box. .e-units is overflow:hidden
+      and its buttons fill it exactly, which clipped the ring on the left,
+      top and bottom of `mi` and the right, top and bottom of `km`: the only
+      surviving edge is the 1 px between them, on top of the divider
+      hairline already drawn there. #rail is a scroll container and ate 2 px
+      of the left edge of every row's ring. */
+
+/* 2. Cap the readout the way the rail and the panel are already capped. */
+#eff {
+  max-height: calc(100vh - 72px);
+  overflow-y: auto;
+}
+
+/* 6. A PLATE THAT HAS SLID OFF THE SCREEN IS STILL IN THE TAB ORDER.
+   All three of them slide out on a transform, which moves pixels and
+   nothing else. Measured at 1440x900: on a fresh page 1 of 35 tab stops was
+   already outside the window (the panel's close button); after opening one
+   system overview and closing it, 19 of 63 were; and with the rail and the
+   readout both collapsed, which is a preference the page remembers across
+   visits, 26 of 35 tab stops led somewhere invisible. A keyboard walks off
+   the edge of the interface and cannot see where the focus went.
+   visibility:hidden takes a subtree out of sequential focus navigation, and
+   the delay holds it until the 240 ms slide has finished. */
+#panel { visibility: hidden; transition: transform 240ms var(--ease), visibility 0s linear 240ms; }
+#panel.on { visibility: visible; transition: transform 240ms var(--ease), visibility 0s; }
+body.rail-hidden #rail { visibility: hidden; transition: transform 240ms var(--ease), visibility 0s linear 240ms; }
+body.eff-hidden #eff { visibility: hidden; transition: transform 240ms var(--ease), opacity 160ms linear, visibility 0s linear 240ms; }
+
+/* 4. THE SCROLLBAR WAS A 2 PX DRAG TARGET. The rail holds 840 px of content
+   in 826 px at Gen 1 and 2,438 px in 626 px with a system open, so it is a
+   scrolling surface people use, and `::-webkit-scrollbar { width: 2px }`
+   gave the thumb a 2 px grab against Chrome's default 15. The hairline is
+   the look, so keep it: the track widens to 10 px and the thumb wears a 4 px
+   transparent border clipped to the padding box, which leaves exactly the
+   same 2 px of visible rule inside a 10 px hit area. It costs 8 px of row
+   width and the widest label in the rail, "Crash rails and bumper beam",
+   needs 230 px of the 276 available, so nothing newly truncates: measured 0
+   ellipsised rows at 280, 272, 270 and 264 px of rail width. */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb {
+  background: var(--n40);
+  background-clip: padding-box;
+  border: 4px solid transparent;
+}
+
+/* 4. The latch tabs stay 18 px wide, because a thin tab flush to the plate
+   edge is the point of them, and grow an invisible 24x44 hit area OUTWARD
+   only. Inward would steal the rail's right edge, where its scrollbar is. */
+#railToggle, #effToggle { overflow: visible; }
+#railToggle::before, #effToggle::before {
+  content: "";
+  position: absolute;
+  inset: -6px -6px -6px 0;
+}
+#effToggle::before { inset: -6px 0 -6px -6px; }
+
+/* 4. Two pixels each, which is what it takes to reach 24 and no more than
+   the 4 px grid allows. */
+.e-units { height: 26px; }
+.e-units button { font: 500 9px/24px var(--mono); }
+.e-row { height: 24px; }
+.dd-slot { height: 24px; }
+.p-steps button { width: 24px; height: 24px; }
+
+/* 4, continued. The way back up a level from a part to its system was a
+   150x14 px target. .p-back sets align-items: flex-start so the colour tab
+   lines up with the top of a label that wraps, and its two children are 9 px
+   and 12 px type, so the button collapsed to the height of one line of small
+   caps while the stepper beside it in the same row measured 24. The nav row
+   already reserves min-height: 24px, so the extra ten pixels come out of a
+   gap that was empty and nothing moves. */
+.p-back { min-height: 24px; }
+
+/* 6. A ROW THAT IS CLICKABLE AND DOES NOT LOOK IT.
+   The five efficiency rows open the panel that explains the loss term, and
+   measured against the non-interactive .e-cell and .stat blocks in the same
+   card the ONLY computed property that told them apart was `cursor`:
+   background transparent, border width 0 on all four sides, no underline,
+   no box-shadow. Every other clickable row in this app carries a resting
+   shape cue. .p-part is separated by a hairline and fills a 2 px left rule
+   with the accent on hover, so that is what these get, in the card's own
+   16 px gutter: the negative margin moves the rule left of the content edge,
+   so the label column, the bar column and the printed scale below them all
+   stay exactly where they were.
+   --edge is the token this stylesheet already uses for the border of a
+   control, which is exactly the claim the rule is making; --rule at 0.055
+   is the hairline that divides text, and a 2 by 24 px mark of it is too
+   faint to be read as anything. */
+.e-row {
+  margin-left: -10px;
+  width: calc(100% + 10px);
+  padding-left: 8px;
+  border-left: 2px solid var(--edge);
+  transition: border-color var(--t) var(--ease);
+}
+.e-row:hover, .e-row:focus-visible { border-left-color: var(--acc); }
+
+/* 5. Draw the ring inside the control wherever a clipping ancestor would
+   otherwise eat it. */
+.e-units button:focus-visible,
+.r-sys:focus-visible,
+.r-item:focus-visible,
+.p-part:focus-visible,
+.e-row:focus-visible { outline-offset: -2px; }
+
+/* 1. Trim the faceplate before it runs out of room. The captions are the
+   cheapest 160 px on the bar: the groups are already separated by hairlines
+   and the controls read as what they are. Measured after this block the
+   intrinsic width is 574 px against 785 before it, which clears iPad
+   portrait at 768 with 0 px of overflow and every desktop window. */
+@media (max-width: 820px) {
+  .grp > small { display: none; }
+  .brand { padding: 0 12px; }
+  .grp { gap: 8px; padding: 0 10px; }
+  .dd-gen { min-width: 76px; }
+  .slider { width: 88px; }
+  #pView { padding: 0 4px 0 10px; }
+  #pView button { padding: 0 8px; }
+  #pView button.icon { margin-right: 4px; }
+}
+
+/* 1, continued. The trim above takes the faceplate from 785 px to 574 and
+   that clears iPad portrait, but a phone is 375. Below 580 the bar becomes
+   two rows, breaking at .brk so the pairing is chosen rather than left to
+   label widths, and everything anchored under it moves down by one row. */
+.brk { display: none; }
+@media (max-width: 580px) {
+  #topbar { height: 96px; flex-wrap: wrap; }
+  .brk { display: block; flex-basis: 100%; height: 0; }
+  /* row two starts at the left edge, so its first group owns no divider */
+  #pExp { border-left: none; }
+  #rail, #panel { top: 108px; max-height: calc(100vh - 120px); }
+  #railToggle { top: 108px; }
+  body.rail-hidden #railToggle { top: 108px; }
+
+  /* 1, continued again. THE PAINT CONTROL BROKE THE TWO-ROW BAR, and the
+     break is the failure this whole block exists to prevent rather than a
+     cosmetic one. Row two is explode, paint and the four view switches, and
+     it measured 148 + 47 + 191 = 386 px against a 375 px phone, so the bar
+     wrapped to a THIRD row inside a container fixed at 96 px: three rows of
+     32 px each, with #pView's 48 px tall buttons overflowing their own row,
+     and everything anchored below the bar still positioned for two.
+
+     The 32 px explode percentage is the cheapest thing on that row, because
+     the slider already reads its own value: css above fills its track to the
+     thumb precisely so the control is a gauge and not just an input. Drop
+     the printed number and take the slider to 72 px and row two measures
+     330, which clears 375 with 45 px to spare and clears it with compare
+     mode open too, since the second rung dropdown lands on row ONE beside
+     the generation control. */
+  #pExp b { display: none; }
+  .slider { width: 72px; }
+}
+
+/* 3. Below 520 px the two plates cannot sit side by side, so the rail stops
+   above the readout instead of covering it. 531 = the card's measured 399,
+   its 12 px bottom margin, the rail's 108 px top on the two-row bar and a
+   12 px gap. */
+@media (max-width: 520px) {
+  #rail { max-height: max(140px, calc(100vh - 531px)); }
+  body.eff-hidden #rail { max-height: calc(100vh - 120px); }
+}
