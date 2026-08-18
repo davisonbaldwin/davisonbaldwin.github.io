@@ -74,7 +74,7 @@ export const VARIANTS = [
   { slot: 'body', options: [{ sys: 'body', label: 'Gen 1' }, { sys: 'body-aero', label: 'Gen 2 aero' }, { sys: 'body-3', label: 'Gen 3 monoform' }, { sys: 'body-4', label: 'Gen 4 active' }, { sys: 'body-6', label: 'Gen 5 apex' }, { sys: 'body-7', label: 'Gen 6 form' }, { sys: 'body-8', label: 'Gen 8 closed tail' }, { sys: 'body-9', label: 'Gen 9 flat flank' }, { sys: 'body-11', label: 'Gen 11 tandem' }] },
   { slot: 'battery', options: [{ sys: 'battery', label: 'Gen 1' }, { sys: 'battery-2', label: 'Gen 2 solid-state' }, { sys: 'battery-3', label: 'Gen 3 cell-to-body' }, { sys: 'battery-6', label: 'Gen 5 bipolar' }, { sys: 'battery-7', label: 'Gen 7 max-energy' }, { sys: 'battery-10', label: 'Gen 10 notched corner' }, { sys: 'battery-11', label: 'Gen 11 structural sill' }] },
   { slot: 'drivetrain', options: [{ sys: 'drivetrain', label: 'Gen 1' }, { sys: 'drivetrain-2', label: 'Gen 2 axial flux' }, { sys: 'drivetrain-3', label: 'Gen 3 in-wheel' }, { sys: 'drivetrain-6', label: 'Gen 5 apex' }, { sys: 'drivetrain-7', label: 'Gen 7 range' }, { sys: 'drivetrain-9', label: 'Gen 9 narrow front' }] },
-  { slot: 'wheels', options: [{ sys: 'wheels', label: 'Gen 1' }, { sys: 'wheels-2', label: 'Gen 2 low-loss' }, { sys: 'wheels-3', label: 'Gen 3 co-design' }, { sys: 'wheels-6', label: 'Gen 5 apex' }, { sys: 'wheels-7', label: 'Gen 7 narrow-track' }, { sys: 'wheels-9', label: 'Gen 9 matched track' }, { sys: 'wheels-10', label: 'Gen 10 the tyre' }, { sys: 'wheels-11', label: 'Gen 11 rerouted harness' }] },
+  { slot: 'wheels', options: [{ sys: 'wheels', label: 'Gen 1' }, { sys: 'wheels-2', label: 'Gen 2 low-loss' }, { sys: 'wheels-3', label: 'Gen 3 co-design' }, { sys: 'wheels-6', label: 'Gen 5 apex' }, { sys: 'wheels-7', label: 'Gen 7 narrow-track' }, { sys: 'wheels-9', label: 'Gen 9 matched track' }, { sys: 'wheels-10', label: 'Gen 10 the tire' }, { sys: 'wheels-11', label: 'Gen 11 rerouted harness' }] },
   { slot: 'hv', options: [{ sys: 'hv', label: 'Gen 1' }, { sys: 'hv-4', label: 'Gen 4 zonal' }, { sys: 'hv-11', label: 'Gen 11 tandem spine' }] },
   { slot: 'suspension', options: [{ sys: 'suspension', label: 'Gen 1' }, { sys: 'suspension-4', label: 'Gen 4 active' }, { sys: 'suspension-9', label: 'Gen 9 matched track' }] },
   { slot: 'autonomy', options: [{ sys: 'autonomy', label: 'Gen 1' }, { sys: 'autonomy-4', label: 'Gen 4 triplex' }, { sys: 'autonomy-10', label: 'Gen 10 asymmetric' }, { sys: 'autonomy-11', label: 'Gen 11 tandem' }] },
@@ -140,20 +140,20 @@ export const GENERATIONS = [
        autonomy-10 takes compute, 68 percent of auxiliary. wheels-10 takes
        Crr, and books nothing, because there is no drum here and it says so.
        battery-10 books no range lever at all and exists to notch the corner
-       where the pack fouled the tyre. See design/gen10.md. */
+       where the pack fouled the tire. See design/gen10.md. */
     id: 'gen10', label: 'Gen 10',
-    note: 'The slots that own their term: asymmetric compute, a tyre that declines to claim what it cannot measure, and a pack notched clear of the wheel',
+    note: 'The slots that own their term: asymmetric compute, a tire that declines to claim what it cannot measure, and a pack notched clear of the wheel',
     choices: { body: 'body-9', battery: 'battery-10', drivetrain: 'drivetrain-9', wheels: 'wheels-10', hv: 'hv-4', suspension: 'suspension-9', autonomy: 'autonomy-10', thermal: 'thermal-9', interior: 'interior-6' },
   },
   {
     id: 'gen11', label: 'Gen 11',
-    /* THE PACKAGE GENERATION. Ten rungs optimised inside a box nobody
+    /* THE PACKAGE GENERATION. Ten rungs optimized inside a box nobody
        questioned: P.width 1.88, P.height 1.44, P.length 4.75 and
        P.wheelbase 2.90 never moved from the first commit. Gen 11 changes the
        box and leaves the platform alone underneath, which is the opposite of
        what it set out to do. A pack does not have to narrow when a cabin
        does: at the cells' own height there is no body beside them, and the
-       pack's outer edge already hides inside the tyre column. So the cabin
+       pack's outer edge already hides inside the tire column. So the cabin
        comes to 1.20 m, the pack and the 1.48 m track do not move, and the
        0.0571 m2 of sliver that costs buys back all 190 kWh.
        Holding the track is what makes it affordable: SSF 1.53 against 1.24 at

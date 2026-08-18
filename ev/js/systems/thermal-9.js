@@ -47,7 +47,7 @@
    station integrator, re-implemented and run over body-8's table and body-9's,
    returns 1.8205 and 1.7482 above y 0.28 for a delta of -0.0722, which is
    body-9's published figure to four decimals, and 2.157 minus 0.0722 minus
-   the 0.0392 of tyre column and the 0.0041 of protrusion is 2.0415. One
+   the 0.0392 of tire column and the 0.0041 of protrusion is 2.0415. One
    method over both bodies, applied to the Gen 8 audit's own baseline, no new
    convention. wheels-9 at Crr 0.0038:
      Gen 9, thermal-7 carried   649 W  1390 kg  114.39 Wh/mi   1,661.0 mi
@@ -215,8 +215,8 @@
      40 m3/h a side of dash-plenum air. This module carries the loop, the
      damper on that takeoff, and nothing else in the seat.
      DECLARED: the new screen-base slot nozzle at x 0.905..0.951, y 0.856 to
-     0.878, sits inside interior-6's dash moulding volume, because that is
-     where the base of a windscreen nozzle physically lives. It is a trim
+     0.878, sits inside interior-6's dash molding volume, because that is
+     where the base of a windshield nozzle physically lives. It is a trim
      aperture in a partner this module cannot edit, stated rather than drawn
      around, the same way thermal-7 stated its A-pillar duct takeoffs.
    - drivetrain-7 (built): 170 W of loss at 100 km/h, of which about 102 is
@@ -246,9 +246,9 @@
      Three generations have now reported it and nobody owns the fix, because
      the stub end is hv-4's coordinate and the casting is body-9's carry.
    - wheels-9 (built) is the reason this module re-ran its arch audit rather
-     than asserting a conclusion. Front wheel centres are at (+/-1.45, 0.355,
-     +/-0.74), tyre faces |z| 0.6625 and 0.8175. Sweeping every vertex of its
-     built front tyre, wheel, cover, disc and caliper about the steering axis
+     than asserting a conclusion. Front wheel centers are at (+/-1.45, 0.355,
+     +/-0.74), tire faces |z| 0.6625 and 0.8175. Sweeping every vertex of its
+     built front tire, wheel, cover, disc and caliper about the steering axis
      through (1.45, 0.74) reproduces its published table exactly: 0.8190
      static, 0.8298 at 2 degrees, 0.8512 at 6, 0.8720 at 10, 0.8926 at 14,
      0.9032 at 16, 0.9238 at 20. Tested against that SWEPT SOLID rather than
@@ -259,7 +259,7 @@
      module that gets anywhere near the corner, and it is tighter than it
      reads, because body-9's own lower closeout holds 14.3 mm at the same
      lock and this grille is in the same family of clearance.
-     Its brake master unit also moved with the corner and is a NEW neighbour
+     Its brake master unit also moved with the corner and is a NEW neighbor
      the second blower had to be drawn around: a bracket at x 0.905..0.995,
      y 0.580..0.660, |z| 0.282..0.294 stands exactly where thermal-7 had
      nothing. The transient blower's inlet throat and recirculation damper
@@ -267,8 +267,8 @@
    - suspension-9 (built) changed two things this module was relying on.
      It narrowed P.driveF from z +/-0.35 to the measured +/-0.31, which
      design/gen9.md said the module touching it would declare and the others
-     would honour; this module's handover flanges are at |z| 0.10 and 0.20
-     and are unaffected, and the declaration is honoured rather than
+     would honor; this module's handover flanges are at |z| 0.10 and 0.20
+     and are unaffected, and the declaration is honored rather than
      re-derived. And it DROPPED the forward front crossmember from y 0.25 to
      0.21 and carried the inner pivots inboard with the track. That second
      change reopens the interface below.
@@ -284,7 +284,7 @@
    230 mm of y and a different pitch. Two generations wrote that the straight
    route was blocked by suspension-4's two front subframe crossmembers and
    its ARB decoupler tube. That sentence is now false and it was checked
-   rather than carried. Sweeping the straight centreline against
+   rather than carried. Sweeping the straight centerline against
    suspension-9's BUILT mesh, the nearest suspension metal is 92.9 mm away,
    an ARB decoupler at (1.675, 0.335, -0.110); on the second route it is
    97.8. suspension-9 dropped the crossmember and moved the pivots inboard
@@ -338,7 +338,7 @@
    tongues, bellmouths, wheels and motor bosses in place of two drums; real
    lattice grilles in place of three slabs; valve bodies with actuator cans,
    connectors and pigtails; and a fan shroud that is a venturi with stator
-   struts instead of a torus, turning seven twisted aerofoil blades instead of
+   struts instead of a torus, turning seven twisted airfoil blades instead of
    seven flat paddles.
 
    FOUR THINGS THE PASS FOUND, each of them a defect rather than a decoration.
@@ -359,7 +359,7 @@
 
    AND TWO CARRIED CONDITIONS IT MEASURED FOR THE FIRST TIME, neither of them
    this pass's to fix:
-     The air-handler case does not merely TOUCH interior-6's dash moulding at
+     The air-handler case does not merely TOUCH interior-6's dash molding at
        x 1.000, it is well inside it, and the honest number needs the same
        dense sampling that found the touch: a 220 by 560 flat face has
        vertices only at its corners, so a vertex sweep cannot see either. On a
@@ -385,7 +385,7 @@
    thermal-9 as the largest system in the gen9 preset. 19,296 of those are
    lib.tube and almost all of it is carried hose: lib.tube lays six segments
    between every input point, and four would return about 6,400 triangles at
-   the cost of up to a millimetre on the tightest duct clearances and a full
+   the cost of up to a millimeter on the tightest duct clearances and a full
    re-measure. That is the reclamation if a later pass needs the room; it was
    not taken here because this module publishes clearances at 20.0 mm. */
 
@@ -425,7 +425,7 @@ export const SYSTEM = {
       tagline: 'thermal-7 spent its whole argument on COP and won it. The prize is a machine that now runs 8 percent of a long drive, and you cannot improve the efficiency of a compressor that is off.',
       mass: 9,
       specs: [
-        ['Machine', 'thermal-7\'s R290 economised two-stage scroll, unchanged'],
+        ['Machine', 'thermal-7\'s R290 economized two-stage scroll, unchanged'],
         ['Duty', '13 W sweep average against 41; running about 8 percent of the run'],
         ['New hardware', 'Free-cooling plate, suction accumulator, one bypass valve'],
         ['By leg', '17 W at 4 °C, 0 W at 14 °C, 28 W at 26 °C plus sun'],
@@ -447,18 +447,18 @@ export const SYSTEM = {
       mass: 5,
       specs: [
         ['Ventilation blower', '80 m³/h continuous, 6 W (thermal-7: 210 m³/h at 44 W)'],
-        ['Transient blower', '30 m³/h demist at 5 W, 250 m³/h recirculated on pulldown'],
+        ['Transient blower', '30 m³/h defog at 5 W, 250 m³/h recirculated on pulldown'],
         ['Control', 'Float band 14 to 22 °C winter, up to 30 °C summer; no setpoint'],
         ['Coils', '4 °C dehumidify and 35 °C heating, carried from thermal-7'],
         ['Ledger', '44 W to 11 W, the biggest line in the module, 33 W and 11 miles'],
         ['Maturity', 'Production practice; the float band is Extrapolated, see fails'],
       ],
-      how: 'thermal-7 ran one 330 mm wheel at 210 m³/h and 44 W. Ninety of those cubic metres were ventilation, which is a requirement; the rest was recirculation, which exists for two things that do not happen at the same time as each other or at the same time as cruise. Demist is a local mass-transfer problem at the glass, where what clears a screen is jet momentum in the boundary layer at its base rather than air changes in the cabin behind it. Pulldown is a transient that lasts ten minutes at the start of a journey. Sizing one machine for the union of three duties and then running it at the union\'s flow rate for 27.7 hours is what cost the 44 W. So there are two machines. A ventilation blower moves 80 m³/h through the recovery core at 6 W, on a wheel grown again and turned slower, and it never does anything else. A transient blower feeds a slot nozzle across the screen base at 30 m³/h and 5 W at cruise, and opens a recirculation damper to reach 250 m³/h when the cabin is being pulled down. Eleven watts against forty-four, 0.76 Wh/mi on the auxiliary row, and about 11 miles.\n\nThe other half of this box is a control change with no hardware at all, and it is worth 25 of the module\'s 90 W. thermal-7 held 16 °C in winter and 27 in summer. Holding a temperature means paying whenever the cabin is not at it, and on the eleven mild hours of the reference sweep the cabin wants to sit at 18.8 °C on 270 W of internal gains through an open ceiling gap and a bypassed recovery core, which is a perfectly comfortable place for it to be. So the setpoint becomes a band, 14 to 22 °C, and the compressor across those eleven hours goes from 37 W to zero. In summer the band opens to 30 °C and the recovery core, which is a liability whenever ambient is cooler than cabin, is bypassed so that 80 m³/h of 26 °C air becomes 107 W of free cooling: 64 W to 28. The blend flap, the 4 °C dehumidify coil, the 35 °C heating coil, the filtration and the rail-duct takeoffs with the dampers that decide whether interior-6\'s ceiling gap insulates or breathes are thermal-7\'s and carry unchanged, including the finding that a cold bright morning can hot-soak a shut cavity and that the damper schedule has to watch solar as well as ambient.',
+      how: 'thermal-7 ran one 330 mm wheel at 210 m³/h and 44 W. Ninety of those cubic meters were ventilation, which is a requirement; the rest was recirculation, which exists for two things that do not happen at the same time as each other or at the same time as cruise. Defog is a local mass-transfer problem at the glass, where what clears a screen is jet momentum in the boundary layer at its base rather than air changes in the cabin behind it. Pulldown is a transient that lasts ten minutes at the start of a journey. Sizing one machine for the union of three duties and then running it at the union\'s flow rate for 27.7 hours is what cost the 44 W. So there are two machines. A ventilation blower moves 80 m³/h through the recovery core at 6 W, on a wheel grown again and turned slower, and it never does anything else. A transient blower feeds a slot nozzle across the screen base at 30 m³/h and 5 W at cruise, and opens a recirculation damper to reach 250 m³/h when the cabin is being pulled down. Eleven watts against forty-four, 0.76 Wh/mi on the auxiliary row, and about 11 miles.\n\nThe other half of this box is a control change with no hardware at all, and it is worth 25 of the module\'s 90 W. thermal-7 held 16 °C in winter and 27 in summer. Holding a temperature means paying whenever the cabin is not at it, and on the eleven mild hours of the reference sweep the cabin wants to sit at 18.8 °C on 270 W of internal gains through an open ceiling gap and a bypassed recovery core, which is a perfectly comfortable place for it to be. So the setpoint becomes a band, 14 to 22 °C, and the compressor across those eleven hours goes from 37 W to zero. In summer the band opens to 30 °C and the recovery core, which is a liability whenever ambient is cooler than cabin, is bypassed so that 80 m³/h of 26 °C air becomes 107 W of free cooling: 64 W to 28. The blend flap, the 4 °C dehumidify coil, the 35 °C heating coil, the filtration and the rail-duct takeoffs with the dampers that decide whether interior-6\'s ceiling gap insulates or breathes are thermal-7\'s and carry unchanged, including the finding that a cold bright morning can hot-soak a shut cavity and that the damper schedule has to watch solar as well as ambient.',
       why: 'Two generations of this slot wrote that comfort per watt is the metric and then spent watts on air anyway. thermal-7 broke that by demoting the air handler; this part finishes it by noticing the demotion was incomplete. A blower is a cube-law device, so the single most valuable thing you can do to one is stop asking it for a flow rate it only needs occasionally, and the single most valuable thing you can do to a thermostat is ask whether the temperature it defends is worth defending. Neither of those is a technology. Both together are 33 and 25 watts, which is 58 of this module\'s 90, and it is worth saying plainly that the biggest levers left in a mature thermal system are a second motor and a wider deadband rather than anything with a refrigerant in it.',
       fail: [
         'The float band is the module\'s largest and least evidenced claim, and it is the same species of claim thermal-7 flagged as the first thing a reviewer should attack. It asserts that a cabin wandering between 14 and 22 °C with 35 °C contact surfaces is acceptable to occupants who have spent a century being offered a number they can dial. There is no measurement behind that in this project, the Maturity row says Extrapolated for exactly that reason, and the fallback is a conventional setpoint that gives back 25 of the 90 watts.',
-        'Splitting the blower splits the demist authority. The screen is served better than before, by a slot jet aimed at where fog actually forms, and the side glass and the backlight are served worse, because nothing sweeps them any more. On a cold wet start the quarter glass clears minutes after the screen does, and the afterbody body-9 carries from body-8 has no rear window at all, so the car is leaning harder on autonomy-4\'s corner radars for exactly the sector it can no longer see through.',
-        'One damper now owns both demist and pulldown. Stuck in recirculation the car demists badly and quietly, because recirculated cabin air is the wettest air available; stuck in fresh it cannot pull the cabin down at all on a hot soak. Position is sensed rather than inferred, which is thermal-7\'s answer to its own ceiling damper and is the right one, but it is a second single point in a box that used to have none. It is also the part of this module with the least space around it: wheels-9\'s brake master unit put a bracket at x 0.905..0.995, y 0.580..0.660, |z| 0.282..0.294 when the front corner moved, so the transient inlet throat and this damper sit 12 mm higher and 20 mm further inboard than the geometry wanted, and the driver-side firewall is now full. Two excursions go with it and both have now been measured against the built partner rather than declared against a drawing. The screen-base slot nozzle at x 0.905..0.951 and y 0.856 to 0.878 does NOT sit inside interior-6\'s dash moulding: the moulding is nowhere near it. What the nozzle is inside is interior-6\'s two plenum DUCTS, the 36 mm tubes that leave its stub collars and run forward over this case, at 6.69 and 6.37 mm over 202 crossing triangle pairs, and those tubes are also 6.45 mm inside this case\'s own top plate and 7.67 mm inside the nozzle\'s lip. That is one duct route in the wrong place rather than a nozzle let into a moulding, and it is written up on both panels with the corridor measured. The second excursion is unchanged and is a zone excursion, not a penetration: the two water stubs reach x 1.012, 12 mm outside the firewall zone this slot has held since thermal.js, and they touch nothing.',
+        'Splitting the blower splits the defog authority. The screen is served better than before, by a slot jet aimed at where fog actually forms, and the side glass and the backlight are served worse, because nothing sweeps them any more. On a cold wet start the quarter glass clears minutes after the screen does, and the afterbody body-9 carries from body-8 has no rear window at all, so the car is leaning harder on autonomy-4\'s corner radars for exactly the sector it can no longer see through.',
+        'One damper now owns both defog and pulldown. Stuck in recirculation the car defogs badly and quietly, because recirculated cabin air is the wettest air available; stuck in fresh it cannot pull the cabin down at all on a hot soak. Position is sensed rather than inferred, which is thermal-7\'s answer to its own ceiling damper and is the right one, but it is a second single point in a box that used to have none. It is also the part of this module with the least space around it: wheels-9\'s brake master unit put a bracket at x 0.905..0.995, y 0.580..0.660, |z| 0.282..0.294 when the front corner moved, so the transient inlet throat and this damper sit 12 mm higher and 20 mm further inboard than the geometry wanted, and the driver-side firewall is now full. Two excursions go with it and both have now been measured against the built partner rather than declared against a drawing. The screen-base slot nozzle at x 0.905..0.951 and y 0.856 to 0.878 does NOT sit inside interior-6\'s dash molding: the molding is nowhere near it. What the nozzle is inside is interior-6\'s two plenum DUCTS, the 36 mm tubes that leave its stub collars and run forward over this case, at 6.69 and 6.37 mm over 202 crossing triangle pairs, and those tubes are also 6.45 mm inside this case\'s own top plate and 7.67 mm inside the nozzle\'s lip. That is one duct route in the wrong place rather than a nozzle let into a molding, and it is written up on both panels with the corridor measured. The second excursion is unchanged and is a zone excursion, not a penetration: the two water stubs reach x 1.012, 12 mm outside the firewall zone this slot has held since thermal.js, and they touch nothing.',
       ],
       explode: [-0.32, 0.45, 0],
     },
@@ -474,7 +474,7 @@ export const SYSTEM = {
         ['Bill', 'Passenger toe box loses 60 mm; sill trim apertures both sides at y 0.478'],
         ['Maturity', 'Pilot line in a vehicle, production practice in buildings'],
       ],
-      how: 'design/gen9.md names deeper ventilation recovery as the first lever, and the reason it returns least is a saturation curve. Effectiveness of a counterflow exchanger with balanced streams is NTU/(1+NTU), so thermal-7\'s 78 percent is NTU 3.55 and 88 percent is NTU 7.33. That is 2.07 times the transfer area for ten points, and it is the shape of every recovery device ever built: the first half of the heat needs almost no area, the last tenth needs a great deal. The core therefore goes from 0.9 m² in a 170 mm cube to 1.86 m² in a 190 by 200 by 270 mm block, at the same packing density, and lands where the firewall has exactly enough room for it: bottom face y 0.378, fifteen millimetres above hv-4\'s front HV run at 0.363, top face 0.578, two millimetres under the air handler case at 0.580. The second change is worth more than the first and costs nothing. thermal-7\'s 90 m³/h already carried a 25 percent tax because the return grille sat under the dash and some supply short-circuited before it reached anyone. Moving the extract to a pair of sill-shoulder grilles at (0.010, 0.478, ±0.678), which is the B-pillar station, takes ventilation effectiveness from about 0.8 to about 0.9, so 80 m³/h delivers what 90 did, and the ventilation conductance falls twice over: once for the flow and once for the effectiveness.\n\nThe two together take the ventilation term from 6.63 to 3.22 W/K and the winter cabin UA from 31.7 to 28.3. On the 4 °C leg that is 40 W less heat to find, which at COP 4.2 is 9.6 W of compressor across nine of 27.7 hours: 3.1 W on the sweep and about 1 mile. At -10 °C the same conductance change is 88 W of load, which is 33 W of electricity measured on thermal-7\'s -10 °C COP of 2.7 and 12 W on this module\'s, because a conductance saving scales with the temperature difference it acts across and the reference sweep does not have one.\n\nWhere those grilles ended up is the part of this panel that was measured rather than chosen. The obvious line is the rocker top at y 0.43, which is where thermal-7 would have put it and where the first draft of this module did. That band is full. autonomy-4\'s redundant sensor ring runs the entire length of the car at y 0.394 to 0.406 over |z| 0.669 and again at 0.422 to 0.434 over 0.639, and interior-6\'s front seat frame reaches y 0.460 out to |z| 0.615, and that frame is not trim: it is the 4 kN belt load path into battery-6\'s lid rails. A 60 mm duct laid on the rocker goes through both. So the route climbs over wheels-9\'s front brake line, which itself moved with the corner, and runs the sill shoulder at y 0.478 and |z| 0.672, above the ring and outboard of the seat. Measured worst clearances as built, and two of the three did not survive being measured again the right way: 19.75 mm to the brake line, 12.57 mm to the seat frame at (0.406, 0.488, -0.645), 23.02 mm to the sensor ring at (0.261, 0.463, -0.649). This panel published 20.1, 23.6 and 28.0, and those were nearest-VERTEX readings, which walk one body\'s vertices onto the other\'s triangles and miss every closest approach that lands on a triangle edge. Swept surface to surface over the built extract assembly against the built partner, one method over both, the brake line holds to 0.35 mm and the other two are 11.0 and 5.0 mm optimistic. The seat frame is now the tightest thing this duct passes and it is a 4 kN belt load path, so 12.6 mm is the number that has to be defended rather than the 23.6 that was easier to live with. Nothing moved to produce this correction; the geometry is thermal-7\'s route at thermal-9\'s coordinates and only the measurement changed. The two ducts meet a cross-tunnel return collector at (0.798, 0.420, 0) rather than a passenger-side plenum, because a mirrored pair of ducts needs something on both sides to land on.\n\nThe exhaust route is thermal-7\'s in intent and re-derived in coordinates, because body-9 moved the panel it goes through. thermal-7 declared a penetration of the fairing inner wall at |z| 0.693 to 0.707; body-9 computes that wall from its own FRONTZ and puts it at 0.630 to 0.637, so the duct now passes behind it entirely and pierces the AFT FAIRING CLOSEOUT instead, a 40 mm duct through a 16 mm carbon panel at x 1.045, |z| 0.641 to 0.786, y 0.460 to 0.507. Declared at those coordinates. It discharges at (1.058, 0.490, 0.80) into the sealed arch cavity, and one sentence thermal-7 wrote has to be retired: the discharge is no longer beside the outlet louver bank, because body-9 raised that bank 130 mm to y 0.630 to buy steered clearance. The physics survives the move, since a sealed cavity vented by a louver bank is at the bank\'s pressure wherever you enter it, but the geometry sentence was wrong and is not carried. Swept against wheels-9\'s steered front corner rather than against a corner value, the grille clears the tyre by 23.6 mm at 2 degrees of lock, which is the tightest thing in this module and is in the same family as body-9\'s own lower closeout at 14.3. The motorised bypass is carried and promoted: thermal-7 used it as a fault position, and here it is a control device that opens whenever ambient is a cooling resource, which is what makes the mild and hot legs of the sweep read the way they do.',
+      how: 'design/gen9.md names deeper ventilation recovery as the first lever, and the reason it returns least is a saturation curve. Effectiveness of a counterflow exchanger with balanced streams is NTU/(1+NTU), so thermal-7\'s 78 percent is NTU 3.55 and 88 percent is NTU 7.33. That is 2.07 times the transfer area for ten points, and it is the shape of every recovery device ever built: the first half of the heat needs almost no area, the last tenth needs a great deal. The core therefore goes from 0.9 m² in a 170 mm cube to 1.86 m² in a 190 by 200 by 270 mm block, at the same packing density, and lands where the firewall has exactly enough room for it: bottom face y 0.378, fifteen millimeters above hv-4\'s front HV run at 0.363, top face 0.578, two millimeters under the air handler case at 0.580. The second change is worth more than the first and costs nothing. thermal-7\'s 90 m³/h already carried a 25 percent tax because the return grille sat under the dash and some supply short-circuited before it reached anyone. Moving the extract to a pair of sill-shoulder grilles at (0.010, 0.478, ±0.678), which is the B-pillar station, takes ventilation effectiveness from about 0.8 to about 0.9, so 80 m³/h delivers what 90 did, and the ventilation conductance falls twice over: once for the flow and once for the effectiveness.\n\nThe two together take the ventilation term from 6.63 to 3.22 W/K and the winter cabin UA from 31.7 to 28.3. On the 4 °C leg that is 40 W less heat to find, which at COP 4.2 is 9.6 W of compressor across nine of 27.7 hours: 3.1 W on the sweep and about 1 mile. At -10 °C the same conductance change is 88 W of load, which is 33 W of electricity measured on thermal-7\'s -10 °C COP of 2.7 and 12 W on this module\'s, because a conductance saving scales with the temperature difference it acts across and the reference sweep does not have one.\n\nWhere those grilles ended up is the part of this panel that was measured rather than chosen. The obvious line is the rocker top at y 0.43, which is where thermal-7 would have put it and where the first draft of this module did. That band is full. autonomy-4\'s redundant sensor ring runs the entire length of the car at y 0.394 to 0.406 over |z| 0.669 and again at 0.422 to 0.434 over 0.639, and interior-6\'s front seat frame reaches y 0.460 out to |z| 0.615, and that frame is not trim: it is the 4 kN belt load path into battery-6\'s lid rails. A 60 mm duct laid on the rocker goes through both. So the route climbs over wheels-9\'s front brake line, which itself moved with the corner, and runs the sill shoulder at y 0.478 and |z| 0.672, above the ring and outboard of the seat. Measured worst clearances as built, and two of the three did not survive being measured again the right way: 19.75 mm to the brake line, 12.57 mm to the seat frame at (0.406, 0.488, -0.645), 23.02 mm to the sensor ring at (0.261, 0.463, -0.649). This panel published 20.1, 23.6 and 28.0, and those were nearest-VERTEX readings, which walk one body\'s vertices onto the other\'s triangles and miss every closest approach that lands on a triangle edge. Swept surface to surface over the built extract assembly against the built partner, one method over both, the brake line holds to 0.35 mm and the other two are 11.0 and 5.0 mm optimistic. The seat frame is now the tightest thing this duct passes and it is a 4 kN belt load path, so 12.6 mm is the number that has to be defended rather than the 23.6 that was easier to live with. Nothing moved to produce this correction; the geometry is thermal-7\'s route at thermal-9\'s coordinates and only the measurement changed. The two ducts meet a cross-tunnel return collector at (0.798, 0.420, 0) rather than a passenger-side plenum, because a mirrored pair of ducts needs something on both sides to land on.\n\nThe exhaust route is thermal-7\'s in intent and re-derived in coordinates, because body-9 moved the panel it goes through. thermal-7 declared a penetration of the fairing inner wall at |z| 0.693 to 0.707; body-9 computes that wall from its own FRONTZ and puts it at 0.630 to 0.637, so the duct now passes behind it entirely and pierces the AFT FAIRING CLOSEOUT instead, a 40 mm duct through a 16 mm carbon panel at x 1.045, |z| 0.641 to 0.786, y 0.460 to 0.507. Declared at those coordinates. It discharges at (1.058, 0.490, 0.80) into the sealed arch cavity, and one sentence thermal-7 wrote has to be retired: the discharge is no longer beside the outlet louver bank, because body-9 raised that bank 130 mm to y 0.630 to buy steered clearance. The physics survives the move, since a sealed cavity vented by a louver bank is at the bank\'s pressure wherever you enter it, but the geometry sentence was wrong and is not carried. Swept against wheels-9\'s steered front corner rather than against a corner value, the grille clears the tire by 23.6 mm at 2 degrees of lock, which is the tightest thing in this module and is in the same family as body-9\'s own lower closeout at 14.3. The motorized bypass is carried and promoted: thermal-7 used it as a fault position, and here it is a control device that opens whenever ambient is a cooling resource, which is what makes the mild and hot legs of the sweep read the way they do.',
       why: 'This panel is here to be the counterexample. In thermal-7 the recovery core was the largest line in the ledger and the least glamorous, and its own content made the point that the dull lever won. One generation later the same dull lever is the smallest line in the ledger, and nothing about the physics changed: what changed is that 78 percent of the load was already gone, so the remaining 22 percent is what was left to attack and it is small. A lever is not worth what it was worth last time. This is the plainest possible demonstration of why a generation should price its levers before it designs around them, and it is the reason this module priced all four of design/gen9.md\'s before drawing anything.',
       fail: [
         'The core is 2.1 times the membrane area on the same 15 year service question thermal-7 could not answer, and now with 2.1 times as much of it to foul. The supply side is filtered and the exhaust side is not, so the dirt arrives from inside, and a differential-pressure trend is still the only instrument that can call the service before effectiveness has quietly halved.',
@@ -495,7 +495,7 @@ export const SYSTEM = {
         ['Headroom left', '70 W of delivery at 4 °C, and that is all there is'],
         ['Maturity', 'Extrapolated; the comfort equivalence is still unmeasured'],
       ],
-      how: 'Write the cabin as a control volume and the lever disappears. In steady state the cabin air sits where heat in equals heat out, so Tcabin = Tamb + (internal gains + local delivery) / UA. On the 4 °C leg the gains are 270 W, two occupants at 75 W of sensible each and 120 W of autonomy-4\'s compute reaching the cabin, and the UA with the ceiling damper shut and the deep core running is 28.3 W/K. With the heating entirely off the cabin therefore floats to 13.5 °C. thermal-7 holds 16, which is 70 W of delivered heat above the float point, and 70 W is the entire remaining winter heating bill of this car. Taking occupant-local further means running the cabin colder while delivering more heat to the person, and those two are the same number with opposite signs: every watt put into a seat leaves through the same 28.3 W/K envelope and raises the cabin it was supposed to let you abandon. To hold 12 °C while delivering 300 W of contact and radiant heat the envelope would have to leak 71 W/K at 4 °C, which is a car with the windows down. thermal-7 did not leave a little headroom here. It took the lever to its stop and the stop is a conservation law.\n\nSo this part does not chase the lever, it takes the two things that were actually left. The loop shrinks from 2.4 to 1.4 litres because the delivery it has to make is 70 W in winter rather than the several hundred a volume-heated cabin needed, and a smaller loop is a smaller pump and a faster warm-up: the seat mats reach 35 °C in about 50 seconds against 85. And the pump is duty-cycled rather than continuous, because on the eleven mild hours of the reference sweep neither branch is doing anything, so 10 W becomes 5 W averaged. Five watts, about 2 miles. Everything else is thermal-7\'s and carried by name: the mixing valve, the manifolds at (0.30, 0.338, ±0.40) between interior-6\'s own seat track rails, the rear pair at (-0.905, 0.337, ±0.47), the two footwell radiant panels at (1.03, 0.494, ±0.29) clear of its pedal set, and the heated wheel rim on hv-4\'s 48 V bus. The mats and their 12 W fans stay on interior-6\'s 22 kg seat ledger where thermal-7 put them, and counting them here would be double counting for the second generation running.',
+      how: 'Write the cabin as a control volume and the lever disappears. In steady state the cabin air sits where heat in equals heat out, so Tcabin = Tamb + (internal gains + local delivery) / UA. On the 4 °C leg the gains are 270 W, two occupants at 75 W of sensible each and 120 W of autonomy-4\'s compute reaching the cabin, and the UA with the ceiling damper shut and the deep core running is 28.3 W/K. With the heating entirely off the cabin therefore floats to 13.5 °C. thermal-7 holds 16, which is 70 W of delivered heat above the float point, and 70 W is the entire remaining winter heating bill of this car. Taking occupant-local further means running the cabin colder while delivering more heat to the person, and those two are the same number with opposite signs: every watt put into a seat leaves through the same 28.3 W/K envelope and raises the cabin it was supposed to let you abandon. To hold 12 °C while delivering 300 W of contact and radiant heat the envelope would have to leak 71 W/K at 4 °C, which is a car with the windows down. thermal-7 did not leave a little headroom here. It took the lever to its stop and the stop is a conservation law.\n\nSo this part does not chase the lever, it takes the two things that were actually left. The loop shrinks from 2.4 to 1.4 liters because the delivery it has to make is 70 W in winter rather than the several hundred a volume-heated cabin needed, and a smaller loop is a smaller pump and a faster warm-up: the seat mats reach 35 °C in about 50 seconds against 85. And the pump is duty-cycled rather than continuous, because on the eleven mild hours of the reference sweep neither branch is doing anything, so 10 W becomes 5 W averaged. Five watts, about 2 miles. Everything else is thermal-7\'s and carried by name: the mixing valve, the manifolds at (0.30, 0.338, ±0.40) between interior-6\'s own seat track rails, the rear pair at (-0.905, 0.337, ±0.47), the two footwell radiant panels at (1.03, 0.494, ±0.29) clear of its pedal set, and the heated wheel rim on hv-4\'s 48 V bus. The mats and their 12 W fans stay on interior-6\'s 22 kg seat ledger where thermal-7 put them, and counting them here would be double counting for the second generation running.',
       why: 'This is the panel design/gen9.md would least like to read and the one it most needs. The brief asked for occupant-local conditioning taken further, and the correct answer is that thermal-7 exhausted it and the evidence is arithmetic rather than opinion. That matters beyond this module, because occupant-local conditioning is the idea in this whole ladder that sounds cleverest, and a generation that had simply pushed the setpoint another four kelvin and booked the watts would have produced a number that no cabin could deliver, defended by a comfort claim that was already the weakest thing on thermal-7\'s panels. The useful output of this part is therefore a boundary rather than a saving: the occupant-local lever is worth what it was worth, it is spent, and the next generation should not spend a module on it.',
       fail: [
         'The comfort equivalence thermal-7 flagged is not only still unmeasured, it is now load bearing for a wider temperature range. The float band lets the cabin sit anywhere from 14 to 22 °C in winter and up to 30 in summer, and the claim that 35 °C contact surfaces and 16 °C chilled ones make that acceptable is an extrapolation from heated-seat studies and building radiant work with nothing behind it here. It remains the first thing a reviewer should attack, and the answer to the attack is a conventional setpoint and 25 fewer watts.',
@@ -516,7 +516,7 @@ export const SYSTEM = {
         ['Head', 'Receiver y 0.780 over battery-7\'s pool at 0.118: 10.4 kPa'],
         ['Maturity', 'Pilot line; the 19 kg fluid ledger is STILL unresolved'],
       ],
-      how: 'thermal-7 made the right architectural call and then left one watt-hour-shaped mistake inside it. It correctly deleted thermal-6\'s pressure regulator, its setpoint schedule and its second buffer, correctly sealed the circuit at a floating 1.0 to 1.75 bar, and correctly noted that battery-7 dissipates 4.0 W at record cruise, which is 8.6 A through 54 mΩ. Then it promoted thermal-6\'s occasional condensate pump to a primary circulation pump that runs always, at 8 W. Eight watts of electricity moving four watts of heat is a coefficient of performance of one half, and over 27.7 hours it is 222 Wh, which is more than two miles. So the pump stops. The loop is a sealed two-phase circuit with 10.4 kPa of gravity head between a receiver at y 0.780 and battery-7\'s pool at 0.118, and a thermosiphon with that head carries several hundred watts unaided; thermal-6 ran on exactly this principle for a whole generation. The pump is retained, unchanged, and its control law is inverted: it runs above about 500 W of pack dissipation, which means charging, preconditioning and a hot park, and it is dark for more than 99 percent of a long drive.\n\nEverything else on this panel is thermal-7\'s and is carried deliberately, including its corrections and its unresolved item, because a variant that quietly restates a partner\'s open question as closed is how ledgers rot. The design load is battery-7\'s measured 15 kW and not the 7.3 that scaling current squared produced, because its limit is confined-channel critical heat flux in a 1.1 mm boiling gap against a fluoroketone capillary length near 0.8 mm and not ohmic heating at all. The liquid feed lands at y 0.118 and not 0.150, because battery-6\'s prose and its build code disagreed by 3 mm and the build code won. The riser is 34 mm at 14.0 m/s and the return 13 mm, and its mid waypoint came inboard 18 mm to |z| 0.330 this generation, because suspension-9\'s front air spring now stands at x 1.426..1.554, y 0.392..0.677, |z| 0.369..0.540 and thermal-7\'s line put four of its vertices inside this tube. That is a Gen 9 partner moving into a carried route rather than a defect in the route, and it is the kind of thing a narrow-track generation produces on the side. And battery-7 still declares about 12 litres and 19 kg of fluoroketone standing in its pool on THIS ledger, which with the transport makes the pack path 22 kg and this module 61 against a binding 50. The 10 kg on this panel is the target and not the truth, for the second generation running, and the three ways out are unchanged: a shallower pool, the fluid mass moving onto battery-7 where the pool physically is, or a mass target that admits what two-phase cooling costs.',
+      how: 'thermal-7 made the right architectural call and then left one watt-hour-shaped mistake inside it. It correctly deleted thermal-6\'s pressure regulator, its setpoint schedule and its second buffer, correctly sealed the circuit at a floating 1.0 to 1.75 bar, and correctly noted that battery-7 dissipates 4.0 W at record cruise, which is 8.6 A through 54 mΩ. Then it promoted thermal-6\'s occasional condensate pump to a primary circulation pump that runs always, at 8 W. Eight watts of electricity moving four watts of heat is a coefficient of performance of one half, and over 27.7 hours it is 222 Wh, which is more than two miles. So the pump stops. The loop is a sealed two-phase circuit with 10.4 kPa of gravity head between a receiver at y 0.780 and battery-7\'s pool at 0.118, and a thermosiphon with that head carries several hundred watts unaided; thermal-6 ran on exactly this principle for a whole generation. The pump is retained, unchanged, and its control law is inverted: it runs above about 500 W of pack dissipation, which means charging, preconditioning and a hot park, and it is dark for more than 99 percent of a long drive.\n\nEverything else on this panel is thermal-7\'s and is carried deliberately, including its corrections and its unresolved item, because a variant that quietly restates a partner\'s open question as closed is how ledgers rot. The design load is battery-7\'s measured 15 kW and not the 7.3 that scaling current squared produced, because its limit is confined-channel critical heat flux in a 1.1 mm boiling gap against a fluoroketone capillary length near 0.8 mm and not ohmic heating at all. The liquid feed lands at y 0.118 and not 0.150, because battery-6\'s prose and its build code disagreed by 3 mm and the build code won. The riser is 34 mm at 14.0 m/s and the return 13 mm, and its mid waypoint came inboard 18 mm to |z| 0.330 this generation, because suspension-9\'s front air spring now stands at x 1.426..1.554, y 0.392..0.677, |z| 0.369..0.540 and thermal-7\'s line put four of its vertices inside this tube. That is a Gen 9 partner moving into a carried route rather than a defect in the route, and it is the kind of thing a narrow-track generation produces on the side. And battery-7 still declares about 12 liters and 19 kg of fluoroketone standing in its pool on THIS ledger, which with the transport makes the pack path 22 kg and this module 61 against a binding 50. The 10 kg on this panel is the target and not the truth, for the second generation running, and the three ways out are unchanged: a shallower pool, the fluid mass moving onto battery-7 where the pool physically is, or a mass target that admits what two-phase cooling costs.',
       why: 'The lesson is about where a range car\'s losses hide. thermal-7 attacked cabin conditioning with three genuinely good ideas and left a continuously running pump in a loop with nothing to do, because the pump was inherited rather than designed and inherited hardware does not get its duty cycle questioned. That is the same failure design/retro-gen8.md found in drivetrain-7\'s halfshafts, wearing a different hat: a carried part that nobody re-derived. Eight watts is 0.18 Wh/mi and about 3 miles, which is a third of what the entire recovery-core deepening returns for six kilograms and a passenger\'s foot room, and it was available for the price of reading a control law.',
       fail: [
         'The pump was also the flow sensor. thermal-7 monitored this loop by flow rather than by level, which is the right instrument for a pumped circuit and no instrument at all for a thermosiphon, so for 99 percent of a drive there is now no measurement that a leak has started. The replacement is a saturation-pressure trend against ambient, which detects a slow loss in days rather than in minutes, and the honest statement is that this saving cost a diagnostic.',
@@ -537,7 +537,7 @@ export const SYSTEM = {
         ['Reported not booked', 'Direct-to-die plate 4 W, hv-4 phase shedding 16 W'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'The pump is the saving and the arithmetic is small and clean. This loop\'s job at cruise is to take autonomy-4\'s 380 W and hv-4\'s converter loss to the coil, and 380 W at a 5 K rise needs 0.018 kg/s while the same 380 W at a 12 K rise needs 0.0076. Hydraulic power in a fixed circuit goes with the cube of flow, so the wet-rotor motor\'s own fixed loss becomes the floor and 20 W becomes 6. Fourteen watts, 0.32 Wh/mi, about 5 miles. The rise is spent rather than saved: the plate runs a 12 K gradient along its own length instead of 5, and the mitigation drawn here is a three-way parallel manifold at the cold plate so that all three of autonomy-4\'s voting lanes see the same inlet temperature. That matters more than it sounds. A triplex system depends on its lanes failing independently, and a serial flow path that puts lane three 12 K above lane one is a common-mode ageing driver dressed as a plumbing detail. The manifold keeps the lanes identical and puts the gradient inside each lane instead of between them, which is a thermal cycling term rather than a voting one.\n\nTwo numbers on this panel are reported and not booked, and the distinction is the point. First, autonomy-4\'s 380 W has a temperature-dependent component: subthreshold leakage in a large SoC roughly doubles every 12 K, and at the junction temperature this loop actually delivers it is already small. Sampled over the sweep the ambient-tracking glycol loop presents about 22 °C at the plate, so at this module\'s 12 K rise the mean coolant along the plate is 28 °C, and with roughly 15 K of plate-to-junction resistance the die sits near 43 °C, where leakage is about 8 W of the 380. A direct-to-die plate would take plate-to-junction to about 4 K and the die to 32 °C, and it is worth about 4 W. It is reported because the cold plate is autonomy-4\'s part on autonomy-4\'s 13.5 kg ledger, and it is worth stating for the opposite reason too: a chilled sub-ambient plate, which was this module\'s first idea, is WORSE. It would hold 16 °C on a leg where the ambient loop already delivers 12, and it is floored anyway by the cabin dew point, which is 15.7 °C at 27 °C and 50 percent relative humidity. Second, hv-4\'s converter runs three interleaved LLC phases at about 9 percent of its 7 kW rating, where fixed losses dominate; shedding two phases is worth roughly 16 W. hv-4 is a Gen 4 module carried unchanged and that is not this module\'s edit.\n\nEverything structural is thermal-7\'s. The rail at y 0.740 on four legs to body-9\'s front casting top face at 0.580, threading the 51 mm rib gaps and clearing hv-4\'s buffer at 0.712, with the outboard leg pair moved 5 mm to |z| 0.480 because the built crash rail turned out to be 1 mm inside the old position. The four-port valve block. The runs aft along the driver flank to the compute stubs at (-0.795, 0.42, -+0.05) and on to hv-4\'s converter at (-1.43, 0.40, 0.247).\n\nThe handover flanges stay at (1.75, 0.50, -0.10) and (1.75, 0.50, -0.20), on the P.driveF face from design/gen4.md, and the REASON they stay has changed, which is the useful part of this paragraph. Two generations of this slot wrote that the straight route from drivetrain-7\'s water stubs was blocked by suspension-4\'s two front crossmembers and its ARB decoupler tube. Swept against suspension-9\'s built mesh, that route now clears by 92.9 mm and 97.8: suspension-9 dropped its forward crossmember from y 0.25 to 0.21 to fix an interference of its own and carried the pivots inboard with the track, and in doing so it opened an interface it was not aiming at. What blocks the hose now is drivetrain-7 itself. Its front housing fills x 1.375..1.525, y 0.280..0.430, |z| 0.105..0.215, and the stubs sit on the face that housing then wraps, so the straight centreline comes to 1.2 mm of it and a jog outboard to |z| 0.25 goes 16.2 mm inside it. A 40 mm hose needs 20 mm and has 1.2. So the plane is held for a third generation, but the finding handed to the integrator is a different and much smaller one: about 30 mm of stub standoff off drivetrain-7\'s own housing wall closes this, and it is that module\'s face to move rather than suspension structure to route around. suspension-9 also narrowed P.driveF from z +/-0.35 to +/-0.31; these flanges sit at |z| 0.10 and 0.20 and honour it without moving.',
+      how: 'The pump is the saving and the arithmetic is small and clean. This loop\'s job at cruise is to take autonomy-4\'s 380 W and hv-4\'s converter loss to the coil, and 380 W at a 5 K rise needs 0.018 kg/s while the same 380 W at a 12 K rise needs 0.0076. Hydraulic power in a fixed circuit goes with the cube of flow, so the wet-rotor motor\'s own fixed loss becomes the floor and 20 W becomes 6. Fourteen watts, 0.32 Wh/mi, about 5 miles. The rise is spent rather than saved: the plate runs a 12 K gradient along its own length instead of 5, and the mitigation drawn here is a three-way parallel manifold at the cold plate so that all three of autonomy-4\'s voting lanes see the same inlet temperature. That matters more than it sounds. A triplex system depends on its lanes failing independently, and a serial flow path that puts lane three 12 K above lane one is a common-mode aging driver dressed as a plumbing detail. The manifold keeps the lanes identical and puts the gradient inside each lane instead of between them, which is a thermal cycling term rather than a voting one.\n\nTwo numbers on this panel are reported and not booked, and the distinction is the point. First, autonomy-4\'s 380 W has a temperature-dependent component: subthreshold leakage in a large SoC roughly doubles every 12 K, and at the junction temperature this loop actually delivers it is already small. Sampled over the sweep the ambient-tracking glycol loop presents about 22 °C at the plate, so at this module\'s 12 K rise the mean coolant along the plate is 28 °C, and with roughly 15 K of plate-to-junction resistance the die sits near 43 °C, where leakage is about 8 W of the 380. A direct-to-die plate would take plate-to-junction to about 4 K and the die to 32 °C, and it is worth about 4 W. It is reported because the cold plate is autonomy-4\'s part on autonomy-4\'s 13.5 kg ledger, and it is worth stating for the opposite reason too: a chilled sub-ambient plate, which was this module\'s first idea, is WORSE. It would hold 16 °C on a leg where the ambient loop already delivers 12, and it is floored anyway by the cabin dew point, which is 15.7 °C at 27 °C and 50 percent relative humidity. Second, hv-4\'s converter runs three interleaved LLC phases at about 9 percent of its 7 kW rating, where fixed losses dominate; shedding two phases is worth roughly 16 W. hv-4 is a Gen 4 module carried unchanged and that is not this module\'s edit.\n\nEverything structural is thermal-7\'s. The rail at y 0.740 on four legs to body-9\'s front casting top face at 0.580, threading the 51 mm rib gaps and clearing hv-4\'s buffer at 0.712, with the outboard leg pair moved 5 mm to |z| 0.480 because the built crash rail turned out to be 1 mm inside the old position. The four-port valve block. The runs aft along the driver flank to the compute stubs at (-0.795, 0.42, -+0.05) and on to hv-4\'s converter at (-1.43, 0.40, 0.247).\n\nThe handover flanges stay at (1.75, 0.50, -0.10) and (1.75, 0.50, -0.20), on the P.driveF face from design/gen4.md, and the REASON they stay has changed, which is the useful part of this paragraph. Two generations of this slot wrote that the straight route from drivetrain-7\'s water stubs was blocked by suspension-4\'s two front crossmembers and its ARB decoupler tube. Swept against suspension-9\'s built mesh, that route now clears by 92.9 mm and 97.8: suspension-9 dropped its forward crossmember from y 0.25 to 0.21 to fix an interference of its own and carried the pivots inboard with the track, and in doing so it opened an interface it was not aiming at. What blocks the hose now is drivetrain-7 itself. Its front housing fills x 1.375..1.525, y 0.280..0.430, |z| 0.105..0.215, and the stubs sit on the face that housing then wraps, so the straight centerline comes to 1.2 mm of it and a jog outboard to |z| 0.25 goes 16.2 mm inside it. A 40 mm hose needs 20 mm and has 1.2. So the plane is held for a third generation, but the finding handed to the integrator is a different and much smaller one: about 30 mm of stub standoff off drivetrain-7\'s own housing wall closes this, and it is that module\'s face to move rather than suspension structure to route around. suspension-9 also narrowed P.driveF from z +/-0.35 to +/-0.31; these flanges sit at |z| 0.10 and 0.20 and honor it without moving.',
       why: 'This loop is where the module\'s central finding is visible as hardware. The largest single thermal load in this car is not the pack, which makes 4 W at cruise, and not the cabin, which needs 70 W of heat on the coldest leg of the reference sweep. It is a computer, at 380 W, every hour, and this circuit is a 6 W pump attached to it. Auxiliary stopped being a thermal problem when thermal-7 took its own share to 135 W, and every watt above that is silicon and low-voltage electronics that this slot can cool but cannot switch off. The right next generation for auxiliary is an autonomy generation, and this panel exists to hand it the number rather than to keep pretending the thermal slot can find it.',
       fail: [
         'Consolidating to one loop still puts autonomy-4\'s compute, hv-4\'s converter and the pack condenser on a single path, so one leak takes all three, and the 12 K rise shrinks the margin between a partial blockage and a throttle event. Flow is monitored rather than level, each load has a thermal fallback, and the topology is a knowing concentration that is worse than thermal-6\'s two-loop split.',
@@ -565,7 +565,7 @@ export const SYSTEM = {
    (2.17, 0.40), 0.9106 at (1.989, |z| 0.258), which is what body-8 published.
    Over the front stack the tightest clearance is 321.6 mm at (2.207, 0.500,
    |z| 0.405). In the frunk bay the tightest is the pack purge pot at y 0.875,
-   35.6 mm under the bonnet at (1.989, z -0.258), which is thermal-7's number
+   35.6 mm under the hood at (1.989, z -0.258), which is thermal-7's number
    on thermal-7's hardware.
 
    Nose plumbing corridor unchanged: fans at |z| 0.135..0.375, body-9's crash
@@ -621,7 +621,7 @@ export const SYSTEM = {
    Firewall zone note, stated rather than hidden: the case, both scrolls and
    the core all sit inside x 0.780..1.000. The only excursion is the two water
    stubs that reach x 1.012, which is thermal-7's interface at thermal-7's
-   coordinates, and the machined pads now drawn round their bases, which stop
+   coordinates, and the machined pads now drawn around their bases, which stop
    at x 1.004 and are therefore inside the excursion rather than a second one. The ventilation wheel grew in WIDTH, 78 to 90 mm, and not in
    diameter, for exactly this reason: a bigger circle would have left the zone
    and the zone is 220 mm.
@@ -644,13 +644,13 @@ export const SYSTEM = {
    single process, because the partners are being edited in parallel and two
    separate runs of the same sweep are not comparable. Where a figure moved,
    both halves of the pair are given:
-     Bonnet.  Zero vertices outside body-9's loft anywhere over x 1.00 to
+     Hood.  Zero vertices outside body-9's loft anywhere over x 1.00 to
        2.375. Tightest vertical clearance 35.6 mm at the pack purge pot
        (1.989, 0.875, -0.258) against a surface at 0.9106; tightest lateral
        221 mm. Sampled with body-9's own halfWidth and surfaceY helpers on its
        own station table, and the sampler reproduces body-8's published 0.849
-       and 0.837 to the millimetre, which is why it is trusted here.
-     Front tyre swept solid.  Zero vertices inside wheels-9's steered front
+       and 0.837 to the millimeter, which is why it is trusted here.
+     Front tire swept solid.  Zero vertices inside wheels-9's steered front
        corner at rest, at the commanded 14 degrees, or at body-9's contained
        18.43. Nearest approach 23.6 mm, the exhaust grille at 2 degrees. The
        envelope was rebuilt from wheels-9's own mesh as a solid of revolution
@@ -680,7 +680,7 @@ export const SYSTEM = {
        plate spigots, the R290 pan legs seated on body-9's casting top face,
        the coil brackets on its casting front face, the ventilation exhaust
        through its aft fairing closeout, the dash nozzle inside interior-6's
-       moulding, and hv-4's own HV spur end. Nothing undeclared survives.
+       molding, and hv-4's own HV spur end. Nothing undeclared survives.
      Visual attachment.  599 of 622 meshes sit within 3 mm of another solid,
        23 further, and NOTHING is more than 15 mm from another surface, swept
        vertex against every other solid in the module. The same sweep over the
@@ -710,7 +710,7 @@ export const SYSTEM = {
        clip in the zone counts three times over, and the ferrules are on hose
        ends that were already there. The test that matters is the sweep
        against drivetrain-9's BUILT front housing, and that reads 27.1 mm
-       before and 27.1 mm after, unchanged to the tenth of a millimetre.
+       before and 27.1 mm after, unchanged to the tenth of a millimeter.
        This is a carried excursion and not a Gen 9 one: those lines have
        crossed that reservation since the zone was written in design/gen4.md. Against drivetrain-7's BUILT front
        housing, which is what actually occupies the reservation, this module
@@ -721,8 +721,8 @@ export const SYSTEM = {
        find it. */
 
 const CX = 2.168;          /* coil core plane x: 2.133..2.203 */
-const GY = 0.3450;         /* glycol row centre: y 0.270..0.420, grown */
-const RY = 0.4625;         /* refrigerant row centre: y 0.440..0.485, shrunk */
+const GY = 0.3450;         /* glycol row center: y 0.270..0.420, grown */
+const RY = 0.4625;         /* refrigerant row center: y 0.440..0.485, shrunk */
 const FX = 2.104;          /* fan plane */
 const FY = 0.376;          /* fan axis height */
 const FZ = 0.255;          /* fan axis |z|, leaving |z| < 0.135 clear */
@@ -797,8 +797,8 @@ function finPack(w, h, d, n, t, mat) {
 
    THE z ARGUMENT IS NOT OPTIONAL DECORATION. The first version of this helper
    took x and y and placed the caps at |z| = len/2 - 0.003, which is only the
-   end of the tank when the tank is centred on z 0. Both air-handler coil
-   headers run z -0.210 to 0.090 about a centre of -0.060, so their four caps
+   end of the tank when the tank is centered on z 0. Both air-handler coil
+   headers run z -0.210 to 0.090 about a center of -0.060, so their four caps
    landed at |z| 0.147: two of them 57 mm inboard of the tank end and wholly
    inside it, at 0.55 percent on the ray test, and two of them 54 mm past the
    far end with nothing within 3 mm. A cap is a feature of an end, so it takes
@@ -824,7 +824,7 @@ function ferrule(r, mat) {
 
 /* A P clip: the band and bolted foot that holds a hose where it crosses
    structure. tan is the hose tangent, foot the direction the bracket runs
-   toward its landing. Both are world vectors; the foot is orthogonalised
+   toward its landing. Both are world vectors; the foot is orthogonalized
    against the tangent so a caller cannot accidentally build a degenerate
    basis, which is the atan2 trap from the brief wearing a different hat. */
 function pclip(r, tan, foot, mat) {
@@ -871,9 +871,9 @@ function hose(pts, r, mat, o = {}) {
 
 /* lib.plate with lightening holes, in the XZ plane like lib.plate and with
    the same slab convention: the material sits between y + t/2 and y + 3t/2,
-   NOT centred. A mounting rail with no holes in it is a billet, and both of
+   NOT centered. A mounting rail with no holes in it is a billet, and both of
    the rails in this module carry four items over a casting with no load path
-   between them. holes are [x, z] centres in the plate's own frame. */
+   between them. holes are [x, z] centers in the plate's own frame. */
 function holedPlate(w, d, t, r, holes, hr, mat) {
   const s = new THREE.Shape();
   const hw = w / 2, hd = d / 2, rr = Math.min(r, hw, hd);
@@ -922,8 +922,8 @@ function sightGlass(r) {
   return g;
 }
 
-/* A motorised valve or damper actuator: a can on a mounting flange with a
-   moulded connector, standing off at 1.15 r so it clears the can: at 0.85 r
+/* A motorized valve or damper actuator: a can on a mounting flange with a
+   molded connector, standing off at 1.15 r so it clears the can: at 0.85 r
    the ray test found it 0 percent exposed, buried in the barrel it was
    supposed to be bolted to. Every valve in this module used to be a bare cube
    with nothing to plug into. Seating face on y = 0. The caller adds the pigtail
@@ -1081,7 +1081,7 @@ export function build() {
   coil.add(at(cb(0.082, 0.012, 0.030, M.castAlu, 0.0025), CX, 0.497, 0));
   /* the charge port a free-cooling machine needs, on the header top face at
      y 0.508 measured off the built cbox rather than guessed. 321 mm of
-     bonnet clearance over this stack, so a 15 mm port is not the tight item */
+     hood clearance over this stack, so a 15 mm port is not the tight item */
   coil.add(at(servicePort(0.0055, M.plasticLt), CX - 0.020, 0.508, 0.230));
   /* the two end plates carry the tube returns, so they get the formed flange
      and the three service screws a fabricated end plate has. THOSE SCREWS ARE
@@ -1189,7 +1189,7 @@ export function build() {
       const pivot = new THREE.Group();
       /* a flat rectangular paddle was the one part of this fan a passer-by
          could tell was a primitive. Five spanwise sections of a six point
-         aerofoil, twisted 0.62 rad at the root to 0.32 at the tip and swept
+         airfoil, twisted 0.62 rad at the root to 0.32 at the tip and swept
          back, closed as a loop: 48 triangles a blade against the box's 12,
          and the swept tip radius measures 0.1083 off the built mesh against
          the shroud throat at 0.1140, so the blade has 5.7 mm of tip
@@ -1278,7 +1278,7 @@ export function build() {
   /* brazed suction and discharge stubs where the two lines actually leave the
      can, and the oil drain plug on the low side of the shell. Both stubs are
      seated on the shell SURFACE, computed from the shell radius at their own
-     z, not at the shell centreline: the first draft put the suction stub and
+     z, not at the shell centerline: the first draft put the suction stub and
      the drain plug 46 and 5 mm inside the can they were meant to leave, which
      is the fastener-into-the-panel failure the brief names. */
   hp.add(at(lib.cyl(0.010, 0.012, M.castAlu, 10), 1.980, 0.756, 0.240));
@@ -1321,7 +1321,7 @@ export function build() {
   hp.add(at(aim(lib.fastener(0.0048, M.castAlu, 'hex'), 0, -0.35, 0.94), 2.052, 0.658, 0.328));
   hp.add(at(servicePort(0.0046, M.plasticLt), 2.052, 0.784, 0.300));
 
-  /* economiser flash vessel, water condenser, chilled evaporator and gallery
+  /* economizer flash vessel, water condenser, chilled evaporator and gallery
      conditioner. All four were a case box with a plate stack sealed inside
      it, which the module's own audit had already listed as meshes standing
      wholly inside another solid. The case is gone: what is left is the two
@@ -1518,7 +1518,7 @@ export function build() {
      18 mm can: the ray test returned 0.00 percent over 1,984 rays, blocked
      788 times by the pump can itself. The sweep that placed these ports
      checked them against the eight Gen 9 partners and not against this
-     module's own neighbours, which is where the one collision was. */
+     module's own neighbors, which is where the one collision was. */
   gly.add(at(plateHX(0.070, 0.080, 0.062, 12, M.steel,
     { portSide: 1, ports: [[1, 1], [1, -1], [-1, -1]] }), 1.958, 0.783, -0.320));
   gly.add(at(cb(0.038, 0.040, 0.038, M.castAlu, 0.0032), 1.958, 0.836, -0.320));
@@ -1673,8 +1673,8 @@ export function build() {
   pk.add(at(cb(0.024, 0.022, 0.026, M.sensor, 0.0022), 2.062, 0.812, -0.387));
   pk.add(at(cb(0.011, 0.012, 0.011, M.plastic, 0.0012), 2.062, 0.827, -0.387));
   /* the pigtail stays under y 0.838. Its first draft peaked at 0.851 out at
-     |z| 0.404, where body-9's bonnet has fallen to 0.871, and that made a
-     2.6 mm wire the tightest thing in the module against the bonnet at
+     |z| 0.404, where body-9's hood has fallen to 0.871, and that made a
+     2.6 mm wire the tightest thing in the module against the hood at
      20.4 mm, tighter than the purge pot this panel publishes. */
   pk.add(wire([
     [2.062, 0.833, -0.387],
@@ -1683,7 +1683,7 @@ export function build() {
     [2.020, 0.836, -0.394],
   ], 0.0026, M.plasticLt));
   /* purge pot. Its cap is the tightest thing in the whole module against
-     body-9's bonnet at 35.6 mm, so nothing was added above y 0.875 and the
+     body-9's hood at 35.6 mm, so nothing was added above y 0.875 and the
      two new legs run DOWN to the rail slab at y 0.745, which is where they
      should have gone in the first place: the pot stood on nothing. */
   pk.add(at(lib.cyl(0.026, 0.055, M.steel, 16), 1.975, 0.830, -0.250));
@@ -1735,7 +1735,7 @@ export function build() {
   /* 13 mm liquid return to battery-7's feed stub at y 0.118. NEITHER END
      carries a ferrule. The lower one lands inside P.battery, for the reason
      given on the riser above. The upper one starts at (2.053, 0.762, -0.387),
-     which is 21.6 mm from the centre of the receiver's own 34 mm end cap
+     which is 21.6 mm from the center of the receiver's own 34 mm end cap
      sphere at (2.065, 0.780, -0.387): a collar there is a collar inside the
      vessel it leaves, and the ray test returned 0.17 percent for it over
      5,952 rays, 3,160 of them stopped by the receiver's end cap. */
@@ -1903,7 +1903,7 @@ export function build() {
 
   /* footwell radiant panels under the toe boards, clear of interior-6's pedal
      set at x 1.103..1.387, z -0.510..-0.358. A radiant panel is a pressing:
-     a formed return flange round the edge and the serpentine bonded to its
+     a formed return flange around the edge and the serpentine bonded to its
      back. The whole assembly is built in the panel's own tilted frame and
      rotated once, so the flange follows the panel rather than the world. */
   for (const rz of [-0.290, 0.290]) {
@@ -1941,20 +1941,20 @@ export function build() {
      screen-base slot nozzle at cruise and the whole cabin on pulldown. ── */
   const ah = lib.part('air-handler', [-0.32, 0.45, 0]);
 
-  /* THE CASE IS NOT A BRICK ANY MORE, and this is the one modelling decision
+  /* THE CASE IS NOT A BRICK ANY MORE, and this is the one modeling decision
      in this pass that needs stating rather than just doing. A 220 by 240 by
      560 solid box is the whole air handler as far as a viewer is concerned:
      the ray test returns 0 percent for everything inside it, which is both
      blowers, both coils, the blend flap and the drain, twenty meshes and two
      thirds of this part's triangles. A real HVAC case is a clamshell anyway,
-     so what is drawn is the rear half of the moulding: five panels, the joint
+     so what is drawn is the rear half of the molding: five panels, the joint
      flange the two halves meet on with its six clip lugs, and the external
      stiffening ribs. The front half is not drawn. That is the convention any
      service manual uses and it is the only way this part shows its work.
      The flange stands at x 0.9860, not flush at the case face, and the reason
      is a CARRIED FINDING this pass turned up rather than caused. Sampled
      densely rather than at its eight corners, the shipped solid case's own
-     +x face at x 1.000 already touches interior-6's dash moulding at 0.0 mm,
+     +x face at x 1.000 already touches interior-6's dash molding at 0.0 mm,
      at (1.000, 0.794, 0.272): the vertex sweeps that passed it only ever had
      corner vertices on a 220 by 560 flat face. interior-6 clears x 0.990 by
      5.5 mm and x 0.985 by 10.5. The case envelope is left exactly where the
@@ -1963,7 +1963,7 @@ export function build() {
      and the contact is reported. */
   ah.add(at(cb(0.220, 0.012, 0.560, M.plastic, 0.0022), 0.890, 0.814, 0.030));
   ah.add(at(cb(0.220, 0.012, 0.560, M.plastic, 0.0022), 0.890, 0.586, 0.030));
-  /* both end panels carry the moulded blower aperture the scroll passes
+  /* both end panels carry the molded blower aperture the scroll passes
      through, drawn as the four bars that surround it. Solid end panels sealed
      both wheels in: 0 percent on the ray test, 336 triangles of squirrel cage
      that nobody could ever see down the inlet eye. */
@@ -1979,7 +1979,7 @@ export function build() {
                                   [0.700, -0.243, 0.226, 0.014], [0.700, 0.303, 0.226, 0.014]]) {
     ah.add(at(cb(0.012, fh, fd, M.plastic, 0.0020), 0.9860, fy, fz));
   }
-  /* the six clip lugs sit ON the flange faces, centred on the flange's own
+  /* the six clip lugs sit ON the flange faces, centered on the flange's own
      y 0.806..0.820 and 0.580..0.594 rather than straddling them. Standing
      3.5 mm proud of the top flange they were 19.25 mm under body-9's cowl
      cross tube, which is the module's tightest item against body structure
@@ -1991,7 +1991,7 @@ export function build() {
   }
   /* The external stiffening ribs stop at x 0.958, not 0.978. body-9's cowl
      cross tube runs the width of the car at x 0.962..1.018, y 0.842..0.898,
-     and it, not the bonnet, is the lowest body structure over this case.
+     and it, not the hood, is the lowest body structure over this case.
      Measured by vertical rays off DENSELY SAMPLED faces rather than off
      vertices, because a 220 by 560 flat face has vertices only at its
      corners: the shipped case cleared that tube by 23.10 mm at
@@ -2040,7 +2040,7 @@ export function build() {
     [0.938, 0.608, 0.130],
   ], 0.0028, M.plasticLt));
 
-  /* transient blower: demist at cruise, recirculated pulldown on demand */
+  /* transient blower: defog at cruise, recirculated pulldown on demand */
   const scrollT = blower(0.062, 0.084, 0.062, 24, M.plasticLt);
   scrollT.position.set(0.888, 0.700, -0.238);
   ah.add(scrollT);
@@ -2096,11 +2096,11 @@ export function build() {
   for (const dz of [-0.100, 0.120]) {
     ah.add(at(cb(0.070, 0.040, 0.120, M.plasticLt, 0.0035), 0.890, 0.840, dz));
   }
-  /* the screen-base slot nozzle the demist argument rests on: a wide thin
+  /* the screen-base slot nozzle the defog argument rests on: a wide thin
      plenum across the cowl top rather than a cabin air-change scheme. The
      slot now has the end closures and the flow-straightening vanes a slot
      jet needs; nothing here grew, because this nozzle is a DECLARED
-     penetration of interior-6's dash moulding and growing it enlarges the
+     penetration of interior-6's dash molding and growing it enlarges the
      aperture a partner has to cut. */
   ah.add(at(cb(0.046, 0.020, 0.520, M.plasticLt, 0.0035), 0.928, 0.866, 0.010));
   ah.add(at(cb(0.014, 0.008, 0.500, M.plastic, 0.0016), 0.946, 0.878, 0.010));
@@ -2150,16 +2150,16 @@ export function build() {
   /* ── ventilation recovery core: 1.86 m2 of counterflow membrane in a
      190 x 200 x 270 mm block, in the last space the firewall has. Bottom face
      y 0.378, 15 mm over hv-4's front HV run at 0.363; top face 0.578, 2 mm
-     under the air handler case. The cowl riser, the motorised bypass and the
+     under the air handler case. The cowl riser, the motorized bypass and the
      fairing-wall exhaust are thermal-7's. NEW: the B-pillar extract pair that
      takes ventilation effectiveness from 0.8 to 0.9. ── */
   const rec = lib.part('recovery-core', [-0.15, 0.10, 0.45]);
 
   /* the core was a sealed 190 by 200 by 270 box with seven membrane sheets
      hidden inside it, which is 1.86 m2 of the module's central argument that
-     nobody can see. It is now the moulded frame a core actually ships in,
+     nobody can see. It is now the molded frame a core actually ships in,
      four corner posts and two end plates, with the pack exposed on all four
-     faces. The block's own y 0.378..0.578 is held to the millimetre: 15 mm
+     faces. The block's own y 0.378..0.578 is held to the millimeter: 15 mm
      over hv-4's front HV run at 0.363 and 2 mm under the air-handler case
      floor at 0.580, both of which this panel publishes. */
   for (const [px, pz] of [[0.808, 0.178], [0.982, 0.178], [0.808, 0.422], [0.982, 0.422]]) {
@@ -2184,7 +2184,7 @@ export function build() {
      core to trend it with. It hangs on the +x posts, in the aperture the
      air-handler clamshell leaves open: on the core's top plate at y 0.5785 it
      was inside the air-handler floor panel at 0.580, which the ray test
-     returned as 0 percent. Two millimetres is not a mounting face. */
+     returned as 0 percent. Two millimeters is not a mounting face. */
   for (const tz of [0.178, 0.422]) {
     rec.add(at(cb(0.014, 0.014, 0.012, M.castAlu, 0.0012), 0.992, 0.430, tz));
   }
@@ -2273,7 +2273,7 @@ export function build() {
     [0.898, 0.618, 0.334],
     [0.890, 0.656, 0.330],
   ], 0.020, M.plasticLt));
-  /* the motorised bypass, promoted from fault position to control device. It
+  /* the motorized bypass, promoted from fault position to control device. It
      is the device the mild and hot legs of the reference sweep depend on, so
      it gets the actuator can and the plug a control device has. The can faces
      -z rather than up, because up from y 0.580 is the air-handler case floor
@@ -2306,7 +2306,7 @@ export function build() {
      its frame 1.25 barD deep and drops the cross bank 0.75 barD behind the
      bars, so a call that passes d 0.026 and nothing else builds a 45.5 mm
      assembly, not a 26 mm one. Left at the default this grille measured
-     |z| 0.7675..0.8130 against the slab's 0.7870..0.8130: the tyre-side face
+     |z| 0.7675..0.8130 against the slab's 0.7870..0.8130: the tire-side face
      was held, but 19.5 mm of cross bank and frame stood inboard of the
      envelope the 23.7 mm was measured against, inside body-9's aft closeout.
      barD 0.0208 makes the frame exactly 26 mm, crossZ -0.0052 puts the cross

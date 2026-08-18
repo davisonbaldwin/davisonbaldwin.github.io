@@ -8,11 +8,11 @@
    surface could not do while it stood still: a deployable Kamm spoiler and
    diffuser flap (both drawn deployed), active front arch louvers, metered
    intake gates, and a sealed twin-tunnel venturi floor, all actuated at
-   48 V from hv-4's zonal bus. Cd 0.130 in the deployed motorway state.
+   48 V from hv-4's zonal bus. Cd 0.130 in the deployed highway state.
 
    Gen 5 preset partners this module reconciles against (design/gen5-apex.md,
    per the retro-gen4/retro-gen5 drift law): hv-4 (48 V zonal actuation),
-   wheels-3 (185/50 R21 tyre faces at |z| 0.9025; rear arch skirt audited
+   wheels-3 (185/50 R21 tire faces at |z| 0.9025; rear arch skirt audited
    against suspension-4's +-3 degree rear-steer sweep), thermal-6 (intake
    gates feed its radiator stack in the unchanged front zone x 2.08..2.26),
    suspension-4 (ride-height hold for the venturi floor), autonomy-4 (flash
@@ -41,6 +41,118 @@ export const SYSTEM = {
   color: 0xbde2f2,
   explode: [0, 1.7, 0],
   blurb: 'Gen 3 made the body one surface; Gen 5 teaches that surface to move. The same loft in thin-ply carbon, a Kamm spoiler and diffuser flap drawn deployed, arch louvers and intake gates that breathe on demand, and a sealed twin-tunnel floor, every actuator on hv-4\'s 48 V zonal bus. Cd 0.130 deployed, 352 kg, and every frontier claim wears its maturity label.',
+  /* THE CLOSURES, and the whole argument is one sentence long: a door that
+     rotates is priced by its own LENGTH, and a door that translates is priced
+     by the CURVATURE of the flank it runs along.
+
+     Both halves are measured on this body, not asserted. Sweep this car's
+     rear door about a conventional vertical hinge at its leading edge and it
+     reaches |z| 1.8497 at 65 degrees, because lateral reach is panel length
+     times the sine of the angle and this panel is 1.020 m long. Slide the
+     same panel aft instead and the only thing it has to clear is how far the
+     flank swells under it as it travels, which on this loft is 12.9 mm,
+     because the tail is falling away from the door rather than rising into
+     it: the beltline half-width runs 0.9400 at x -1.30, 0.8436 at -1.80 and
+     0.6249 at -2.00. The front door's own number is 53.1 mm for the same
+     reason in reverse, and both are an order of magnitude under any angle a
+     swing can be opened to.
+
+     Direction is not a preference either, it is forced twice. The rear door
+     sliding FORWARD needs a 99.7 mm stand-off and lands on the camera pod at
+     x 0.850. The front door sliding forward crosses both arch louver pockets
+     at x 1.135 to 1.755 and stands 587 mm off a fender that has dropped away
+     underneath it. Aft is the only direction this surface allows, and aft is
+     where the space is, because the rear door vacates 1.020 m of flank as it
+     goes and the front door moves into it.
+
+     What the mechanism costs is a rail and a carriage per side and nothing
+     electrical, which is the reason this is the rung that gets it: every
+     other panel on this body is already 48 V actuated off hv-4's zonal bus,
+     the doors already have no handles, and the rocker at x -1.010 to 1.010
+     is 2.02 m of extruded structure whose top face at y 0.4200 is exactly the
+     door's own lower edge line. The one thing to be honest about is that this
+     buys nothing for the passenger's head: the daylight opening over these
+     doors is the bonded canopy band, which is a shear panel and does not
+     move, so no window goes down on this car. */
+  closures: {
+    'door-front': {
+      name: 'Front door',
+      kind: 'door',
+      part: 'doors',
+      mass: 24,
+      seconds: 1.7,
+      seat: 'Carriage on the rocker top face at y 0.4200, x -1.010 to 1.010; upper guide in the beltline rail behind the paint at y 0.880',
+      motion: [
+        { kind: 'slide', axis: [0, 0, 1], dist: 0.115, at: [0, 0.12] },
+        { kind: 'slide', axis: [-1, 0, 0], dist: 0.760, at: [0.12, 1] },
+      ],
+      why: 'A hundred and fifteen millimeters straight out, then 760 aft along the flank, and the first number is not set by the body at all. The surface asks for 53.1 mm, which is the deepest the panel would otherwise be inside the flank it runs over at the far end of the travel, and the same figure has to clear a rear door that has NOT been opened, because a rail that only works when both doors move together needs an interlock and an interlock is a failure mode. What actually sets the stand-off is the tallest thing BOLTED TO the flank, and on this rung that is hv-4\'s charge flap standing at |z| 0.9828 with the port drawn open. 115 mm clears it with the door face at 1.0627 and the same rail carries both leaves. The 760 mm is the aperture itself: this door is the flank between the shutline at x 0.779 and the B-pillar cut at x 0.019, and it parks exactly its own length aft, which puts its leading edge on the B-pillar and leaves the whole front aperture open. What the rung buys is the number the checker prints: the panel never leaves a 2.50 m stall at any point in its travel, where a swing door on this same body is out of the stall before it is a quarter open.',
+      cost: [
+        'A rail and a carriage per side is mass and it is mechanism: this leaf is 24 kg against a swing door\'s 20, and the extra is a hardened rail in the rocker, a three-roller carriage and the aft guide that carries the panel in torsion when it is standing 115 mm outboard with nothing under its far end.',
+        'A hundred and fifteen millimeters of stand-off is 115 mm of open slot along the whole beltline while the door is moving, and it is a wet slot: a sliding door seals on a compression lip that only lands at the last 20 mm of closing, so the door cannot be left half open in rain the way a swing door can.',
+        'The panel is outside the body for the whole travel rather than only at the end, so a curb, a bollard or a neighbor\'s mirror strikes the door face in the flat rather than the door edge in the arc.',
+      ],
+    },
+    'door-rear': {
+      name: 'Rear door',
+      kind: 'door',
+      part: 'doors',
+      mass: 26,
+      seconds: 1.9,
+      seat: 'Same rocker rail, aft carriage; the panel runs out past the rocker end at x -1.010 onto a cantilevered extension in the rear quarter',
+      motion: [
+        { kind: 'slide', axis: [0, 0, 1], dist: 0.115, at: [0, 0.09] },
+        { kind: 'slide', axis: [-1, 0, 0], dist: 1.020, at: [0.09, 1] },
+      ],
+      why: 'The rear door is the cheap one and the tail is why. Sliding it aft over the rear quarter, the deepest it would ever be inside the surface behind it is 12.9 mm, because the flank is tapering away from the panel the whole way: 0.9400 at x -1.30 down to 0.6249 at -2.00. Thirteen millimeters is what the geometry asks for and it is not what the door gets. It gets the same 115 mm the front door gets, and the reason is hv-4: the charge port sits at x -1.92 with its bezel out at |z| 0.8997 and its flap, which this preset draws OPEN, at 0.9828, directly in the slide path. Dimensioning the rail to pass an open charge flap costs 102 mm of stand-off this door does not need and deletes an interlock between two modules, which is the better trade. One rail, one carriage part number, two doors.',
+      cost: [
+        'It parks over the tail taper with up to 489 mm of air behind it, because this body\'s flank stops being a translation surface aft of x -1.30. The door is still inside the silhouette, but the open state reads as a panel standing off the quarter rather than lying on it, and a body that wanted this properly would shape the quarter to receive it.',
+        'The rail has to cantilever past the rocker\'s own end at x -1.010, so the last 1.011 m of travel is carried on an extension bonded into the rear quarter rather than on the extrusion. That is the piece that will set the door\'s sag spec.',
+        'Two doors on one rail means the front leaf can only park where the rear leaf has already left, so the front door cannot open past 60 percent of its travel while the rear door is shut. That is a control interlock inside one module rather than between two, which is the kind this rung will accept.',
+      ],
+    },
+    hood: {
+      name: 'Hood',
+      kind: 'hood',
+      part: 'skin',
+      mass: 9,
+      seconds: 1.3,
+      seat: 'Cowl hinge line at x 1.1380, axis 4.1 mm above the highest node on the panel at y 1.0418',
+      motion: [
+        { kind: 'swing', axis: [0, 0, 1], pivot: [1.1376, 1.0430, 0], deg: 38 },
+      ],
+      why: 'Thirty eight degrees is not a styling number, it is the angle at which the highest point of the open panel is 1.4618 m, which is this car\'s own roof line to within 0.2 mm. A frunk that opens under any ceiling the car itself clears is worth more than a few extra degrees of nothing, and 38 degrees already lifts the nose edge 707 mm clear of an aperture 1.101 m long. The axis sits 4.1 mm ABOVE the crown of the panel, and that is forced rather than chosen: on a rear-hinged panel every point above the axis sweeps BACKWARD as it opens, so an axis anywhere inside the crowned cowl line drives the middle of the shutline into the cowl behind it. Rear hinged is also the only safe direction at speed, because a latch that lets go on this panel is pressed shut by the airflow instead of being torn open across the glass.',
+      cost: [
+        'The panel is 1.5596 m2, the largest single opening on the car, and in 1.1 mm thin-ply carbon that is 2.66 kg of laminate carrying its own struts, latch and seal to a 9 kg leaf. A panel that light needs two gas struts to stay up rather than one, because wind under a big flat lid is a bigger load than its own weight.',
+        'It opens onto a 1,061 L envelope with 475 L free, of which only 93 L is inside the declared P.frunk box. The rest of the free volume is scattered around thermal-6\'s front stack and is not luggage space, it is service access.',
+        'The nose fascia band ahead of the hood does not open with it, so the light band, the lidar windows and the intake gate actuator stay fixed and the aperture stops 100 mm short of the nose.',
+      ],
+    },
+    decklid: {
+      name: 'Decklid, with the spoiler on it',
+      kind: 'decklid',
+      part: 'skin',
+      mass: 34,
+      seconds: 1.5,
+      seat: 'Transverse axis at the x -1.9047 shutline, 3.3 mm above the highest node on the lid at y 1.0467',
+      /* The rear camera sits above the plate recess at x -2.2365, which is
+         inside this lid's own span, so it is mounted ON the lid and swings
+         with it. Drawn fixed, the lid went 6.9 mm through it 8 percent into
+         the travel. */
+      carries: [
+        { part: 'autonomy-4/cameras', box: [-2.30, 0.90, 0.00, -2.18, 1.02, 0.05] },
+      ],
+      motion: [
+        { kind: 'swing', axis: [0, 0, 1], pivot: [-1.9047, 1.0470, 0], deg: -70 },
+      ],
+      why: 'This is the closure that teaches packaging rather than curb space, because it opens entirely inside the car\'s own silhouette: at 70 degrees the highest point of the lid is y 1.3856, which is 76 mm BELOW the roof, and it never passes the tail plane at full travel. A skateboard car can do that and a car with an engine over its rear axle cannot. The axis is again above the panel rather than in it, and the measurement that settles it is worth keeping: put the pivot on the shutline\'s own low corner at y 0.9759, where a drawing would put it, and the crown of the leading edge swings 62.7 mm FORWARD at full travel, down through the fixed deck and into the bonded glass at x -1.870. A straight axis under a crowned panel is a hinge that eats the panel in front of it. The Kamm spoiler travels with the lid because its struts already pass 24.5 mm through this panel: it is bolted to the lid, not through it.',
+      cost: [
+        'Carrying the spoiler makes this a 34 kg leaf, of which 0.88 kg is the laminate and 6 kg is the wing and its two spindle drives. The hinges and struts are sized by the wing, not by the lid, and the 48 V harness to the spoiler has to cross the hinge line in a service loop.',
+        'The lid\'s leading edge is 35 mm behind the glass band\'s bonded rear edge, so the aperture starts at x -1.9047 while interior-6\'s rear bench back stands at -1.2671. 902 L of the rear is free and only 398 L of it is behind this lid.',
+        'The tail edge swings aft before it rises, which is what a front-hinged panel does, so the car needs the clearance behind it that a hatch would not.',
+      ],
+    },
+  },
   parts: {
     ...STRUCT_APEX,
     skin: {
@@ -52,15 +164,15 @@ export const SYSTEM = {
         ['Surface', 'Gen 3 loft carried verbatim: 10 stations, x +2.375 to -2.375'],
         ['Cd ledger', '0.130 deployed, 0.142 all-flush; Gen 3: 0.145'],
         ['Roof band', 'Flat band wraps the cage rails at z +-0.66, Gen 3 law'],
-        ['Mass', '56 kg against Gen 3\'s 64 kg superformed aluminium'],
+        ['Mass', '56 kg against Gen 3\'s 64 kg superformed aluminum'],
         ['Maturity', 'Skin pilot line; the Cd 0.130 total is a pilot line claim'],
       ],
-      how: 'The ten loft stations are carried from Gen 3 without a single coordinate moved, and that is a measurement, not nostalgia: the monoform surface was already pressed against every hard point it owns, the cage rails it wraps with the flat roof band at z +-0.66, the arches, the battery envelope below. Re-lofting it would buy fractions of a count and re-run every clearance audit for nothing, because the drag left on this car does not live in the loft. It lives in the base, the arches, the intake and the floor, and Gen 5 attacks those with devices instead. What changes here is the material. Spread-tow thin-ply carbon, plies in the 20 to 30 g/m2 class, is laid by an automated fibre placement head over the full body side in one program and cured on the same loft mould the superform die was cut from. Thin plies suppress the microcracking that limits ordinary laminates, so the skin runs at 1.1 mm where the AA5083 ran 1.3, and the side of a car becomes an 8 kg lighter part with three times the specific stiffness.\n\nThe carried surface also gets re-audited against the generation it actually ships with, which is the ladder\'s standing law. Gen 3 wrote "flank holds 0.94 past the tyre face at 0.9275" using the Gen 1 tyre width; the Gen 5 preset runs wheels-3\'s 185/50 R21, whose static face sits at |z| 0.9025, and suspension-4\'s rear-steer swings the tread corners through +-3 degrees, reaching |z| 0.921 at the worst point of the arc. The skirted rear arch clears the moving envelope by 19 mm, and that number is now written down where the next generation can check it instead of inheriting the assumption. The 0.130 figure is a configuration, stated honestly: spoiler and flap deployed, louvers trimmed, gates shut, motorway ride height. Parked, everything flush, the same body reads 0.142.\n\nThe skin also stopped pretending about where it opens. A car that cannot reach its frunk or its boot has no bonnet and no decklid, and until now this one had neither drawn: the surface was continuous over both. There is now a real recessed bonnet from x 2.240 to 1.140, four gaps closing it, aft of the fascia band that carries the light band and the lidar windows, forward of the cowl where the glass root starts, and covering the whole of P.frunk and thermal-6\'s front stack beneath it. A decklid opens the painted deck aft of x -1.905, which is 35 mm behind the glass band\'s bonded rear edge so the lid\'s leading edge is a gap on paint rather than a line drawn on a bond. Every one is 5 mm wide and 4 mm deep with two real walls, cut into the master grid the panels are sliced from, so no joint can open a hairline against its neighbour. The four permitted interruptions on the BODY SIDE are still four; these are on the deck.\n\nBoth end faces are closed, and that is a repair rather than a refinement. The nose was a 1.00 by 0.22 m box inside an aperture 0.57 half-width at y 0.53 and 0.66 tall, so 70 mm of open loft showed on each side at the widest point: rastered with axial rays, 5.2 percent of the nose face was the front megacasting and the crash rails seen through the bodywork. The Kamm face was the same mistake in the other direction, a box whose top corners stood 332 mm outside their own outline while the waist stayed 40 mm open. Each face is now a cap fanned from the master grid\'s own edge ring with the loop closed across the bottom, and closing the loop across the bottom was only half of it: lib.loft skins BETWEEN sections, so a cap lofted from its outline to a shrunken copy of that outline keeps a hole the size of the copy, and 5.92 cm2 of the nose still showed the bumper beam while 14.56 cm2 of the Kamm face was a clear line straight through the car. Each cap is now fanned to its own centre as well. The same raster returns 0.0 percent casting, 0.0 percent bumper beam and no ray through either face.',
-      why: 'A surface at its packaging limit has one honest upgrade path: mass. Taking 8 kg out of the largest part on the car pays in every corner and every cycle, and carbon\'s fatigue behaviour under the bonded-skin load case is better than the aluminium it replaces. The pilot line label is carried by two claims at once: nobody has cured a 4.7 m one-shot thin-ply body side at automotive rate, and Cd 0.130 for a five-seat car exists in tunnel programs, not on a certification sheet. What has to become true: the fibre placement cell must hold the loft\'s waviness spec, under 0.15 mm over 300 mm, across the full side in one cure, and the full-scale moving-ground tunnel must confirm the device stack within two counts of the panel-level sums.',
+      how: 'The ten loft stations are carried from Gen 3 without a single coordinate moved, and that is a measurement, not nostalgia: the monoform surface was already pressed against every hard point it owns, the cage rails it wraps with the flat roof band at z +-0.66, the arches, the battery envelope below. Re-lofting it would buy fractions of a count and re-run every clearance audit for nothing, because the drag left on this car does not live in the loft. It lives in the base, the arches, the intake and the floor, and Gen 5 attacks those with devices instead. What changes here is the material. Spread-tow thin-ply carbon, plies in the 20 to 30 g/m2 class, is laid by an automated fiber placement head over the full body side in one program and cured on the same loft mold the superform die was cut from. Thin plies suppress the microcracking that limits ordinary laminates, so the skin runs at 1.1 mm where the AA5083 ran 1.3, and the side of a car becomes an 8 kg lighter part with three times the specific stiffness.\n\nThe carried surface also gets re-audited against the generation it actually ships with, which is the ladder\'s standing law. Gen 3 wrote "flank holds 0.94 past the tire face at 0.9275" using the Gen 1 tire width; the Gen 5 preset runs wheels-3\'s 185/50 R21, whose static face sits at |z| 0.9025, and suspension-4\'s rear-steer swings the tread corners through +-3 degrees, reaching |z| 0.921 at the worst point of the arc. The skirted rear arch clears the moving envelope by 19 mm, and that number is now written down where the next generation can check it instead of inheriting the assumption. The 0.130 figure is a configuration, stated honestly: spoiler and flap deployed, louvers trimmed, gates shut, highway ride height. Parked, everything flush, the same body reads 0.142.\n\nThe skin also stopped pretending about where it opens. A car that cannot reach its frunk or its trunk has no hood and no decklid, and until now this one had neither drawn: the surface was continuous over both. There is now a real recessed hood from x 2.240 to 1.140, four gaps closing it, aft of the fascia band that carries the light band and the lidar windows, forward of the cowl where the glass root starts, and covering the whole of P.frunk and thermal-6\'s front stack beneath it. A decklid opens the painted deck aft of x -1.905, which is 35 mm behind the glass band\'s bonded rear edge so the lid\'s leading edge is a gap on paint rather than a line drawn on a bond. Every one is 5 mm wide and 4 mm deep with two real walls, cut into the master grid the panels are sliced from, so no joint can open a hairline against its neighbor. The four permitted interruptions on the BODY SIDE are still four; these are on the deck.\n\nBoth end faces are closed, and that is a repair rather than a refinement. The nose was a 1.00 by 0.22 m box inside an aperture 0.57 half-width at y 0.53 and 0.66 tall, so 70 mm of open loft showed on each side at the widest point: rastered with axial rays, 5.2 percent of the nose face was the front megacasting and the crash rails seen through the bodywork. The Kamm face was the same mistake in the other direction, a box whose top corners stood 332 mm outside their own outline while the waist stayed 40 mm open. Each face is now a cap fanned from the master grid\'s own edge ring with the loop closed across the bottom, and closing the loop across the bottom was only half of it: lib.loft skins BETWEEN sections, so a cap lofted from its outline to a shrunken copy of that outline keeps a hole the size of the copy, and 5.92 cm2 of the nose still showed the bumper beam while 14.56 cm2 of the Kamm face was a clear line straight through the car. Each cap is now fanned to its own center as well. The same raster returns 0.0 percent casting, 0.0 percent bumper beam and no ray through either face.',
+      why: 'A surface at its packaging limit has one honest upgrade path: mass. Taking 8 kg out of the largest part on the car pays in every corner and every cycle, and carbon\'s fatigue behavior under the bonded-skin load case is better than the aluminum it replaces. The pilot line label is carried by two claims at once: nobody has cured a 4.7 m one-shot thin-ply body side at automotive rate, and Cd 0.130 for a five-seat car exists in tunnel programs, not on a certification sheet. What has to become true: the fiber placement cell must hold the loft\'s waviness spec, under 0.15 mm over 300 mm, across the full side in one cure, and the full-scale moving-ground tunnel must confirm the device stack within two counts of the panel-level sums.',
       fail: [
-        'Thin-ply carbon takes barely visible impact damage: hail or a car-park knock can delaminate plies under paint that looks perfect, so the service schedule carries ultrasound spot checks, the same discipline wheels-3 applies to its barrels.',
+        'Thin-ply carbon takes barely visible impact damage: hail or a parking-garage knock can delaminate plies under paint that looks perfect, so the service schedule carries ultrasound spot checks, the same discipline wheels-3 applies to its barrels.',
         'The repair quantum is carried from Gen 3 and gets worse in carbon: a strike that yields the skin means a bonded scarf repair cured in place, hours of tooling against a highlight line that runs 4.75 m without a break.',
-        'Carbon is an RF shield, so the antennas that lived under Gen 3\'s aluminium moved behind the glass and the light band windows, and a bonded copper grounding mesh rides in the layup; a repair that skips re-bonding the mesh leaves a panel that floats electrically and a radio that fades.',
+        'Carbon is an RF shield, so the antennas that lived under Gen 3\'s aluminum moved behind the glass and the light band windows, and a bonded copper grounding mesh rides in the layup; a repair that skips re-bonding the mesh leaves a panel that floats electrically and a radio that fades.',
       ],
       explode: [0, 0.62, 0],
     },
@@ -76,10 +188,10 @@ export const SYSTEM = {
         ['Mass', '34 kg against Gen 3\'s 38'],
         ['Maturity', 'Production practice; thin glass and EC film both shipped'],
       ],
-      how: 'The band is cut from the same ten loft stations as the skin, the Gen 3 argument unchanged: the material switches at the cowl but the section never notices. The mass comes out of the plies. Ion-exchange strengthening drives the glass surface into compression, so a 1.1 mm outer ply resists the same stone strike as Gen 3\'s 2.1 mm annealed soda-lime, and the inner ply thins to 0.7 mm; four kilograms leave the highest-mounted panel on the car, which is worth more than four anywhere else, because roll inertia and centre of gravity both price mass by its height.\n\nThe interlayer stops being passive. An electrochromic film replaces the fixed IR stack and runs the band anywhere from 20 percent transmittance down to 1, in zones, in seconds. That turns the roof into a thermal actuator with a name attached: thermal-6 owns the setpoint, darkening the canopy during a hot-soak precondition so the heat pump starts against a smaller solar load, and clearing it on a grey motorway. The 11 m structural bond carries over with the CTE bill Gen 3 disclosed, slightly relieved because carbon\'s expansion sits closer to glass than aluminium\'s did: the bead now absorbs about a third less relative motion per thermal cycle.',
+      how: 'The band is cut from the same ten loft stations as the skin, the Gen 3 argument unchanged: the material switches at the cowl but the section never notices. The mass comes out of the plies. Ion-exchange strengthening drives the glass surface into compression, so a 1.1 mm outer ply resists the same stone strike as Gen 3\'s 2.1 mm annealed soda-lime, and the inner ply thins to 0.7 mm; four kilograms leave the highest-mounted panel on the car, which is worth more than four anywhere else, because roll inertia and center of gravity both price mass by its height.\n\nThe interlayer stops being passive. An electrochromic film replaces the fixed IR stack and runs the band anywhere from 20 percent transmittance down to 1, in zones, in seconds. That turns the roof into a thermal actuator with a name attached: thermal-6 owns the setpoint, darkening the canopy during a hot-soak precondition so the heat pump starts against a smaller solar load, and clearing it on a gray highway. The 11 m structural bond carries over with the CTE bill Gen 3 disclosed, slightly relieved because carbon\'s expansion sits closer to glass than aluminum\'s did: the bead now absorbs about a third less relative motion per thermal cycle.',
       why: 'Glass goes where eyes need it, carried from two generations back, and the apex version simply makes every gram of it work twice: structural shear panel, acoustic barrier, and now a controllable solar admittance that the cabin\'s energy budget can schedule. Chemically strengthened automotive laminates and electrochromic roofs are both in series production today, so this is the rare Gen 5 part that is pure production practice.',
       fail: [
-        'One deep chip still condemns the band, carried from Gen 3 unimproved, and the replacement must re-index to the loft within half a millimetre or the joint becomes the step this body exists to delete.',
+        'One deep chip still condemns the band, carried from Gen 3 unimproved, and the replacement must re-index to the loft within half a millimeter or the joint becomes the step this body exists to delete.',
         'The EC film fails clear by design, sight over shade, so a failed zone costs solar load, not vision; the honest symptom is a bright stripe on a dark roof and a heat pump working harder than the forecast said.',
         'Thinner plies flex more between bond lines: a pressure-washer lance held close can oil-can the crown audibly, alarming and harmless, and the manual says so.',
       ],
@@ -98,11 +210,11 @@ export const SYSTEM = {
         ['Mass', '38 kg for four (Gen 3: 41, Gen 1: 82)'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'The architecture is Gen 3\'s, kept whole, and the geometry has finally caught up with it. Each skin IS the master loft surface between two shutlines now, sliced from the same resampled grid as the body around it, where it used to be a 13 mm box standing 26 mm proud of the flank it was meant to be flush with: 246 of the old part\'s 288 vertices were outside the loft. The three cuts a side are placed off the cage rather than off prose. The front one is at x 0.780, 28 mm behind the A-pillar base node\'s own aft face at 0.808, because a door leading edge that hinges on that pillar cannot start ahead of it and the old skins started 272 mm ahead of it, across the front arch. The middle cut is the B-pillar centreline at x 0.020 exactly. The rear one is at x -1.000, ten millimetres forward of the rocker\'s rear end and 92 mm forward of the rear tyre\'s leading edge at -1.0917, so the aperture stops where the sill it sits on stops and 271 mm of fixed quarter covers interior-6\'s rear seat back. Each cut is 5.00 mm lip to lip and 4.00 mm deep, measured off the built mesh, and each door carries the far wall of the joint ahead of it and the near lip, wall and floor of the joint behind it, so the channel between two panels is closed and reads as two lit walls and a dark floor. Hinges are adjusted against the casting datum until a swept light line crosses all four doors without a kink. The skins follow the body into thin-ply carbon and give back three kilograms, and the frameless glass follows the canopy into chemically strengthened plies. What Gen 5 adds is names on the wires. Gen 3\'s e-latches drew from an unnamed supply; here the capacitive strips and latches ride hv-4\'s corner zonal controllers, forty centimetres of 48 V drop to the nearest box, each latch a fused, telemetered channel that reports its actuation current signature to the fleet the way every eFuse circuit does.\n\nThe camera pods are carried on their 90 mm stalks, still worth about 0.008 of Cd against glass mirrors, and they now serve two masters: the driver\'s displays and autonomy-4\'s consolidated camera set, which indexes the pod lenses into its surround model. That makes a pod a sensor mount with an optical spec, not a styling item; its stalk stiffness is toleranced so road vibration stays inside the stabilisation budget of the perception stack.',
-      why: 'Doors are where the monoform admits people exist, and the apex body keeps the Gen 3 settlement: spend the tolerance budget on flushness, let the gap be what the seals need, and hold the only four joints on the body side to a quarter millimetre. Everything else is inheritance done properly: power from the partner that owns power, vision to the partner that owns vision.',
+      how: 'The architecture is Gen 3\'s, kept whole, and the geometry has finally caught up with it. Each skin IS the master loft surface between two shutlines now, sliced from the same resampled grid as the body around it, where it used to be a 13 mm box standing 26 mm proud of the flank it was meant to be flush with: 246 of the old part\'s 288 vertices were outside the loft. The three cuts a side are placed off the cage rather than off prose. The front one is at x 0.780, 28 mm behind the A-pillar base node\'s own aft face at 0.808, because a door leading edge that hinges on that pillar cannot start ahead of it and the old skins started 272 mm ahead of it, across the front arch. The middle cut is the B-pillar centerline at x 0.020 exactly. The rear one is at x -1.000, ten millimeters forward of the rocker\'s rear end and 92 mm forward of the rear tire\'s leading edge at -1.0917, so the aperture stops where the sill it sits on stops and 271 mm of fixed quarter covers interior-6\'s rear seat back. Each cut is 5.00 mm lip to lip and 4.00 mm deep, measured off the built mesh, and each door carries the far wall of the joint ahead of it and the near lip, wall and floor of the joint behind it, so the channel between two panels is closed and reads as two lit walls and a dark floor. Hinges are adjusted against the casting datum until a swept light line crosses all four doors without a kink. The skins follow the body into thin-ply carbon and give back three kilograms, and the frameless glass follows the canopy into chemically strengthened plies. What Gen 5 adds is names on the wires. Gen 3\'s e-latches drew from an unnamed supply; here the capacitive strips and latches ride hv-4\'s corner zonal controllers, forty centimeters of 48 V drop to the nearest box, each latch a fused, telemetered channel that reports its actuation current signature to the fleet the way every eFuse circuit does.\n\nThe camera pods are carried on their 90 mm stalks, still worth about 0.008 of Cd against glass mirrors, and they now serve two masters: the driver\'s displays and autonomy-4\'s consolidated camera set, which indexes the pod lenses into its surround model. That makes a pod a sensor mount with an optical spec, not a styling item; its stalk stiffness is toleranced so road vibration stays inside the stabilization budget of the perception stack.',
+      why: 'Doors are where the monoform admits people exist, and the apex body keeps the Gen 3 settlement: spend the tolerance budget on flushness, let the gap be what the seals need, and hold the only four joints on the body side to a quarter millimeter. Everything else is inheritance done properly: power from the partner that owns power, vision to the partner that owns vision.',
       fail: [
         'E-latches keep their legally required mechanical release, exercised at every service because nobody touches it until the day it matters, carried word for word from Gen 3.',
-        'A kerbed camera pod is now a perception event: autonomy-4 flags the degraded sector and widens its margins until the pod is re-indexed, so a cosmetic knock books a calibration, not just a part.',
+        'A curbed camera pod is now a perception event: autonomy-4 flags the degraded sector and widens its margins until the pod is re-indexed, so a cosmetic knock books a calibration, not just a part.',
         'Seal compression set still returns as a whistle at exactly the speed you drive daily; EPDM chemistry has ignored three design briefs in a row.',
       ],
       explode: [0.08, 0, 0.85],
@@ -119,7 +231,7 @@ export const SYSTEM = {
         ['Placement', 'The only two flat faces on the car, both in dead air'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'The Gen 3 logic carries: the loft is truncated by exactly two flat faces, and each face is closed by a light band living in air the flow has already abandoned, the stagnation region at the nose and the wake behind the Kamm face. The matrix optics and the rear guide are unchanged because their numbers never needed to move: 84 pixels a side carving oncoming traffic out of the high beam through a 50 ms camera loop, and a brake signal at full output in under 10 ms, seven metres of warning at motorway speed.\n\nThe front band earns its Gen 5 line by being shared real estate. autonomy-4\'s solid-state flash lidar pair sits behind the same conformal window, one puck toed out behind each end of the band at z +-0.30, exactly where the Gen 4 module mounted them; the band\'s heater film keeps the shared window clear for matrix and lidar alike, and the wash nozzle schedule is owned by the perception stack, not the lighting controller, because a dirty window is a sensor fault before it is a styling fault. At the tail, the deployed Kamm spoiler sits above and ahead of the face, and the band\'s photometry was certified with the blade at every position: the regulated angles of visibility clear the deployed blade by design, not by luck.',
+      how: 'The Gen 3 logic carries: the loft is truncated by exactly two flat faces, and each face is closed by a light band living in air the flow has already abandoned, the stagnation region at the nose and the wake behind the Kamm face. The matrix optics and the rear guide are unchanged because their numbers never needed to move: 84 pixels a side carving oncoming traffic out of the high beam through a 50 ms camera loop, and a brake signal at full output in under 10 ms, seven meters of warning at highway speed.\n\nThe front band earns its Gen 5 line by being shared real estate. autonomy-4\'s solid-state flash lidar pair sits behind the same conformal window, one puck toed out behind each end of the band at z +-0.30, exactly where the Gen 4 module mounted them; the band\'s heater film keeps the shared window clear for matrix and lidar alike, and the wash nozzle schedule is owned by the perception stack, not the lighting controller, because a dirty window is a sensor fault before it is a styling fault. At the tail, the deployed Kamm spoiler sits above and ahead of the face, and the band\'s photometry was certified with the blade at every position: the regulated angles of visibility clear the deployed blade by design, not by luck.',
       why: 'A monoform still leaves nowhere else for light to live, and now nowhere better for a lidar either: the front face is the one flat, forward, washable, heated surface on the car, in dead air where a window costs no drag. Two systems sharing one aperture is the cleanest integration on the body.',
       fail: [
         'One part per face, carried: a parking tap costs the whole band, and now possibly a lidar recalibration with it.',
@@ -140,12 +252,12 @@ export const SYSTEM = {
         ['Fail position', 'Spring to flush; law beats drag, carried'],
         ['Maturity', 'Production practice: multi-position wings have shipped for decades'],
       ],
-      how: 'The Kamm argument is two generations old: the wake behaves as if the phantom tail were present, and everything you can do to pull the separation edge inboard shrinks the base area the pressure deficit acts on. Gen 3 bought that with a 12 degree deck flap. The apex blade does the same job with authority: raised 78 mm on its struts it re-cambers the last 200 mm of the upper surface, drives the upper separation line down, and takes about 6 percent out of the base area, worth around 4 counts at motorway speed. Four counts against the six Gen 3 claimed is the baseline moving, not the blade losing: the sealed floor and the deployed diffuser have already shrunk and lowered the wake this blade trims, so each percent of base area buys less than it did when the deck flap fought the tail alone. Because it moves continuously it also becomes a trim device, balancing the rear axle against the venturi floor\'s suction so the pitch attitude suspension-4 holds stays inside the floor\'s tuned window; tail and floor are one control loop, not two devices.\n\nThe span is 1.16 m and it used to be 1.30, and that is a drawing correction rather than a design change. At the blade station the deck shoulder is 0.594 half-width, so 1.30 m of blade hung 214 mm off each side of the car it was supposed to be trimming: a wing wider than the tail it sits on does not re-camber the tail, it just makes tip vortices. The blade now stops 14 mm inside the shoulder line, and both struts are placed through the loft\'s own inverse rather than at a nominal height, so they stand on the deck instead of near it.\n\nThe actuation is named, per the ladder\'s law: two 48 V spindle drives fed from hv-4\'s rear corner zonal controllers on ordinary fused channels, not the by-wire feed pair, because aero is deliberately not safety-critical: a spoiler that fails costs counts, never control. The stow logic mirrors Gen 3\'s flap: below roughly 80 km/h the blade lies flush, restoring the certified pedestrian geometry and the parked silhouette. The one new verb is braking. On a hard brake-by-wire demand from wheels-3\'s master unit the blade drives to full-up in half a second as an airbrake, adding drag and rear downforce exactly when the friction brakes and the regen map want both; the same trick Veyron-class cars certified twenty years ago, done here at 48 V.',
-      why: 'A fixed truncation pays average-case drag every hour; a blade with travel buys the best case at speed, the legal case in town, and a free contribution to the one manoeuvre where drag is suddenly an asset. The mechanism is production practice down to the spindle drives, so the maturity bill for the whole tail lands on the Cd total, not on this part.',
+      how: 'The Kamm argument is two generations old: the wake behaves as if the phantom tail were present, and everything you can do to pull the separation edge inboard shrinks the base area the pressure deficit acts on. Gen 3 bought that with a 12 degree deck flap. The apex blade does the same job with authority: raised 78 mm on its struts it re-cambers the last 200 mm of the upper surface, drives the upper separation line down, and takes about 6 percent out of the base area, worth around 4 counts at highway speed. Four counts against the six Gen 3 claimed is the baseline moving, not the blade losing: the sealed floor and the deployed diffuser have already shrunk and lowered the wake this blade trims, so each percent of base area buys less than it did when the deck flap fought the tail alone. Because it moves continuously it also becomes a trim device, balancing the rear axle against the venturi floor\'s suction so the pitch attitude suspension-4 holds stays inside the floor\'s tuned window; tail and floor are one control loop, not two devices.\n\nThe span is 1.16 m and it used to be 1.30, and that is a drawing correction rather than a design change. At the blade station the deck shoulder is 0.594 half-width, so 1.30 m of blade hung 214 mm off each side of the car it was supposed to be trimming: a wing wider than the tail it sits on does not re-camber the tail, it just makes tip vortices. The blade now stops 14 mm inside the shoulder line, and both struts are placed through the loft\'s own inverse rather than at a nominal height, so they stand on the deck instead of near it.\n\nThe actuation is named, per the ladder\'s law: two 48 V spindle drives fed from hv-4\'s rear corner zonal controllers on ordinary fused channels, not the by-wire feed pair, because aero is deliberately not safety-critical: a spoiler that fails costs counts, never control. The stow logic mirrors Gen 3\'s flap: below roughly 80 km/h the blade lies flush, restoring the certified pedestrian geometry and the parked silhouette. The one new verb is braking. On a hard brake-by-wire demand from wheels-3\'s master unit the blade drives to full-up in half a second as an airbrake, adding drag and rear downforce exactly when the friction brakes and the regen map want both; the same trick Veyron-class cars certified twenty years ago, done here at 48 V.',
+      why: 'A fixed truncation pays average-case drag every hour; a blade with travel buys the best case at speed, the legal case in town, and a free contribution to the one maneuver where drag is suddenly an asset. The mechanism is production practice down to the spindle drives, so the maturity bill for the whole tail lands on the Cd total, not on this part.',
       fail: [
         'Ice can lock the blade flush; the cold-start sweep detects the torque spike, leaves it stowed for the day, and the range estimate explains the missing counts, the habit carried from Gen 2\'s shutter bank.',
         'Stuck deployed is the bad direction: an uncertified geometry below 80 km/h, so a second, independent spring release drops the blade, and if both fail the car caps speed and says why.',
-        'A million deploy cycles work the strut pivots; wear arrives as a millimetre of blade lash the self-test measures, booked before the motorway can flutter it.',
+        'A million deploy cycles work the strut pivots; wear arrives as a millimeter of blade lash the self-test measures, booked before the highway can flutter it.',
       ],
       explode: [-0.9, 0.55, 0],
     },
@@ -155,24 +267,24 @@ export const SYSTEM = {
       mass: 5,
       specs: [
         ['Ramp', '0.56 m, hinged at x -1.78; 13 to 17.5 degrees, drawn deployed'],
-        ['Span', '1.26 m; 87 mm clear of wheels-3\'s rear tyres'],
+        ['Span', '1.26 m; 87 mm clear of wheels-3\'s rear tires'],
         ['Worth', '~5 counts with the sealed floor; rear axle zero-lift trim'],
         ['Actuation', 'Two 48 V drives on hv-4\'s rear zonal channels'],
         ['Fail position', 'Spring to 13 degrees, the passive-safe angle'],
         ['Maturity', 'Production practice: active diffuser flaps shipped in limited series'],
       ],
-      how: 'Gen 2\'s diffuser content named the cliff: a fixed ramp lives two degrees from stall, so it ships at 13 and leaves recovery on the table. The apex flap hinges the whole ramp at x -1.78, clear of the rear drive zone, and runs it at 17.5 degrees under closed-loop control, drawn here in that deployed state. Steeper expansion means more pressure recovery, more counts, and more rear downforce, and it is only tenable because the flap can retreat: pressure taps along the ramp and suspension-4\'s ride-height signal feed a controller that trims the angle back the moment the expansion approaches separation, in yaw, in crosswind, or over a crest. A fixed ramp buys the worst case; a controlled one sells it back.\n\nThe geometry respects every rear contract on the ladder. The span stops at |z| 0.63, which clears wheels-3\'s 185-section tyre faces at 0.7175 by 87 mm and never approaches the in-wheel annulus at r 0.155 to 0.235, |z| 0.72 to 0.80, which belongs to the drivetrain and is not touched by this or any body part. Four fence vanes keep the widened expansion two-dimensional, carried physics from Gen 2. The two 48 V drives sit at the hinge ends on hv-4\'s rear zonal controllers, ordinary fused channels, a few amps against a spring that holds the ramp at 13 degrees whenever power or control is in doubt: at 13 the diffuser cannot stall, it merely earns less.',
-      why: 'The underbody exhaust is the last big account on the drag ledger, and its optimum angle is a moving target that depends on speed, height and yaw. Fixing the ramp meant buying the safest angle forever. Actuating it converts margin into recovery on the 90 percent of motorway time when conditions are benign, and gives the margin back automatically when they are not: the definition of grown-up active aero.',
+      how: 'Gen 2\'s diffuser content named the cliff: a fixed ramp lives two degrees from stall, so it ships at 13 and leaves recovery on the table. The apex flap hinges the whole ramp at x -1.78, clear of the rear drive zone, and runs it at 17.5 degrees under closed-loop control, drawn here in that deployed state. Steeper expansion means more pressure recovery, more counts, and more rear downforce, and it is only tenable because the flap can retreat: pressure taps along the ramp and suspension-4\'s ride-height signal feed a controller that trims the angle back the moment the expansion approaches separation, in yaw, in crosswind, or over a crest. A fixed ramp buys the worst case; a controlled one sells it back.\n\nThe geometry respects every rear contract on the ladder. The span stops at |z| 0.63, which clears wheels-3\'s 185-section tire faces at 0.7175 by 87 mm and never approaches the in-wheel annulus at r 0.155 to 0.235, |z| 0.72 to 0.80, which belongs to the drivetrain and is not touched by this or any body part. Four fence vanes keep the widened expansion two-dimensional, carried physics from Gen 2. The two 48 V drives sit at the hinge ends on hv-4\'s rear zonal controllers, ordinary fused channels, a few amps against a spring that holds the ramp at 13 degrees whenever power or control is in doubt: at 13 the diffuser cannot stall, it merely earns less.',
+      why: 'The underbody exhaust is the last big account on the drag ledger, and its optimum angle is a moving target that depends on speed, height and yaw. Fixing the ramp meant buying the safest angle forever. Actuating it converts margin into recovery on the 90 percent of highway time when conditions are benign, and gives the margin back automatically when they are not: the definition of grown-up active aero.',
       fail: [
         'An iced or mud-blinded pressure tap forfeits the steep regime: control falls back to 13 degrees and the range estimate quietly loses the difference, honest degradation carried from the Gen 3 aero playbook.',
         'The tunnels feed the ramp everything the road throws under the car; the vanes take the gravel, and a bent vane announces itself as a one-sided stall the taps can see.',
-        'Deep snow packs the expansion and the diffuser becomes a plough; the flap is rated for the load and the controller parks it at 13, but slush remains beyond the drag model, carried from Gen 3 unimproved.',
+        'Deep snow packs the expansion and the diffuser becomes a plow; the flap is rated for the load and the controller parks it at 13, but slush remains beyond the drag model, carried from Gen 3 unimproved.',
       ],
       explode: [-1.0, -0.4, 0],
     },
     'arch-louvers': {
       name: 'Active arch louvers',
-      tagline: 'Gen 3 covered the crescents the tyre cannot reach; Gen 5 gives that cover a hinge, a brake-temperature model, and at last a pocket to live in.',
+      tagline: 'Gen 3 covered the crescents the tire cannot reach; Gen 5 gives that cover a hinge, a brake-temperature model, and at last a pocket to live in.',
       mass: 3,
       count: 2,
       specs: [
@@ -183,8 +295,8 @@ export const SYSTEM = {
         ['Fail position', 'Spring open, venting the arch'],
         ['Maturity', 'Pilot line at the arch; the shutter mechanism is production practice'],
       ],
-      how: 'The arch logic is Gen 3\'s and it carries: a rotating wheel in an open arch is an air pump with no purpose, and partially sealing the opening traps the pumping pressure unless something bleeds it. Gen 3 bled it through three static louvres, an average-case setting paid at every speed. Gen 5 pivots the blades. Shut, the banks seal to the loft line and the arch sheds its side-spill cleanly; open, they dump arch pressure and admit cooling flow on demand. The demand signal is real: the Gen 5 front corner carries friction discs and calipers, and a mountain descent or a towing-grade repeated stop needs arch airflow the cruise condition never does, so a brake-temperature model opens the blades exactly when the rotors ask.\n\nWHERE THE BANK LIVES IS THE PART THIS GENERATION HAD TO CORRECT, and the correction is geometry rather than argument. Gen 3 spoke of covering the crescents of arch opening that the steered tyre cannot reach, and this module drew seven blades a side to do it. Swept vertex by vertex against the body surface, 414 of the bank\'s 432 vertices stood OUTSIDE the bodywork, the worst by 151.8 mm, and 180 of them hung below the arch line entirely: the bank was floating in the air beside the front tyre and touching nothing. It is not a placement that could be nudged back, because there is no band down there to nudge it into. Sweeping wheels-6\'s built front corner about the steering axis through (1.45, 0.81) puts the tread at |z| 0.9584 at 10 degrees of lock, 1.0108 at 20 and 1.0593 at 30, against a flank that is 0.905 wide: at any usable lock the tyre is outside the car, which is why no production front arch is ever closed and why body-9 filed a defect against body-8 for a front closeout the steered tyre entered at 3.1 degrees.\n\nWhat the sweep cannot do is rise. Rotation about a vertical axis moves nothing in y, and the tyre\'s own crown is 0.713, so the flank above the arch line is the one band a front arch device can occupy and be certain of never being reached. The banks are now cut INTO that flank: two pockets a side, both 30 mm deep and both centred in their own bay so neither mouth sits on the front axle station where the flow accelerates hardest. Each one is cut at a fixed fraction of the flank rather than at a fixed height, so it tapers with the fender it is in: swept lip to lip on the built mesh the aft pocket runs 137 mm at x 1.135 down to 54 mm at x 1.375, and the forward one 83 mm at x 1.755 down to 48 mm at x 1.515. The blades follow, 78 mm at the wide end of the aft bank to 40 mm at its narrow end. Measured in three dimensions against the swept solid the nearest hardware is 50 mm clear, and the arch line itself is tighter than that at 5 mm over the static tyre, which is a property of the carried Gen 3 loft and not of this bank. Each blade stands proud of a cassette frame that lies on the pocket floor, and the frames are tilted onto the channel\'s own line and seated along the surface normal, because the flank leans in two axes and a frame placed as though the floor were a plane buries one corner and floats the other.\n\nEach bank runs one 48 V rotary actuator from hv-4\'s front zonal controllers, tens of watts on an ordinary fused channel, and position truth comes free from the eFuse telemetry: the actuation current signature is the sensor, the same fleet-learning trick hv-4 runs on every circuit. The fail direction is chosen by physics, not convenience: blades spring open, because a sealed arch that cannot vent traps the pumping pressure the opening used to spill, and trapped arch pressure feeds front lift, the one thing a 130 km/h front axle must never be surprised by. The mechanism is the grille shutter bank\'s, relocated; what earns the pilot line label is the address, and what has to become true is sealing and icing endurance in the wheel\'s own spray, plus a frangible blade certified against the once-a-decade contact nobody plans.',
-      why: 'An arch is an air pump whose duty varies a hundred to one between a summer cruise and an alpine descent. Fixed louvres priced the average; actuated blades buy both ends of the range for 30 watts and half a kilogram per corner, and they finally let the front arches close the gap to the skirted rears that the monoform has enjoyed since Gen 3.',
+      how: 'The arch logic is Gen 3\'s and it carries: a rotating wheel in an open arch is an air pump with no purpose, and partially sealing the opening traps the pumping pressure unless something bleeds it. Gen 3 bled it through three static louvers, an average-case setting paid at every speed. Gen 5 pivots the blades. Shut, the banks seal to the loft line and the arch sheds its side-spill cleanly; open, they dump arch pressure and admit cooling flow on demand. The demand signal is real: the Gen 5 front corner carries friction discs and calipers, and a mountain descent or a towing-grade repeated stop needs arch airflow the cruise condition never does, so a brake-temperature model opens the blades exactly when the rotors ask.\n\nWHERE THE BANK LIVES IS THE PART THIS GENERATION HAD TO CORRECT, and the correction is geometry rather than argument. Gen 3 spoke of covering the crescents of arch opening that the steered tire cannot reach, and this module drew seven blades a side to do it. Swept vertex by vertex against the body surface, 414 of the bank\'s 432 vertices stood OUTSIDE the bodywork, the worst by 151.8 mm, and 180 of them hung below the arch line entirely: the bank was floating in the air beside the front tire and touching nothing. It is not a placement that could be nudged back, because there is no band down there to nudge it into. Sweeping wheels-6\'s built front corner about the steering axis through (1.45, 0.81) puts the tread at |z| 0.9584 at 10 degrees of lock, 1.0108 at 20 and 1.0593 at 30, against a flank that is 0.905 wide: at any usable lock the tire is outside the car, which is why no production front arch is ever closed and why body-9 filed a defect against body-8 for a front closeout the steered tire entered at 3.1 degrees.\n\nWhat the sweep cannot do is rise. Rotation about a vertical axis moves nothing in y, and the tire\'s own crown is 0.713, so the flank above the arch line is the one band a front arch device can occupy and be certain of never being reached. The banks are now cut INTO that flank: two pockets a side, both 30 mm deep and both centered in their own bay so neither mouth sits on the front axle station where the flow accelerates hardest. Each one is cut at a fixed fraction of the flank rather than at a fixed height, so it tapers with the fender it is in: swept lip to lip on the built mesh the aft pocket runs 137 mm at x 1.135 down to 54 mm at x 1.375, and the forward one 83 mm at x 1.755 down to 48 mm at x 1.515. The blades follow, 78 mm at the wide end of the aft bank to 40 mm at its narrow end. Measured in three dimensions against the swept solid the nearest hardware is 50 mm clear, and the arch line itself is tighter than that at 5 mm over the static tire, which is a property of the carried Gen 3 loft and not of this bank. Each blade stands proud of a cassette frame that lies on the pocket floor, and the frames are tilted onto the channel\'s own line and seated along the surface normal, because the flank leans in two axes and a frame placed as though the floor were a plane buries one corner and floats the other.\n\nEach bank runs one 48 V rotary actuator from hv-4\'s front zonal controllers, tens of watts on an ordinary fused channel, and position truth comes free from the eFuse telemetry: the actuation current signature is the sensor, the same fleet-learning trick hv-4 runs on every circuit. The fail direction is chosen by physics, not convenience: blades spring open, because a sealed arch that cannot vent traps the pumping pressure the opening used to spill, and trapped arch pressure feeds front lift, the one thing a 130 km/h front axle must never be surprised by. The mechanism is the grille shutter bank\'s, relocated; what earns the pilot line label is the address, and what has to become true is sealing and icing endurance in the wheel\'s own spray, plus a frangible blade certified against the once-a-decade contact nobody plans.',
+      why: 'An arch is an air pump whose duty varies a hundred to one between a summer cruise and an alpine descent. Fixed louvers priced the average; actuated blades buy both ends of the range for 30 watts and half a kilogram per corner, and they finally let the front arches close the gap to the skirted rears that the monoform has enjoyed since Gen 3.',
       fail: [
         'Grit and ice in the pivots is the chronic case; the cold-start sweep catches a stiff bank and leaves it open, costing counts, never cooling.',
         'A blade struck through the pocket mouth is designed frangible: it tears free rather than levering its cassette into the fender, loud and harmless, and the current signature logs exactly when it happened.',
@@ -201,15 +313,15 @@ export const SYSTEM = {
         ['Tunnels', 'Twin, strake-divided, exhausting through the diffuser flap'],
         ['Ground gap', '110 mm at the lip; suspension-4 holds it +-3 mm at speed'],
         ['Arch vent', 'Skirted rear arches drain wheels-3\'s ~110 m3/h into the tunnels'],
-        ['Worth', '~5 counts sealed and tunnelled against Gen 3\'s metered flat floor'],
+        ['Worth', '~5 counts sealed and tunneled against Gen 3\'s metered flat floor'],
         ['Maturity', 'Production practice: sealed floors universal, tunnels in series production'],
       ],
-      how: 'Gen 3 metered the underbody with a carbon lip and let the battery\'s flat belly do the rest. Gen 5 finishes the plane. The lip carries over at a 110 mm gap; behind it a carbon closeout bridges to the pack\'s leading edge, the pack underside runs to x -1.30 in the envelope battery-6 inherits from the battery-3 convention, and a rear closeout bridges from the pack to the diffuser flap\'s hinge line at x -1.78. Nose to tail, the air sees one continuous ceiling. Strakes then divide the rear run into twin tunnels, so a yawed crosswind can stall one side while the other keeps pulling, and the whole floor\'s suction degrades by half instead of letting go at once, the same fence logic the diffuser vanes apply at the exit.\n\nA venturi is tuned by its gap, and Gen 3 listed the untuned case as a failure mode with no owner. The Gen 5 preset gives it one: suspension-4\'s air springs hold the speed-scheduled ride height to a few millimetres, closing the loop the floor always needed, and its height sensors cross-check against the flap\'s pressure taps so a drifting sensor is caught by disagreement. The skirted rear arches join the circuit too: wheels-3\'s heat-extraction covers pump roughly 110 m3/h per corner out of each rear wheel, and inside a skirted arch that flow needs a drain, so the arch floor slots into the tunnel ceiling and the floor\'s suction empties the arch downward instead of letting it spill out the skirt line. One system, four consumers, every number reconciled against the partner that owns it.',
+      how: 'Gen 3 metered the underbody with a carbon lip and let the battery\'s flat belly do the rest. Gen 5 finishes the plane. The lip carries over at a 110 mm gap; behind it a carbon closeout bridges to the pack\'s leading edge, the pack underside runs to x -1.30 in the envelope battery-6 inherits from the battery-3 convention, and a rear closeout bridges from the pack to the diffuser flap\'s hinge line at x -1.78. Nose to tail, the air sees one continuous ceiling. Strakes then divide the rear run into twin tunnels, so a yawed crosswind can stall one side while the other keeps pulling, and the whole floor\'s suction degrades by half instead of letting go at once, the same fence logic the diffuser vanes apply at the exit.\n\nA venturi is tuned by its gap, and Gen 3 listed the untuned case as a failure mode with no owner. The Gen 5 preset gives it one: suspension-4\'s air springs hold the speed-scheduled ride height to a few millimeters, closing the loop the floor always needed, and its height sensors cross-check against the flap\'s pressure taps so a drifting sensor is caught by disagreement. The skirted rear arches join the circuit too: wheels-3\'s heat-extraction covers pump roughly 110 m3/h per corner out of each rear wheel, and inside a skirted arch that flow needs a drain, so the arch floor slots into the tunnel ceiling and the floor\'s suction empties the arch downward instead of letting it spill out the skirt line. One system, four consumers, every number reconciled against the partner that owns it.',
       why: 'The underbody is the largest surface on the car and the only one the battery already paid to flatten. Sealing its last two gaps and shaping the flat into tunnels is the highest-value aero purchase remaining at this Cd, and it is the device stack\'s foundation: the diffuser flap is only worth its counts because this floor feeds it fast, clean, height-stable flow.',
       fail: [
-        'Kerbs and ramps still rake the lip first; the shear-away fasteners cost a bracket, carried through three generations because car parks have not changed.',
+        'Curbs and ramps still rake the lip first; the shear-away fasteners cost a bracket, carried through three generations because parking lots have not changed.',
         'A torn closeout flutters and drums before it drags; the cabin microphone array flags the signature and the drag estimator confirms it, so the failure is heard before it is felt.',
-        'Deep snow packs the tunnels and the floor becomes a plough; structurally rated, aerodynamically dead, and still beyond the range model\'s vocabulary, carried from Gen 3 with the same apology.',
+        'Deep snow packs the tunnels and the floor becomes a plow; structurally rated, aerodynamically dead, and still beyond the range model\'s vocabulary, carried from Gen 3 with the same apology.',
       ],
       explode: [0, -0.55, 0],
     },
@@ -228,7 +340,7 @@ export const SYSTEM = {
       how: 'Gen 2 proved the argument and Gen 3, in its pursuit of one unbroken surface, quietly stopped drawing the intake at all. The apex body puts it back and puts a name on it: below the nose face, a four-slat bank meters the only air admitted through the body, ducted straight to thermal-6\'s radiator stack in the front zone the ladder has never moved, x 2.08 to 2.26. The gate logic is Gen 2\'s standing negotiation, carried verbatim: the thermal controller owns the position request, the aero controller is granted closure only when every thermal margin is green, and the spring fails the bank open because a stuck-shut gate on a mountain climb cooks hardware while a stuck-open one costs a count.\n\nWhat Gen 5 changes is which hour sizes the opening. The dominant heat event in this preset is not driving at all: battery-6\'s fast charge rejects its peak load through thermal-6\'s stack while the car sits still, no ram air, fans pulling through a fully opened bank. Sized for that stationary worst case, the driving requirement is trivial, which is why the gates spend more than 90 percent of road time sealed and the nose spends its life aerodynamically solid, exactly the assumption the Cd 0.130 configuration is built on. The bank\'s single 48 V actuator rides a fused channel on hv-4\'s front zonal controllers and runs the same cold-start self-test sweep every actuated surface on this body inherited from the Gen 2 shutter bank.',
       why: 'A fixed intake is sized for the worst hour and paid for every other hour, and the worst hour moved off the road when charging power passed driving power. Metering the opening per minute keeps the sealed-nose fiction honest: the surface Gen 3 drew is now a position this mechanism actually holds, most of the time, and admits it is not holding the rest.',
       fail: [
-        'Road grit and ice jam slat pivots; the cold-start sweep reports a stiff bank before the motorway or the charger does, carried from Gen 2.',
+        'Road grit and ice jam slat pivots; the cold-start sweep reports a stiff bank before the highway or the charger does, carried from Gen 2.',
         'Stuck shut is the dangerous direction: thermal-6 sheds load, tapers power, and the car explains why, the same graceful surrender the sealed nose has promised since the aero concept.',
         'The slats live in the stone-strike zone; glass-filled polymer takes the gravel, and a cracked slat costs a cartridge swap, not a nose.',
       ],
@@ -260,8 +372,8 @@ export const SYSTEM = {
      tube, so its aft face is x 0.808; B-pillar at x 0.020; rocker outer face
      |z| 0.915, top y 0.42, ends x +-1.010. The three door cuts are placed
      off those three numbers and not off prose.
-   - wheels-6: front and rear tyre outer faces at |z| 0.9025 exactly, tyre
-     top y 0.713, front tyre spanning x 1.0917 to 1.8083. Swept about the
+   - wheels-6: front and rear tire outer faces at |z| 0.9025 exactly, tire
+     top y 0.713, front tire spanning x 1.0917 to 1.8083. Swept about the
      steering axis through (1.45, 0.81) the corner reaches 0.9584 at 10
      degrees of lock, 1.0108 at 20 and 1.0593 at 30, always at hub height
      y 0.355. Nothing the wheel sweeps ever rises above y 0.713.
@@ -410,7 +522,7 @@ function endCap(ringPts, dx, mat) {
 /* Triangle fan closing a ring onto its own centroid, wound so the face looks
    along xdir. One triangle per ring segment and nothing outside the ring
    moves, which is why the cap is closed this way rather than by collapsing
-   the inner section: every square millimetre of the lofted band, and the
+   the inner section: every square millimeter of the lofted band, and the
    badge seated on it, keeps the surface it was measured against. */
 function fanTo(ring, mat, xdir) {
   const n = ring.length;
@@ -506,10 +618,10 @@ const FADE = 0.05;
    which is where a front door leading edge has to be if it is to hinge on
    that pillar. The old skins started at x 1.080, 272 mm FORWARD of the
    pillar and across the front arch, which is a door that cannot open.
-   x 0.020 is the B-pillar centreline exactly, and a four-door car splits its
+   x 0.020 is the B-pillar centerline exactly, and a four-door car splits its
    apertures on the B-pillar by definition.
    x -1.000 is 10 mm forward of the rocker's rear end at -1.010 and 92 mm
-   forward of the rear tyre's leading edge at -1.0917, so the aperture stops
+   forward of the rear tire's leading edge at -1.0917, so the aperture stops
    where the sill it sits on stops. interior-6's rear bench runs back to
    -1.271, which leaves 271 mm of fixed quarter over the seat back.
 
@@ -526,7 +638,7 @@ const SEAM = 3;
 const DOORL = [SILL, SEAM], DOORR = [NC - SEAM, NC - SILL];
 const SHUT = [rowOf(0.780), rowOf(0.020), rowOf(-1.000)];
 
-/* Bonnet, x 2.240 to 1.140: aft of the nose fascia band that carries the
+/* Hood, x 2.240 to 1.140: aft of the nose fascia band that carries the
    light band and the lidar windows, forward of the cowl at station 4 where
    the glass root starts, and covering P.frunk's x 1.78 to 2.12 with 120 mm
    at the front and thermal-6's whole front stack (1.993 to 2.257) beneath
@@ -538,8 +650,8 @@ const SHUT = [rowOf(0.780), rowOf(0.020), rowOf(-1.000)];
 
    The four permitted interruptions on the BODY SIDE are still four; these
    two are on the deck, where a car that cannot open its frunk or reach its
-   boot is not a car. */
-const BONNET = [rowOf(2.240), rowOf(1.140)];
+   trunk is not a car. */
+const HOOD = [rowOf(2.240), rowOf(1.140)];
 const LID = rowOf(-1.905);
 const DECKSPAN = [3.45, 8.55];
 
@@ -549,11 +661,17 @@ const SHUTG = SHUT.map((r) => [
   push({ row: r, ...GAP, span: DOORL, runout: FADE }),
   push({ row: r, ...GAP, span: DOORR, runout: FADE }),
 ]);
-for (const r of BONNET) push({ row: r, ...GAP, span: DECKSPAN, runout: FADE });
+/* The push ORDER is the groove table's order and nothing may reorder it: the
+   resolved index of every line on this surface follows from it. What changed
+   when the hood and the lid became closures is only that their groove indices
+   are now KEPT, because a panel that opens has to be sliced at the split its
+   own channel resolved to rather than at a number retyped from a survey. */
+const HOODG = HOOD.map((r) => push({ row: r, ...GAP, span: DECKSPAN, runout: FADE }));
 const LIDG = push({ row: LID, ...GAP, span: DECKSPAN, runout: FADE });
+const HOODC = [], LIDC = [];
 for (const c of DECKSPAN) {
-  push({ col: c, ...GAP, span: [BONNET[0] - FADE, BONNET[1] + FADE], runout: FADE });
-  push({ col: c, ...GAP, span: [LID - FADE, LAST + 0.10], runout: FADE });
+  HOODC.push(push({ col: c, ...GAP, span: [HOOD[0] - FADE, HOOD[1] + FADE], runout: FADE }));
+  LIDC.push(push({ col: c, ...GAP, span: [LID - FADE, LAST + 0.10], runout: FADE }));
 }
 
 /* ── The arch louver recesses ───────────────────────────────────────────
@@ -561,7 +679,7 @@ for (const c of DECKSPAN) {
    against halfWidth, 414 of its 432 vertices stood OUTSIDE the loft, the
    worst by 151.8 mm at (1.908, 0.340, 0.955), and 180 of them sat below the
    flank's own bottom edge, which over a wheel is the arch line. The bank was
-   hanging in the air beside the front tyre. body-7 and body-8 carried the
+   hanging in the air beside the front tire. body-7 and body-8 carried the
    opposite version of the same fault, a bank buried 1.8 mm behind unbroken
    paint, and the fix is the same either way: the recess the bank always
    implied has to exist.
@@ -571,15 +689,15 @@ for (const c of DECKSPAN) {
    sweeping wheels-6's built front corner about the steering axis through
    (1.45, 0.81) puts the tread at |z| 0.9584 at 10 degrees of lock, 1.0108 at
    20 and 1.0593 at 30, all of it at hub height, so anything hung in the
-   aperture inboard of 1.06 is in the tyre's path. body-9 filed that exact
-   defect against body-8's front lower closeout, which the steered tyre
+   aperture inboard of 1.06 is in the tire's path. body-9 filed that exact
+   defect against body-8's front lower closeout, which the steered tire
    entered at 3.1 degrees. What the sweep cannot do is rise: rotation about a
-   vertical axis moves no point in y, and the tyre's own crown is y 0.713.
+   vertical axis moves no point in y, and the tire's own crown is y 0.713.
    Everything below is above that, so the swept solid never reaches it and
    the arch line stays the binding surface over the wheel, at 72 mm at the
    axle and 18 mm at x 1.635 where the fender is tightest.
 
-   EACH BANK IS CENTRED IN ITS OWN BAY, x 1.135 to 1.375 between stations 4
+   EACH BANK IS CENTERED IN ITS OWN BAY, x 1.135 to 1.375 between stations 4
    and 3 and 1.515 to 1.755 between stations 3 and 2, keeping 75 and 65 mm to
    the stations either side. That matters for the reason it did on body-8:
    station 3 is the front axle ring and the flow accelerates hardest around
@@ -594,7 +712,7 @@ for (const c of DECKSPAN) {
 
    THE DECLARED WIDTH IS NOT THE BUILT WIDTH, AND A FIRST PASS HERE QUOTED
    THE WIDTH AT ONE STATION AS IF IT WERE THE RUN. A groove's parametric
-   half-width is sized from the metres-per-index scale AVERAGED along its own
+   half-width is sized from the meters-per-index scale AVERAGED along its own
    run, so it holds its stated width only where the run's local scale equals
    that average. Swept lip to lip over every resolved row of each span on the
    built mesh, the aft pocket runs 53.57 mm at x 1.375 to 136.81 mm at
@@ -604,14 +722,14 @@ for (const c of DECKSPAN) {
    What is constant is the FRACTION of the flank band the pocket occupies,
    which is what "taper with the fender" actually means here, and every piece
    of hardware takes its height from the channel's own resolved half-width
-   times the local metres-per-index at its own station, so the blades taper
+   times the local meters-per-index at its own station, so the blades taper
    with it: 78 mm at the aft end of the aft bank down to 40 mm at its forward
    end. The content quotes the measured range, not the declared number.
-   Making the metre width constant instead would need per-span widths inside
+   Making the meter width constant instead would need per-span widths inside
    one bay, which buys a uniform slot at the price of a ridge at every span
    boundary, so it is not obviously the better car and it is not done here.
 
-   The pocket's lowest lip is (1.135, 0.723), 10 mm above wheels-6's tyre
+   The pocket's lowest lip is (1.135, 0.723), 10 mm above wheels-6's tire
    crown at y 0.713, which is the margin the whole flank argument rests on.
 
    FRONTAL AREA CANNOT MOVE, and the reason is arithmetic rather than hope. A
@@ -644,7 +762,7 @@ for (const b of BANKS) {
    buried 186 triangles of cassette frame in its own pocket floor by using
    the z component alone.
 
-   And the pocket is cut at a COLUMN FRACTION, not at a height, so its centre
+   And the pocket is cut at a COLUMN FRACTION, not at a height, so its center
    line rises and falls along the car: over the forward bank colPt puts it at
    y 0.7072 at x 1.741 and y 0.7954 at x 1.525, 88 mm of drift across 216 mm
    of bank, and the floor tilts from 6.3 to 11.8 degrees over the same run. A
@@ -662,7 +780,7 @@ function pocket(x, b) {
   const hx = (halfWidth(x + e, c[0]) - halfWidth(x - e, c[0])) / (2 * e);
   const N = Math.sqrt(1 + hx * hx + hy * hy);
   return {
-    y: c[0] + (LOUV.depth * hy) / N,      /* floor centre */
+    y: c[0] + (LOUV.depth * hy) / N,      /* floor center */
     z: c[1] - LOUV.depth / N,
     t: Math.atan2(dz / L, dy / L),        /* tilt of the channel's own line */
     ny: -dz / L, nz: dy / L,              /* outward normal in the yz plane */
@@ -686,6 +804,19 @@ const SILLR = [CI(NC - SILL), CI(NC)], SILLL = [0, CI(SILL)];
 /* each shutline pushed a left and a right groove; both resolve to the same
    split row, which is the far floor edge of the channel */
 const CUT = SHUTG.map(([a]) => SHELL.grooves[a].split);
+/* THE HOOD AND THE LID AS INDEX WINDOWS, read off their own channels rather
+   than typed in. Measured on this grid: the hood is rows 6..28 by columns
+   28..54 and the lid is rows 61..65 by columns 27..53. The two lid side gaps
+   resolve one column inboard of the two hood side gaps even though both are
+   pushed at ring fractions 3.45 and 8.55, because a groove inserts its own
+   lip nodes and the two channels do not run over the same rows; reading the
+   split instead of the fraction is what makes that a non-event. The lid's
+   aft edge needs no groove: the Kamm cap is its own mesh, so the panels
+   already break on the tail outline. */
+const HOODROWS = HOODG.map((g) => SHELL.grooves[g].split);
+const HOODCOLS = HOODC.map((g) => SHELL.grooves[g].split);
+const LIDROWS = [SHELL.grooves[LIDG].split, RI(LAST)];
+const LIDCOLS = LIDC.map((g) => SHELL.grooves[g].split);
 
 /* ── The declared hard lines ────────────────────────────────────────────
    Resolved row and column indices that are ALLOWED to break. Everything else
@@ -723,7 +854,7 @@ for (const g of SHELL.grooves) {
      the pocket floor. Measured before this was declared, fifteen interior
      lines turned 40 to 83 degrees and rendered smooth while the four
      declared ones broke cleanly: column 1.0 carries 82.7 degrees on the
-     forward louver floor at x 1.570, and the bonnet side gap's own walls at
+     forward louver floor at x 1.570, and the hood side gap's own walls at
      columns 3.44 and 3.46 carry 66 degrees where they cross the decklid side
      gap's run-out at x -1.880. That is the foreign-line trap
      design/crispness.md documents in the row axis, one axis over. The 20
@@ -882,7 +1013,7 @@ function bandSections(x, hzMax, flatTop, depth, inset, xb, xf) {
   return secs;
 }
 
-/* The marque: a chevron extruded with a bevelled rim. A decal has no edge for
+/* The marque: a chevron extruded with a beveled rim. A decal has no edge for
    a softbox to find, which is the whole reason this is geometry. */
 const CHEVRON = [
   [-0.042, 0.000], [-0.016, -0.018], [0.000, -0.006], [0.016, -0.018],
@@ -896,7 +1027,7 @@ export function build() {
   return sys;
 }
 
-/* ── the invariant structure, body.js's coordinates to the millimetre with
+/* ── the invariant structure, body.js's coordinates to the millimeter with
    every block chamfered. Not one position, extent or rotation moved: a
    megacasting that reads as a stack of untouched boxes is a first draft of a
    casting, and 44 triangles a box against 12 is the cheapest fix on the car.
@@ -913,7 +1044,7 @@ function buildStructure(sys) {
   /* The cross portion is a lower crossmember at the casting's front face,
      x 2.000 to 2.070, y 0.300 to 0.370, not a block filling the nose. It
      used to be one 0.31 x 0.28 x 0.68 solid spanning x 1.760 to 2.070 over
-     the full 280 mm section height, which is 0.0590 m3 of drawn aluminium,
+     the full 280 mm section height, which is 0.0590 m3 of drawn aluminum,
      159 kg at 2,700 kg/m3, against a part that declares 48 kg for the whole
      casting. The bay it filled is where every thermal variant packages its
      chiller, manifold, pumps and heat pump, so the model was drawing metal
@@ -954,7 +1085,7 @@ function buildStructure(sys) {
      by vertex against halfWidth, every beam vertex forward of x 2.10 sits
      between 9.0 and 283.2 mm inside the loft, and the tightest point is the
      outboard top corner of the swept end at (2.191, 0.592, 0.652). Nine
-     millimetres is enough, and an axial raster of the nose face finds no ray
+     millimeters is enough, and an axial raster of the nose face finds no ray
      that reaches the beam, but it is a ninth of what the comment claimed and
      a beam this close is worth knowing about before anyone thickens it. */
   const rails = lib.part('crash-rails', [0.95, -0.05, 0]);
@@ -1041,7 +1172,7 @@ const VAPZ = [-0.36, -0.24, -0.12, 0, 0.12, 0.24, 0.36];
 
 function buildShell(sys) {
   /* ── skin: both flanks fore and aft of the door apertures, the sills, the
-     nose deck carrying the bonnet and its four gaps, the deck band carrying
+     nose deck carrying the hood and its four gaps, the deck band carrying
      the decklid, and the two closed end faces. Every one of them is a slice
      of the master grid, so the surface is body-3's to the last decimal. ── */
   const skin = lib.part('skin', [0, 0.62, 0]);
@@ -1051,8 +1182,21 @@ function buildShell(sys) {
   skin.add(panel([CUT[2], RI(LAST)], FR));
   skin.add(panel([CUT[0], CUT[2]], SILLL));               /* sill under the cuts */
   skin.add(panel([CUT[0], CUT[2]], SILLR));
-  skin.add(panel([0, RI(COWL)], UP));                     /* fascia, bonnet, cowl */
-  skin.add(panel([RI(DECK), RI(LAST)], UP));              /* deck and decklid */
+  /* The deck band, re-sliced at its own channels so the two panels that open
+     are their own rigid bodies. One call became five and then four, and not a
+     vertex moved: every index below is a resolved node of the same grid, and
+     the panels that used to be one mesh still share every boundary row and
+     column with their new neighbors. What is left in `skin` here is the nose
+     fascia ahead of the hood, the two deck shoulder strips beside it, the
+     cowl behind it, the fixed deck ahead of the lid, and the two deck strips
+     beside the lid. */
+  skin.add(panel([0, HOODROWS[0]], UP));                  /* nose fascia band */
+  skin.add(panel(HOODROWS, [UP[0], HOODCOLS[0]]));        /* shoulders beside the hood */
+  skin.add(panel(HOODROWS, [HOODCOLS[1], UP[1]]));
+  skin.add(panel([HOODROWS[1], RI(COWL)], UP));           /* cowl */
+  skin.add(panel([RI(DECK), LIDROWS[0]], UP));            /* fixed deck ahead of the lid */
+  skin.add(panel(LIDROWS, [UP[0], LIDCOLS[0]]));          /* strips beside the lid */
+  skin.add(panel(LIDROWS, [LIDCOLS[1], UP[1]]));
   skin.add(capOf(0, -0.012, M.paint));                    /* nose face */
   skin.add(capOf(RI(LAST), 0.012, M.paint));              /* Kamm face */
   /* The marque, and the only one on the car: a sealed nose carrying a
@@ -1070,6 +1214,19 @@ function buildShell(sys) {
   skin.add(mark);
   sys.add(skin);
 
+  /* ── the two deck closures, each its own rigid body under part id `skin`
+     because that is what they are made of: the same laminate on the same
+     mold, cut at the channel instead of bonded across it. Both keep the
+     skin's explode vector so the exploded car reads exactly as it did before
+     the split, and both are authored once because a transverse hinge on the
+     centerline is its own mirror image. ── */
+  const hood = lib.hinge(lib.part('skin', [0, 0.62, 0]), 'hood');
+  hood.add(panel(HOODROWS, HOODCOLS));
+  sys.add(hood);
+  const lid = lib.hinge(lib.part('skin', [0, 0.62, 0]), 'decklid');
+  lid.add(panel(LIDROWS, LIDCOLS));
+  sys.add(lid);
+
   /* ── glass canopy band, lofted 8 mm proud of the same stations ── */
   const canopy = lib.part('canopy', [0, 1.05, 0]);
   canopy.add(lib.shell(lib.crease(lib.loft(glassBand, M.glass, false,
@@ -1082,10 +1239,10 @@ function buildShell(sys) {
     bandSections(2.375, 0.430, 0.6375, 0.045, 0.008, 2.361, 2.377), M.lamp, true), 34));
   for (const s of [-1, 1]) {
     /* flash lidar windows over autonomy-4's pucks at (2.33, 0.615, +-0.30);
-       the band's own centreline there is y 0.6058, so the window is drawn
+       the band's own centerline there is y 0.6058, so the window is drawn
        45 mm tall and contains 0.615. It is a CONFORMAL window, so it sits
        1 mm proud of the band's own front face at x 2.377 and not 8: drawn at
-       2.379 its front face reached 2.385, ten millimetres ahead of the nose
+       2.379 its front face reached 2.385, ten millimeters ahead of the nose
        ring at 2.375, which made a sensor cover the foremost point on the
        car. */
     lbF.add(acbox(0.012, 0.045, 0.062, 0.003, M.sensor, 2.372, 0.6058, s * 0.30));
@@ -1100,8 +1257,20 @@ function buildShell(sys) {
      of the car: 1.30 m of span at x -2.13 where the deck shoulder is 0.594
      half-width, so 214 mm of it hung off each side into open air. It now
      spans 1.16 m, 14 mm inside that shoulder line, and the struts land on
-     the deck through surfaceY instead of near it. ── */
-  const spoiler = lib.part('kamm-spoiler', [-0.9, 0.55, 0]);
+     the deck through surfaceY instead of near it.
+
+     THE SPOILER TRAVELS WITH THE DECKLID, and that is measured rather than
+     styled. Its strut feet sit at y 0.9155 where the lid surface under them
+     is surfaceY(-2.110, 0.42) = 0.9405, so each strut passes 24.5 mm through
+     the panel, and the two spindle drives rest 2.5 mm above surfaceY(-2.030,
+     0.24) = 0.9900. Both stations are inside the lid's own z span, which
+     leaves exactly two ways to build it: put four slots in a panel that has
+     to seal, or bolt the whole device to the lid and let it lift with it.
+     The second is what a 911 does with its engine lid and it is what this
+     does, so the group carries the decklid's closure tag rather than a
+     closure of its own. It is also why the lid is a 34 kg leaf and not a
+     9 kg one. ── */
+  const spoiler = lib.hinge(lib.part('kamm-spoiler', [-0.9, 0.55, 0]), 'decklid');
   const BX = -2.130, BSZ = 0.42;
   const deck = surfaceY(BX + 0.02, BSZ);
   const BY = surfaceY(BX, 0.0) + 0.078;
@@ -1120,7 +1289,7 @@ function buildShell(sys) {
   /* ── deployable diffuser flap, drawn deployed at 17.5 degrees: ramp
      hinged at (-1.78, 0.135) rising to (-2.32, 0.30), four fence vanes, a
      hinge tube and twin 48 V drives. Span |z| <= 0.63, which clears
-     wheels-6's tyre faces at 0.9025 by 272 mm and never approaches the
+     wheels-6's tire faces at 0.9025 by 272 mm and never approaches the
      in-wheel annulus at r 0.155 to 0.235, |z| 0.72 to 0.80. The strakes take
      their rotation from the ramp's own vector, so they lie on the panel they
      stand on, and each shows the two fixings a fence that eats gravel has to
@@ -1130,7 +1299,7 @@ function buildShell(sys) {
   flap.add(lib.shell(acbox(0.56, 0.012, 1.26, 0.003, M.carbon, -2.05, 0.215, 0, RZF)));
   for (const z of [-0.50, -0.19, 0.19, 0.50]) {
     flap.add(acbox(0.50, 0.09, 0.010, 0.003, M.carbon, -2.04, 0.26, z, RZF));
-    /* Two per strake, on the ramp's own line. The strake centre already lies
+    /* Two per strake, on the ramp's own line. The strake center already lies
        on the panel, so the seat needs no y offset, and the head sits 11 mm
        outboard of the strake plane so its 10.2 mm flange clears the 10 mm
        fin it retains. */
@@ -1165,7 +1334,7 @@ function buildShell(sys) {
      A BLADE HAS TO FIT THE POCKET IN THE DIRECTION THE POCKET IS DEEP, which
      is the other half of the same lesson and was still open. A 50 mm chord
      set at 0.45 rad needs 2 x (25 sin a + 5 cos a) = 30.8 mm along the floor
-     normal, against a 30 mm pocket, and it was centred 10 mm off the floor
+     normal, against a 30 mm pocket, and it was centered 10 mm off the floor
      rather than in the middle of it: swept vertex by vertex against the
      ungrooved surface, 264 of the bank's 3,928 vertices stood BEHIND the
      recessed paint, the worst by 3.7 mm, on all four aft-bay blades and one
@@ -1176,7 +1345,7 @@ function buildShell(sys) {
      tighter than the aft one for the same nominal seat. At 0.36 rad seated
      13 mm off the floor the worst blade corner on either bank is 1.6 mm
      inside the paint and 1.0 mm clear of the floor. The frames moved out one
-     millimetre. Nothing is behind the floor and nothing is proud of the
+     millimeter. Nothing is behind the floor and nothing is proud of the
      paint. ── */
   const BLADE = 0.36;
   const louv = lib.part('arch-louvers', [0.4, -0.05, 0.75]);
@@ -1327,25 +1496,68 @@ function buildShell(sys) {
 
      The capacitive strips are 8 mm boxes with their inner face ON the
      measured surface at y 0.880, just under the beltline, so they stand 8 mm
-     proud at the centre and 9.0 mm at the worst corner, where the flank falls
+     proud at the center and 9.0 mm at the worst corner, where the flank falls
      away across their own 140 mm.
 
      The camera pods are on the A-pillar sail at x 0.850, 70 mm forward of the
      front cut, where the flank measures |z| 0.8045 and a 90 mm stalk lands
      the pod's outer face at |z| 0.9225. The old pods sat at 0.9790, so the
      pod comes IN 56.5 mm: the stalk length the panel claims is now true and
-     the silhouette does not grow to pay for it. ── */
-  const doors = lib.part('doors', [0.08, 0, 0.85]);
-  doors.add(panel([CUT[0], CUT[1]], DOORBAND));
-  doors.add(panel([CUT[1], CUT[2]], DOORBAND));
-  for (const x of [0.140, -0.860]) {
-    doors.add(acbox(0.140, 0.024, 0.008, 0.003, M.alu, x, 0.880,
-                    halfWidth(x, 0.880) + 0.004));
-  }
+     the silhouette does not grow to pay for it.
+
+     ONE PART GROUP PER LEAF, which is a regrouping and not a redraw. The two
+     skins and the two capacitive strips are the meshes this module already
+     built at the coordinates it already built them at; what changed is which
+     group owns them, because a closure is a rigid body and a rigid body
+     cannot be a slice of a larger group. All three groups keep the part id
+     `doors`, so they stay one clickable part with one panel and one explode
+     vector, and the exploded car reads exactly as it did before the split.
+     Each strip goes with the leaf it is the latch sensor for: x 0.140 is
+     inside the front skin's x 0.019 to 0.779, x -0.860 inside the rear
+     skin's -1.001 to 0.019.
+
+     THE CAMERA PODS DO NOT TRAVEL, and this body is the reason. They stand
+     at x 0.850, which is 71 mm FORWARD of the front cut at 0.779, on the
+     A-pillar sail. On a swing-door car the mirror is on the door because the
+     door is what the mirror's field of view has to follow; on a car whose
+     doors translate aft there is nothing to follow and a pod on a sliding
+     panel would drag its own harness 760 mm every time somebody gets in. The
+     pods are therefore on the fixed sail in a third, untagged group. There
+     is no door glass to travel either: the daylight opening over these doors
+     is the bonded canopy band, which is structure and does not move. ── */
+  const pods = lib.part('doors', [0.08, 0, 0.85]);
+  const leaf = (id, rows, sx) => {
+    const g = lib.hinge(lib.part('doors', [0.08, 0, 0.85]), id);
+    g.add(panel(rows, DOORBAND));
+    g.add(acbox(0.140, 0.024, 0.008, 0.003, M.alu, sx, 0.880,
+                halfWidth(sx, 0.880) + 0.004));
+    /* THE SURROUND CAMERA IS THIS BODY'S, seated on this body's own surface.
+       It used to be autonomy-4's, placed at an absolute |z| that could not be
+       right on more than one body: measured, the same coordinate stood 11.70
+       mm proud of body-4 and body-6's door skin and 71.5 mm proud of body-7,
+       -8 and -9's, so on the flat-flank bodies it floated clear of the panel
+       it was bolted to. A module builds once and is shared by five bodies, so
+       no coordinate it can write is right for all of them. The body is the
+       only module that knows where its own flank is, which is why body-11
+       already draws its own and why this one does now. Flush, 2 mm inside the
+       skin, so it is a camera rather than a thing standing in the airflow. */
+    if (id === 'door-front') {
+      const camZ = halfWidth(0.100, 1.000);
+      g.add(acbox(0.050, 0.028, 0.020, 0.004, M.sensor, 0.100, 1.000, camZ - 0.002));
+      g.add(acbox(0.090, 0.020, 0.012, 0.003, M.alu, 0.060, 1.000, camZ - 0.004));
+    }
+    return g;
+  };
   const PX = 0.850, PY = 1.010;
   const ps = halfWidth(PX, PY);
-  doors.add(acbox(0.014, 0.012, 0.090, 0.003, M.plastic, PX, PY, ps + 0.045));
-  doors.add(acbox(0.050, 0.028, 0.028, 0.005, M.sensor, PX, PY, ps + 0.104));
-  sys.add(doors);
-  sys.add(mirrorZ(doors));
+  pods.add(acbox(0.014, 0.012, 0.090, 0.003, M.plastic, PX, PY, ps + 0.045));
+  pods.add(acbox(0.050, 0.028, 0.028, 0.005, M.sensor, PX, PY, ps + 0.104));
+  for (const g of [leaf('door-front', [CUT[0], CUT[1]], 0.140),
+                   leaf('door-rear', [CUT[1], CUT[2]], -0.860),
+                   pods]) {
+    sys.add(g);
+    sys.add(mirrorZ(g));
+  }
 }
+
+export const _PROBE = { SHELL, RI, CI, CUT, HOOD, LID, LIDG, GROOVES, DECKSPAN, UP, DOORBAND, SILL, NC, LAST, COWL, DECK, rowOf, surfaceY, halfWidth, colPt, RINGS };

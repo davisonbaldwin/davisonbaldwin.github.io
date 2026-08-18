@@ -26,11 +26,11 @@ export const SYSTEM = {
         ['Frame rate', '36 fps, common master clock'],
         ['Flicker handling', 'Exposure split across 90 to 300 Hz PWM'],
       ],
-      how: 'The wedge behind the glass carries three focal lengths: a 120 degree wide for cut-ins and overhead signals, a 50 degree main, and a narrow telephoto that resolves a vehicle at 250 m. The B-pillar pair looks sideways for crossing traffic at junctions, the fender repeaters look rearward along the flanks to cover the over-the-shoulder blind spot, and the rear camera closes the circle. Every imager is a split-pixel HDR design: each pixel site holds a large and a small photodiode read at different gains, so a single exposure spans 140 dB, headlights and an unlit pedestrian in the same frame. LED signals and signs pulse at 90 to 300 Hz, so exposure is split across the pulse period to avoid catching a traffic light in its dark phase.\n\nA camera measures bearing almost perfectly and distance almost not at all. Depth is inferred: from stereo overlap inside the wedge, from motion parallax as the car moves, and from learned priors about the size of things. The inference is good to a few percent at 30 m and degrades roughly with the square of distance, which is the number to keep in mind whenever cameras are proposed as the whole answer.',
-      why: 'The road system is a document written for human eyes: painted lines, coloured lights, text on signs, indicator flashes. No other modality can read any of it. Cameras are therefore not optional on any car that shares roads with humans, and the honest sensing debate is never about deleting cameras, only about whether they get corroboration.',
+      how: 'The wedge behind the glass carries three focal lengths: a 120 degree wide for cut-ins and overhead signals, a 50 degree main, and a narrow telephoto that resolves a vehicle at 250 m. The B-pillar pair looks sideways for crossing traffic at intersections, the fender repeaters look rearward along the flanks to cover the over-the-shoulder blind spot, and the rear camera closes the circle. Every imager is a split-pixel HDR design: each pixel site holds a large and a small photodiode read at different gains, so a single exposure spans 140 dB, headlights and an unlit pedestrian in the same frame. LED signals and signs pulse at 90 to 300 Hz, so exposure is split across the pulse period to avoid catching a traffic light in its dark phase.\n\nA camera measures bearing almost perfectly and distance almost not at all. Depth is inferred: from stereo overlap inside the wedge, from motion parallax as the car moves, and from learned priors about the size of things. The inference is good to a few percent at 30 m and degrades roughly with the square of distance, which is the number to keep in mind whenever cameras are proposed as the whole answer.',
+      why: 'The road system is a document written for human eyes: painted lines, colored lights, text on signs, turn signal flashes. No other modality can read any of it. Cameras are therefore not optional on any car that shares roads with humans, and the honest sensing debate is never about deleting cameras, only about whether they get corroboration.',
       fail: [
         'Low sun within a few degrees of a traffic signal saturates the surrounding pixels exactly when signal state matters most.',
-        'A raindrop on a lens is an unmodelled fisheye; overlapping fields let the stack notice one camera disagreeing with its neighbours and discount it.',
+        'A raindrop on a lens is an unmodeled fisheye; overlapping fields let the stack notice one camera disagreeing with its neighbors and discount it.',
         'Monocular range error grows with distance squared: a stationary car 200 m out is a bearing with a guess attached until radar or lidar confirms.',
       ],
       explode: [0.2, 0.4, 0],
@@ -51,7 +51,7 @@ export const SYSTEM = {
       why: 'Radar is the only sensor that measures closing speed rather than computing it, and its performance is essentially indifferent to weather and light. That combination makes it the anchor for the two functions that must never be lost, keeping distance and emergency braking, at a unit cost below a headlamp.',
       fail: [
         'A guardrail can mirror a real car into a ghost lane via multipath; track-level fusion kills ghosts that no camera confirms.',
-        'Mutual interference from oncoming radars in the same band is rising with fleet penetration; chirp timing randomisation keeps collisions rare and brief.',
+        'Mutual interference from oncoming radars in the same band is rising with fleet penetration; chirp timing randomization keeps collisions rare and brief.',
         'Wet snow packed onto the fascia attenuates the beam; a blockage monitor watches the noise floor and declares the sensor degraded rather than blind.',
       ],
       explode: [0.55, 0, 0],
@@ -67,18 +67,18 @@ export const SYSTEM = {
         ['Point rate', '600k points/s'],
         ['Field of view', '120 x 26 degrees, forward'],
       ],
-      how: 'The pod fires 1550 nm laser pulses through a scanning mirror and times the photon return: 6.7 nanoseconds per metre, two-way. Each point is a direct distance measurement with about 2 cm of error whether the target is at 5 m or 250 m, which is precisely the property cameras lack. The wavelength choice is an eye-safety argument: the cornea and lens absorb 1550 nm before it reaches the retina, so the transmitter can emit roughly an order of magnitude more power than a 905 nm design while staying Class 1, and that power budget is what buys 250 m of range on a dark 10 percent reflectance target.\n\nPerception consumes the output as a point cloud, and the crucial consumers are the ones with no idea what they are looking at. A mattress on the motorway, a fallen rider, an overturned lorry showing its roof to traffic: a vision network that has never seen the class can mislabel it, but the point cloud states that a solid surface occupies these cells of space regardless of what it is. Occupancy needs no recognition, and braking for occupied space is the last line of defence.',
+      how: 'The pod fires 1550 nm laser pulses through a scanning mirror and times the photon return: 6.7 nanoseconds per meter, two-way. Each point is a direct distance measurement with about 2 cm of error whether the target is at 5 m or 250 m, which is precisely the property cameras lack. The wavelength choice is an eye-safety argument: the cornea and lens absorb 1550 nm before it reaches the retina, so the transmitter can emit roughly an order of magnitude more power than a 905 nm design while staying Class 1, and that power budget is what buys 250 m of range on a dark 10 percent reflectance target.\n\nPerception consumes the output as a point cloud, and the crucial consumers are the ones with no idea what they are looking at. A mattress on the highway, a fallen rider, an overturned truck showing its roof to traffic: a vision network that has never seen the class can mislabel it, but the point cloud states that a solid surface occupies these cells of space regardless of what it is. Occupancy needs no recognition, and braking for occupied space is the last line of defense.',
       why: 'The camera-versus-lidar argument, stated honestly: cameras infer depth from parallax and learned priors and are cheap; lidar measures depth directly and once cost more than the rest of the car. The inference is right nearly always, and nearly is the entire problem, because the residue is exactly the unfamiliar scenes where learned priors fail. With solid-state units now priced in the hundreds of dollars, keeping one is redundancy priced like a wheel bearing, and the case for deleting it is cost discipline, not engineering.',
       fail: [
         'Airborne water returns first-surface echoes in fog and heavy snow; full-waveform processing takes the last return, but past a density threshold range collapses honestly and the stack knows it.',
-        'Retroreflective signs return thousands of times more light than the design target and bloom across neighbouring points.',
-        'It reads nothing: colour, text, and light state are invisible to it, so it can corroborate cameras but never replace them.',
+        'Retroreflective signs return thousands of times more light than the design target and bloom across neighboring points.',
+        'It reads nothing: color, text, and light state are invisible to it, so it can corroborate cameras but never replace them.',
       ],
       explode: [0, 0.65, 0],
     },
     ultrasonics: {
       name: 'Ultrasonic ring',
-      tagline: 'Twelve echo sounders that own the last metre and a half.',
+      tagline: 'Twelve echo sounders that own the last meter and a half.',
       mass: 0.5,
       count: 12,
       specs: [
@@ -88,8 +88,8 @@ export const SYSTEM = {
         ['Accuracy', '±1 cm inside 2 m'],
         ['Cutoff', 'Muted above 30 km/h'],
       ],
-      how: 'Each disc is a piezoelectric transducer bonded to the fascia so the painted skin itself is the diaphragm. It rings at 52 kHz for a few hundred microseconds, stops, listens, and times the echo at 343 m/s: 5.8 ms of round trip per metre. Firing is scheduled so neighbours listen to each other. One sensor hearing its own echo places the obstacle on a sphere; a neighbour hearing the same echo cuts that to an intersection, which is how a 60 degree beam produces a centimetre-grade map of a kerb.\n\nThey exist for the region where everything else has gone blind: the bumper hides the last metre from the cameras, and radar range resolution is coarser than the gap that matters between a tow bar and a shin. Above about 30 km/h wind noise buries the band and the ring is dropped from fusion entirely. These are parking instruments, and the design pretends nothing else.',
-      why: 'A transducer costs about two dollars and solves the region where a scrape is certain and a claim is likely. The discipline is scope: give the last metre to the cheapest sensor that can own it, and spend the expensive photons and TOPS on the road ahead.',
+      how: 'Each disc is a piezoelectric transducer bonded to the fascia so the painted skin itself is the diaphragm. It rings at 52 kHz for a few hundred microseconds, stops, listens, and times the echo at 343 m/s: 5.8 ms of round trip per meter. Firing is scheduled so neighbors listen to each other. One sensor hearing its own echo places the obstacle on a sphere; a neighbor hearing the same echo cuts that to an intersection, which is how a 60 degree beam produces a centimeter-grade map of a curb.\n\nThey exist for the region where everything else has gone blind: the bumper hides the last meter from the cameras, and radar range resolution is coarser than the gap that matters between a tow bar and a shin. Above about 30 km/h wind noise buries the band and the ring is dropped from fusion entirely. These are parking instruments, and the design pretends nothing else.',
+      why: 'A transducer costs about two dollars and solves the region where a scrape is certain and a claim is likely. The discipline is scope: give the last meter to the cheapest sensor that can own it, and spend the expensive photons and TOPS on the road ahead.',
       fail: [
         'Snow, mud, or ice on a disc detunes its resonance; a ring-down self-test runs every cycle and flags the sensor rather than guessing.',
         'Acoustically soft obstacles return weak echoes and can read as absent: a hedge, a snow bank, loose clothing.',
@@ -103,12 +103,12 @@ export const SYSTEM = {
       mass: 11.3,
       specs: [
         ['Lanes', '2x 500 TOPS, fully independent'],
-        ['Comparator', 'Simple analysable logic, ASIL D'],
+        ['Comparator', 'Simple analyzable logic, ASIL D'],
         ['Power', '450 W peak, liquid cooled'],
-        ['Sensor feed', 'Duplicated at the deserialiser'],
-        ['Fallback', 'Minimal-risk manoeuvre on one lane'],
+        ['Sensor feed', 'Duplicated at the deserializer'],
+        ['Fallback', 'Minimal-risk maneuver on one lane'],
       ],
-      how: 'The housing holds two complete computers, lane A and lane B. Each has its own SoC delivering about 500 INT8 TOPS, its own DRAM, its own power feed from an independent 12 V rail, and its own copy of every camera, radar, and lidar stream, duplicated electrically at the deserialisers so both lanes see identical frames. Each lane runs the full stack, perception through planning, and emits a trajectory plus a health word every 50 ms tick. A comparator built from simple, fully analysable logic cross-checks the two, and agreement is the only condition under which the actuators are released.\n\nDisagreement is not settled by voting, because with two lanes there is no majority. The system instead assumes it is broken: whichever lane still passes its own self-tests executes a minimal-risk manoeuvre, slowing in lane or pulling to the verge. The 450 W thermal load runs into a cold plate on the cabin coolant loop, so in winter the computer is a useful heater, and the side fins carry the case through a coolant pump failure long enough to stop. This is the fail-operational argument in hardware: a supervised driver-assist system may simply switch off because the human is the backup. Remove the human and the computer must be its own backup, which is what the second lane is.',
+      how: 'The housing holds two complete computers, lane A and lane B. Each has its own SoC delivering about 500 INT8 TOPS, its own DRAM, its own power feed from an independent 12 V rail, and its own copy of every camera, radar, and lidar stream, duplicated electrically at the deserializers so both lanes see identical frames. Each lane runs the full stack, perception through planning, and emits a trajectory plus a health word every 50 ms tick. A comparator built from simple, fully analyzable logic cross-checks the two, and agreement is the only condition under which the actuators are released.\n\nDisagreement is not settled by voting, because with two lanes there is no majority. The system instead assumes it is broken: whichever lane still passes its own self-tests executes a minimal-risk maneuver, slowing in lane or pulling to the shoulder. The 450 W thermal load runs into a cold plate on the cabin coolant loop, so in winter the computer is a useful heater, and the side fins carry the case through a coolant pump failure long enough to stop. This is the fail-operational argument in hardware: a supervised driver-assist system may simply switch off because the human is the backup. Remove the human and the computer must be its own backup, which is what the second lane is.',
       why: 'Perception is probabilistic but the substrate beneath it must not be: a flipped bit is not entitled to an opinion. Duplicated hardware converts silent faults into loud disagreements, the only kind a machine can act on. The accounting is honest: double silicon and double power buy protection against hardware faults only, since a software bug executes identically on both lanes. That is why a third, deliberately different program, a small formally verified collision checker, watches both lanes and can veto either.',
       fail: [
         'Common-mode software faults defeat duplication by construction; the diverse safety monitor exists because both lanes can be confidently, identically wrong.',
@@ -119,19 +119,19 @@ export const SYSTEM = {
     },
     'gnss-imu': {
       name: 'GNSS-IMU pose unit',
-      tagline: 'Centimetres when the sky is open, honest dead reckoning when it is not.',
+      tagline: 'Centimeters when the sky is open, honest dead reckoning when it is not.',
       mass: 0.2,
       specs: [
         ['GNSS', 'Dual band L1/L5 + RTK corrections'],
         ['Fix', '2 cm RTK, 1.5 m single point'],
         ['IMU', '6-axis MEMS, 2 deg/hr gyro bias'],
-        ['Dead reckoning', '0.3% of distance travelled'],
+        ['Dead reckoning', '0.3% of distance traveled'],
         ['Output', '200 Hz fused pose'],
       ],
-      how: 'The puck receives GNSS on two frequencies, L1 and L5. Ionospheric delay is dispersive, so comparing arrival across the bands cancels the dominant error term, and carrier-phase corrections from a base-station network pin the remaining ambiguity: the fix tightens from about 1.5 m to 2 cm under open sky. The IMU beside it integrates acceleration and rotation at 200 Hz. Integration is unforgiving: a constant 2 degree per hour gyro bias becomes tens of metres of position error within a couple of minutes, so the filter continuously estimates its own biases against GNSS, wheel odometry, and the vision stack.\n\nThe car does not steer on this pose. Absolute position seeds localisation: it tells the map matcher roughly which 50 m of road to search, and the matcher then locks perceived lane geometry, kerbs, and landmarks onto the map at centimetre level. In a tunnel the unit degrades rather than fails: inertial plus odometry dead reckoning holds about 0.3 percent of distance travelled, roughly 3 m per kilometre, enough to keep the map prior valid until the sky returns.',
+      how: 'The puck receives GNSS on two frequencies, L1 and L5. Ionospheric delay is dispersive, so comparing arrival across the bands cancels the dominant error term, and carrier-phase corrections from a base-station network pin the remaining ambiguity: the fix tightens from about 1.5 m to 2 cm under open sky. The IMU beside it integrates acceleration and rotation at 200 Hz. Integration is unforgiving: a constant 2 degree per hour gyro bias becomes tens of meters of position error within a couple of minutes, so the filter continuously estimates its own biases against GNSS, wheel odometry, and the vision stack.\n\nThe car does not steer on this pose. Absolute position seeds localization: it tells the map matcher roughly which 50 m of road to search, and the matcher then locks perceived lane geometry, curbs, and landmarks onto the map at centimeter level. In a tunnel the unit degrades rather than fails: inertial plus odometry dead reckoning holds about 0.3 percent of distance traveled, roughly 3 m per kilometer, enough to keep the map prior valid until the sky returns.',
       why: 'Perception is relative and the map is absolute; this unit is the hinge between the two frames. It is also the only sensor on the car an attacker can feed from a distance, since GNSS arrives as a whisper from 20,000 km, so the architecture treats it as a hint to be verified, never a truth to be obeyed.',
       fail: [
-        'Urban multipath off glass towers gives confident fixes that are metres wrong; visual localisation wins every conflict.',
+        'Urban multipath off glass towers gives confident fixes that are meters wrong; visual localization wins every conflict.',
         'Jamming and spoofing are detected by power and consistency monitors; the response is demotion to dead reckoning, not belief.',
         'With no fix and no odometry the pose is a guess after about a minute, and it is flagged as one.',
       ],
@@ -169,12 +169,12 @@ function radarUnit(wz, hy) {
    FOUR OF THESE FIVE UNITS WERE HANGING IN OPEN AIR AND THE ATTACHMENT
    CHECK COULD NOT SEE IT. [attachment] in tools/check-interfaces.sh works
    at PART granularity and all five units share the id `radars`, so the
-   centre unit sitting 6.50 mm off body/fascias passed the whole part while
+   center unit sitting 6.50 mm off body/fascias passed the whole part while
    the four corners stood 28.49 mm (gen1 and gen3 front), 11.27 (gen2
    front) and 35.00 mm (rear, all three) from the nearest surface of
    anything at all, measured surface to surface per instance against a
    15.0 mm tolerance. That is the same defect this file's own note used to
-   justify moving the centre unit 10 mm forward, left standing on the units
+   justify moving the center unit 10 mm forward, left standing on the units
    it did not measure.
 
    The landing surfaces are the same on every preset and each was ray
@@ -211,15 +211,16 @@ export function build() {
   camWedge.add(wedge);
   sys.add(camWedge);
 
-  /* B-pillar and fender repeater cameras, both sides explicitly */
+  /* THE B-PILLAR SURROUND POD IS THE BODY'S NOW. A module builds once and
+     that build is shared by every preset it appears in, so an absolute
+     |z| 0.900 had to serve every body this suite rides, and measured it stood
+     proud of some door skins and floated clear of others. The body is the
+     only module that knows where its own flank is. It draws the pod, seated
+     on its own halfWidth and flush with its own paint; this module keeps the
+     camera, the suite and the argument. See body-11, which worked this out
+     for itself first. */
+  /* fender repeater cameras, both sides explicitly */
   for (const s of [1, -1]) {
-    const bp = lib.part('cameras', [0, 0.2, 0.5 * s]);
-    const bcam = camUnit(0.03, 0.03, 0.022, 0.007);
-    bcam.rotation.y = -1.26 * s;
-    bcam.position.set(0.1, 1.0, 0.9 * s);
-    bp.add(bcam);
-    sys.add(bp);
-
     const rep = lib.part('cameras', [0.4, 0.1, 0.45 * s]);
     const rcam = camUnit(0.025, 0.022, 0.045, 0.006);
     rcam.rotation.y = Math.PI + 0.45 * s;
@@ -240,7 +241,7 @@ export function build() {
 
      y 0.66, NOT 0.50, AND IT IS THE STRUCTURE THAT SAYS SO. At 0.50 this
      unit was 30.00 mm inside body/crash-rails on all three rungs, 18
-     crossings on the centreline: the rails fill y 0.475 to 0.625 over
+     crossings on the centerline: the rails fill y 0.475 to 0.625 over
      x 1.700 to 2.270 and there is a member on |z| 0.05. Below the rail at
      y 0.44 gen2's nose closes to 12.00 mm; above it at 0.66 the station is
      clear on gen1, gen2 and gen3. High is not the textbook height for a
@@ -268,7 +269,7 @@ export function build() {
      front pair sat 30.00 mm inside body/crash-rails over 62 crossing
      triangle pairs and the rear pair 25.00 mm inside body/rear-casting over
      41, on gen1, gen2 and gen3 alike, and gen2's diffuser took another
-     27.92. A radar aimed into cast aluminium is not a sensor, and this
+     27.92. A radar aimed into cast aluminum is not a sensor, and this
      panel's own claim that the beam "passes through rain, fog, snow, and the
      plastic fascia in front of each unit" is false of a unit behind a rail.
 
@@ -310,7 +311,7 @@ export function build() {
   /* Lidar: low rounded pod on the roof at P.lidar, dark window strip.
 
      THIS POD IS INSIDE THE ROOF AND IT IS STAYING THERE, WITH BOTH NUMBERS
-     WRITTEN DOWN. lib.plate centres on its origin, so at y 1.396 the pod
+     WRITTEN DOWN. lib.plate centers on its origin, so at y 1.396 the pod
      fills 1.3735 to 1.4185 and its TOP is 1.5 mm below P.roof rather than
      its base 1.5 mm into the skin, which is what the note here used to say.
      Measured as surface penetration it is 22.50 mm inside body/roof-glass

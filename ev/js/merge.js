@@ -71,7 +71,7 @@
    Every body panel in this car now depends on the arc-length uv that
    _arcUV writes, and a merge that dropped it would unpaint the car.
 
-   Non-indexed geometry gets a synthesised index, indices are offset by the
+   Non-indexed geometry gets a synthesized index, indices are offset by the
    running vertex base, and the index array widens to Uint32 past 65,535
    vertices. Positions go through the full matrix, normals through its
    inverse transpose, and a matrix with a negative determinant, which is
@@ -106,7 +106,7 @@ function mergeable(geo) {
     /* interleaved buffers share one array between attributes, so copying
        them out needs stride arithmetic this pass does not do */
     if (a.isInterleavedBufferAttribute) return false;
-    /* a normalised integer attribute would have to be re-quantised on the
+    /* a normalized integer attribute would have to be re-quantized on the
        way out; nothing in this tree uses one, so refuse rather than guess */
     if (a.normalized) return false;
     /* attributes are copied vertex for vertex against the position count,

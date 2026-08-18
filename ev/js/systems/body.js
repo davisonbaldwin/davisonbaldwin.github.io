@@ -1,4 +1,4 @@
-/* Body and structure: front and rear aluminium megacastings, bolt-on crush
+/* Body and structure: front and rear aluminum megacastings, bolt-on crush
    rails, multi-chamber rockers, a hot-stamped steel safety cage, and the
    bonded glass and painted skin over the top. The visual signature of EV·01. */
 
@@ -11,10 +11,97 @@ export const SYSTEM = {
   color: 0x8fa8bf,
   explode: [0, 1.7, 0],
   blurb: 'Two megacastings, a boron-steel cage, and bonded glass: 385 kg that decides how the car drives, crashes, and looks.',
+  /* THE CLOSURES, and this rung is the zero every later one is measured
+     against. Gen 1 opens the way every mass-market car has opened since the
+     1950s: two doors a side on vertical hinges at their leading edges, a hood
+     on a transverse axis at the cowl, and a decklid on a transverse axis at
+     the deck cut. Nothing here is clever and that is the point. What the
+     ladder has to beat is written in the numbers tools/closures.sh sweeps off
+     this geometry, not in an adjective.
+
+     The two lids are the pair worth reading together, because they are the
+     same mechanism spending the same currency in opposite amounts. The hood
+     opens onto 2.1894 m2 of plan area and stands 412.4 mm over the parked
+     car; the decklid opens onto 1.0963 m2 and stands 294. Neither spends a
+     millimeter of width. Both numbers are swept, and the ratio between the
+     two apertures is almost exactly two to one, which is the sedan's own
+     shape stated as a number. */
+  closures: {
+    'door-front': {
+      name: 'Front door',
+      kind: 'door',
+      part: 'doors',
+      mass: 20.5,
+      seconds: 1.1,
+      seat: 'A-pillar hinge face, 8 mm ahead of the x 1.120 shutline',
+      motion: [
+        { kind: 'swing', axis: [0, 1, 0], pivot: [1.128, 0.670, 0.9582], deg: 66 },
+      ],
+      why: 'A vertical axis at the leading edge is the cheapest door there is, in every sense: two hinges, one latch, a check strap with three detents, and a hole in the side of a monocoque that the B-pillar closes. It costs nothing to build and nothing to carry, and it spends something the car does not own, which is the ground beside it. Every later rung on this ladder is an argument with that trade.',
+      cost: [
+        'The swing is the whole cost and it is not small: the panel sweeps outboard through its own length, so the space it needs beside the car is the space a parked car does not have.',
+        'The hinge carries the door in bending at full open. Years of somebody leaning on an open door is what puts a front door out of alignment, and it shows up as a latch that needs a firmer shut.',
+      ],
+    },
+    'door-rear': {
+      name: 'Rear door',
+      kind: 'door',
+      part: 'doors',
+      mass: 20.5,
+      seconds: 1.1,
+      seat: 'B-pillar hinge face at the x 0.016 shutline, on the pillar the front door latches to',
+      motion: [
+        { kind: 'swing', axis: [0, 1, 0], pivot: [0.024, 0.670, 0.9582], deg: 66 },
+      ],
+      why: 'The rear door hangs off the B-pillar the front door latches to, which is why the pillar is a structural member rather than a trim piece and why a four-door body cannot delete it. The aperture is shorter than the front one and the swing is the same, so the rear door needs marginally less room and gives an occupant marginally less opening.',
+      cost: [
+        'Two apertures a side means a pillar between them, and a pillar between them is the single largest obstruction to getting into the back seat.',
+      ],
+    },
+    hood: {
+      name: 'Hood',
+      kind: 'hood',
+      part: 'hood',
+      mass: 12,
+      seconds: 1.3,
+      seat: 'Cowl hinge line at x 0.967, on the casting the strut towers stand on',
+      motion: [
+        { kind: 'swing', axis: [0, 0, 1], pivot: [0.967, 0.930, 0], deg: 52 },
+      ],
+      why: 'Hinged at the back and lifted at the front, which is the arrangement that puts the panel out of the way of the person leaning over the opening rather than into their face. It also fails safe at speed: a latch that lets go on a rear-hinged hood is caught by the airflow pressing it shut, where a forward-hinged one would be torn open across the windshield.',
+      cost: [
+        'The panel stands most of a meter above the car at full open, so a low garage or a roof box is a real constraint on a hood that a decklid never has.',
+        'The 70 mm of pedestrian crush stroke under this panel is the reason there is so little usable depth beneath it.',
+      ],
+    },
+    decklid: {
+      name: 'Decklid',
+      kind: 'decklid',
+      part: 'fenders',
+      mass: 7,
+      seconds: 1.2,
+      seat: 'Transverse axis on the deck front cut, the panel\'s own top face at (-1.5155, 1.0166), 5.6 mm behind the backlight rim',
+      motion: [
+        { kind: 'swing', axis: [0, 0, 1], pivot: [-1.5155, 1.0166, 0], deg: -80 },
+      ],
+      /* The reversing camera above the plate recess is at (-2.24, 0.96),
+         which is 35 mm ahead of this lid's own trailing edge and 26.1 mm
+         proud of the deck plane it overlaps by 0.34 mm at rest. It is bolted
+         through the lid, so it travels with it. */
+      carries: [{ part: 'autonomy/cameras', box: [-2.30, 0.93, 0, -2.19, 1.00, 0.05] }],
+      why: 'THE CUT HAS NO CAMBER, and that is the whole reason one fixed axis is exact here. The lid\'s front line is fourteen vertices at x -1.515482 and y 1.016648, dead straight from z -0.636 to 0.636: zero camber across 1.2726 m of a 1.392 m panel, because a three-box deck is a flat plate raked 0.096 rad and nothing else. So an axis through that line pins the ENTIRE leading edge rather than one point on it. Swept from 0 to 80 degrees the lid\'s maximum x runs -1.5107 to -1.5154, which is 4.7 mm AFT: the leading edge never advances at all, and the 5.6 mm shutline to the backlight\'s rear rim at (-1.5051, 1.0203) is never spent. Gen 9 measured 220.9 mm of camber on the same cut and had to put its axis at the crown to pin one point of it. This body gets for free what that one had to argue for, and the reason is that it is the plain sedan.\n\nWHERE THE AXIS SITS IN THE PANEL\'S THICKNESS IS THE ONLY REAL DECISION, and it has 10.5 mm of latitude on a 12 mm panel. On the top face the advance is zero. Drop it to the bottom face, 12 mm down, where a hinge bolted to a lid\'s inner panel actually lives, and the leading edge advances 7.1 mm at full travel against a 5.6 mm gap. Put it where a gooseneck\'s real pivot goes, forward of and below the cut inside the load space, and it stops being a tolerance and becomes a redesign: 100 mm forward and 100 mm down advances the leading edge 176.4 mm and drives the panel 165.1 mm into body/roof-glass, which over that station is the bonded backlight; 200 and 150 advances it 308.2 mm, 307.5 mm into the backlight and 59.6 mm into interior/rear-bench. So this lid is a four-bar, or an offset hinge that keeps its effective pivot within 10 mm of the cut. The gooseneck is the cheaper hardware and it is not available, because on a three-box body the thing directly ahead of the trunk cut is a fixed piece of glass.\n\nNOTHING ON THE CAR LIMITS THE TRAVEL, which is worth saying out loud because it is rare on this ladder. Swept in 5 degree steps against the other 131 built parts of the preset, out to 120 degrees, this panel grows into nothing at all: it retreats from the tail roll rather than into it, it shares no z with the quarter shoulder band at |z| 0.7040 because the lid stops at 0.6960, and it leans back over its own aperture instead of forward over the glass. The 80 degrees is set by the hinge statics instead. The panel\'s area centroid sits 380.2 mm aft of the axis and 42.6 mm below it, so the arm crosses over the axis at 96.4 degrees of travel, and past that the lid\'s own weight carries it forward onto the backlight rather than holding it against the struts. Eighty leaves 16.4 degrees of margin, which is where a torsion bar can hold the lid up and gravity can still shut it.\n\nWHAT IT OPENS ONTO is the number this rung exists to publish. Measured off the built neighbors, the trunk aperture is 0.7786 m by 1.4080 m, 1.0963 m2 in plan, against the hood\'s 1.3126 by 1.6680 and 2.1894 m2. The nose of a skateboard car opens onto almost exactly twice the plan area the tail does, and the tail\'s half is not small because the volume behind it is small. It is small because a three-box body puts a fixed backlight where a hatch would put an opening, and every liftgate further up this ladder is arguing with that ratio.',
+      cost: [
+        'Eighty degrees costs 292.1 mm of height over the parked car, whose own tallest point is the lidar pod at 1.4635, so the lid crown reaches 1.7556 and wants a 1.76 m ceiling where the hood wants 1.88. Spending nothing sideways is the point: 0.0 mm of lateral excursion at every angle of the travel, against a front door that is outside a 2.50 m stall after 17 degrees. A trunk can be loaded in a bay the doors cannot be opened in.',
+        'The effective pivot has to stay inside the top 10.5 mm of a 12 mm panel, which rules out the cheap gooseneck and buys a four-bar. That is real money on the rung whose whole argument is that nothing here is clever, and it is the first place on this body where the cheapest hardware is not available.',
+        'The lid is 7 of the 16 kg the fenders part declares for every skin panel on the tail and the flanks. Splitting a closure out of a bag of panels is what makes a ledger like that visible: 16 kg was always thin for four fenders, two quarters, the pillar outers, the cowl, the tail roll and this lid, and now 7 of it has a name on it.',
+        'The trunk gutter under the lid is a solid dark plate 18 mm below the deck plane spanning the whole aperture, so what opening this reveals today is a floor rather than a well. Turning that plate into a ring over a real tub is a bigger job than every hinge on this body put together, and it is not done here.',
+      ],
+    },
+  },
   parts: {
     'front-casting': {
       name: 'Front megacasting',
-      tagline: 'One 6,100 tonne die shot where seventy stamped parts used to be.',
+      tagline: 'One 6,100 ton die shot where seventy stamped parts used to be.',
       mass: 48,
       specs: [
         ['Process', 'High-pressure die cast, vacuum assist'],
@@ -24,14 +111,14 @@ export const SYSTEM = {
         ['Replaces', '72 stampings, ~900 spot welds'],
         ['Integrates', 'Shock towers, rail and cradle mounts'],
       ],
-      how: 'Molten alloy at 700 °C is injected into a steel die at several metres per second under partial vacuum, filling a 1.5 m part in under 100 milliseconds before the gate freezes. The alloy is the enabling trick: AlSi10MnMg reaches its strength by natural ageing, because a casting this large would warp unacceptably in the water quench a conventional T6 treatment needs. Manganese stands in for iron to stop the melt soldering to the die while keeping ductility for crash.\n\nStructurally the casting is a node, not a crush element. It gathers the crash rails, the upper apron loads, and the rocker fronts, and it must stay elastic while the bolted rails ahead of it fold. The rib pattern comes from topology optimisation against those load cases, and every suspension and drive unit mount is machined in one fixture, so the whole front axle geometry hangs off a single datum.',
-      why: 'The argument is tolerance and capital, not romance. Seventy stamped parts carry seventy tolerance stacks and need a body shop full of robots to join; one casting holds hardpoints within ±0.5 mm from a single machining setup. Steering precision is a straight function of front-end stiffness, and stiffness is cheapest when there are no joints to lose it in.\n\nWhat ties the two spars together is now a lower crossmember at the casting\'s front face and nothing else, and that correction is worth stating because the old drawing was a claim nobody had checked. The spars were tied by a solid block 310 mm deep, 280 mm tall and 680 mm across, filling x 1.760 to 2.070 over the full section height. That is 0.0590 cubic metres of drawn aluminium, 159 kg of it, inside a part that declares 48 kg for the whole casting. It is also exactly the volume every thermal variant on the ladder uses for its chiller, manifold, pumps and heat pump, so the block was not a member, it was an unmeasured solid standing in the cooling bay: measured by ray parity, thermal/chiller came back 96.3 percent enclosed by this part, thermal-6/heat-pump 92.7, thermal-6/pressure-set 88.7, thermal/manifold 76.3 and thermal/fans 74.5. Equipment that far inside a solid cannot be seen or picked at explode 0, which is the defect, not the millimetres. Counting vertices against the casting boxes agrees with that sweep to within 1.1 points on every part, and finds one it missed: thermal/pumps was 100 percent inside this casting, every vertex of it, so it made no crossings at all and no penetration check on the car could see it.\n\nThe crossmember that replaces the block runs x 2.000 to 2.070, y 0.300 to 0.370, and its station was chosen the same way the crash rails were: swept against every part of every other module on all ten presets, it is the one place in the bay that adds no pair and deepens none. Enclosure afterwards, ray parity again so both columns are one method: pumps 100.0 to 0 percent, thermal/manifold 76.3 to 0, thermal/chiller 96.3 to 11.1, thermal/fans 74.5 to 23.1, thermal-6/pressure-set 88.7 to 39.7, thermal-6/heat-pump 92.7 to 45.2. thermal/heat-pump does not move at all and stays at 80.7 percent, because it sits in the spar and not in the bay, which is the half of this casting that is still a brick.',
+      how: 'Molten alloy at 700 °C is injected into a steel die at several meters per second under partial vacuum, filling a 1.5 m part in under 100 milliseconds before the gate freezes. The alloy is the enabling trick: AlSi10MnMg reaches its strength by natural aging, because a casting this large would warp unacceptably in the water quench a conventional T6 treatment needs. Manganese stands in for iron to stop the melt soldering to the die while keeping ductility for crash.\n\nStructurally the casting is a node, not a crush element. It gathers the crash rails, the upper apron loads, and the rocker fronts, and it must stay elastic while the bolted rails ahead of it fold. The rib pattern comes from topology optimization against those load cases, and every suspension and drive unit mount is machined in one fixture, so the whole front axle geometry hangs off a single datum.',
+      why: 'The argument is tolerance and capital, not romance. Seventy stamped parts carry seventy tolerance stacks and need a body shop full of robots to join; one casting holds hardpoints within ±0.5 mm from a single machining setup. Steering precision is a straight function of front-end stiffness, and stiffness is cheapest when there are no joints to lose it in.\n\nWhat ties the two spars together is now a lower crossmember at the casting\'s front face and nothing else, and that correction is worth stating because the old drawing was a claim nobody had checked. The spars were tied by a solid block 310 mm deep, 280 mm tall and 680 mm across, filling x 1.760 to 2.070 over the full section height. That is 0.0590 cubic meters of drawn aluminum, 159 kg of it, inside a part that declares 48 kg for the whole casting. It is also exactly the volume every thermal variant on the ladder uses for its chiller, manifold, pumps and heat pump, so the block was not a member, it was an unmeasured solid standing in the cooling bay: measured by ray parity, thermal/chiller came back 96.3 percent enclosed by this part, thermal-6/heat-pump 92.7, thermal-6/pressure-set 88.7, thermal/manifold 76.3 and thermal/fans 74.5. Equipment that far inside a solid cannot be seen or picked at explode 0, which is the defect, not the millimeters. Counting vertices against the casting boxes agrees with that sweep to within 1.1 points on every part, and finds one it missed: thermal/pumps was 100 percent inside this casting, every vertex of it, so it made no crossings at all and no penetration check on the car could see it.\n\nThe crossmember that replaces the block runs x 2.000 to 2.070, y 0.300 to 0.370, and its station was chosen the same way the crash rails were: swept against every part of every other module on all ten presets, it is the one place in the bay that adds no pair and deepens none. Enclosure afterward, ray parity again so both columns are one method: pumps 100.0 to 0 percent, thermal/manifold 76.3 to 0, thermal/chiller 96.3 to 11.1, thermal/fans 74.5 to 23.1, thermal-6/pressure-set 88.7 to 39.7, thermal-6/heat-pump 92.7 to 45.2. thermal/heat-pump does not move at all and stays at 80.7 percent, because it sits in the spar and not in the bay, which is the half of this casting that is still a brick.',
       fail: [
         'Gas porosity is the process risk: trapped air becomes subsurface voids, controlled by vacuum level and caught by X-ray sampling.',
         'A crash hard enough to yield the casting writes off the shell; the repair economics are the honest price of integration.',
-        'Every steel bolt into aluminium is a galvanic couple; isolation coatings and sealed interfaces are a warranty item, not a detail.',
+        'Every steel bolt into aluminum is a galvanic couple; isolation coatings and sealed interfaces are a warranty item, not a detail.',
         'The spars are still drawn as 510 x 280 x 240 mm solids and they still are not one: the suspension pickups arrive inside them at up to 93.5 mm, and thinning them to a real section makes the reported straddle depth worse rather than better, so that half of the casting is measured and left alone rather than quietly redrawn.',
-        'This crossmember is inside the frontal silhouette of three bodies and nobody knew. It spans |z| 0.340 and stops 15 mm short of the spars it ties, which is wrong, and widening it to |z| 0.355 so it lands on them grew the built silhouette of body-3 by 0.001674 m2, body-4 by 0.001553 and body-6 by 0.000135, because on those three the skin does not cover the centreline between y 0.300 and 0.370 and this casting is what stands in the shadow there. The 15 mm gap therefore stays until the AREA table is regenerated, and a structural member is being held to a coordinate by an aerodynamic table, which is worth knowing before the next body is drawn.',
+        'This crossmember is inside the frontal silhouette of three bodies and nobody knew. It spans |z| 0.340 and stops 15 mm short of the spars it ties, which is wrong, and widening it to |z| 0.355 so it lands on them grew the built silhouette of body-3 by 0.001674 m2, body-4 by 0.001553 and body-6 by 0.000135, because on those three the skin does not cover the centerline between y 0.300 and 0.370 and this casting is what stands in the shadow there. The 15 mm gap therefore stays until the AREA table is regenerated, and a structural member is being held to a coordinate by an aerodynamic table, which is worth knowing before the next body is drawn.',
       ],
       explode: [0.85, -0.35, 0],
     },
@@ -46,11 +133,11 @@ export const SYSTEM = {
         ['Integrates', 'Spring seats, wheelhouses, cradle mounts'],
         ['Rear rails', 'Bolt-on, sacrificial'],
       ],
-      how: 'The rear went first across the industry because deep-drawn geometry, spring seats, wheelhouse bowls, and the boot floor step, is exactly where stamped construction needs the most individual parts and the most welding. A die can form in one shot what a press line approximates in nine draws. The thermal fight is local: thick bosses at the spring seats cool slower than 3 mm walls, so the die carries conformal cooling channels to keep solidification even and hot tears out of the rib junctions.\n\nCrash duty mirrors the front. Short bolted rails and a rear beam take the low-speed hits and unbolt for repair; the casting itself is sized to stay below yield through the insurance-test regime. It also carries the rear drive unit on three bushings and reacts seat and belt anchor loads from the row above the penthouse.',
-      why: 'A casting is bought by the metre of weld it deletes. The rear deletes the most, which is why it carried the business case before the front did, and why the two castings plus the structural battery between them replace what used to be a floorpan made of sixty pieces.',
+      how: 'The rear went first across the industry because deep-drawn geometry, spring seats, wheelhouse bowls, and the trunk floor step, is exactly where stamped construction needs the most individual parts and the most welding. A die can form in one shot what a press line approximates in nine draws. The thermal fight is local: thick bosses at the spring seats cool slower than 3 mm walls, so the die carries conformal cooling channels to keep solidification even and hot tears out of the rib junctions.\n\nCrash duty mirrors the front. Short bolted rails and a rear beam take the low-speed hits and unbolt for repair; the casting itself is sized to stay below yield through the insurance-test regime. It also carries the rear drive unit on three bushings and reacts seat and belt anchor loads from the row above the penthouse.',
+      why: 'A casting is bought by the meter of weld it deletes. The rear deletes the most, which is why it carried the business case before the front did, and why the two castings plus the structural battery between them replace what used to be a floorpan made of sixty pieces.',
       fail: [
         'Hot tearing at thick-to-thin transitions is the casting defect that matters; CT scans on a sampling plan police it.',
-        'A large aluminium plate rings; damping patches and the bonded boot trim are NVH treatment, not decoration.',
+        'A large aluminum plate rings; damping patches and the bonded trunk trim are NVH treatment, not decoration.',
         'Same write-off threshold as the front: yield the casting and the shell is done.',
       ],
       explode: [-0.85, -0.35, 0],
@@ -62,7 +149,7 @@ export const SYSTEM = {
       specs: [
         ['Section', '90 x 90 mm octagonal, 3.0 mm wall, 6082-T6'],
         ['Mean crush force', '~120 kN per rail over 230 mm'],
-        ['Rail centreline', '|z| 0.550, outer wall flush with the spar'],
+        ['Rail centerline', '|z| 0.550, outer wall flush with the spar'],
         ['Clearance to cooling core', '60 mm each side'],
         ['Attachment', '8x M12 per side, bolted'],
         ['Repair threshold', '16 km/h RCAR, casting untouched'],
@@ -79,7 +166,7 @@ export const SYSTEM = {
     },
     rockers: {
       name: 'Rocker beams',
-      tagline: 'Eight aluminium chambers between a pole and 960 cells.',
+      tagline: 'Eight aluminum chambers between a pole and 960 cells.',
       mass: 22,
       specs: [
         ['Process', '6082-T6 multi-void extrusion'],
@@ -88,32 +175,32 @@ export const SYSTEM = {
         ['Intrusion budget', '< 40 mm at the pack rail'],
         ['Joining', 'Flow-drill screws + structural adhesive'],
       ],
-      how: 'The side pole test is the sizing case for any EV: a rigid 254 mm pole at 32 km/h, all the energy into a hand-width of sill. The rocker answers with eight extruded chambers that crush in sequence from outboard in, each web adding a step to the force curve, absorbing the hit in roughly 70 mm of controlled collapse. Whatever load remains crosses the battery crossmembers to the far rocker, so both sides of the car resist a one-sided hit.\n\nThe extrusion runs the full two metres between the wheel arches at constant section. Constant section is the point: an extrusion die costs a fraction of a stamping set, and there are no weak stations along the length for a pole to find.',
+      how: 'The side pole test is the sizing case for any EV: a rigid 254 mm pole at 32 km/h, all the energy into a hand-width of sill. The rocker answers with eight extruded chambers that crush in sequence from outboard in, each web adding a step to the force curve, absorbing the hit in roughly 70 mm of controlled collapse. Whatever load remains crosses the battery crossmembers to the far rocker, so both sides of the car resist a one-sided hit.\n\nThe extrusion runs the full two meters between the wheel wells at constant section. Constant section is the point: an extrusion die costs a fraction of a stamping set, and there are no weak stations along the length for a pole to find.',
       why: 'The 40 mm intrusion budget is a contract with the battery: inside it the pack side rails stay elastic and the outer cell rows survive. The rocker is not really a body part, it is the seatbelt of the pack, and its section was sized from the cell map outward.',
       fail: [
         'Intrusion past 40 mm compromises the outer cell rows and totals the pack; the body repair is the cheap half of that event.',
         'Flow-drill screws have a narrow process window in cast material; torque curves are logged per joint at the plant.',
-        'A kerb strike can crush inner chambers invisibly; sill impacts warrant inspection even when the paint survives.',
+        'A curb strike can crush inner chambers invisibly; sill impacts warrant inspection even when the paint survives.',
       ],
       explode: [0, -0.5, 0.3],
     },
     pillars: {
       name: 'Safety cage',
-      tagline: 'Hot-stamped boron steel, the one place steel still beats aluminium.',
+      tagline: 'Hot-stamped boron steel, the one place steel still beats aluminum.',
       mass: 62,
       specs: [
         ['Material', '22MnB5, hot stamped'],
         ['Strength', '1,500 MPa after die quench'],
         ['B-pillar', 'Tailored soft zone, lower third at 600 MPa'],
-        ['Roof crush', '4.4x kerb mass before 127 mm'],
+        ['Roof crush', '4.4x curb mass before 127 mm'],
         ['A-pillar section', '38 x 90 mm closed'],
       ],
-      how: 'Each member starts as a blank heated to 930 °C, formed in a water-cooled die, and quenched in place at over 27 °C per second, converting the boron steel to martensite at 1,500 MPa. That number is what buys thin pillars: an A-pillar strong enough for rollover at 38 mm width costs about three degrees less blind spot than the mild-steel section it replaced.\n\nThe cage is the intrusion-resistant cell inside the aluminium car: A-pillars and header take roof crush, B-pillars carry it down into the rockers, and the C-pillars close the ring around the backlight. The B-pillar lower third is deliberately tempered back to 600 MPa so that in a side impact it bends inboard in a controlled arc instead of fracturing, keeping the door aperture attached. Steel meets aluminium through structural adhesive and self-pierce rivets, with the glue line doubling as galvanic isolation.',
-      why: 'Around the passengers the requirement is strength in minimal package space, not energy absorption, and martensitic steel carries roughly three times the load of any practical aluminium section of the same width. Everywhere else on this body aluminium wins on mass; here the centimetres matter more than the kilograms.',
+      how: 'Each member starts as a blank heated to 930 °C, formed in a water-cooled die, and quenched in place at over 27 °C per second, converting the boron steel to martensite at 1,500 MPa. That number is what buys thin pillars: an A-pillar strong enough for rollover at 38 mm width costs about three degrees less blind spot than the mild-steel section it replaced.\n\nThe cage is the intrusion-resistant cell inside the aluminum car: A-pillars and header take roof crush, B-pillars carry it down into the rockers, and the C-pillars close the ring around the backlight. The B-pillar lower third is deliberately tempered back to 600 MPa so that in a side impact it bends inboard in a controlled arc instead of fracturing, keeping the door aperture attached. Steel meets aluminum through structural adhesive and self-pierce rivets, with the glue line doubling as galvanic isolation.',
+      why: 'Around the passengers the requirement is strength in minimal package space, not energy absorption, and martensitic steel carries roughly three times the load of any practical aluminum section of the same width. Everywhere else on this body aluminum wins on mass; here the centimeters matter more than the kilograms.',
       fail: [
         'Martensite does not tolerate straightening: heat or force enough to move it and it cracks, so damaged members are cut out and section-replaced.',
         'Hydrogen picked up in the furnace can embrittle the steel; dew point control in the line is the quiet safeguard.',
-        'The steel-aluminium interface is a corrosion cell wherever the adhesive film is breached; a scratched flange is a warranty claim years later.',
+        'The steel-aluminum interface is a corrosion cell wherever the adhesive film is breached; a scratched flange is a warranty claim years later.',
       ],
       explode: [0, 0.32, 0],
     },
@@ -122,14 +209,14 @@ export const SYSTEM = {
       tagline: 'Bonded into the cage, the glass carries shear like any other structural panel.',
       mass: 30,
       specs: [
-        ['Roof panel', '4.76 mm laminated, grey PVB'],
+        ['Roof panel', '4.76 mm laminated, gray PVB'],
         ['Backlight', '4.13 mm laminated'],
         ['Solar transmittance', '22 percent total'],
         ['IR coating', 'Sputtered silver stack'],
         ['Bond', 'PU bead, 9 m run, 8 mm dia'],
       ],
-      how: 'Both panels are laminated: two soda-lime plies over a 0.76 mm PVB interlayer, tinted in the mass and finished with a sputtered silver stack that reflects near-infrared before it enters the cabin. Total solar energy transmitted stays near 22 percent, which is what makes a fixed glass ceiling liveable without a blind in most climates.\n\nThe polyurethane bond is structural. Once cured, the glass works as a shear panel across the cage rails and adds a measurable few percent to torsional stiffness, exactly as a bonded windscreen has since the 1970s. The packaging win is quieter: a glass panel plus its bond is around 25 mm thinner than a steel roof, its bows, and a headliner, and deleting a sliding sunroof mechanism saves 12 kg of the heaviest-mounted mass on the car.',
-      why: 'The honest ledger: glass costs about 8 kg over an aluminium roof skin, and buys headroom under a lower roofline, stiffness continuity, and a cabin that reads twice its size. Because the boron-steel rails and header carry all of the roof-crush load, the glass is never asked to do more than shear, which laminated glass does well.',
+      how: 'Both panels are laminated: two soda-lime plies over a 0.76 mm PVB interlayer, tinted in the mass and finished with a sputtered silver stack that reflects near-infrared before it enters the cabin. Total solar energy transmitted stays near 22 percent, which is what makes a fixed glass ceiling livable without a blind in most climates.\n\nThe polyurethane bond is structural. Once cured, the glass works as a shear panel across the cage rails and adds a measurable few percent to torsional stiffness, exactly as a bonded windshield has since the 1970s. The packaging win is quieter: a glass panel plus its bond is around 25 mm thinner than a steel roof, its bows, and a headliner, and deleting a sliding sunroof mechanism saves 12 kg of the heaviest-mounted mass on the car.',
+      why: 'The honest ledger: glass costs about 8 kg over an aluminum roof skin, and buys headroom under a lower roofline, stiffness continuity, and a cabin that reads twice its size. Because the boron-steel rails and header carry all of the roof-crush load, the glass is never asked to do more than shear, which laminated glass does well.',
       fail: [
         'Laminated glass fails safe: cracks spread slowly and the panel stays bonded in the frame rather than raining in.',
         'An edge chip inside the bond line is the crack initiator that matters; the ceramic frit band exists partly to hide and protect that edge.',
@@ -138,21 +225,21 @@ export const SYSTEM = {
       explode: [0, 0.85, 0],
     },
     windshield: {
-      name: 'Windscreen',
+      name: 'Windshield',
       tagline: 'The most loaded optic on the car: structure, acoustics, and a camera all look through it.',
       mass: 14,
       specs: [
         ['Stack', '2.1 mm + 0.76 acoustic PVB + 1.6 mm'],
         ['Rake', '48 degrees from vertical'],
-        ['Acoustic core', 'Tri-layer PVB, soft centre'],
+        ['Acoustic core', 'Tri-layer PVB, soft center'],
         ['Camera zone', 'Optical-grade tolerance window'],
         ['Wipers', 'Twin arm, 560 mm blades, cowl-parked'],
         ['Bond', 'Structural PU, shear-active'],
       ],
-      how: 'The stack is asymmetric on purpose: a 2.1 mm outer ply for stone impact, a 1.6 mm inner to save mass, and an acoustic PVB between them whose soft middle layer damps the coincidence frequency near 3 kHz, the band where ordinary glass leaks wind rush and speech. The difference is roughly 3 dB where the ear is most sensitive, which is why conversation at 130 km/h works.\n\nThe 48 degree rake is a negotiated settlement. More rake lowers drag and it stretches the bonnet line the pedestrian rules want, but it also lengthens the optical path through the glass: camera distortion, night-time double imaging, and solar load all grow with the angle. Above the mirror sits the camera window, a zone of the lamination held to optical tolerances the rest of the screen does not need.',
-      why: 'Since bonded screens replaced rubber gaskets, the windscreen has been a shear panel, and the slim A-pillars of this cage assume it. Removing the glass measurably softens the front ring, which is why a windscreen here is fitted like structure, not trim.',
+      how: 'The stack is asymmetric on purpose: a 2.1 mm outer ply for stone impact, a 1.6 mm inner to save mass, and an acoustic PVB between them whose soft middle layer damps the coincidence frequency near 3 kHz, the band where ordinary glass leaks wind rush and speech. The difference is roughly 3 dB where the ear is most sensitive, which is why conversation at 130 km/h works.\n\nThe 48 degree rake is a negotiated settlement. More rake lowers drag and it stretches the hood line the pedestrian rules want, but it also lengthens the optical path through the glass: camera distortion, night-time double imaging, and solar load all grow with the angle. Above the mirror sits the camera window, a zone of the lamination held to optical tolerances the rest of the screen does not need.',
+      why: 'Since bonded screens replaced rubber gaskets, the windshield has been a shear panel, and the slim A-pillars of this cage assume it. Removing the glass measurably softens the front ring, which is why a windshield here is fitted like structure, not trim.',
       fail: [
-        'Any replacement forces ADAS recalibration: a half-degree of camera pitch error is metres of lane-position error at range.',
+        'Any replacement forces ADAS recalibration: a half-degree of camera pitch error is meters of lane-position error at range.',
         'Edge delamination from trapped moisture is the slow failure; the frit and encapsulation exist to keep water out of the interlayer.',
         'Chip repair is off-limits inside the camera zone; resin refraction there corrupts what the car sees.',
       ],
@@ -169,7 +256,7 @@ export const SYSTEM = {
         ['Frameless drop', '8 mm on unlatch'],
         ['Tumblehome', '29 degrees at the glass'],
       ],
-      how: 'Front panes are laminated for the same acoustic reasons as the screen, and because a laminated pane resists casual break-in far longer than tempered. Rear panes stay tempered: cheaper, lighter, and they preserve the one pane a rescue tool can actually shatter, which is an honest safety argument, not a cost excuse. The frameless doors drop each pane 8 mm on unlatch to clear the seal lip, then press it back for closure.\n\nTHE PANE IS NOT FLUSH, and this panel used to say it was. The aero argument for frameless glazing is real: framed glass sits in a channel roughly 6 mm below the body surface, a pane standing 0.5 mm proud with no frame at all lets the boundary layer cross the beltline without tripping, and on a car chasing 0.21 that is worth about four counts of drag. This car does not build it, and it is worth being exact about what it does build, because the first correction of this panel was not.\n\nRay-swept off the mesh, the pane\'s outer face is 0.9305 at its foot at y 0.9258. The door skin at that SAME height is a flat land at 0.9340 running the full span of both doors, so the flushness step at the joint is 3.5 mm, glass inside the land. The door skin\'s widest point is 0.9582, but it sits at y 0.9156, ten millimetres lower and on the far side of the door\'s own beltline turnover, which gives up 24.2 mm of z in 4.4 mm of height. Subtracting those two numbers gives 27.7 mm, and 27.7 was published here as the flushness. It is the depth of the shoulder from the widest point of the door up to the glass, taken at two different stations. Both figures are real and they answer different questions, and a flushness row has to carry the one measured at the joint.\n\nWhich of them costs the drag count is neither obvious nor the pane. The boundary layer coming up the door side meets the 24.2 mm turnover BEFORE it reaches any glass, so it trips on the door skin whether or not the pane is flush with the land above. The four counts are not built, and closing the 3.5 mm at the joint would not build them. What stands in the way is the beltline turnover, which is a body-side feature, not a glazing one.\n\nWhat the pane can and cannot do, since this panel previously said it could not move at all. The daylight opening was already brought outboard from z 0.880 to 0.920 once. Taking it the remaining 3.5 mm out to sit flush with the land at 0.9340 is FREE in frontal area: the built silhouette over the pane\'s own x span at the glass foot height is 0.9362, and that is the B-pillar crown at x 0.020 rather than any panel, so a pane at 0.9340 still sits 2.2 mm inside the widest thing on the car at that height and casts no new shadow. What the pane cannot do is reach the door skin\'s 0.9582, which is 24 mm past the crown and would make the glass the widest thing on the car and pay for its count in area. So the joint is closable and the shoulder is not, and the shoulder is the one that owns the drag. The geometry is left alone here because moving it moves the Gen 1 silhouette, and Gen 1 is the zero the frontal-area re-zero was measured against.\n\nWHAT THAT DOES TO THE LADDER, said out loud rather than quietly patched. js/efficiency.js carries \'body\': { cd: 0.21 } for Gen 1, and four counts of that were bought with flush glazing this geometry does not have. Withdrawing them gives Cd 0.214. Priced through the ladder\'s own model at the measured 1,671 kg, that is 3 miles of range. The Wh/mi cost has to be quoted against a named area convention, because the frontal-area re-zero landed while this was being measured: the same withdrawal reads 221.1 to 222.7 Wh/mi and 430 to 427 miles on the area convention before it, and 228.2 to 229.9 and 416 to 413 after it. So it is +1.6 Wh/mi on the old area and +1.8 on the measured one, and it differs because a Cd delta is charged against the reference area and the reference area moved by 8 percent. The 3 miles survives the convention change and the Wh/mi does not, so a single convention-free number for it is the one thing not to write here.\n\nIt is NOT changed in js/efficiency.js here, and the reason is design/retro-gen9.md: no Cd count moves until one integrator re-zeroes every body at once, because Gen 1 is the ladder\'s zero and patching it alone would leave eight rungs measured against a baseline that no longer exists. The area half of that re-zero has now been done. This is the first sized entry for the coefficient half.',
+      how: 'Front panes are laminated for the same acoustic reasons as the screen, and because a laminated pane resists casual break-in far longer than tempered. Rear panes stay tempered: cheaper, lighter, and they preserve the one pane a rescue tool can actually shatter, which is an honest safety argument, not a cost excuse. The frameless doors drop each pane 8 mm on unlatch to clear the seal lip, then press it back for closure.\n\nTHE PANE IS NOT FLUSH, and this panel used to say it was. The aero argument for frameless glazing is real: framed glass sits in a channel roughly 6 mm below the body surface, a pane standing 0.5 mm proud with no frame at all lets the boundary layer cross the beltline without tripping, and on a car chasing 0.21 that is worth about four counts of drag. This car does not build it, and it is worth being exact about what it does build, because the first correction of this panel was not.\n\nRay-swept off the mesh, the pane\'s outer face is 0.9305 at its foot at y 0.9258. The door skin at that SAME height is a flat land at 0.9340 running the full span of both doors, so the flushness step at the joint is 3.5 mm, glass inside the land. The door skin\'s widest point is 0.9582, but it sits at y 0.9156, ten millimeters lower and on the far side of the door\'s own beltline turnover, which gives up 24.2 mm of z in 4.4 mm of height. Subtracting those two numbers gives 27.7 mm, and 27.7 was published here as the flushness. It is the depth of the shoulder from the widest point of the door up to the glass, taken at two different stations. Both figures are real and they answer different questions, and a flushness row has to carry the one measured at the joint.\n\nWhich of them costs the drag count is neither obvious nor the pane. The boundary layer coming up the door side meets the 24.2 mm turnover BEFORE it reaches any glass, so it trips on the door skin whether or not the pane is flush with the land above. The four counts are not built, and closing the 3.5 mm at the joint would not build them. What stands in the way is the beltline turnover, which is a body-side feature, not a glazing one.\n\nWhat the pane can and cannot do, since this panel previously said it could not move at all. The daylight opening was already brought outboard from z 0.880 to 0.920 once. Taking it the remaining 3.5 mm out to sit flush with the land at 0.9340 is FREE in frontal area: the built silhouette over the pane\'s own x span at the glass foot height is 0.9362, and that is the B-pillar crown at x 0.020 rather than any panel, so a pane at 0.9340 still sits 2.2 mm inside the widest thing on the car at that height and casts no new shadow. What the pane cannot do is reach the door skin\'s 0.9582, which is 24 mm past the crown and would make the glass the widest thing on the car and pay for its count in area. So the joint is closable and the shoulder is not, and the shoulder is the one that owns the drag. The geometry is left alone here because moving it moves the Gen 1 silhouette, and Gen 1 is the zero the frontal-area re-zero was measured against.\n\nWHAT THAT DOES TO THE LADDER, said out loud rather than quietly patched. js/efficiency.js carries \'body\': { cd: 0.21 } for Gen 1, and four counts of that were bought with flush glazing this geometry does not have. Withdrawing them gives Cd 0.214. Priced through the ladder\'s own model at the measured 1,671 kg, that is 3 miles of range. The Wh/mi cost has to be quoted against a named area convention, because the frontal-area re-zero landed while this was being measured: the same withdrawal reads 221.1 to 222.7 Wh/mi and 430 to 427 miles on the area convention before it, and 228.2 to 229.9 and 416 to 413 after it. So it is +1.6 Wh/mi on the old area and +1.8 on the measured one, and it differs because a Cd delta is charged against the reference area and the reference area moved by 8 percent. The 3 miles survives the convention change and the Wh/mi does not, so a single convention-free number for it is the one thing not to write here.\n\nIt is NOT changed in js/efficiency.js here, and the reason is design/retro-gen9.md: no Cd count moves until one integrator re-zeroes every body at once, because Gen 1 is the ladder\'s zero and patching it alone would leave eight rungs measured against a baseline that no longer exists. The area half of that re-zero has now been done. This is the first sized entry for the coefficient half.',
       why: 'Frameless glazing is still right for the reasons that survive the measurement: no channel, no frame, no mechanism, no mass, and a beltline the eye reads as one surface rather than as glass in a picture frame. What it is not currently buying is the drag count, because the beltline turns over 24.2 mm in front of the pane and the pane then sits 3.5 mm inside the land that turnover leaves, and a lever nobody has pulled is worth naming as an unspent lever rather than banking as a win. Glass is still the cheapest place on a body to buy counts: it needs tooling discipline and a seal that tolerates a naked edge, and no mass at all.',
       fail: [
         'Frameless seals wear into a whistle; the drop-and-press cycle is tested to 100k operations for exactly this.',
@@ -179,8 +266,8 @@ export const SYSTEM = {
       explode: [0, 0.5, 0.55],
     },
     hood: {
-      name: 'Bonnet',
-      tagline: 'An aluminium skin tuned to strike a pedestrian more softly than what sits beneath it.',
+      name: 'Hood',
+      tagline: 'An aluminum skin tuned to strike a pedestrian more softly than what sits beneath it.',
       mass: 11,
       specs: [
         ['Outer', 'AA6016, 0.9 mm stamped'],
@@ -189,18 +276,18 @@ export const SYSTEM = {
         ['HIC target', '< 1,000 across child and adult zones'],
         ['Closure', 'Double-pawl latch, gas struts'],
       ],
-      how: 'Pedestrian head impact is scored by HIC, a weighted integral of deceleration during the strike, and the way to lower it is stroke: the skin must deflect 60 to 80 mm before the head finds anything hard. So the frunk tub, strut towers, and casting edges are all packaged at least 70 mm below the outer surface, and the inner panel is a field of shallow cones that buckle at a tuned force, turning the bonnet into a distributed crush zone the size of a door.\n\nThe 0.9 mm outer skin on its own would oil-can at a touch; bonded to the cone structure with structural mastic it gains flexural depth without welds that would print through the paint. Aluminium halves the panel mass against steel, and on the highest closure of the nose that is mass exactly where you least want it.',
-      why: 'The nose line at 0.78 m and the long fall to the windscreen are not styling first: wrap-around-distance zones in the pedestrian rules dictate where a head lands at speed, and the surface is shaped so every landing point has stroke under it. The design freedom people admire in EV noses is real, but it is exercised inside that rulebook.',
+      how: 'Pedestrian head impact is scored by HIC, a weighted integral of deceleration during the strike, and the way to lower it is stroke: the skin must deflect 60 to 80 mm before the head finds anything hard. So the frunk tub, strut towers, and casting edges are all packaged at least 70 mm below the outer surface, and the inner panel is a field of shallow cones that buckle at a tuned force, turning the hood into a distributed crush zone the size of a door.\n\nThe 0.9 mm outer skin on its own would oil-can at a touch; bonded to the cone structure with structural mastic it gains flexural depth without welds that would print through the paint. Aluminum halves the panel mass against steel, and on the highest closure of the nose that is mass exactly where you least want it.',
+      why: 'The nose line at 0.78 m and the long fall to the windshield are not styling first: wrap-around-distance zones in the pedestrian rules dictate where a head lands at speed, and the surface is shaped so every landing point has stroke under it. The design freedom people admire in EV noses is real, but it is exercised inside that rulebook.',
       fail: [
         'Low dent stiffness is the tax on pedestrian compliance: hail and careless palms mark it.',
         'Mastic cured off-schedule reads through the paint as a ghost pattern of the inner cones.',
-        'The double-pawl latch exists because a bonnet at speed is a windscreen strike; it is a scheduled inspection point.',
+        'The double-pawl latch exists because a hood at speed is a windshield strike; it is a scheduled inspection point.',
       ],
       explode: [0.55, 0.5, 0],
     },
     doors: {
       name: 'Doors',
-      tagline: 'Four aluminium boxes hung to half a millimetre so the airflow never notices the split.',
+      tagline: 'Four aluminum boxes hung to half a millimeter so the airflow never notices the split.',
       mass: 82,
       count: 4,
       specs: [
@@ -212,7 +299,7 @@ export const SYSTEM = {
         ['Mass', '20.5 kg per door'],
       ],
       how: 'Each door is a stamped outer skin hemmed over an inner frame, with a 7003 extruded beam running diagonally from the hinge face toward the latch so a side impact loads the beam in tension between two anchored corners rather than bending an unsupported span. The latch striker ties the door into the B-pillar, which is why a closed door is part of the side structure, not a lid over a hole.\n\nThe 8 mm gap is a tolerance treaty between panels that come from different processes. What the air cares about is not the gap width but the step: a flush joint at ±0.5 mm keeps the boundary layer attached where a 2 mm mismatch would trip it. Hinges adjust in three axes, and a camera gauge at end of line sets every door against the casting datum, which is the quiet reason megacast bodies fit better.',
-      why: 'Gaps are honest: they are the visible sum of every tolerance behind them, and shrinking the sum costs process control, not craftsmanship theatre. Chasing flushness pays twice, in drag counts and in the perceived quality that a customer reads with a fingertip in the showroom.',
+      why: 'Gaps are honest: they are the visible sum of every tolerance behind them, and shrinking the sum costs process control, not craftsmanship theater. Chasing flushness pays twice, in drag counts and in the perceived quality that a customer reads with a fingertip in the showroom.',
       fail: [
         'EPDM seals take a compression set over years; closing effort rises and wind noise follows.',
         'Front hinge sag from years of leaning on an open door shows up as a latch that needs a firmer shut.',
@@ -227,17 +314,17 @@ export const SYSTEM = {
       specs: [
         ['Front fenders', 'Bolt-on stamped AA6016'],
         ['Rear quarters', 'Bonded and riveted to the cage'],
-        ['Arch radius', '440 mm over the 360 mm built tyre'],
+        ['Arch radius', '440 mm over the 360 mm built tire'],
         ['Clearance case', 'Full lock plus full bump'],
-        ['Closure panels', 'Deck, tail roll and cowl, bonded'],
+        ['Closure panels', 'Tail roll and cowl bonded, deck lid hinged'],
         ['Charge flap', '152 mm aperture, flush lid'],
       ],
-      how: 'The front fender bolts on and is fitted late in the line, which lets its gaps be set against the finished door rather than hoped for. The arch is cut at 440 mm radius over a tyre that measures 360 mm on the built wheel, so the annulus is 80 mm, and it is consumed by full bump travel plus full steering lock plus snow chains, the classic clearance case. The opening carries a rolled lip standing 13 mm proud of the panel face: an arch edge is the one place on a body side where the eye can read the thickness of a stamping, and a raw cut section reads as a first draft.\n\nThe rear quarter is the opposite philosophy: it is structural skin, bonded and riveted into the cage, forming the C-pillar outer and the tail corner in one stamping, with the deck panel closing the top of the tail between backlight and lamp bar. Aerodynamically the arches are the expensive real estate: on a 0.21 car the wheel wells account for roughly a quarter of total drag, which is why arch gaps are tight and the fascia feeds air curtains across the front wheel faces.',
+      how: 'The front fender bolts on and is fitted late in the line, which lets its gaps be set against the finished door rather than hoped for. The arch is cut at 440 mm radius over a tire that measures 360 mm on the built wheel, so the annulus is 80 mm, and it is consumed by full bump travel plus full steering lock plus snow chains, the classic clearance case. The opening carries a rolled lip standing 13 mm proud of the panel face: an arch edge is the one place on a body side where the eye can read the thickness of a stamping, and a raw cut section reads as a first draft.\n\nThe rear quarter is the opposite philosophy: it is structural skin, bonded and riveted into the cage, forming the C-pillar outer and the tail corner in one stamping. The deck panel between backlight and lamp bar is the one piece of that group that is NOT bonded to anything: it is the trunk lid, hung on a transverse axis at its own front cut, and it is the reason this part id owns a closure as well as a set of skins.\n\nAerodynamically the arches are the expensive real estate: on a 0.21 car the wheel wells account for roughly a quarter of total drag, which is why arch gaps are tight and the fascia feeds air curtains across the front wheel faces.',
       why: 'Front and rear are joined differently because they fail differently: front corners collect parking damage, so they unbolt; rear quarters almost never do, so they buy stiffness continuity instead. Same panel thickness, opposite statistics, opposite joints.',
       fail: [
-        'A missing arch liner lets the tyre sandblast the paint from inside the wheel well.',
-        'Quarter panel repair is a bonded cut-in section, hours of labour where a fender would be four bolts.',
-        'The wide flat deck panel will oil-can if its mastic pads skip in production; it drums at motorway speed.',
+        'A missing arch liner lets the tire sandblast the paint from inside the wheel well.',
+        'Quarter panel repair is a bonded cut-in section, hours of labor where a fender would be four bolts.',
+        'The wide flat deck panel will oil-can if the mastic beads between its outer skin and its inner panel skip in production; it drums at highway speed, and on a hinged lid there is no cage behind it to damp the noise.',
       ],
       explode: [0.3, 0.05, 0.6],
     },
@@ -246,16 +333,16 @@ export const SYSTEM = {
       tagline: 'Painted TPO over foam: the only body parts designed to be hit.',
       mass: 11,
       specs: [
-        ['Material', 'TPO, 3.0 mm injection moulded'],
+        ['Material', 'TPO, 3.0 mm injection molded'],
         ['Energy absorber', 'EPP foam ahead of the beam'],
         ['Pedestrian case', 'FlexPLI leg-form limits'],
         ['Sensor suite', '12 ultrasonic + radar window'],
         ['Aero features', 'Air-curtain inlets, sealed shutline'],
       ],
-      how: 'Thermoplastic polyolefin flexes and recovers below about 8 km/h, so trolley taps cost paint at worst. Between the skin and the aluminium beam sits an EPP foam block tuned for the leg-form impactor: the rules cap tibia acceleration and knee shear, which sets a ceiling on stiffness at exactly bumper height, and the beam behind sits in the regulated 445 to 555 mm band so car meets car beam-to-beam.\n\nThe fascia is also the front of the aero story: it places the stagnation line, feeds the air curtains that sheet flow across the front wheels, and seals against the bonnet shutline so cooling air goes through the radiator, not around it. The radar looks through the plastic, which quietly constrains the paint: heavy metal-flake finishes attenuate the beam, so the colour palette is an RF specification.',
+      how: 'Thermoplastic polyolefin flexes and recovers below about 8 km/h, so shopping cart taps cost paint at worst. Between the skin and the aluminum beam sits an EPP foam block tuned for the leg-form impactor: the rules cap tibia acceleration and knee shear, which sets a ceiling on stiffness at exactly bumper height, and the beam behind sits in the regulated 445 to 555 mm band so car meets car beam-to-beam.\n\nThe fascia is also the front of the aero story: it places the stagnation line, feeds the air curtains that sheet flow across the front wheels, and seals against the hood shutline so cooling air goes through the radiator, not around it. The radar looks through the plastic, which quietly constrains the paint: heavy metal-flake finishes attenuate the beam, so the color palette is an RF specification.',
       why: 'Separating a cheap, paintable, elastic skin from the metal structure is one of the oldest good ideas in car design: pedestrians and parking meet plastic, the beam and rails behind meet physics, and each layer is replaceable at its own price.',
       fail: [
-        'Paint on TPO and paint on aluminium age apart; a resprayed fascia that matched in the booth can mismatch in daylight.',
+        'Paint on TPO and paint on aluminum age apart; a resprayed fascia that matched in the booth can mismatch in daylight.',
         'Wet slush frozen over the radar window blinds cruise assist; the car degrades to camera-only and says so.',
         'The clip towers behind the skin snap in minor hits, so a cosmetic scuff can hide a fascia that is no longer locating.',
       ],
@@ -271,14 +358,14 @@ export const SYSTEM = {
         ['Low beam flux', '1,400 lm on road'],
         ['High beam range', '480 m'],
         ['Blanking latency', '~50 ms camera to pixel'],
-        ['Mount height', '0.71 m to lamp centre, regulation min 0.50'],
+        ['Mount height', '0.71 m to lamp center, regulation min 0.50'],
       ],
-      how: 'Each lamp images an array of 84 individually driven LEDs through a projection lens, so the beam is a low-resolution picture drawn on the road. The windscreen camera detects headlamps and tail lamps ahead, and the controller blanks only the pixels covering each vehicle: oncoming drivers sit in a moving dark tunnel while the rest of the scene stays under full high beam. The loop runs at roughly 50 ms, fast enough to track a car cresting a rise.\n\nThe engineering fight in a strip this slim is thermal. LED flux falls as junction temperature rises, and a shallow housing has little air to convect into, so each module conducts into a finned heatsink and the housing breathes through a membrane vent. The slim horizontal format is not fashion alone: it keeps the lamp mass low and outboard where the nose needs to stay soft for the pedestrian zones between the lamps.',
+      how: 'Each lamp images an array of 84 individually driven LEDs through a projection lens, so the beam is a low-resolution picture drawn on the road. The windshield camera detects headlamps and tail lamps ahead, and the controller blanks only the pixels covering each vehicle: oncoming drivers sit in a moving dark tunnel while the rest of the scene stays under full high beam. The loop runs at roughly 50 ms, fast enough to track a car cresting a rise.\n\nThe engineering fight in a strip this slim is thermal. LED flux falls as junction temperature rises, and a shallow housing has little air to convect into, so each module conducts into a finned heatsink and the housing breathes through a membrane vent. The slim horizontal format is not fashion alone: it keeps the lamp mass low and outboard where the nose needs to stay soft for the pedestrian zones between the lamps.',
       why: 'Adaptive beams exist because the regulations finally allow the light to move instead of forcing a binary high-low choice. Glare-free high beam is the rare feature that is pure safety with no tradeoff for anyone: more seeing distance for the driver, less glare for everyone else.',
       fail: [
         'Condensation inside slim housings is the chronic field complaint; membrane vents manage it but do not abolish it.',
         'A failed pixel controller degrades gracefully to a plain low beam, never to darkness.',
-        'Beam aim is referenced to ride height; a load-levelling fault turns a legal lamp into a glare source.',
+        'Beam aim is referenced to ride height; a load-leveling fault turns a legal lamp into a glare source.',
       ],
       explode: [1.15, 0.12, 0.18],
     },
@@ -289,15 +376,15 @@ export const SYSTEM = {
       specs: [
         ['Source', '240 LEDs into a PMMA guide'],
         ['Brake rise time', '< 10 ms vs ~200 ms bulb'],
-        ['Functions', 'Tail, brake, indicators, CHMSL'],
+        ['Functions', 'Tail, brake, turn signals, CHMSL'],
         ['Photometry', 'EU and US modes, software set'],
       ],
-      how: 'The bar is a single PMMA light guide running the width of the tail: LEDs fire into its ends and edges, light travels by total internal reflection, and micro-prisms along the back face leak a calibrated fraction outward so 240 point sources read as one unbroken red line. Uniformity is a tooling problem, prism density increasing with distance from each LED, solved in the mould, not in software.\n\nThe number that matters is rise time. An LED reaches full output in under 10 ms where an incandescent filament needs around 200 ms; at 130 km/h that difference is about seven metres of extra warning distance for the car behind. The full-width format is conspicuity engineering: a wide lit edge gives following drivers a better distance and closing-rate cue at night than two separate clusters.',
+      how: 'The bar is a single PMMA light guide running the width of the tail: LEDs fire into its ends and edges, light travels by total internal reflection, and micro-prisms along the back face leak a calibrated fraction outward so 240 point sources read as one unbroken red line. Uniformity is a tooling problem, prism density increasing with distance from each LED, solved in the mold, not in software.\n\nThe number that matters is rise time. An LED reaches full output in under 10 ms where an incandescent filament needs around 200 ms; at 130 km/h that difference is about seven meters of extra warning distance for the car behind. The full-width format is conspicuity engineering: a wide lit edge gives following drivers a better distance and closing-rate cue at night than two separate clusters.',
       why: 'A tail lamp is a communication channel with exactly one message and no retry, so latency and legibility beat styling every time. That the full-width bar also became the visual signature of the era is the rare case of regulation, physics, and fashion agreeing.',
       fail: [
         'A crack anywhere in the guide shows as a dark band; the whole bar is replaced, there is no partial repair.',
-        'PMMA yellows under UV over a decade; the outer lens carries the stabiliser package to slow it.',
-        'Indicator colour rules differ by market, amber in the EU, red permitted in the US; one lamp serves both only because photometry is software-configured.',
+        'PMMA yellows under UV over a decade; the outer lens carries the stabilizer package to slow it.',
+        'Turn-signal color rules differ by market, amber in the EU, red permitted in the US; one lamp serves both only because photometry is software-configured.',
       ],
       explode: [-1.2, 0.12, 0],
     },
@@ -305,26 +392,24 @@ export const SYSTEM = {
 };
 
 /* ── Geometry ──────────────────────────────────────────────────────────────
-   Key lines (side view, metres): nose 0.78 at x 2.30 rising to 0.92 at 0.85,
-   windscreen (0.85, 0.95) to (0.35, 1.40), roof 1.42 back to -0.55, backlight
+   Key lines (side view, meters): nose 0.78 at x 2.30 rising to 0.92 at 0.85,
+   windshield (0.85, 0.95) to (0.35, 1.40), roof 1.42 back to -0.55, backlight
    down to (-1.50, 1.02), deck to the tail at (-2.30, 0.92). Beltline 0.92.
    Half-widths: 0.94 at the doors, 0.62 at the roof. Arches at x = ±1.45 ± 0.44
    stay open: the dark background reads as the wheel opening. */
 
 const ARCH_R = 0.44;
 
-/* Local stand-in for lib.mirrorZ: three r160 Object3D.clone() JSON-copies
-   userData, so the explode Vector3 arrives as a plain {x,y,z} object and
-   lib.mirrorZ throws on .clone(). Rebuild the vector with z negated. */
-export function mirrorZ(group) {
-  const c = group.clone(true);
-  c.traverse((o) => {
-    const e = o.userData && o.userData.explode;
-    if (e) o.userData.explode = new THREE.Vector3(e.x, e.y, -(e.z || 0));
-  });
-  c.scale.z *= -1;
-  return c;
-}
+/* Kept as this module's export because five other bodies import it, but it
+   is lib.mirrorZ now rather than a copy of it. The comment it used to carry
+   said lib.mirrorZ "throws on .clone()" because Object3D.clone JSON-copies
+   userData and the explode Vector3 arrives as a plain {x,y,z}: lib.mirrorZ
+   has rebuilt the vector from its fields for a long time and does not
+   throw, so the stand-in was duplicating working code. It also could not
+   see lib.hinge, which is what a closure needs mirrored, and a second copy
+   of a mirroring rule is exactly how one side of a car ends up disagreeing
+   with the other. */
+export function mirrorZ(group) { return lib.mirrorZ(group); }
 
 /* Angled box helper: rotations in radians, order z then x then y. */
 export function abox(w, h, d, mat, x, y, z, rz = 0, rx = 0, ry = 0) {
@@ -360,7 +445,7 @@ export function profile(pts, arcs, t, mat, z0) {
    every one of them was swept off the Gen 1 geometry rather than restated,
    so no new panel can move a surface the drag figure is booked against.
 
-   noseY and deckY are the outer faces of the bonnet and boot planes. The
+   noseY and deckY are the outer faces of the hood and trunk planes. The
    original plates put those faces through (0.875257, 0.944480) to
    (2.278769, 0.809326) and (-1.503520, 1.017800) to (-2.279930, 0.943034),
    a 0.096 rad rake each way, and both functions reproduce them exactly.
@@ -448,6 +533,30 @@ function cpanel(w, d, t, r, c, mat) {
   const seg = Math.max(4, Math.min(10, Math.round(r * 80)));
   const geo = new THREE.ExtrudeGeometry(
     shapeOf(roundRect(w / 2 - c, d / 2 - c, r - c, seg), null),
+    { depth: Math.max(1e-4, t - 2 * c), bevelEnabled: true, bevelThickness: c,
+      bevelSize: c, bevelSegments: 1, curveSegments: 4 });
+  geo.rotateX(-Math.PI / 2);
+  geo.translate(0, -(t - c), 0);
+  return lib.crease(lib.mesh(geo, mat), 30);
+}
+
+/* cpanel with its middle cut out: an aperture RING rather than a lid.
+
+   A gutter's whole job is to put a lit floor under a shutline, so it only
+   ever needed to be as wide as the gap can see. Drawn solid it also closed
+   the aperture, which nobody noticed while the closures were painted on:
+   open the hood and the plate underneath reads as a SECOND HOOD, which is
+   exactly what Davis saw. `band` is how far inboard of its own rim the
+   plate survives, and 60 mm is measured rather than picked: the gap is
+   8.0 mm wide and the plate hangs 18 mm under the closure plane, so a
+   sightline steep enough to see past the near lip lands within 18 mm of it
+   and the ring is more than three times that. */
+function cring(w, d, t, r, c, mat, band) {
+  const seg = Math.max(4, Math.min(10, Math.round(r * 80)));
+  const ow = w / 2 - c, od = d / 2 - c;
+  const geo = new THREE.ExtrudeGeometry(
+    shapeOf(roundRect(ow, od, r - c, seg),
+            [roundRect(ow - band, od - band, Math.max(0.004, r - c), seg)]),
     { depth: Math.max(1e-4, t - 2 * c), bevelEnabled: true, bevelThickness: c,
       bevelSize: c, bevelSegments: 1, curveSegments: 4 });
   geo.rotateX(-Math.PI / 2);
@@ -569,7 +678,7 @@ export function buildStructure(sys) {
   /* The cross portion is a lower crossmember at the casting's front face,
      x 2.000 to 2.070, y 0.300 to 0.370, not a block filling the nose. It
      used to be one 0.31 x 0.28 x 0.68 solid spanning x 1.760 to 2.070 over
-     the full 280 mm section height, which is 0.0590 m3 of drawn aluminium,
+     the full 280 mm section height, which is 0.0590 m3 of drawn aluminum,
      159 kg at 2,700 kg/m3, against a part that declares 48 kg for the whole
      casting. The bay it filled is where every thermal variant packages its
      chiller, manifold, pumps and heat pump, so the model was drawing metal
@@ -631,7 +740,7 @@ export function buildStructure(sys) {
   sys.add(cageMid);
 }
 
-/* The marque: a chevron, extruded 4.4 mm with a bevelled rim, the same
+/* The marque: a chevron, extruded 4.4 mm with a beveled rim, the same
    outline the later bodies carry. A decal has no edge for a softbox to
    find; a badge does, which is the whole reason this is geometry. */
 const CHEVRON = [
@@ -693,7 +802,7 @@ function buildShell(sys) {
   for (const s of [-1, 1]) roof.add(blAt(0, -0.010, s * 0.645, 1.04, 0.005, 0.050));
   sys.add(roof);
 
-  /* ── windscreen ──
+  /* ── windshield ──
      Rake 48 degrees, unchanged. What is new is the frit frame, the camera
      window the part's text names, and the wipers. */
   const ws = lib.part('windshield', [0.5, 0.65, 0]);
@@ -750,22 +859,41 @@ function buildShell(sys) {
      0.958249. Do not read the move from 0.880 to 0.920 as having made the
      joint flush; it took a 78 mm step down to 3.5 mm at the joint, and what
      is left is the door's own 24.2 mm beltline turnover, which is a
-     beltline decision. */
-  const sg = lib.part('side-glass', [0, 0.5, 0.55]);
-  for (const pts of [[[0.80, 0.0], [0.34, 0.46], [0.028, 0.46], [0.028, 0.0]],
-                     [[0.012, 0.0], [0.012, 0.46], [-0.50, 0.46], [-1.06, 0.0]]]) {
+     beltline decision.
+
+     THE PANES TRAVEL WITH THEIR DOORS, and that is engineering rather than
+     presentation. A framed door carries its own glass: the pane runs in
+     channels in the door and the frame is part of the door structure, which
+     is why a sedan's window drops a few millimeters when you pull the
+     handle. Drawn as fixed geometry it read as a pane hanging in the
+     aperture, and tools/closures.sh found it the moment a door moved: the
+     rear door's leading edge went 2.2 mm into its own glass 3 degrees into
+     the swing. Each pane is therefore its own lib.part group under the same
+     `side-glass` id, tagged with the closure it belongs to, so it stays one
+     clickable part with one panel and moves with the door it is mounted in.
+     The division bar is on the B-pillar and the roof molding is on the roof;
+     neither opens, so neither is tagged. */
+  const glassIn = (id, pts) => {
+    const g = lib.part('side-glass', [0, 0.5, 0.55]);
+    if (id) lib.hinge(g, id);
     const p = profile(pts, [], 0.012, M.glass, 0);
     p.rotation.x = -0.50;
     p.position.set(0, 0.92, 0.920);
-    sg.add(lib.shell(p));
+    g.add(lib.shell(p));
+    return g;
+  };
+  const sgFixed = lib.part('side-glass', [0, 0.5, 0.55]);
+  /* division bar on the pillar axis, and the roof molding over the top run */
+  sgFixed.add(cabox(0.016, 0.440, 0.014, 0.003, M.paintDark, 0.020, 1.125200, 0.815875, 0, -0.50));
+  sgFixed.add(cabox(0.840, 0.012, 0.016, 0.003, M.alu, -0.080, 1.3180, 0.7000, 0, -0.50));
+  for (const g of [glassIn('door-front', [[0.80, 0.0], [0.34, 0.46], [0.028, 0.46], [0.028, 0.0]]),
+                   glassIn('door-rear', [[0.012, 0.0], [0.012, 0.46], [-0.50, 0.46], [-1.06, 0.0]]),
+                   sgFixed]) {
+    sys.add(g);
+    sys.add(mirrorZ(g));
   }
-  /* division bar on the pillar axis, and the roof moulding over the top run */
-  sg.add(cabox(0.016, 0.440, 0.014, 0.003, M.paintDark, 0.020, 1.125200, 0.815875, 0, -0.50));
-  sg.add(cabox(0.840, 0.012, 0.016, 0.003, M.alu, -0.080, 1.3180, 0.7000, 0, -0.50));
-  sys.add(sg);
-  sys.add(mirrorZ(sg));
 
-  /* ── bonnet ──
+  /* ── hood ──
      Same plane as the Gen 1 hood plate, cut back at both ends so it has
      somewhere to shut against. Built edges, swept off the mesh at 0.2 mm:
      x 0.9670 to 2.2636, sides at |z| 0.8260. That is 8.0 mm to the cowl
@@ -773,16 +901,20 @@ function buildShell(sys) {
      fender shoulders at 0.8340.
 
      The front end is 8 mm shorter than the first pass left it. With the
-     panel at 1.620 the bonnet ran to 2.2716 and the nose roll starts at
+     panel at 1.620 the hood ran to 2.2716 and the nose roll starts at
      exactly 2.2716, so the two abutted with no gap at all under a 13.5 mm
      step, which reads as a butt joint and not as a shutline. The plane is a
      straight line and NOSE_TILT matches the noseY slope to seven digits, so
      sliding the panel along it moves the edge without moving the surface. */
-  const hood = lib.part('hood', [0.55, 0.5, 0]);
-  const bonnet = cpanel(1.301991, 1.652, 0.014, 0.10, 0.004, M.paint);
-  bonnet.position.set(1.616, noseY(1.616), 0);
-  bonnet.rotation.z = NOSE_TILT;
-  hood.add(lib.shell(bonnet));
+  const hood = lib.hinge(lib.part('hood', [0.55, 0.5, 0]), 'hood');
+  /* the PANEL, distinct from the part group above it. This pair used to read
+     hood and hood; the American-spelling sweep collapsed both names onto
+     one and the file stopped parsing, which is the one thing a rename over
+     328,000 words of prose can actually break. */
+  const hoodPanel = cpanel(1.301991, 1.652, 0.014, 0.10, 0.004, M.paint);
+  hoodPanel.position.set(1.616, noseY(1.616), 0);
+  hoodPanel.rotation.z = NOSE_TILT;
+  hood.add(lib.shell(hoodPanel));
   sys.add(hood);
 
   /* ── doors ──
@@ -795,7 +927,6 @@ function buildShell(sys) {
      what the Gen 1 geometry did not do: the door-to-door gap measured 16 mm
      and the door-to-quarter gap 6 mm. The skin plane, z = 0.894051 +
      0.070084 y, is untouched: it is the widest surface on the car. */
-  const doors = lib.part('doors', [0.05, 0, 0.85]);
   const dSkin = (xa, xb, hx) => {
     const g = new THREE.Group();
     const w = xb - xa, xc = (xa + xb) / 2, c = 0.003;
@@ -815,26 +946,38 @@ function buildShell(sys) {
     g.rotation.set(0.07, 0, 0, 'ZXY');
     return g;
   };
-  doors.add(dSkin(0.024, 1.120, 0.220));
-  doors.add(dSkin(-1.024, 0.016, -0.850));
-  /* flush handles. The Gen 1 pair were 14 mm alu slabs centred on z 0.945,
+  /* flush handles. The Gen 1 pair were 14 mm alu slabs centered on z 0.945,
      which at y 0.84 is 8 mm inside a skin whose outer face is at 0.9529:
      they were buried. These sit in a real aperture through the skin, with
      the pull 9 mm back from the face and a floor 15 mm back. */
   const dAt = (x, ly, lz) => [x, 0.67 + ly * 0.997551 - lz * 0.069943,
                               0.930 + ly * 0.069943 + lz * 0.997551];
-  for (const hx of [0.220, -0.850]) {
+  /* ONE PART GROUP PER LEAF, which is a regrouping and not a redraw. Every
+     mesh below is the mesh this module already built at the coordinate it
+     already built it at; what changed is which group owns it, because a
+     closure is a rigid body and a rigid body cannot be a slice of a larger
+     group. All four leaves keep the part id `doors`, so they stay one
+     clickable part with one panel, and SPEC.md already allows several
+     groups under one id. The per-instance checks get FINER here, not
+     coarser: [attachment] and [enclosure] now measure a door instead of a
+     door pair. */
+  const leaf = (id, xa, xb, hx, wsX, wsW) => {
+    const g = lib.hinge(lib.part('doors', [0.05, 0, 0.85]), id);
+    g.add(dSkin(xa, xb, hx));
     const [fx, fy, fz] = dAt(hx, 0.175, -0.004);
-    doors.add(cabox(0.186, 0.058, 0.006, 0.002, M.paintDark, fx, fy, fz, 0, 0.07));
+    g.add(cabox(0.186, 0.058, 0.006, 0.002, M.paintDark, fx, fy, fz, 0, 0.07));
     const [px, py, pz] = dAt(hx, 0.172, 0.002);
-    doors.add(cabox(0.152, 0.026, 0.010, 0.003, M.alu, px, py, pz, 0, 0.07));
+    g.add(cabox(0.152, 0.026, 0.010, 0.003, M.alu, px, py, pz, 0, 0.07));
+    /* beltline weatherstrip, in the 6 mm trough between the glass foot at
+       z 0.9305 and the door top face's inner edge at 0.9365 */
+    g.add(cabox(wsW, 0.013, 0.010, 0.002, M.rubber, wsX, 0.9235, 0.9290));
+    return g;
+  };
+  for (const d of [leaf('door-front', 0.024, 1.120, 0.220, 0.572, 1.092),
+                   leaf('door-rear', -1.024, 0.016, -0.850, -0.504, 1.036)]) {
+    sys.add(d);
+    sys.add(mirrorZ(d));
   }
-  /* beltline weatherstrip, in the 6 mm trough between the glass foot at
-     z 0.9305 and the door top face's inner edge at 0.9365 */
-  doors.add(cabox(1.092, 0.013, 0.010, 0.002, M.rubber, 0.572, 0.9235, 0.9290));
-  doors.add(cabox(1.036, 0.013, 0.010, 0.002, M.rubber, -0.504, 0.9235, 0.9290));
-  sys.add(doors);
-  sys.add(mirrorZ(doors));
 
   /* ── front fenders ──
      The plate keeps its outline and its inner face at z 0.880; the outer
@@ -871,7 +1014,7 @@ function buildShell(sys) {
     [[1.45, 0.355, ARCH_R, 2.391, 0.384, true]],
     FT, M.paint, 0.88
   ), 30)));
-  /* shoulder: the surface that turns the flat side plate into the bonnet
+  /* shoulder: the surface that turns the flat side plate into the hood
      plane, and the panel that closes the 50 mm slot Gen 1 left open
      between the hood edge and the fender top */
   fenF.add(lib.shell(shoulderBand(
@@ -914,7 +1057,7 @@ function buildShell(sys) {
 
   /* ── A-pillar and C-pillar outers ──
      Gen 1 showed daylight straight through to the cage at both. The A skin
-     is ruled between the windscreen's outer edge and the daylight opening's
+     is ruled between the windshield's outer edge and the daylight opening's
      front edge, the sail between the daylight opening's rear edge and the
      backlight's, and both clear their tubes: the A-pillar member's surface
      reaches 0.762 at the base and the skin crosses that station at 0.0486
@@ -938,17 +1081,27 @@ function buildShell(sys) {
   sys.add(pil);
   sys.add(mirrorZ(pil));
 
-  /* ── cowl, bonnet gutter, boot lid, boot gutter, tail roll ──
-     The two gutters are the reason the shutlines read. Each is a dark plate
-     18 mm under its closure plane, spanning the whole aperture, so every
-     gap round the bonnet and the boot lid shows a recessed floor instead of
-     a view into the frunk. */
+  /* ── cowl, hood gutter, trunk gutter, tail roll, and the decklid ──
+     The two gutters are the reason the shutlines read. Each is a dark RING
+     18 mm under its closure plane, 60 mm wide around its own rim, so every
+     gap around the hood and the trunk lid shows a recessed floor.
+
+     They were solid plates until Davis opened the hood and asked why the
+     car had two of them. Spanning the whole aperture was invisible while
+     the closures were painted on and wrong the moment they moved: a lid
+     lifting off a plate the same size and shape reads as a second lid, and
+     what an open hood is supposed to show is the frunk. The ring does the
+     only job a gutter has, because a shutline can only see as far under its
+     own lip as the gap is deep.
+
+     The decklid itself leaves this group below, because a closure has to be
+     its own lib.part. Everything else here is fixed. */
   const clos = lib.part('fenders', [-0.45, 0.42, 0]);
-  const gutF = cpanel(1.342178, 1.684, 0.010, 0.05, 0.003, M.paintDark);
+  const gutF = cring(1.342178, 1.684, 0.010, 0.05, 0.003, M.paintDark, 0.060);
   gutF.position.set(1.620, noseY(1.620) - 0.018, 0);
   gutF.rotation.z = NOSE_TILT;
   clos.add(gutF);
-  /* the cowl closure stops 8.0 mm short of the bonnet's rear edge at 0.9670.
+  /* the cowl closure stops 8.0 mm short of the hood's rear edge at 0.9670.
      It used to stop at 0.9623, a 4.7 mm gap where every other cut on this
      body measures 8.0, and only 3.6 mm of gutter showed through it. */
   const cowlF = cpanel(0.112261, 1.690, 0.010, 0.03, 0.002, M.paintDark);
@@ -957,7 +1110,7 @@ function buildShell(sys) {
   clos.add(cowlF);
   /* the plenum grille is the front-most thing in the cowl, because its frame
      stands 8 mm outside the bar field: at w 0.100 the frame reached x 0.9635
-     and set the bonnet gap at 3.5 mm wherever the closure panel sat. Sized
+     and set the hood gap at 3.5 mm wherever the closure panel sat. Sized
      so the frame lands on 0.9590 with the closure. */
   const cowl = lib.grille(0.095514, 1.660, 0.020, M.plastic,
     { bars: 4, barW: 0.016, frame: 0.008, chamfer: 0.002 });
@@ -965,19 +1118,35 @@ function buildShell(sys) {
   cowl.rotation.set(-Math.PI / 2, 0, NOSE_TILT, 'ZXY');
   clos.add(cowl);
 
+  /* THE DECKLID, and this is a regrouping and not a redraw. The panel below
+     is the mesh this module already built at the coordinate it already built
+     it at, and so is the badge; what changed is which group owns them,
+     because a closure is a rigid body and a rigid body cannot be a slice of
+     a larger group. It keeps the part id `fenders`, so the tail stays one
+     clickable part with one info panel, and the same explode vector, so the
+     assembly view is unchanged.
+
+     The badge travels with the lid. It sits 0.2 mm proud of the deck plane
+     at (-2.135, deckY(-2.135)), which is 619 mm aft of the cut, and on any
+     real car a decklid badge is bolted through the outer panel. Leaving it
+     in `clos` would have left a chevron floating in the aperture the moment
+     the lid moved, which is the same fault the side glass had before the
+     doors were split. */
+  const lid = lib.hinge(lib.part('fenders', [-0.45, 0.42, 0]), 'decklid');
   const deck = cpanel(0.772054, 1.392, 0.012, 0.06, 0.004, M.paint);
   deck.position.set(-1.89575, deckY(-1.89575), 0);
   deck.rotation.z = DECK_TILT;
-  clos.add(lib.shell(deck));
-  const gutR = cpanel(0.796130, 1.440, 0.010, 0.05, 0.003, M.paintDark);
-  gutR.position.set(-1.89175, deckY(-1.89175) - 0.018, 0);
-  gutR.rotation.z = DECK_TILT;
-  clos.add(gutR);
+  lid.add(lib.shell(deck));
   const badgeR = lib.badge(CHEVRON, 0.0044, M.alu);
   badgeR.geometry.rotateX(-Math.PI / 2);
   badgeR.position.set(-2.135, deckY(-2.135) + 0.0002, 0);
   badgeR.rotation.z = DECK_TILT;
-  clos.add(badgeR);
+  lid.add(badgeR);
+  sys.add(lid);
+  const gutR = cring(0.796130, 1.440, 0.010, 0.05, 0.003, M.paintDark, 0.060);
+  gutR.position.set(-1.89175, deckY(-1.89175) - 0.018, 0);
+  gutR.rotation.z = DECK_TILT;
+  clos.add(gutR);
   const roll = cpanel(0.129113, 1.720, 0.018, 0.075, 0.005, M.paint);
   roll.position.set(-2.349, 0.9211285, 0);
   roll.rotation.z = 0.333276;
@@ -1001,10 +1170,10 @@ function buildShell(sys) {
 
      And a shut face has to stop where its partner stops. The front fender's
      arch edge is (1.128, 0.654) and the quarter's is (-1.032, 0.479), so a
-     full-height plate hung 240 mm into the open front wheel arch with
-     57.7 mm of it inside the built tyre at (1.159, 0.4157), and 150 mm into
+     full-height plate hung 240 mm into the open front wheel well with
+     57.7 mm of it inside the built tire at (1.159, 0.4157), and 150 mm into
      the rear arch. Each plate now spans only the height over which both of
-     its neighbours exist. */
+     its neighbors exist. */
   const shut = lib.part('fenders', [0.3, 0.05, 0.6]);
   for (const [x, h, cy] of [[1.124, 0.270, 0.1227], [0.020, 0.516, 0],
                             [-1.028, 0.456, 0.0300]]) {
@@ -1080,7 +1249,7 @@ function buildShell(sys) {
   /* ── rear fascia ──
      Same rebuild. The Gen 1 tail stacked wrong: the fascia slab was the
      rearmost thing on the car at x -2.410 and the lamp bar sat at -2.34 to
-     -2.31, 70 to 100 mm inside it, with a 130 mm hole between the boot
+     -2.31, 70 to 100 mm inside it, with a 130 mm hole between the trunk
      lid's rear edge and the tail face. The lamp now sits in an aperture on
      the face and the tail roll closes the hole. */
   const fasR = lib.part('fascias', [-1.1, 0, 0]);
@@ -1095,7 +1264,7 @@ function buildShell(sys) {
   for (const s of [-1, 1]) {
     fasR.add(cabox(0.010, 0.056, 0.140, 0.003, M.lamp, -2.398, 0.445, s * 0.620));
     fasR.add(lib.shell(abox(0.24, 0.44, 0.028, M.paint, -2.27, 0.57, s * 0.85, 0, 0, -s * 0.55)));
-    /* number plate lamp, inside the recess where it can be seen */
+    /* license plate lamp, inside the recess where it can be seen */
     fasR.add(cabox(0.012, 0.010, 0.040, 0.002, M.lamp, -2.3945, 0.508, s * 0.180));
   }
   fasR.add(abox(0.08, 0.12, 1.30, M.plastic, -2.28, 0.33, 0));
@@ -1137,7 +1306,7 @@ function buildShell(sys) {
   /* ── tail lamp bar ──
      A 240 LED guide is a channel with prisms in it, so that is what this
      is: a housing, a ribbed guide, and a lens on the tail face. The CHMSL
-     the spec row lists goes where a saloon puts it, on the backlight's top
+     the spec row lists goes where a sedan puts it, on the backlight's top
      rail. */
   const tl = lib.part('taillights', [-1.2, 0.12, 0]);
   tl.add(cabox(0.036, 0.062, 1.564, 0.004, M.plastic, -2.3585, 0.860, 0));

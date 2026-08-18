@@ -20,7 +20,7 @@
       inside all nineteen samples, and sorting its survivors by entry distance
       lets a sample stop as soon as everything left starts behind the hit it
       already has.
-   4. A single centre ray demands pixel-perfect aim at anything thin, so the
+   4. A single center ray demands pixel-perfect aim at anything thin, so the
       pointer carries a disc of fallback samples around it.
 
    ── WHY THE DISC IS NO LONGER BUDGETED ────────────────────────────────────
@@ -49,7 +49,7 @@ import { bvhRaycast } from './bvh.js';
    which is below any sane target size. */
 export const PICK_PX = 12;
 
-/* Fallback sample offsets, unit disc, ordered by distance from the centre so
+/* Fallback sample offsets, unit disc, ordered by distance from the center so
    the nearest part wins: six at just over half radius, then twelve on the
    rim, staggered so the rings do not share angles. */
 const PICK_RING = [];
@@ -75,6 +75,11 @@ const triCount = (o) => {
 
 export function createPicker(camera, systems) {
   const ray = new THREE.Raycaster();
+  /* THE DISC IS SIZED FOR THE POINTER IN USE. PICK_PX is a cursor: a fine
+     point a reader aims with a wrist. A fingertip covers something closer to
+     40 px and cannot see what is under it, so viewer.js widens this while a
+     touch hold is naming parts and puts it back afterwards. */
+  let pickPx = PICK_PX;
   const _pt = new THREE.Vector2();
   const _hits = [];
   const byT = (a, b) => a.t - b.t;
@@ -87,7 +92,7 @@ export function createPicker(camera, systems) {
   let pickList = null, pickTris = null;
 
   let _near = [];          // { o, t, core } inside the pick cone, nearest first
-  let _coreN = 0;          // how many of them the centre ray can reach
+  let _coreN = 0;          // how many of them the center ray can reach
   let _nearTris = 0;       // triangles in the cone, the disc's old cost estimate
   let pickNear = 0, pickRays = 0;
   let discRan = false;     // did the last hitTest actually spend the disc
@@ -108,11 +113,28 @@ export function createPicker(camera, systems) {
      instead of every triangle in the cone, so there is nothing left to ration
      and the budget is Infinity: the hover disc always runs, and the hover and
      the click now return the same part at every pixel. The knob survives
-     because tools/pickbench.js has to reproduce the OLD behaviour to measure
+     because tools/pickbench.js has to reproduce the OLD behavior to measure
      against it, and because if a future scene ever needs a guard this is the
      one place it goes. */
   let discBudget = Infinity;
   const discAllowed = () => _nearTris * PICK_RING.length <= discBudget;
+
+  /* THE SECTION PLANE HAS TO BE IN HERE, not only in the shader.
+
+     A clipping plane is a fragment-shader test: the geometry it removes is
+     still in the scene, still in the BVH and still the nearest thing along
+     the ray. Without this the roof a section had just taken off went on
+     answering every hover over the cabin it was supposed to have revealed,
+     so the hover tag named a part that was not on screen and the click
+     opened it. Same failure shape as the ghosted x-ray shell two paragraphs
+     up, which is why the fix sits beside it: a surface the user cannot see
+     is not a surface they can pick.
+
+     A predicate rather than a plane, because the picker has no business
+     knowing what a THREE.Plane is; viewer.js owns the cut and hands down the
+     one question this file needs answered. Null when nothing is sectioned,
+     which is the common path and costs one comparison. */
+  let clipTest = null;
 
   function pickables() {
     if (pickList) return pickList;
@@ -133,7 +155,7 @@ export function createPicker(camera, systems) {
 
   /* Every sample ray lies inside one cone: the pick disc swept out from the
      camera. One pass over the candidates keeps the meshes that cone can
-     reach, notes which of them the centre ray alone can reach, and records
+     reach, notes which of them the center ray alone can reach, and records
      how far along the ray each one starts. That pass is worth doing three
      times over. It replaces the world sphere test Three would otherwise
      repeat inside every one of the nineteen samples; it leaves each sample
@@ -172,7 +194,7 @@ export function createPicker(camera, systems) {
       const perp2 = vx * vx + vy * vy + vz * vz - along * along;
       const allow = rad + tanA * (along > 0 ? along : 0);
       if (perp2 > allow * allow) continue;
-      const core = perp2 <= rad * rad;                  // the centre ray's own set
+      const core = perp2 <= rad * rad;                  // the center ray's own set
       if (core) _coreN++;
       /* nearest point of the sphere along the ray, widened to the cone so it
          stays a lower bound for the rim samples too */
@@ -230,8 +252,17 @@ export function createPicker(camera, systems) {
           _invStamp[i] = _stamp;
         }
         /* bestD prunes the tree: a hit farther than one already held on a
-           nearer mesh is one scan would discard anyway */
-        done = bvhRaycast(e.o, ray, _hits, bestD, inv);
+           nearer mesh is one scan would discard anyway.
+
+           clipTest goes IN, and the loop below still applies it, which is not
+           redundant: the tree returns one hit per mesh, so it has to know about
+           the section to return the nearest SURVIVING one rather than the
+           nearest one full stop, while the stock fallback on the next line
+           returns every hit and is filtered below. Both paths have to end up
+           naming the same part, and before this they did not: a mesh whose
+           nearest triangle the cut had removed fell out of the pick and the
+           face the reader was looking at was unnameable. */
+        done = bvhRaycast(e.o, ray, _hits, bestD, inv, clipTest);
       }
       if (!done) e.o.raycast(ray, _hits);
       for (let j = 0; j < _hits.length; j++) {
@@ -241,6 +272,15 @@ export function createPicker(camera, systems) {
         if (!o.visible) continue;
         /* skip meshes whose material is fully ghosted in x-ray */
         if (o.material?.transparent && o.material.opacity < 0.08) continue;
+        /* and the surfaces a section has removed. The point is rebuilt off
+           the ray rather than read from the hit, because bvhRaycast and
+           Object3D.raycast do not agree on what a hit carries. */
+        if (clipTest) {
+          const org = ray.ray.origin, dir = ray.ray.direction;
+          if (clipTest(org.x + dir.x * h.distance,
+                       org.y + dir.y * h.distance,
+                       org.z + dir.z * h.distance)) continue;
+        }
         const k = keyOf(o);
         if (k && k.includes('/')) { best = k; bestD = h.distance; }
       }
@@ -261,7 +301,14 @@ export function createPicker(camera, systems) {
 
      root, viewW and viewH come from the viewer; a headless caller supplies
      the same three. */
-  function hitTest(budgeted, root, pointer, viewW, viewH) {
+  /* coreOnly answers a different question from the one the hover asks. The
+     hover wants "what is the user pointing AT", so it spends a 12 px disc of
+     fallback samples to catch a cable one pixel wide. A visibility test wants
+     "is this pixel THIS part", and the disc makes that question unanswerable:
+     probing a corner of a buried wheel's bounding box misses the car
+     altogether, the disc runs, and it finds the wheel around the edge of the
+     cover that is burying it. Same machinery, one flag, two honest answers. */
+  function hitTest(budgeted, root, pointer, viewW, viewH, coreOnly) {
     if (!root || !viewW || !viewH) return null;
     pickRays = 0;
     discRan = false;
@@ -283,23 +330,23 @@ export function createPicker(camera, systems) {
        clip a mesh one of the rim rays would have hit. The viewport size comes
        from resize(), never from getBoundingClientRect: a layout read in the
        hover path costs more than the raycast it feeds. */
-    const tanA = Math.tan(camera.fov * Math.PI / 360) * (2 * PICK_PX / viewH) * 1.25;
+    const tanA = Math.tan(camera.fov * Math.PI / 360) * (2 * pickPx / viewH) * 1.25;
     narrow(ray.ray.origin, ray.ray.direction, tanA);
     pickNear = _near.length;
     if (!pickNear) return null;
 
-    /* The centre ray decides on its own whenever it hits anything, so a
+    /* The center ray decides on its own whenever it hits anything, so a
        generous disc can never steal the part directly under the cursor. It is
        already aimed, from the cone setup above. */
-    const centre = _coreN ? scan(true) : null;
-    if (centre) return centre;
+    const center = _coreN ? scan(true) : null;
+    if (center || coreOnly) return center;
 
     /* Nothing under the cursor, so the disc sweeps the cone once per sample
        with no hit to prune against. This is the case the old triangle budget
        refused to pay for on the hover, and the case js/bvh.js made cheap. */
     if (budgeted && !discAllowed()) return null;
     discRan = true;
-    const dx = (2 * PICK_PX) / viewW, dy = (2 * PICK_PX) / viewH;
+    const dx = (2 * pickPx) / viewW, dy = (2 * pickPx) / viewH;
     for (let i = 0; i < PICK_RING.length; i++) {
       const k = sampleAt(pointer, PICK_RING[i][0] * dx, PICK_RING[i][1] * dy);
       if (k) return k;
@@ -310,6 +357,11 @@ export function createPicker(camera, systems) {
   return {
     hitTest,
     invalidate,
+    /* fn(x, y, z) => true when that world point has been sectioned away, or
+       null when nothing is sectioned. See the note on clipTest. */
+    setClip: (fn) => { clipTest = fn || null; },
+    /* px radius of the fallback disc; see the note on pickPx */
+    setPickPx: (n) => { pickPx = n > 0 ? n : PICK_PX; },
     setBVH: (on) => { useBVH = !!on; },
     getBVH: () => useBVH,
     /* benchmarks only: Infinity is what ships, PICK_DISC_TRIS is what the

@@ -94,7 +94,7 @@ function carbonCanvas(size = 256, tow = 16) {
   return c;
 }
 
-/* Cast aluminium: pebbled grain. */
+/* Cast aluminum: pebbled grain. */
 function castCanvas(size = 256) {
   const c = noiseCanvas(size, 8, 0.45, 0.85);
   const ctx = c.getContext('2d');
@@ -139,13 +139,13 @@ function fabricCanvas(size = 256, pitch = 6) {
 
 /* METALLIC FLAKE, the basecoat under the clearcoat.
 
-   Real metallic paint is aluminium platelets a few microns across suspended
-   in the colour coat. Each one is a tiny mirror lying at its own angle, so
+   Real metallic paint is aluminum platelets a few microns across suspended
+   in the color coat. Each one is a tiny mirror lying at its own angle, so
    the surface glitters in a way no roughness value can reproduce: roughness
    blurs a reflection evenly, flake scatters it into discrete points that
-   move as the eye moves. Modelled here as a dense field of specks perturbing
+   move as the eye moves. Modeled here as a dense field of specks perturbing
    the basecoat normal. Kept low-contrast because the clearcoat above damps
-   it, and because flake that reads at ten metres is a metal-flake hot rod,
+   it, and because flake that reads at ten meters is a metal-flake hot rod,
    not a production finish. */
 function flakeCanvas(size = 512) {
   const c = canvas(size);
@@ -168,7 +168,7 @@ function flakeCanvas(size = 512) {
 /* ORANGE PEEL, the clearcoat surface itself.
 
    Sprayed clearcoat never levels perfectly flat: surface tension pulls it
-   into a gentle swell about a millimetre across before it cures. This is
+   into a gentle swell about a millimeter across before it cures. This is
    what tells the eye it is looking at paint and not at chrome. It belongs
    in the clearcoat NORMAL, not in clearcoat roughness. Roughness would blur
    the softbox reflections into a haze; peel keeps them sharp and makes them
@@ -225,7 +225,7 @@ const paintGrain = noiseCanvas(256, 9, 0.90, 1.0);
 const flake = flakeCanvas();
 const peel = peelCanvas();
 
-/* colour maps must declare sRGB; roughness and normal maps stay linear */
+/* color maps must declare sRGB; roughness and normal maps stay linear */
 function srgb(t) { t.colorSpace = THREE.SRGBColorSpace; return t; }
 
 export const TEX = {
@@ -240,8 +240,8 @@ export const TEX = {
   fabricColor: srgb(finish(fabric, 8)),
   fabricNormal: finish(normalFrom(fabric, 1.4), 8),
   paintRough: finish(paintGrain, 14),
-  /* Lofted panels carry arc-length UVs in METRES (see _arcUV in common.js),
-     so repeat R tiles every 1/R metres on every body. Flake at 40 tiles
+  /* Lofted panels carry arc-length UVs in METERS (see _arcUV in common.js),
+     so repeat R tiles every 1/R meters on every body. Flake at 40 tiles
      every 25 mm, and a 1 px speck on a 512 px canvas is then 0.05 mm, which
      is platelet scale. Peel at 50 tiles every 20 mm, and its 26 px noise
      cell is then about 2 mm, which is orange-peel scale. */

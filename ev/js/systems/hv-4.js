@@ -50,11 +50,11 @@ export const SYSTEM = {
         ['Window', '48 V nominal, 36 to 54 V'],
         ['Ledger', '9 kg against 15 kg of spine copper inside Gen 1’s harness'],
       ],
-      how: 'Power is volts times amps, so the same kilowatt crosses this laminate at a quarter of the current a 12 V spine needed, and resistive loss falls with the square of current: one sixteenth of the heat in the same conductor. That arithmetic is what lets the ring be aluminium instead of copper and still run cooler than what it replaced: two flat 240 mm² laminae around the cabin floor perimeter at 9 kg, against the 15 kg of spine copper buried inside Gen 1’s 34 kg harness, a 40 percent cut from voltage alone. The loop closes on itself and is fed from both ends, the converter at the rear corner and the buffer pack in the frunk, so any single cut leaves every zonal controller fed from the other direction. Gen 1’s ring promised one cut degrades; this one promises one cut changes nothing.\n\nThe same laminate carries the car’s nervous system: two counter-rotating 1 Gbit Ethernet rings, one clockwise and one anticlockwise, pressed between the power laminae. This is the zonal bus, the backbone the four controllers and the chassis ECU hang from; autonomy-4 presses its own 10 Gbit sensor ring pair into the same laminate between the same four boxes, a separate network that borrows this one’s geometry. The control pair inherits the power layer’s fault logic: a severed laminate loses one direction of travel and the frames arrive the other way round, microseconds later. Power and data fail together or not at all, which is the property a by-wire car actually needs, because an actuator with power but no commands is as useless as the reverse.',
+      how: 'Power is volts times amps, so the same kilowatt crosses this laminate at a quarter of the current a 12 V spine needed, and resistive loss falls with the square of current: one sixteenth of the heat in the same conductor. That arithmetic is what lets the ring be aluminum instead of copper and still run cooler than what it replaced: two flat 240 mm² laminae around the cabin floor perimeter at 9 kg, against the 15 kg of spine copper buried inside Gen 1’s 34 kg harness, a 40 percent cut from voltage alone. The loop closes on itself and is fed from both ends, the converter at the rear corner and the buffer pack in the frunk, so any single cut leaves every zonal controller fed from the other direction. Gen 1’s ring promised one cut degrades; this one promises one cut changes nothing.\n\nThe same laminate carries the car’s nervous system: two counter-rotating 1 Gbit Ethernet rings, one clockwise and one counterclockwise, pressed between the power laminae. This is the zonal bus, the backbone the four controllers and the chassis ECU hang from; autonomy-4 presses its own 10 Gbit sensor ring pair into the same laminate between the same four boxes, a separate network that borrows this one’s geometry. The control pair inherits the power layer’s fault logic: a severed laminate loses one direction of travel and the frames arrive the other way around, microseconds later. Power and data fail together or not at all, which is the property a by-wire car actually needs, because an actuator with power but no commands is as useless as the reverse.',
       why: 'The honest question is why this took four generations, and the answer is that it should not have taken a redesign at all: this slot skipped Gen 2 and Gen 3 because Gen 1’s zonal 12 V harness was already modern and the bottleneck generations were spending their risk budget on cells and structure. What forced the move was suspension-4: steering and braking as electrical loads need kilowatt peaks delivered redundantly, and at 12 V that means hundreds of amps through crimped connectors, a current no one can promise twice.',
       fail: [
-        'Aluminium terminations are the watch item: every Al to Cu junction is a galvanic couple, so each landing is a bimetal transition plate, and joint resistance is trended per terminal over the telemetry the eFuses already produce.',
-        'A laminate chafe at a body pass-through shorts 48 V to chassis; the zone segment isolates in microseconds, but the carbonised track is permanent and the repair is a section swap, not a splice.',
+        'Aluminum terminations are the watch item: every Al to Cu junction is a galvanic couple, so each landing is a bimetal transition plate, and joint resistance is trended per terminal over the telemetry the eFuses already produce.',
+        'A laminate chafe at a body pass-through shorts 48 V to chassis; the zone segment isolates in microseconds, but the carbonized track is permanent and the repair is a section swap, not a splice.',
         'Both feeds share this one ring: a fault that poisons the whole loop, a stuck regulator overvolting it, defeats the redundancy above it. The 54 V crowbar at each zonal controller exists for exactly that case.',
       ],
       explode: [0, -0.45, 0],
@@ -76,7 +76,7 @@ export const SYSTEM = {
       why: 'Gen 1 made the topology argument, 34 kg zonal against roughly 50 point-to-point, and it holds. Gen 4’s delta is duty: a fuse box was never a safety item because hydraulics backed everything it fed, and in a by-wire car that excuse is gone. The corner boxes were redesigned not to switch more current but to be trusted, and the mass stayed almost flat, 11 kg against Gen 1’s share, because certification weighs nothing and telemetry is free.',
       fail: [
         'Fusing is firmware, carried from Gen 1 verbatim: a bad trip table would ship to every circuit at once, so the tables remain locked, safety-certified code with a hardware second-source on safety channels.',
-        'A MOSFET’s natural failure is short, not open; on by-wire channels a series redundant switch covers it, on comfort channels the upstream zone segment is the backstop and the load stays energised until service.',
+        'A MOSFET’s natural failure is short, not open; on by-wire channels a series redundant switch covers it, on comfort channels the upstream zone segment is the backstop and the load stays energized until service.',
         'One corroded connector seal still takes out a zone branch instead of a single circuit, the price of density Gen 1 already named; the telemetry at least says which pin, which Gen 1 could not.',
       ],
       explode: [0.25, 0.28, 0.45],
@@ -96,8 +96,8 @@ export const SYSTEM = {
       how: 'Twelve volts survived seven decades for one reason: ecosystem. The voltage was set in the mid-1950s when 6 V could no longer crank rising compression ratios, and from then on every bulb, relay, sensor and ECU on earth was qualified against it, so no single carmaker could leave, because leaving meant requalifying the entire supply chain alone. The starter motor that set the number died with the engine, and the standard outlived its reason by twenty years on pure inertia. What finally killed it was by-wire arithmetic: a steering rack pulling 2 kW mid-corner draws 170 A at 12 V through crimped connectors that corrode, or 42 A at 48. And 48 is not an arbitrary stop: it is the last voltage under the 60 V DC touch-safe threshold, the highest rail that needs no orange, no interlocks and no gloves.\n\nThis pack is the ring’s second source, and its address is the argument. It sits in the frunk at the far end of the loop from the converter, so no single fault, no single flood, and no single crash removes both feeds; a rear impact that kills the converter leaves the buffer holding the ring through the stop, and the reverse holds too. The duty carries over from Gen 1’s 12 V battery almost word for word: wake the computers before the contactors close, carry the parking loads for two weeks, and power hazards, doors and the emergency-call modem after a crash has made the big pack inert. Only the voltage moved.',
       why: 'Gen 1 called its 12 V island eight kilos of insurance, and the policy does not lapse just because the rail changed: contactor coils, door releases and the crash aftermath still need a reservoir that owes nothing to the HV bus. LFP keeps the job for the same reasons it won it, flat discharge, thousands of cycles, honest state of health on the bus, and the 48 V version does it two kilograms lighter with 38 percent more energy.',
       fail: [
-        'The century of 12 V roadside ritual is gone with the rail: a flat buffer cannot be jumped from a passing car, and the recovery procedure is a 48 V bench supply at the service point, a real regression the design accepts.',
-        'Deep discharge below the protective cutoff needs a service wake, carried from Gen 1: rarer than a flat lead-acid, less self-serve.',
+        'The century of 12 V roadside ritual is gone with the rail: a dead buffer cannot be jumped from a passing car, and the recovery procedure is a 48 V bench supply at the service point, a real regression the design accepts.',
+        'Deep discharge below the protective cutoff needs a service wake, carried from Gen 1: rarer than a dead lead-acid, less self-serve.',
         'Sub-zero charge current is still limited to protect the plating window, so a deep winter drain recovers slowly; the cabin loop lends heat when the car is awake.',
       ],
       explode: [0.35, 0.35, -0.2],
@@ -114,11 +114,11 @@ export const SYSTEM = {
         ['Export meter', 'Separate throughput counter, 2 MWh per year in warranty'],
         ['Ancestors', 'Gen 1 inlet 4 kg + onboard charger 11 kg'],
       ],
-      how: 'Gen 1’s onboard charger already ran backward, 3.6 kW of mains from the pack to run power tools; Gen 4 finishes the thought. The AC electronics leave the penthouse and move behind the quarter panel beside the pins they serve, and the totem-pole plus CLLC stages now pass the full 11 kW in either direction at 96.5 percent each way. The stage is grid-forming, not just grid-following: it can energise a dead circuit and hold frequency, which means a house without power is a load this car can carry for two days. DC export needs no hardware at all, the station’s rectifier simply runs in reverse under ISO 15118-20, and the pack follows the same BMS current requests in both directions. The pin thermistors, the arc-proof motorised lock, and the software-before-current handshake carry over from Gen 1 unchanged.\n\nThe honest part is the warranty ledger, because V2G marketing rarely shows it. Export is battery throughput like any other: this pack’s cycle life is a budget, and at roughly 3 cents per kWh of wear, selling 10 kWh into every evening peak spends about a megawatt-hour of budget a season. So the port meters export on its own counter, the warranty carries 2 MWh a year of it without question, and beyond that the export column starts consuming warranted throughput. The economics still close in most markets, evening spreads beat 3 cents plus the 7 percent round trip, but the car states the price instead of hiding it, because a warranty surprise discovered at year six is how good ideas die.',
+      how: 'Gen 1’s onboard charger already ran backward, 3.6 kW of utility from the pack to run power tools; Gen 4 finishes the thought. The AC electronics leave the penthouse and move behind the quarter panel beside the pins they serve, and the totem-pole plus CLLC stages now pass the full 11 kW in either direction at 96.5 percent each way. The stage is grid-forming, not just grid-following: it can energize a dead circuit and hold frequency, which means a house without power is a load this car can carry for two days. DC export needs no hardware at all, the station’s rectifier simply runs in reverse under ISO 15118-20, and the pack follows the same BMS current requests in both directions. The pin thermistors, the arc-proof motorized lock, and the software-before-current handshake carry over from Gen 1 unchanged.\n\nThe honest part is the warranty ledger, because V2G marketing rarely shows it. Export is battery throughput like any other: this pack’s cycle life is a budget, and at roughly 3 cents per kWh of wear, selling 10 kWh into every evening peak spends about a megawatt-hour of budget a season. So the port meters export on its own counter, the warranty carries 2 MWh a year of it without question, and beyond that the export column starts consuming warranted throughput. The economics still close in most markets, evening spreads beat 3 cents plus the 7 percent round trip, but the car states the price instead of hiding it, because a warranty surprise discovered at year six is how good ideas die.',
       why: 'Moving the electronics to the port shortens the AC wiring to nothing, frees the penthouse bay for the one converter, and puts every grid-facing component inside one serviceable enclosure: 13 kg against the 15 Gen 1 spent on the inlet and charger separately. Bidirectionality itself cost 1 kg of silicon and sensing; a car that is parked 95 percent of its life is the cheapest grid battery a household will ever own, and refusing that on warranty fear would have been the dishonest choice.',
       fail: [
         'Export doubles the connector’s duty cycle, so contact pitting arrives in half the years; the pilot line still breaks current first and the pins still switch dead, carried from Gen 1.',
-        'Grid-forming hardware inverts the threat model: a compromised session now faces electronics that could energise a dead line, so islanding detection is certified hardware, not firmware, and fails to open.',
+        'Grid-forming hardware inverts the threat model: a compromised session now faces electronics that could energize a dead line, so islanding detection is certified hardware, not firmware, and fails to open.',
         'The thermistors still cannot tell whose resistance is rising, the car’s pins or a worn station’s, so derating punishes both sides equally, carried from Gen 1 and still unsolved.',
       ],
       explode: [-0.45, 0.55, 0.4],
@@ -132,9 +132,9 @@ export const SYSTEM = {
         ['Front run', '50 mm² kept; 531 A peak at 508 V (Gen 1: 420 A at 355 V)'],
         ['Rear corners', '16 mm² each, 148 A per wheel motor (Gen 1: one 620 A feed)'],
         ['Insulation', 'Silicone 180 °C, braid bonded both ends, carried'],
-        ['Route', 'Pack-lid tunnel centreline, carried from Gen 1'],
+        ['Route', 'Pack-lid tunnel centerline, carried from Gen 1'],
       ],
-      how: 'Gen 1’s cable set predicted its own successor: it computed that raising pack voltage would shrink the front run and called it the 800 V argument. The pack then rose, 355 V to 508 across Gen 2 and Gen 3, and this slot, frozen at Gen 1, never collected, because the drivetrain spent the dividend first: Gen 3 moved the 270 kW axial-flux machine onto the front axle. So the 3.1 m front run keeps its 50 mm². Its job grew 80 percent over Gen 1’s 150 kW induction unit while its peak current grew only 26, 420 A to 531, still inside the carried 600 A, 30 s thermal-mass rating; at 355 V the same machine would have demanded 760 A and roughly 90 mm² of copper. The dividend is real, it was just paid out as capability at the front axle instead of kilograms in this loom.\n\nThe kilograms come from the back. Gen 1’s rear run fed a 220 kW machine at 620 A peaks; its successors now live inside the rear wheels, so one heavy feed becomes two 16 mm² corner runs at 148 A each, ending at drivetrain-3’s service-loop brackets where the flexing umbilicals take over. The runs also start one box earlier, leaving the converter’s distribution deck directly, which deletes the separate penthouse-to-everything hop and a heavy connector pair per branch. What survives carries over exactly: the front run rides the tunnel centreline over the pack lid on standoff clips, the most protected real estate in the car, and the thermal spur still earns its orange, because 7 kW of cabin heat at 48 V would be 145 A of copper for a comfort load, exactly the mistake the 48 V migration exists to avoid in the other direction.',
+      how: 'Gen 1’s cable set predicted its own successor: it computed that raising pack voltage would shrink the front run and called it the 800 V argument. The pack then rose, 355 V to 508 across Gen 2 and Gen 3, and this slot, frozen at Gen 1, never collected, because the drivetrain spent the dividend first: Gen 3 moved the 270 kW axial-flux machine onto the front axle. So the 3.1 m front run keeps its 50 mm². Its job grew 80 percent over Gen 1’s 150 kW induction unit while its peak current grew only 26, 420 A to 531, still inside the carried 600 A, 30 s thermal-mass rating; at 355 V the same machine would have demanded 760 A and roughly 90 mm² of copper. The dividend is real, it was just paid out as capability at the front axle instead of kilograms in this loom.\n\nThe kilograms come from the back. Gen 1’s rear run fed a 220 kW machine at 620 A peaks; its successors now live inside the rear wheels, so one heavy feed becomes two 16 mm² corner runs at 148 A each, ending at drivetrain-3’s service-loop brackets where the flexing umbilicals take over. The runs also start one box earlier, leaving the converter’s distribution deck directly, which deletes the separate penthouse-to-everything hop and a heavy connector pair per branch. What survives carries over exactly: the front run rides the tunnel centerline over the pack lid on standoff clips, the most protected real estate in the car, and the thermal spur still earns its orange, because 7 kW of cabin heat at 48 V would be 145 A of copper for a comfort load, exactly the mistake the 48 V migration exists to avoid in the other direction.',
       why: 'Cable mass is a voltage decision, and this part pays that sentence out honestly: 8 kg against Gen 1’s 12, with the saving taken at the rear while the front run’s duty nearly doubled for free. The ladder’s lesson about neglected slots got sharper on the way: a dependency nobody owns does not collect its own dividends, but other slots will happily spend them, and Gen 3 could only afford a 270 kW front axle because the voltage had risen two generations before this loom billed for it.',
       fail: [
         'Chafe through to the shield is still a slow isolation decline the monitor catches early; bend radii stay at six diameters, carried from Gen 1.',
@@ -158,7 +158,7 @@ export const SYSTEM = {
       how: 'This is the interface the whole generation hangs on. Two 16 mm² runs leave the corner zonal controllers and travel the length of each rocker top, terminating in four stubs under the subframe corners; suspension-4 lands its connector bosses on exactly those stubs and runs its own short leads onward to the actuators, and in the exploded view the pair drops away together, because a connection is one object with two owners. Every actuator sees both feeds through ideal-diode ORing stages, so the handover when one feed dies is passive physics, under 100 microseconds, faster than any controller could even notice. The feeds run opposite rockers on purpose: a side impact that crushes one sill and its feed leaves the other sill’s feed carrying the car, fed from its own pair of corner controllers, which are themselves fed from a ring with two sources.\n\nEach feed is sized for the entire by-wire budget alone: steering’s dual lanes, the brake boost, four damper valve heads, the rear-steer actuator and the air compressor sum to 146 A at worst-case simultaneity, and each run carries 150 continuously. That sounds like double spending until you price the alternative: at 12 V the same load is 580 A, and duplicating a 580 A path means duplicating busbar, not wire. Redundant power at by-wire scale is only affordable at all because the voltage moved first; the feed pair is 4 kg total, the entire line item for making chassis power fail-operational.',
       why: 'Fail-operational power is the thesis of Gen 4 stated in copper: an actuator that must always be able to brake needs energy that can always arrive, through a source that survives (converter or buffer), a path that survives (either rocker), and a connection that survives (ORing at the load). Gen 1 had exactly one of those layers, the 12 V battery, and could add no more, because at 12 V the second path costs what the first one did. The generation’s bill closes here too: hv-4 returns 24 kg against Gen 1, suspension-4 and autonomy-4 spend 11 of it on actuators and compute, and the car nets 13 kg and a chassis with no mechanical fallback left to lean on. The scale barely notices; the capability is the entire purchase.',
       fail: [
-        'A shorted ORing stage welds the two feeds into one and deletes the redundancy invisibly; the zonal controllers pulse each feed monthly and watch the other for the sag, the by-wire equivalent of testing your spare tyre.',
+        'A shorted ORing stage welds the two feeds into one and deletes the redundancy invisibly; the zonal controllers pulse each feed monthly and watch the other for the sag, the by-wire equivalent of testing your spare tire.',
         'The stub connectors live in the wet zone under the sills, so their seals are the corrosion watch item; per-pin resistance rides the same telemetry as every eFuse channel.',
         'Both feeds meet upstream at the ring: a whole-ring collapse defeats the pair, which is why the buffer sits on that ring and why suspension-4’s actuators carry local hold-up for the final 200 ms. The layers are stacked, not infinite.',
       ],
@@ -166,7 +166,7 @@ export const SYSTEM = {
     },
     'zone-drops': {
       name: 'Zone sub-harnesses',
-      tagline: 'Forty centimetres to the nearest controller: the last copper a robot cannot lay, and there is less of it every generation.',
+      tagline: 'Forty centimeters to the nearest controller: the last copper a robot cannot lay, and there is less of it every generation.',
       mass: 5,
       specs: [
         ['Topology', 'Short drops from 4 corner boxes, carried from Gen 1'],
@@ -219,7 +219,7 @@ export const SYSTEM = {
                  them went from 18.0 mm past the nearest wall to 15.0.    */
 
 const PH = P.penthouse;
-const CX = -1.320;                     /* converter centre. It was -1.37, the
+const CX = -1.320;                     /* converter center. It was -1.37, the
    midpoint of P.penthouse, and that put the case's -x wall at x -1.530
    inside drivetrain-3's torque-vectoring controller on gen4: 63.29 mm over
    52 crossing triangle pairs at (x -1.530 to -1.421, |z| 0.220). The
@@ -240,7 +240,7 @@ const LID = 0.302;                     // battery floor-lid top, measured
    other face needs the rotation that carries +Y onto that face's outward
    normal. Seat it on the face you MEASURED, not on the datum you assumed:
    the buried heads this pass deleted from the converter were placed on the
-   box centre plus a guess. */
+   box center plus a guess. */
 const FACE = {
   py: [0, 0, 0],
   ny: [Math.PI, 0, 0],
@@ -302,7 +302,7 @@ function place(obj, pos, xdir, ydir) {
    ripple was tried first and it cost 1.4 mm against wheels-3's master unit
    and 0.9 mm against the body front casting, both of which the smooth runs
    had already been grazing. Conduit is specified on its outside diameter
-   anyway, so this is also the honest way round.
+   anyway, so this is also the honest way around.
 
    Cost is 2 x rings x radial triangles with rings = 2 x length / pitch.
    Winding is (a, c, b): the ring runs counter-clockwise in the frame's
@@ -312,7 +312,7 @@ function place(obj, pos, xdir, ydir) {
    This one deliberately does NOT get lib.crease. An eight-sided tube's
    longitudinal dihedral is 45 degrees and a convolution's is about 16, so
    every threshold that breaks the ribs breaks the facets first and the run
-   comes out octagonal. Loom is blow-moulded and its ribs really are
+   comes out octagonal. Loom is blow-molded and its ribs really are
    rounded, so smooth normals are the honest ones: the corrugation reads
    through the silhouette and the specular ripple instead. */
 function conduit(points, r, mat, o) {
@@ -850,7 +850,7 @@ export function build() {
     buf.add(tab);
     buf.add(head(0.0030, M.steel, 'hex', [1.96, 0.680, tz + (face === 'nz' ? -0.0035 : 0.0035)], face));
   }
-  /* BMS connector on the -z wall, and the pressure-equalisation vent on
+  /* BMS connector on the -z wall, and the pressure-equalization vent on
      the +x wall. Both faces were measured clear: 25 mm to the body front
      casting off -z, 306 mm off +x. */
   const bms = lib.cbox(0.026, 0.020, 0.016, 0.002, M.plasticLt);
@@ -884,7 +884,7 @@ export function build() {
      swings out to |z| 0.53 through the x 1.35 to 1.20 stretch where the
      rack is, then comes back to the pad. Sampled every 1.6 mm over its own
      Catmull-Rom in all six presets, the tightest point left on the
-     centreline is 0.1 mm off gen9's rear air spring, which the smooth run
+     centerline is 0.1 mm off gen9's rear air spring, which the smooth run
      it replaces was already grazing, and the only thing it still touches is
      body-4's front casting, which the buffer case itself already sits in.
 
@@ -1007,7 +1007,7 @@ export function build() {
      The rear quarter is the fullest corner on the car and it was swept
      properly this time: a 40 mm probe over x -1.95, -1.85 and -1.75 by
      y 0.56 to 1.02 by z 0.60 to 0.92, against every partner in all six
-     presets at once. Almost nothing is free. The tyre, the rotor rings, the
+     presets at once. Almost nothing is free. The tire, the rotor rings, the
      rear arch closeouts, interior-6's NVH blanket, the cage and five
      different quarter-panel surfaces between them fill the volume the old
      box stood in and every volume outboard of it.
@@ -1033,7 +1033,7 @@ export function build() {
     for (const bz of [-0.050, 0.050]) v2g.add(head(0.0035, M.steel, 'hex', [VBX + bx, VBY + 0.053, VBZ + bz], 'py'));
   }
   /* Warning plate on the inboard wall, which is the face a hand reaches
-     from the boot. It was on the lid, at y 0.625 extruding +Y, which is the
+     from the trunk. It was on the lid, at y 0.625 extruding +Y, which is the
      underside of a lid spanning y 0.625 to 0.633: all 48 triangles of it
      were inside the lid they were printed on, 6.6 mm below its top face,
      and the plate rendered nowhere in any preset. */
@@ -1113,19 +1113,19 @@ export function build() {
      from the mating face and its boot a further 34 mm, so anything inside
      64 mm of the face is inside the boot: the wrap was at 32 mm, radius
      18.8 mm against a boot radius of 22.9 mm at that station, and all 32 of
-     its triangles were inside the moulding. It now sits at x 1.2349, which
+     its triangles were inside the molding. It now sits at x 1.2349, which
      is 71 mm back along the run and happens to be one of the tunnel's own
      control points, so crossing() returns the curve's point and tangent and
      the wrap lands square on the loom. */
   const tnWrap = crossing(tunnel, 'x', 1.2349, 1);
   if (tnWrap) runs.add(aim(wrap(0.014, 0.014, M.plastic), tnWrap.at, tnWrap.dir));
-  /* Standoff clips on the tunnel centreline. Six-sided posts rather than
+  /* Standoff clips on the tunnel centerline. Six-sided posts rather than
      eight so four clips cost the battery envelope about what two used to.
 
      A CLIP GOES ON THE CABLE, NOT ON THE CABLE'S DATUM. Lesson 3 of this
      pass, paid again: the run is drawn through control points at y 0.34
      and 0.35, but the Catmull-Rom that conduit() actually sweeps dips
-     between them, and at the four clip stations the BUILT centreline is at
+     between them, and at the four clip stations the BUILT centerline is at
      y 0.3344, 0.3392, 0.3400 and 0.3350. Seated at a constant y 0.3425 the
      band stood 8.1, 3.3, 2.5 and 7.5 mm above the cable it was clamping,
      while the stem, the foot and the top of the post ran 7.4, 2.5, 1.8 and
@@ -1250,7 +1250,7 @@ export function build() {
        THE FOOT SEATS ON THE LEG, NOT ON THE LEG'S DATUM. The side leg's
        laminate top is y 0.3510, but the ring's data lamina stands 4 mm
        proud of it over |z| 0.656 to 0.674 at exactly these three x
-       stations. A 20 mm foot centred on |z| 0.680 spanned 0.670 to 0.690
+       stations. A 20 mm foot centered on |z| 0.680 spanned 0.670 to 0.690
        and so buried its inboard 4 mm inside that lamina, 284 triangles of
        it across the six clips. The foot is 12 mm deep on |z| 0.682 now, so
        it spans 0.676 to 0.688: 2.0 mm clear of the lamina edge and 2.0 mm

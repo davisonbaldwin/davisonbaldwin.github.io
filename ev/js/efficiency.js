@@ -89,7 +89,7 @@ const METRICS = {
   'drivetrain-2': { driveEff: 0.925 },
   'drivetrain-3': { driveEff: 0.93 },
   'drivetrain-6': { driveEff: 0.945 },
-  'drivetrain-7': { driveEff: 0.958 },  // part-load optimised, peak power traded away
+  'drivetrain-7': { driveEff: 0.958 },  // part-load optimized, peak power traded away
   /* drivetrain-9 is drivetrain-7 with the front halfshafts shortened to reach
      wheels-9's relocated hub face. Nothing electrical or geometric in the
      power path changed, so the efficiency is carried, not re-earned. */
@@ -150,7 +150,7 @@ const METRICS = {
      weights in on-die SRAM is a wash, because a 1 Gbit macro leaks 5 to 15 W
      at automotive junction temperature against the 12 W of DRAM interface it
      displaces, and a wash is booked at zero rather than rounded toward the
-     target. Sharing one deserialisation stage saves 10 W and is declined on
+     target. Sharing one deserialization stage saves 10 W and is declined on
      a trust boundary, because a corrupted shared front end lies to all three
      lanes at once.
 
@@ -200,7 +200,7 @@ const METRICS = {
      hv-4's 870 V ceiling, and refused the front-corner chamfer too. The sill
      adds 23.2 kg and no energy. It also asks the integrator, in its own
      strikeshield panel, NOT to book the 2 Cd counts a flatter floor should be
-     worth, because body-7's audit never modelled the step. Declined as asked:
+     worth, because body-7's audit never modeled the step. Declined as asked:
      design/area-rezero.md froze the coefficient and an unaudited count is
      exactly what that freeze is for. */
   'battery-11': { kwh: 190, battLoss: 1.014 },
@@ -254,7 +254,7 @@ const ADDITIVE = new Set(['autonomy-4']);
    single process by tools/area.sh. Nothing here is asserted and nothing is
    carried over from an earlier convention.
 
-   WHY THE TABLE IS KEYED ON A PAIR AND NOT ON A BODY. Because the tyre
+   WHY THE TABLE IS KEYED ON A PAIR AND NOT ON A BODY. Because the tire
    columns belong to the wheels. body-7's old 2.163 embedded wheels-7's
    split-track columns while the Gen 6 preset ran body-7 on wheels-6, so one
    number was serving two different cars. Measured, Gen 6 is 2.1855 and
@@ -297,7 +297,7 @@ const ADDITIVE = new Set(['autonomy-4']);
    0.25 m2 light, and their published order was wrong, not merely offset.
    Frontal area does NOT fall from Gen 1 to Gen 5. It sits at 2.36 to 2.42
    and wanders, which is design/gen6.md's own thesis, that five generations
-   optimised Cd while the package sat untouched. The published table said
+   optimized Cd while the package sat untouched. The published table said
    2.22 down to 2.17 and quietly contradicted the design doc that motivated
    Gen 6. The real area ladder has exactly two steps in it, Gen 6 at
    -0.230 m2 and Gen 9 at -0.114, and Gen 6 was being credited with 0.007.
@@ -322,12 +322,12 @@ export const AREA = {
   'body':        { 'wheels': 2.4045, 'wheels-2': 2.3743, 'wheels-3': 2.3733, 'wheels-6': 2.3738, 'wheels-7': 2.3820, 'wheels-9': 2.3353, 'wheels-10': 2.3267, 'wheels-11': 2.3267 },
   'body-aero':   { 'wheels': 2.4183, 'wheels-2': 2.3937, 'wheels-3': 2.3937, 'wheels-6': 2.3932, 'wheels-7': 2.3998, 'wheels-9': 2.3589, 'wheels-10': 2.3515, 'wheels-11': 2.3515 },
   'body-3':      { 'wheels': 2.4392, 'wheels-2': 2.4137, 'wheels-3': 2.4124, 'wheels-6': 2.4135, 'wheels-7': 2.4218, 'wheels-9': 2.3769, 'wheels-10': 2.3678, 'wheels-11': 2.3677 },
-  'body-4':      { 'wheels': 2.3895, 'wheels-2': 2.3642, 'wheels-3': 2.3635, 'wheels-6': 2.3645, 'wheels-7': 2.3715, 'wheels-9': 2.3264, 'wheels-10': 2.3174, 'wheels-11': 2.3172 },
+  'body-4':      { 'wheels': 2.3898, 'wheels-2': 2.3645, 'wheels-3': 2.3638, 'wheels-6': 2.3648, 'wheels-7': 2.3718, 'wheels-9': 2.3267, 'wheels-10': 2.3177, 'wheels-11': 2.3175 },
   'body-6':      { 'wheels': 2.4439, 'wheels-2': 2.4163, 'wheels-3': 2.4125, 'wheels-6': 2.4155, 'wheels-7': 2.4302, 'wheels-9': 2.3824, 'wheels-10': 2.3734, 'wheels-11': 2.3734 },
   'body-7':      { 'wheels': 2.2115, 'wheels-2': 2.1864, 'wheels-3': 2.1840, 'wheels-6': 2.1855, 'wheels-7': 2.2106, 'wheels-9': 2.1622, 'wheels-10': 2.1550, 'wheels-11': 2.1550 },
   'body-8':      { 'wheels': 2.2253, 'wheels-2': 2.1998, 'wheels-3': 2.1976, 'wheels-6': 2.1990, 'wheels-7': 2.2114, 'wheels-9': 2.1741, 'wheels-10': 2.1670, 'wheels-11': 2.1670 },
-  'body-9':      { 'wheels': 2.1586, 'wheels-2': 2.1235, 'wheels-3': 2.1212, 'wheels-6': 2.1227, 'wheels-7': 2.1351, 'wheels-9': 2.0978, 'wheels-10': 2.0897, 'wheels-11': 2.0906 },
-  /* REGENERATED 2026-08-13 after body-11's four bonnet stations came down
+  'body-9':      { 'wheels': 2.1587, 'wheels-2': 2.1235, 'wheels-3': 2.1212, 'wheels-6': 2.1227, 'wheels-7': 2.1351, 'wheels-9': 2.0978, 'wheels-10': 2.0897, 'wheels-11': 2.0906 },
+  /* REGENERATED 2026-08-13 after body-11's four hood stations came down
      under the driver's eye line. Every cell fell by 0.0005 to 0.0006 m2 and
      no other body's row moved at all, which is the sweep confirming that the
      change was local to the front deck.
@@ -390,8 +390,8 @@ function warnOnce(msg) {
 
    THE BASE, NAMED. Every Cd above is `body`'s 0.21 plus booked counts. That
    base is an asserted class-typical figure for a stamped-and-cast reference
-   saloon rather than a measurement, and as a base it is defensible: real
-   production saloons of that description sit at 0.20 to 0.23. What is not
+   sedan rather than a measurement, and as a base it is defensible: real
+   production sedans of that description sit at 0.20 to 0.23. What is not
    defensible is where the accumulated counts arrive.
 
    WHERE THE LADDER CROSSES THE REAL WORLD. The lowest figure ever recorded
@@ -403,7 +403,7 @@ function warnOnce(msg) {
    wheel-shrouded teardrop and not a car anyone could drive to work.
 
    This ladder reaches 0.17 at GEN 2 and 0.130 at GEN 5. So a four-seat
-   saloon on this ladder matches the lowest coefficient ever recorded on any
+   sedan on this ladder matches the lowest coefficient ever recorded on any
    full-scale car at its second rung, and at its fifth it is below every
    research vehicle on that list, the Probe V's 0.137 included. The rungs
    that carry it there are exactly the four that were never independently
@@ -447,13 +447,13 @@ export const CD_BASIS = {
 export const LOSS_NOTES = {
   Aero: {
     blurb: 'Energy spent shoving air out of the way.',
-    how: 'Aerodynamic drag rises with the square of speed, so this is the term that dominates on the motorway and almost vanishes in town. What sets it is CdA, the drag coefficient multiplied by the frontal area the car presents. Both halves matter equally, and a good Cd on a large frontal area is not a good car.\n\nOn the mixed cycle the model uses an effective 86 km/h for this term, weighted toward higher speeds because drag work grows with the cube of speed and the fast part of a journey dominates the average.\n\nThe two halves of CdA are known to very different standards here, and it is worth knowing which is which. THE FRONTAL AREA IS MEASURED. It is the union of the shadow the body, the wheels and the pack cast on a plane across the airstream, integrated from the ground up off the built geometry, by one integrator run over every generation at once. Change the shape and the number moves on its own.\n\nTHE DRAG COEFFICIENT IS NOT MEASURED. A coefficient is a wake result and needs a wind tunnel, which this project does not have. Every Cd on the ladder is the Gen 1 reference car\'s 0.21 plus counts booked against named mechanisms, so comparing one generation with the next is sound. The absolute value is not a tunnel figure and should not be read as one: this ladder reaches 0.17 by Gen 2, which matches the lowest drag coefficient ever recorded on a full-scale car of any kind, and by Gen 5 it is at 0.130, below every research prototype ever built. The independent audit of Gen 9 expected the real number to be nearer 0.14 to 0.16 than the 0.108 carried here. Treat the coefficient as the model\'s own currency and the area as the physical measurement.',
+    how: 'Aerodynamic drag rises with the square of speed, so this is the term that dominates on the highway and almost vanishes in town. What sets it is CdA, the drag coefficient multiplied by the frontal area the car presents. Both halves matter equally, and a good Cd on a large frontal area is not a good car.\n\nOn the mixed cycle the model uses an effective 86 km/h for this term, weighted toward higher speeds because drag work grows with the cube of speed and the fast part of a journey dominates the average.\n\nThe two halves of CdA are known to very different standards here, and it is worth knowing which is which. THE FRONTAL AREA IS MEASURED. It is the union of the shadow the body, the wheels and the pack cast on a plane across the airstream, integrated from the ground up off the built geometry, by one integrator run over every generation at once. Change the shape and the number moves on its own.\n\nTHE DRAG COEFFICIENT IS NOT MEASURED. A coefficient is a wake result and needs a wind tunnel, which this project does not have. Every Cd on the ladder is the Gen 1 reference car\'s 0.21 plus counts booked against named mechanisms, so comparing one generation with the next is sound. The absolute value is not a tunnel figure and should not be read as one: this ladder reaches 0.17 by Gen 2, which matches the lowest drag coefficient ever recorded on a full-scale car of any kind, and by Gen 5 it is at 0.130, below every research prototype ever built. The independent audit of Gen 9 expected the real number to be nearer 0.14 to 0.16 than the 0.108 carried here. Treat the coefficient as the model\'s own currency and the area as the physical measurement.',
     moves: 'Body shape and size. Lower Cd through a longer taper, a smoother surface and a narrower plan; lower frontal area through a lower roof and more tumblehome.',
   },
   Rolling: {
-    blurb: 'Energy lost flexing the tyres against the road.',
-    how: 'A tyre is not a rigid wheel. Its contact patch is squashed flat and then released once per revolution, and the rubber does not give back everything it absorbed. That hysteresis is rolling resistance, expressed as Crr, and the force it costs is Crr times the weight on the tyre. It is roughly constant with speed, so it matters most at low and medium speeds where drag has not yet taken over.\n\nBecause the force is proportional to weight, this is the row where vehicle mass shows up most directly.',
-    moves: 'Tyre construction and compound, tyre width and pressure, and total vehicle mass.',
+    blurb: 'Energy lost flexing the tires against the road.',
+    how: 'A tire is not a rigid wheel. Its contact patch is squashed flat and then released once per revolution, and the rubber does not give back everything it absorbed. That hysteresis is rolling resistance, expressed as Crr, and the force it costs is Crr times the weight on the tire. It is roughly constant with speed, so it matters most at low and medium speeds where drag has not yet taken over.\n\nBecause the force is proportional to weight, this is the row where vehicle mass shows up most directly.',
+    moves: 'Tire construction and compound, tire width and pressure, and total vehicle mass.',
   },
   'Stop-go': {
     blurb: 'Kinetic energy poured into accelerating that regen cannot fully recover.',
@@ -462,7 +462,7 @@ export const LOSS_NOTES = {
   },
   Auxiliary: {
     blurb: 'Everything drawing power that is not propulsion.',
-    how: 'Cabin heating and cooling, pumps and fans, lights, computers and sensors. Unlike the other rows this is a roughly constant power draw rather than a force, so its cost per kilometre depends on how long you take to travel that kilometre. It is nearly free at motorway speed and brutal in stop-start traffic or at a standstill.\n\nThis is why cold weather hurts range so much: cabin heat is a kilowatt-scale load that does not care how fast you are going.',
+    how: 'Cabin heating and cooling, pumps and fans, lights, computers and sensors. Unlike the other rows this is a roughly constant power draw rather than a force, so its cost per kilometer depends on how long you take to travel that kilometer. It is nearly free at highway speed and brutal in stop-start traffic or at a standstill.\n\nThis is why cold weather hurts range so much: cabin heat is a kilowatt-scale load that does not care how fast you are going.',
     moves: 'Thermal system efficiency, especially the heat pump, plus the low-voltage architecture and how much compute the car runs.',
   },
   'Battery losses': {
@@ -472,7 +472,16 @@ export const LOSS_NOTES = {
   },
 };
 
-export function computeBudget(activeIds, massKg) {
+/* `over` is an OPTIONAL set of overrides merged after everything else, and it
+   exists so the app can ask this function what a term is worth rather than
+   asserting it: call the budget as the car is, call it again with one input
+   moved, and the difference is the model's own derivative rather than a
+   second model's opinion. Omitting it is byte-identical to what shipped, and
+   tools/levers.sh asserts exactly that against the ladder, compare and energy
+   checkers. Nothing in the product may pass a value a reader chose: these are
+   fixed steps stated beside their answer, not a slider over cars nobody
+   built. See design/app-brief.md on inventing data. */
+export function computeBudget(activeIds, massKg, over) {
   const m = { ...BASE };
   let auxAdd = 0;
   for (const id of activeIds) {
@@ -486,6 +495,9 @@ export function computeBudget(activeIds, massKg) {
   /* after the loop, because area is a property of the configuration and no
      single slot's entry is allowed to set it */
   m.area = areaFor(activeIds);
+  /* after area, so an override can move the one quantity the loop is not
+     allowed to set */
+  if (over) Object.assign(m, over);
 
   const fAero = 0.5 * AIR * m.cd * m.area * V_AERO * V_AERO;   // N
   const fRoll = m.crr * massKg * G;                            // N
@@ -510,5 +522,11 @@ export function computeBudget(activeIds, massKg) {
     total,
     rangeKm: (m.kwh * 1000) / total,
     kwh: m.kwh,
+    /* the inputs this call actually resolved, so a caller asking what a term
+       is worth can move ONE of them off the model's own value rather than
+       restating a number the modules own. Additive: nothing that existed
+       before reads it. */
+    inputs: { cd: m.cd, crr: m.crr, area: m.area, auxW: m.auxW,
+              battLoss: m.battLoss, driveEff: m.driveEff },
   };
 }

@@ -13,6 +13,101 @@ export const SYSTEM = {
   color: 0x9fc0d8,
   explode: [0, 1.7, 0],
   blurb: 'The same skateboard in a slipperier suit: one glass teardrop, skirted rear wheels, a boat-tailed plan, and a Kamm tail chasing Cd 0.17.',
+  /* THE CLOSURES. Gen 2 is the optimization pass and the doors are the part
+     of it that did not get optimized: two leaves a side on vertical hinges,
+     the same arrangement as Gen 1, on a body whose whole argument is that the
+     air has been attended to and nothing else has. The curbside figure says
+     so, and it is the honest reading of the pair against Gen 1.
+
+     Both axes sit on the paint at each leaf's own widest point rather than
+     inside it. body-8 tested the alternative on a body that still had a
+     fender step and put its door 36.5 mm through the step, so an inboard
+     axis is not something any rung on this ladder gets to use. */
+  closures: {
+    'door-front': {
+      name: 'Front door',
+      kind: 'door',
+      part: 'doors',
+      mass: 19,
+      seconds: 1.1,
+      seat: 'Hinge pillar at the x 1.1240 cut, axis on the skin at |z| 0.9625',
+      motion: [
+        { kind: 'swing', axis: [0, 1, 0], pivot: [1.1240, 0.640, 0.9625], deg: 66 },
+      ],
+      why: 'A Kammback and a set of active shutters and a solid-state pack, and the door still opens the way the reference car\'s did. That is worth saying plainly rather than hiding: Gen 2 attacked drag and mass and left packaging alone, and packaging is what a door costs. The panel is 1.034 m long and swings 66 degrees, so the arc is what the arc has always been.',
+      cost: [
+        'It buys nothing over Gen 1 in the one currency a door is charged in. Whatever this rung saved in Wh/mi, the ground it needs beside a parked car is the same ground.',
+        'The camera pod at |z| 1.0000 is the widest thing on this car and it is on the fixed A-pillar strip, not on the leaf, so the door swings past it rather than carrying it.',
+      ],
+    },
+    'door-rear': {
+      name: 'Rear door',
+      kind: 'door',
+      part: 'doors',
+      mass: 18,
+      seconds: 1.1,
+      seat: 'B-pillar hinge at the x 0.0799 cut, axis on the skin at |z| 0.9817',
+      motion: [
+        { kind: 'swing', axis: [0, 1, 0], pivot: [0.0799, 0.640, 0.9817], deg: 66 },
+      ],
+      why: 'Front-hinged off the B-pillar, the ordinary arrangement, and 0.974 m long against the front leaf\'s 1.034. On this body the two are nearly the same length, so unlike every later rung the two doors want nearly the same room, which is what a cabin drawn before the package was argued about looks like.',
+      cost: [
+        'The daylight opening on this body is drawn as ONE pane spanning both doors, so unlike Gen 1 the glass cannot travel with the leaf it belongs to without being cut, and cutting it would move geometry. It stays fixed, which is a drafting artifact rather than a design: on a real car each pane runs in its own door.',
+      ],
+    },
+    hood: {
+      name: 'Clamshell hood',
+      kind: 'hood',
+      part: 'nose',
+      mass: 11,
+      seconds: 1.3,
+      seat: 'Pin on the inner panel\'s aft edge at (1.0420, 0.9284), inside the windshield bond bead at x 1.045',
+      motion: [
+        { kind: 'swing', axis: [0, 0, 1], pivot: [1.0420, 0.9284, 0], deg: 55 },
+      ],
+      why: 'ONE PIN IS EXACT HERE, AND THAT IS A MEASUREMENT RATHER THAN AN ASSUMPTION. Swept along its own aft edge from the centerline out to |z| 0.7300, this panel holds world y 0.9422 on the outer face and 0.9284 on the back at every vertex, and world x 1.0442 and 1.0420: the line has zero camber. body-9\'s decklid cut falls 220.9 mm from its crown to its outboard ends and cannot use a fixed axis at all without driving its leading edge into the panel behind it. This one is a flat rounded rectangle, 1.28 m by 1.70 m on a 0.12 m corner radius, lying 9.1 degrees nose-down, so a single transverse pin is the whole hinge and there is nothing clever to do.\n\nWHAT OPENS IS THE WHOLE PANEL, and the module had to choose. The clamshell carries three grooves, measured off the built surface: a cowl gap whose outer lips sit at x 1.1084, y 0.9320, and two fore-aft gaps at |z| 0.7310 through the flat of it. Read as shutlines, those three draw a conventional hood with bolt-on fender tops. The spec row says one-piece clamshell and the failure note says a parking tap that would have cost one headlamp now costs the whole strip. The geometry sides with the spec row: this is ONE lofted surface closed by ONE returned edge, with three channels sunk into it, and a channel is not a separation. So the closure opens the panel that exists and the three grooves ride with it as the reveals they are.\n\nTHE AXIS WAS PUT ON THE DRAWN COWL GAP FIRST, AND SWEPT, AND MOVED. Pin it at (1.1084, 0.9320) and the 65 mm of panel behind the pin swings down and forward rather than up, into the cowl bead that bonds the windshield to this very panel. Measured with the checker\'s own triangle predicate, the overlap with body-aero/canopy goes from 4.12 mm at rest to 8.43 mm at 13.8 degrees of travel, 4.31 mm deeper into a 26 by 12 mm run of structural polyurethane, and does not clear until past 18 degrees. On the pin this closure uses, the same pair never once exceeds its resting 4.12 mm and falls to 1.65 mm at full open. Two things had to move to get there: the pin went 65 mm aft along the panel onto its own edge, and then through the thickness onto the BACK face, so the one point on the panel that never moves is the point the bond bead is wrapped around. That is also where a hood hinge arm bolts on a real car, to the inner panel and not to the paint. Taking it off the mid-thickness costs 2.0 mm of lift and buys the last 0.04 mm of growth the checker could still find.',
+      cost: [
+        'A one-piece clamshell is the most expensive panel decision on the front of this car. It spans both fender tops, so the outer skin is one 2.16 m2 draw with no relief joint anywhere in it, and damage anywhere on it replaces all of it. That is the same bill the part text books for the light blade, taken a second time on a much larger panel.',
+        'It opens onto a full thermal bay and not onto a frunk, and the numbers are the point rather than an apology. Measured along the bay centerline inside |z| 0.30 in 100 mm bands, the clear height under the panel is 271.1 mm at x 1.05 to 1.15 and 280.2 at 1.15 to 1.25, then collapses to 47.0 mm at 1.45 to 1.55, 14.9 at 1.55 to 1.65 and MINUS 7.2 at 1.75 to 1.85, where hv\'s 12 V battery is already through the panel line. The largest empty box under the whole aperture, with every gen2 partner as the floor, is 84.9 L at x 1.120 to 1.440 and 0.221 m tall, and it is the scuttle. Gen 2 has a hood and no frunk: the skateboard freed the floor, not the nose, and opening the lid is the honest way to show that.',
+        'The lid is what makes two standing disagreements visible. thermal/radiator stands 35.5 mm above this panel\'s own back-face plane over 432 vertices, deepest at (2.1950, 0.7790, 0.3850), and thermal/coolant-lines 30.5 mm over 21, deepest at (2.1576, 0.7800, -0.4211); the closure checker scores the same two pairs at 18.66 and 6.51 mm of triangle penetration with the car shut. Neither is a strike, because the growth test only fails a pair that was clear at rest and both of these shrink the moment the panel rises. They are still a radiator through a hood, and they belong to thermal and this body jointly.',
+        'At 55 degrees the panel peaks at y 1.8572, which is 393.7 mm over the parked roof at 1.4635. Gen 1 spends 412.4 mm at 52 degrees, so this one opens three degrees further and still stands 18.7 mm lower, and the reason is the lever rather than the hinge: 1.2822 m from this pin to the panel tip. A low garage or a roof box is a real constraint on a hood in a way it never is on a decklid, and neither figure changes that.',
+      ],
+    },
+    /* ONE WARNING SURVIVES ON THIS ONE AND IT IS THE CHECKER'S BOOKKEEPING,
+       not the car. tools/closures.js resolves `carries` by pushing a SPREAD
+       COPY of the selected instance into the moving set (closures.js line
+       324) while `moving` is a Set keyed on object identity, so the ORIGINAL
+       autonomy/cameras instance stays in staticParts and the lid sweeps
+       through a ghost of the camera it is carrying. Reproduced: at t = 0 the
+       copy reads 1.00 mm against its own original, which is what puts the key
+       in the baseline map; at 8.8 degrees the deck panel passes through the
+       volume the camera vacated and reads 1.95 mm against the ghost, so the
+       tool prints 0.9 mm of growth. Gen 1 declares the same carry against the
+       same part and does not show it, so it takes a lid whose panel sweeps
+       its own camera station to surface this at all.
+       Nothing here can fix it: dropping the carry turns 1.95 mm into a real
+       STRIKE and a FAIL, which is worse and also wrong. It belongs to
+       tools/closures.js. */
+    decklid: {
+      name: 'Decklid',
+      kind: 'decklid',
+      part: 'skin',
+      mass: 5,
+      seconds: 1.3,
+      seat: 'Gooseneck pin on the deck\'s own leading gap at (-1.7381, 0.9712), 44 mm inside the panel edge',
+      motion: [
+        { kind: 'swing', axis: [0, 0, 1], pivot: [-1.7381, 0.9712, 0], deg: -70 },
+      ],
+      carries: [{ part: 'autonomy/cameras', box: [-2.30, 0.93, 0, -2.19, 1.00, 0.05] }],
+      why: 'The same zero at the other end of the car. Swept along its own leading edge out to |z| 0.6500 the deck panel holds world y 0.9779 on the outer face and 0.9641 on the back, and world x -1.6925 and -1.6946, at every vertex. No camber, one pin again, and what travels is the whole 1.30 by 0.595 m panel, because like the clamshell it is one lofted surface with one returned edge and its three grooves are channels in it rather than separations.\n\nTHE PIN IS 44 mm INSIDE THE PANEL\'S OWN LEADING EDGE, which is a gooseneck, and it was chosen by sweeping the alternative rather than by drawing it. Put the axis on the panel edge at (-1.6935, 0.9710) and the lid rotates about the line where the deck meets the backlight bond bead: measured, that carries body-aero/canopy 3.72 mm deeper at 50 degrees and never lets go of it. Put it on the leading gap the panel already carries at (-1.7381, 0.9712) and the 44 mm of panel ahead of the pin tucks DOWN under the backlight instead of scrubbing along it: the same pair grows 0.85 mm at most, at 12 degrees, and is clear of the canopy altogether from 23 degrees to full open. That tuck is not a trick, it is what the gooseneck on every sedan decklid does and the reason the shelf under one has a pocket in it. It is also the one place on this panel where the drawing and the kinematics land on the same line.\n\nTHE WRAP-OVER DOES NOT OPEN, AND SAYING SO IS THE POINT. The Kamm face carries the other half of a tailgate and it is real geometry: a lower gap measured at y 0.6350 and two side gaps at |z| 0.6935. Joining the two halves into one rigid body is not a regrouping. That face is a single lofted panel holding the lid region, the lamp channel and the fixed lower band inside one grid and one returned edge, so cutting a lid out of it means re-authoring the loft, and a re-authored loft moves vertices, which is a redraw rather than the re-slice a closure is allowed to be. The two apertures could not be made to agree in any case: the deck\'s side gaps land on |z| 0.5980 and the face\'s on 0.6935, 95.5 mm apart per side, and this file\'s own note on the Kamm tail measures why bringing the face\'s gaps in runs them through a lamp channel that reaches 0.6497. The wrap-over is a body-generation fix. What opens on Gen 2 is a decklid.',
+      cost: [
+        'The wrap-over is drawn and does not open, so the load sill stays at the deck\'s own aft edge, measured at y 0.8859, instead of dropping to the tailgate\'s lower gap at 0.6350. Every case that goes in goes over a 250.9 mm lip, and deleting that lip is the whole reason a Kamm tail over a skateboard floor is worth drawing. This rung draws the answer and does not open it.',
+        'There is no load floor under the aperture, and the lid is what exposes that. Measured in 100 mm bands inside |z| 0.598, what is under this panel is the tail panel\'s inner face at y 0.8165 from x -2.280 to -2.180, then NOTHING AT ALL from -2.180 to -2.080 where the model is open to the underbody, then body-aero\'s own rear casting at 0.6225 from -2.080 to -1.980 and 0.7400 from -1.880 to -1.780. The largest empty box under the aperture measures 223.2 L only because its floor is the diffuser at y 0.2275. A trunk pan is a part no rung on this ladder has drawn, and 223 L is not a load space, it is a hole.',
+        'The reversing camera travels with the lid because on any real car it is bolted through it, and the sweep says so in millimeters: left on the static car it is struck 1.95 mm at 8.8 degrees by the panel it sits on. autonomy/cameras is at x -2.2590 to -2.2300 on the centerline, standing 94.6 mm above this panel\'s back-face plane over 100 vertices, which is 80.8 mm proud of the paint. It floats, and the float is autonomy\'s to fix. What this declaration fixes is ownership, which is the lesson this whole pass keeps re-learning: a static model cannot tell you which body a part is bolted to, and only motion can.',
+        'It is the cheapest closure on the car and the contrast is the point. Zero lateral, because a rotation about z moves no vertex in z. Zero fore and aft: the aft edge swings to x -2.2943 at 9 degrees, 57 mm short of the parked tail at -2.3513. And zero overhead, because at full open the panel peaks at y 1.4583 against a parked roof at 1.4635. Seventy degrees of decklid costs nothing the world outside the car can charge for. The front door on the same body needs 907.1 mm of ground beside it.',
+      ],
+    },
+  },
   parts: {
     ...STRUCT_META,
     canopy: {
@@ -24,14 +119,14 @@ export const SYSTEM = {
         ['Stack', '2.1 mm + acoustic PVB + 1.6 mm'],
         ['IR coating', 'Sputtered silver stack, 20% TSET'],
         ['Peak height', '1.38 m at x = 0.15'],
-        ['Windscreen rake', '63 degrees from vertical'],
+        ['Windshield rake', '63 degrees from vertical'],
         ['Bond run', '11 m structural PU'],
       ],
-      how: 'The canopy is windscreen, roof, and backlight fused into a single glazed surface: it rises in one line from the cowl at 0.92 m to a peak of 1.38 m just aft of the front seats, then falls away as a fastback all the way to the deck. Cell-cast lamination is what makes the shape buildable: each ply is sagged over a precision mould at 620 degrees C, so the three facets meet at radii large enough that the boundary layer never separates crossing them. A sputtered silver IR stack keeps total solar transmittance near 20 percent, the price of admission for a cabin under this much glass.\n\nAerodynamically the value is the absence of junctions. On a conventional car the flow crosses a cowl step, a windscreen header, a roof panel gap, and a backlight trim strip, and every one of those trips the boundary layer a little. Here the air attaches at the cowl and stays attached past the peak and down the fastback, because the tumblehome and the falling roofline together keep the local pressure gradient mild. Attached flow over the whole upper body is worth roughly 15 counts against the reference shell before any other device is counted.',
+      how: 'The canopy is windshield, roof, and backlight fused into a single glazed surface: it rises in one line from the cowl at 0.92 m to a peak of 1.38 m just aft of the front seats, then falls away as a fastback all the way to the deck. Cell-cast lamination is what makes the shape buildable: each ply is sagged over a precision mold at 620 degrees C, so the three facets meet at radii large enough that the boundary layer never separates crossing them. A sputtered silver IR stack keeps total solar transmittance near 20 percent, the price of admission for a cabin under this much glass.\n\nAerodynamically the value is the absence of junctions. On a conventional car the flow crosses a cowl step, a windshield header, a roof panel gap, and a backlight trim strip, and every one of those trips the boundary layer a little. Here the air attaches at the cowl and stays attached past the peak and down the fastback, because the tumblehome and the falling roofline together keep the local pressure gradient mild. Attached flow over the whole upper body is worth roughly 15 counts against the reference shell before any other device is counted.',
       why: 'Drag is separation, and separation starts at edges. Paying for one large complex glazing instead of three simple ones buys a top surface with no edges at all, and the same single bond line that seals it also carries shear into the cage the way the reference roof and screen already did separately.',
       fail: [
-        'One stone chip anywhere condemns the whole canopy; the replacement is the most expensive single panel on the car and needs ADAS recalibration afterwards.',
-        'A surface this large moves millimetres with thermal expansion; the PU bond is sized for the shear, but a dry spot in the bead shows up as a creak, then a leak.',
+        'One stone chip anywhere condemns the whole canopy; the replacement is the most expensive single panel on the car and needs ADAS recalibration afterward.',
+        'A surface this large moves millimeters with thermal expansion; the PU bond is sized for the shear, but a dry spot in the bead shows up as a creak, then a leak.',
         'The fast rake stretches the optical path: the camera zone above the mirror is held to optical tolerance, and even so night-time double imaging is the honest limit of a 63 degree screen.',
       ],
       explode: [0, 0.9, 0],
@@ -50,8 +145,8 @@ export const SYSTEM = {
       how: 'Ask where drag actually lives on a modern car and the answer is unglamorous: roughly a quarter is the wheels and their open arches, a third is the base wake behind the tail, the underbody and cooling flows take most of the rest, and the smooth painted surfaces people point at contribute almost nothing. A mirror-finish panel and a merely good one differ by a count or two; a wake that is 10 percent smaller is worth twenty. So the skin is shaped for one job: hand the flow to the tail with as little frontal area still moving as possible.\n\nThat is why the body sides pull inboard aft of the doors. The quarter panels rotate 4 to 8 degrees in plan, boat-tailing the body so the air converges gently instead of being dumped at full width. Convergence recompresses the flow, raising static pressure on the rearward-facing surfaces, and that pressure literally pushes the car forward, recovering part of what the nose paid. The front arches stay open at 430 mm radius because the wheels steer; everything aft of the B-pillar tapers.',
       why: 'Smooth is table stakes; taper is the design. A perfectly polished brick still carries a full-width wake. The monoform side exists to make the plan view a teardrop, and every crease on it is longitudinal so the converging flow is guided, never crossed.',
       fail: [
-        'Boat-tailing narrows the boot aperture and the rear track of usable cabin; the taper angle is a negotiation with the luggage test, and 8 degrees is where luggage lost.',
-        'A parking scrape on a tapered quarter reads from ten metres because the highlight line runs the whole car; repairs must be blended over the full panel.',
+        'Boat-tailing narrows the trunk aperture and the rear track of usable cabin; the taper angle is a negotiation with the luggage test, and 8 degrees is where luggage lost.',
+        'A parking scrape on a tapered quarter reads from ten meters because the highlight line runs the whole car; repairs must be blended over the full panel.',
         'Bonded skin cannot be slide-hammered; paintless dent repair or panel replacement are the only menu items.',
       ],
       explode: [0, 0.1, 0.65],
@@ -67,7 +162,7 @@ export const SYSTEM = {
         ['Stagnation line', 'y = 0.50 m on the sealed face'],
         ['Head clearance', '70 mm to hard points'],
       ],
-      how: 'Every body of revolution in a flow has a stagnation point where the air divides, and everything about a nose follows from where you put it. Here the sealed face places the stagnation line low, at about half a metre, so most of the oncoming air goes over the top along one unbroken line from the tip at 0.72 m to the cowl. High-energy air hugging the clamshell feeds the canopy attached; the smaller share below is metered through the shutter bank or ducted into the air curtains, thin jets that sheet across the front wheel faces and close the arch turbulence off from the body side.\n\nAn EV needs a fraction of a combustion car\'s cooling air, which is what makes the grilleless face honest rather than styling. The counterweight is pedestrian protection: the rules score head impact by deceleration, and lowering a nose steals the crush depth under the skin. This nose is legal because the frunk tub and casting edges sit 70 mm down and the clamshell inner is a cone-waffle field that buckles at a tuned force. The light blade spans the full width at the tip, a single sealed strip, because two conventional lamp housings would each carve a trench through the cleanest air on the car.',
+      how: 'Every body of revolution in a flow has a stagnation point where the air divides, and everything about a nose follows from where you put it. Here the sealed face places the stagnation line low, at about half a meter, so most of the oncoming air goes over the top along one unbroken line from the tip at 0.72 m to the cowl. High-energy air hugging the clamshell feeds the canopy attached; the smaller share below is metered through the shutter bank or ducted into the air curtains, thin jets that sheet across the front wheel faces and close the arch turbulence off from the body side.\n\nAn EV needs a fraction of a combustion car\'s cooling air, which is what makes the grilleless face honest rather than styling. The counterweight is pedestrian protection: the rules score head impact by deceleration, and lowering a nose steals the crush depth under the skin. This nose is legal because the frunk tub and casting edges sit 70 mm down and the clamshell inner is a cone-waffle field that buckles at a tuned force. The light blade spans the full width at the tip, a single sealed strip, because two conventional lamp housings would each carve a trench through the cleanest air on the car.',
       why: 'The nose sets the terms for every surface behind it. A low stagnation line and a sealed face cost nothing an EV needed anyway, and they hand the canopy the one thing it cannot make for itself: attached flow with all its energy still in it.',
       fail: [
         'A sealed nose has no ram-air reserve: if the shutter bank jams shut on a mountain climb, the thermal system must shed load, and the car tells the driver why power just tapered.',
@@ -108,10 +203,10 @@ export const SYSTEM = {
         ['Curtain ducts', '2, exit across wheel faces'],
         ['Ground clearance', '135 mm static'],
       ],
-      how: 'A smooth nose is a wing whether you meant it or not: air accelerating over the clamshell drops the pressure above, air packing under the nose raises it below, and the difference is lift on the axle that steers. The splitter attacks the underside term. Its lip forces the stagnation region above the plate, so high pressure pushes down on the lip while only slow, thin flow is admitted underneath. The recovered downforce arrives almost free because the lip adds frontal area measured in millimetres.\n\nThe tradeoff is the whole story. More splitter means more front grip and more stability in crosswinds, but past the optimum the plate starts working as a bluff face and drag climbs faster than lift falls. This car runs the lip at the drag-neutral point, targeting zero front lift at motorway speed rather than racetrack downforce. The two air-curtain ducts share the same real estate: they swallow the messy stagnation-zone air and sheet it flat across the front wheel faces, tidying the one region the open arches cannot.',
+      how: 'A smooth nose is a wing whether you meant it or not: air accelerating over the clamshell drops the pressure above, air packing under the nose raises it below, and the difference is lift on the axle that steers. The splitter attacks the underside term. Its lip forces the stagnation region above the plate, so high pressure pushes down on the lip while only slow, thin flow is admitted underneath. The recovered downforce arrives almost free because the lip adds frontal area measured in millimeters.\n\nThe tradeoff is the whole story. More splitter means more front grip and more stability in crosswinds, but past the optimum the plate starts working as a bluff face and drag climbs faster than lift falls. This car runs the lip at the drag-neutral point, targeting zero front lift at highway speed rather than racetrack downforce. The two air-curtain ducts share the same real estate: they swallow the messy stagnation-zone air and sheet it flat across the front wheel faces, tidying the one region the open arches cannot.',
       why: 'Steering feel at speed is a pressure distribution, not a suspension setting. A front axle at zero lift keeps its alignment loads and its driver confidence at 130 km/h, and a splitter buys that for less drag than any other device on the menu.',
       fail: [
-        'Kerbs and car-park ramps are the design load case; the lip mounts on shear-away fasteners so a strike costs a bracket, not the fascia.',
+        'Curbs and parking-garage ramps are the design load case; the lip mounts on shear-away fasteners so a strike costs a bracket, not the fascia.',
         'A splitter tuned at 135 mm ride height is mistuned at any other; the aero map assumes the suspension holds its speed-dependent height.',
         'Snow packed into the curtain ducts turns them into plain drag holes until it melts.',
       ],
@@ -130,10 +225,10 @@ export const SYSTEM = {
         ['Material', 'Carbon-look composite, bolted'],
       ],
       how: 'Air under the flat floor travels fast, which means low pressure, which is fine until it has to rejoin the wake at the tail. Dump it out at full speed and the mismatch feeds the base wake; that is drag. The diffuser is a controlled deceleration: the floor sweeps up at 13 degrees over the last 0.7 m, the duct area grows, the flow slows, and by Bernoulli its static pressure recovers toward ambient before it meets the wake. Recovered pressure acting on an upswept surface has a forward component, so a working diffuser reduces drag and adds rear downforce at the same time, one of the few free lunches in aerodynamics.\n\nThe four vanes keep the expansion honest. A 13 degree ramp is near the separation limit, and air pulled in from the sides would stall it; the vanes fence the flow into straight channels so the expansion stays two-dimensional. None of this worked on combustion cars, whose underbodies were a canyon of exhausts and tunnels. The EV skateboard is the enabler: the battery pack gives a floor that is already flat, sealed, and structural from axle to axle, so the diffuser inherits clean, fast flow instead of manufacturing it.',
-      why: 'The underbody is the largest single surface on the car and the flat pack floor made it usable. Finishing that surface with a diffuser is what turns the floor from neutral into an aero device: the reference car leaves those counts on the table.\n\nThe vanes were on the wrong side of the floor until the cross-module sweep found them, and the failure note below has been claiming the opposite since Gen 2. All six fences were seated in world +y from the floor centreline rather than along the floor\'s own outward-down normal, and this ramp is rotated 157 degrees, so world +y is INTO the car: measured off the built mesh they spanned y 0.157 to 0.523 against a floor that tops out at 0.425, and their forward ends ran through suspension\'s rear subframe at 128.4 mm. A vane inside the underbody is not a vane, it is 7 kg of carbon fencing nothing, and the ramp it was supposed to keep attached was running unfenced at 13 degrees. Seated on the normal they now span y 0.144 to 0.404, entirely inside the floor\'s own y range, so the diffuser\'s lowest point is still the floor\'s leading lip and the built silhouette is unchanged to the sixth decimal.',
+      why: 'The underbody is the largest single surface on the car and the flat pack floor made it usable. Finishing that surface with a diffuser is what turns the floor from neutral into an aero device: the reference car leaves those counts on the table.\n\nThe vanes were on the wrong side of the floor until the cross-module sweep found them, and the failure note below has been claiming the opposite since Gen 2. All six fences were seated in world +y from the floor centerline rather than along the floor\'s own outward-down normal, and this ramp is rotated 157 degrees, so world +y is INTO the car: measured off the built mesh they spanned y 0.157 to 0.523 against a floor that tops out at 0.425, and their forward ends ran through suspension\'s rear subframe at 128.4 mm. A vane inside the underbody is not a vane, it is 7 kg of carbon fencing nothing, and the ramp it was supposed to keep attached was running unfenced at 13 degrees. Seated on the normal they now span y 0.144 to 0.404, entirely inside the floor\'s own y range, so the diffuser\'s lowest point is still the floor\'s leading lip and the built silhouette is unchanged to the sixth decimal.',
       fail: [
         'Ramp angle is everything: add two degrees and the diffuser stalls, the wake fattens, and drag rises above the no-diffuser case.',
-        'The vanes are NOT the lowest rear point on the car and this note said they were for nine rungs: measured off the built mesh their lower edge is y 0.1444 and the ramp floor\'s own leading lip is y 0.1347, so the floor reaches 9.7 mm lower than the fences bolted under it, and aft of x -1.30 the tyre contact patch, the rim and the wheel cover are all lower again. What is true is that they are the lowest thing a steep driveway meets before the floor does, because they sit 202 mm aft of the lip, so they are still sacrificial bolt-ons and they still go first.',
+        'The vanes are NOT the lowest rear point on the car and this note said they were for nine rungs: measured off the built mesh their lower edge is y 0.1444 and the ramp floor\'s own leading lip is y 0.1347, so the floor reaches 9.7 mm lower than the fences bolted under it, and aft of x -1.30 the tire contact patch, the rim and the wheel cover are all lower again. What is true is that they are the lowest thing a steep driveway meets before the floor does, because they sit 202 mm aft of the lip, so they are still sacrificial bolt-ons and they still go first.',
         'Vane depth is set by ground clearance rather than by aerodynamics: 90 mm is what fits under a ramp that begins 135 mm off the road, and it is why they start at x -1.852 instead of at the ramp leading edge.',
         'A trailer hitch sits exactly where the ramp wants to be; towing and this diffuser are mutually exclusive by geometry.',
       ],
@@ -151,11 +246,11 @@ export const SYSTEM = {
         ['Attachment', 'Two cam latches, tool-free'],
         ['Service time', '20 s to remove per side'],
       ],
-      how: 'A rotating wheel in an open arch is an air pump with no purpose: the tyre drags the boundary layer around, flings it out of the arch gap, and the resulting spray of turbulence runs down the body side ruining the taper the quarter panels paid for. Covering the opening with a flush panel simply removes the pump from the flow. The number has been stable since streamliners in the 1930s and lab cars like the EV1: about 0.010 of Cd for a pair of rear skirts, which on this car is two to three percent of highway consumption.\n\nThe reason every car does not do this is the front axle: steered wheels sweep through more than 60 degrees of arc and lean with the suspension, so a front skirt would need to stand a hand-width off the body, which costs more than the open arch. Rear wheels only travel vertically, which is what lets a skirt sit within millimetres of the tyre instead of standing off it. Serviceability is the other historical objection, answered here with two cam latches per side: a tyre change starts with a twenty-second, tool-free panel drop, and the latch geometry will not close unless the panel is seated flush.',
+      how: 'A rotating wheel in an open arch is an air pump with no purpose: the tire drags the boundary layer around, flings it out of the arch gap, and the resulting spray of turbulence runs down the body side ruining the taper the quarter panels paid for. Covering the opening with a flush panel simply removes the pump from the flow. The number has been stable since streamliners in the 1930s and lab cars like the EV1: about 0.010 of Cd for a pair of rear skirts, which on this car is two to three percent of highway consumption.\n\nThe reason every car does not do this is the front axle: steered wheels sweep through more than 60 degrees of arc and lean with the suspension, so a front skirt would need to stand a hand-width off the body, which costs more than the open arch. Rear wheels only travel vertically, which is what lets a skirt sit within millimeters of the tire instead of standing off it. Serviceability is the other historical objection, answered here with two cam latches per side: a tire change starts with a twenty-second, tool-free panel drop, and the latch geometry will not close unless the panel is seated flush.',
       why: 'Skirts are the rare aero device with no aero downside: no lift change, no yaw sensitivity, no ride-height dependence. The whole cost is looks and a latch, which is why they mark the honest boundary between cars styled for drag and cars engineered for it.',
       fail: [
-        'A kerbed rim throws the wheel weights against the skirt; a rattle from the rear arch means the clearance is spent.',
-        'Packed snow between tyre and skirt can freeze the panel into contact; the latches open outward so it still comes off.',
+        'A curbed rim throws the wheel weights against the skirt; a rattle from the rear arch means the clearance is spent.',
+        'Packed snow between tire and skirt can freeze the panel into contact; the latches open outward so it still comes off.',
         'Roadside assistance that has never met a skirt will pry it; the latch markings are cast into the panel for exactly that moment.',
       ],
       explode: [-0.15, 0, 0.8],
@@ -172,7 +267,7 @@ export const SYSTEM = {
         ['Mirror Cd saving', '~0.008 vs glass mirrors'],
         ['Handles', 'None; capacitive strip, e-latch'],
       ],
-      how: 'A door is where four processes meet on one surface, and the air audits the meeting. These skins are bonded and hemmed to ±0.3 mm flushness, the glass stands half a millimetre proud with no frame, and there are no handles at all: a capacitive strip under the skin fires an e-latch, deleting the last protrusion and its little wake. The seals matter as much as the metal. A twin EPDM barrier holds the cabin a few pascals above the outside static so the seal is always energised; let it leak and a flush door still whistles, because a seal gap at 130 km/h is a referee\'s whistle in cross-section.\n\nThe camera pods are the visible regulatory story. A glass door mirror is a brick in the cleanest air on the body, worth about 0.008 of Cd for the pair plus the wind noise your left ear files complaints about. Cameras on slim stalks recover most of that, and the regs, UN R46 since 2016 and a slower US rulebook, now permit them with strict fields of view, latency, and failure behaviour. The stalks still exist because the rules and physics both want the lens outboard, away from spray, with a sightline down the body.',
+      how: 'A door is where four processes meet on one surface, and the air audits the meeting. These skins are bonded and hemmed to ±0.3 mm flushness, the glass stands half a millimeter proud with no frame, and there are no handles at all: a capacitive strip under the skin fires an e-latch, deleting the last protrusion and its little wake. The seals matter as much as the metal. A twin EPDM barrier holds the cabin a few pascals above the outside static so the seal is always energized; let it leak and a flush door still whistles, because a seal gap at 130 km/h is a referee\'s whistle in cross-section.\n\nThe camera pods are the visible regulatory story. A glass door mirror is a brick in the cleanest air on the body, worth about 0.008 of Cd for the pair plus the wind noise your left ear files complaints about. Cameras on slim stalks recover most of that, and the regs, UN R46 since 2016 and a slower US rulebook, now permit them with strict fields of view, latency, and failure behavior. The stalks still exist because the rules and physics both want the lens outboard, away from spray, with a sightline down the body.',
       why: 'Doors are where flushness is won or lost: they are the largest movable panels on the car, and every edge of them is a potential trip. Building them as bonded, frameless, handle-less skins is expensive process control, but it is the only way the body side reads as one surface to the flow.',
       fail: [
         'E-latches need a mechanical backup path by law; the hidden cable release is tested at every service because nobody uses it until the day it matters.',
@@ -192,7 +287,7 @@ export const SYSTEM = {
         ['Lamp', 'Full-width LED blade, inset'],
         ['Ideal tail', '~1 m longer than the law allows'],
       ],
-      how: 'The zero-wake body is a teardrop tapering to a point somewhere over a metre behind this bumper, and no parking garage on earth will host it. Wunibald Kamm\'s 1930s insight makes the compromise principled: taper the body only as long as the flow stays attached, then cut it off square, because behind the truncation the wake behaves almost as if the missing tail were still there. The air leaves the sharp edge cleanly, the shear layers converge as the phantom tail would have guided them, and a car a metre shorter keeps most of the long tail\'s drag number.\n\nWhat remains is base drag: the cut face sits in the wake at below-ambient pressure, and that pressure deficit times the face area is a rearward force you pay every kilometre. The design response is to shrink the face and sharpen its edge. The boat-tailed quarters and falling deck have already pulled the perimeter inboard, the face spans only 0.55 to 0.88 m in height, and the edge radius is as tight as paint allows, because a soft edge lets the separation point wander and the wake breathe. The lamp blade is inset flush into the face where the air, having already left, can no longer be offended.',
+      how: 'The zero-wake body is a teardrop tapering to a point somewhere over a meter behind this bumper, and no parking garage on earth will host it. Wunibald Kamm\'s 1930s insight makes the compromise principled: taper the body only as long as the flow stays attached, then cut it off square, because behind the truncation the wake behaves almost as if the missing tail were still there. The air leaves the sharp edge cleanly, the shear layers converge as the phantom tail would have guided them, and a car a meter shorter keeps most of the long tail\'s drag number.\n\nWhat remains is base drag: the cut face sits in the wake at below-ambient pressure, and that pressure deficit times the face area is a rearward force you pay every kilometer. The design response is to shrink the face and sharpen its edge. The boat-tailed quarters and falling deck have already pulled the perimeter inboard, the face spans only 0.55 to 0.88 m in height, and the edge radius is as tight as paint allows, because a soft edge lets the separation point wander and the wake breathe. The lamp blade is inset flush into the face where the air, having already left, can no longer be offended.',
       why: 'Every production car is a truncated ideal body; the Kamm tail is simply honest about it. Given a length cap set by law, parking, and crash overhang, the highest-value move is to spend the length on taper and end it in one clean vertical shear, which is why the deck stops like a guillotine instead of drooping.',
       fail: [
         'Base suction pulls road film onto the face; the camera above the lamp blade sits in the dirtiest air on the car and washes itself on a schedule.',
@@ -205,7 +300,7 @@ export const SYSTEM = {
 };
 
 /* ── Geometry ──────────────────────────────────────────────────────────────
-   Silhouette (side view, metres): nose tip (2.30, 0.72) rising in one line
+   Silhouette (side view, meters): nose tip (2.30, 0.72) rising in one line
    to the cowl (1.05, 0.92), canopy peak (0.15, 1.38), fastback to
    (-1.70, 0.97), deck to the Kamm face at x -2.28, vertical y 0.55..0.88.
    Plan view: full width 0.94 at the doors, quarters rotate 4..8 degrees
@@ -298,7 +393,7 @@ function acbox(w, h, d, c, mat, x, y, z, rz = 0, rx = 0, ry = 0) {
 }
 
 /* Fractional index of a value in a monotone station list, so a shutline can
-   be declared in metres and handed to lib.loft in the index units its
+   be declared in meters and handed to lib.loft in the index units its
    groove machinery works in. */
 function fidx(list, v) {
   const n = list.length;
@@ -411,14 +506,14 @@ function creaseGrid(mesh, R, C, deg) {
    an edge you can see instead of a card's cut end.
 
    The panel is built in ONE canonical frame and the caller rotates the
-   group, so the same builder makes a flank, a bonnet and a Kamm face: rows
+   group, so the same builder makes a flank, a hood and a Kamm face: rows
    run along local x, columns across local y at hv(x) times a fraction from
    -1 to 1, and the outer face looks along +z with the back at -z. That
    ordering matters, because lib.loft sinks a groove along u cross v, which
    for this frame is +z, so the cut goes inward and not outward.
 
    Cuts are declared in the panel's own units. { u } is a channel at
-   constant local x in metres; { v } one at a constant fraction of the local
+   constant local x in meters; { v } one at a constant fraction of the local
    half-height. span is [a, b] in the OTHER axis's units and runout is the
    fade at each end of it, so a gap that should stop 40 mm short of a corner
    stops there instead of ramping out across the whole panel. */
@@ -479,7 +574,7 @@ const ly = (f, x, y, z) => f.worldToLocal(new THREE.Vector3(x, y, z)).y;
 /* Canonical frame orientations. Local +z is the outward face. */
 const FACE_FWD = [Math.PI / 2, 0, Math.PI / 2];   /* +x: nose face   */
 const FACE_AFT = [-Math.PI / 2, 0, Math.PI / 2];  /* -x: Kamm face   */
-const FACE_UP = [-Math.PI / 2, 0, 0];             /* +y: bonnet, deck */
+const FACE_UP = [-Math.PI / 2, 0, 0];             /* +y: hood, deck */
 
 /* Rounded-rectangle half-height, the outline lib.plate draws. */
 const roundHV = (hw, hd, r) => (x) => {
@@ -516,7 +611,7 @@ export function build() {
    the structural polyurethane the part text sells: one at the cowl, one at
    each facet joint and one at the deck. Summed off the built boxes that is
    4.47 m, so it is the transverse run and not the whole 11 m the spec row
-   quotes; the two long side rails are not modelled. It is the bond line
+   quotes; the two long side rails are not modeled. It is the bond line
    that turns three intersecting slabs into a glazed assembly, and it is
    also the only thing on a 22 percent-opacity surface that a softbox can
    find. */
@@ -596,9 +691,18 @@ function buildSkin(sys) {
      at 92 percent of the half-width and a leading gap behind the
      backlight's bond bead at x -1.698. Read off the built deck rather than
      off the declaration: the side gaps land on |z| 0.5980 and the leading
-     gap on x -1.7381, which is 40.1 mm behind the bead's centre and 25.8
-     behind its aft face. */
-  const deck = lib.part('skin', [-0.2, 0.55, 0]);
+     gap on x -1.7381, which is 40.1 mm behind the bead's center and 25.8
+     behind its aft face.
+
+     THE DECKLID IS THIS GROUP, and it costs one word. `deck` was already its
+     own lib.part group holding exactly this one panel and nothing else, which
+     is what a closure needs: a closure is a rigid body, so it has to be the
+     object the viewer transforms. Adding lib.hinge changes no vertex, no
+     mesh, no coordinate and no part id, so the deck stays part of the one
+     clickable `skin` and opens anyway. What it does NOT do is take the Kamm
+     face with it; see SYSTEM.closures.decklid for why the wrap-over is drawn
+     and stays shut. */
+  const deck = lib.hinge(lib.part('skin', [-0.2, 0.55, 0]), 'decklid');
   const df = frame(-1.99, 0.925, 0, 0.1539, FACE_UP[0], FACE_UP[1]);
   const dhv = () => 0.65;
   df.add(gpanel({
@@ -619,8 +723,8 @@ function buildSkin(sys) {
    screws live, which is exactly the place lib.fastener's own note says a
    fastener belongs. The lip stays at or inside |z| 0.900, the fender card's
    own outer face, so it adds nothing to the shadow, and it clears wheels-2's
-   front tyre by 59.5 mm radially. That figure is the innermost ring, R 0.4225
-   about the axle at (1.45, 0.355), against the tyre's BUILT outer radius of
+   front tire by 59.5 mm radially. That figure is the innermost ring, R 0.4225
+   about the axle at (1.45, 0.355), against the tire's BUILT outer radius of
    0.3630 swept vertex by vertex. Measuring the outer ring at R 0.4335
    against the nominal 0.355 gives 78 mm and both halves of that are wrong. */
 function archLip() {
@@ -658,10 +762,10 @@ function buildNose(sys) {
      reproduced exactly: 1.28 by 1.70 on a 0.12 corner radius.
 
      Two cuts. The cowl gap at local x -0.575 is the clamshell's hinge line,
-     landing at world x 1.108, which is 51 mm ahead of the windscreen's own
+     landing at world x 1.108, which is 51 mm ahead of the windshield's own
      bond bead at 1.045 and leaves a real scuttle strip between them. The
      two side gaps at 86 percent of the local half-width run from the cowl
-     gap forward to the tip, splitting the one panel into a bonnet and the
+     gap forward to the tip, splitting the one panel into a hood and the
      two fender tops it actually is, which is what a clamshell nose looks
      like from above on any car that has one. */
   const cf = frame(1.675, 0.834, 0, -0.159);
@@ -676,7 +780,29 @@ function buildNose(sys) {
       { v: -0.86, ...GAP, span: [-0.565, 0.56], runout: 0.05 },
     ],
   }));
-  nose.add(cf);
+  /* THE HOOD IS THIS FRAME, MOVED AND NOT REDRAWN. `cf` already held exactly
+     one panel and nothing else, so the whole change is which group owns it:
+     the same mesh at the same coordinates goes into its own lib.part group
+     under the same `nose` id, so the nose stays one clickable part and the
+     clamshell opens. A closure is a rigid body and the group is what the
+     viewer transforms, which is the rule that forces this and the only reason
+     the line exists.
+
+     Nothing here is a re-slice, and that is deliberate. Splitting a lid out
+     of one of these panels is not available on this body the way it is on
+     body-9: body-9 resolves ONE master grid and hands out index ranges of it,
+     so a decklid is four fixed pieces and a lid off the same vertices. Every
+     panel here resolves its own grid inside gpanel and closes it with its own
+     returned edge, so a lid cut out of one would need a second grid with
+     different interior stations and two new return rings. That is new
+     geometry, which is a redraw. The panels that open on this body are the
+     ones drawn as whole panels, which is why there are two of them.
+
+     The lid explodes a little higher than the rest of the nose so the
+     exploded view reads as an assembly rather than a panel inside a panel. */
+  const lid = lib.hinge(lib.part('nose', [1.05, 0.42, 0]), 'hood');
+  lid.add(cf);
+  sys.add(lid);
 
   /* Sealed face: 0.30 tall, 1.58 wide on a 0.06 radius, 60 mm thick,
      spanning x 2.255 to 2.315 exactly where lib.plate put it. gpanel puts
@@ -695,12 +821,12 @@ function buildNose(sys) {
      THE CHANNEL DOES NOT COME OUT THE WIDTH IT IS ASKED FOR, and the reason
      is worth keeping. 48 mm at u 0.130 would put the upper lip on u 0.154
      and this panel ends at u 0.150, so the cut cannot fit; the groove
-     machinery sizes its parametric half-width from the local metres-per-
+     machinery sizes its parametric half-width from the local meters-per-
      index scale, which on roundU's corner stations runs 12.4 mm per index
      below the cut and 10.0 above it, and what lands is 41.0 mm lip to lip
-     between y 0.6749 and 0.7159, centred on y 0.6954 rather than 0.700.
+     between y 0.6749 and 0.7159, centered on y 0.6954 rather than 0.700.
      Swept off the built face at 2 mm, that is the number the hardware has
-     to fit, so the comb is 34 mm centred on 0.6954 and not 40 on 0.700:
+     to fit, so the comb is 34 mm centered on 0.6954 and not 40 on 0.700:
      at 40 its top 4.1 mm lay behind the ungrooved face and never rendered,
      and 312 of its triangles crossed the panel. */
   const ff = frame(2.285, 0.57, 0);
@@ -713,7 +839,7 @@ function buildNose(sys) {
   }));
   nose.add(ff);
 
-  /* The marque, extruded 2.4 mm with a bevelled rim on the sealed face. A
+  /* The marque, extruded 2.4 mm with a beveled rim on the sealed face. A
      decal has no edge for a softbox to find; a badge does. */
   const badge = lib.badge(CHEVRON, 0.0024, M.alu);
   badge.rotation.y = Math.PI / 2;
@@ -779,13 +905,13 @@ function buildNose(sys) {
 
 /* ── active grille shutters ──────────────────────────────────────────────
    Five slats on one actuator, and the whole point of the part is that they
-   CLOSE, so they are modelled closed and the closure is arithmetic rather
+   CLOSE, so they are modeled closed and the closure is arithmetic rather
    than an assertion. Pivot pitch 47.0 mm on the axis heights the plain-box
    version had, blade chord 64 mm at the 0.62 rad closed angle. A blade's
    upper edge then lands at pivot + 26.0 mm and the next blade's lower edge
    at pivot + 21.0, so consecutive blades overlap by 5.1 mm in height while
    standing 37 mm apart in x: there is no straight-through path at any
-   height across the aperture, which is what closed means on a louvre. Each
+   height across the aperture, which is what closed means on a louver. Each
    blade carries a thinner formed tip over its last 14 mm, the sealing edge
    that lands on the blade above.
 
@@ -858,7 +984,7 @@ function buildSplitter(sys) {
      from 67 exterior cameras, three of six were 0 percent visible: the
      intake surround above them takes every downward sightline. A splitter
      is a part you see from in front and below, so the heads go where a
-     kerb strike would show them. */
+     curb strike would show them. */
   for (const z of [-0.70, -0.42, -0.14, 0.14, 0.42, 0.70]) {
     const f = lib.fastener(0.0085, M.alu, 'torx');
     f.position.set(2.150, 0.134, z);
@@ -902,7 +1028,7 @@ function buildDiffuser(sys) {
   /* THE VANES HANG BELOW THE RAMP, which is the whole claim this part's
      panel makes when it calls them the lowest rear point on the car, and it
      was not what the geometry did. All six were seated 60 and 72 mm along
-     world +y from the floor centreline instead of along dn, so every one of
+     world +y from the floor centerline instead of along dn, so every one of
      them stood INSIDE the underbody: swept off the built mesh they spanned
      y 0.157 to 0.523 against a ramp whose highest point is 0.425, and the
      forward ends of the two inner vanes ran through suspension's rear
@@ -925,7 +1051,7 @@ function buildDiffuser(sys) {
      is why the pair is gone rather than reduced. */
   const VANE = 0.09;                     /* vane depth below the floor */
   const VW = 0.464;                      /* along-ramp length, x -1.852 to -2.280 */
-  const VT = 0.1095;                     /* along-ramp offset of the vane centre */
+  const VT = 0.1095;                     /* along-ramp offset of the vane center */
   const vs = 0.007 + VANE / 2;           /* half the floor plus half the vane */
   const vx = -1.965 + VT * ur[0] + vs * dn[0];
   const vy = 0.28 + VT * ur[1] + vs * dn[1];
@@ -937,7 +1063,7 @@ function buildDiffuser(sys) {
      the wrong face: the floor box's local +y maps to world DOWN under this
      rotation, so seating at -0.008 along it and turning the head by RZD+pi
      grew all six heads UP INTO the ramp, and the ray sweep found 0 percent
-     of 432 triangles. The heads sit 7 mm along dn from the floor centreline
+     of 432 triangles. The heads sit 7 mm along dn from the floor centerline
      and grow the same way, which is where a low camera and a steep driveway
      both find them. */
   for (const [t, z] of [[-0.30, -0.62], [0, -0.62], [0.30, -0.62],
@@ -957,7 +1083,7 @@ function buildDiffuser(sys) {
    returned behind it.
 
    The mounting line is a 5 mm reveal 24 mm inside all four edges, which is
-   what a bolt-on panel over a quarter looks like from a metre away, and the
+   what a bolt-on panel over a quarter looks like from a meter away, and the
    panel now has a 15 mm returned edge instead of a card's cut end. The two
    cam latches sit in 52 mm pockets sunk 6 mm into the skin.
 
@@ -981,8 +1107,8 @@ function buildDiffuser(sys) {
    nothing: at its own height the skirt's widest point is its leading edge
    at |z| 0.9749 and the slot reaches 0.9665, so the union never sees it.
 
-   Clearance to wheels-2's rear tyre is NOT clearance. Swept vertex by
-   vertex against the skirt's own outer plane, the tyre stands 4.14 mm
+   Clearance to wheels-2's rear tire is NOT clearance. Swept vertex by
+   vertex against the skirt's own outer plane, the tire stands 4.14 mm
    OUTBOARD of it, deepest at (-1.805, 0.355, 0.9025), and that figure is
    identical in the plain-box baseline because the skirt plane did not move.
    The skirt's outboard position owns the shadow over the whole of y 0.32 to
@@ -1012,13 +1138,13 @@ function buildSkirts(sys) {
      THE ARROW IS ON THE SKIN, NOT IN THE POCKET, and that is a measurement
      and not a preference. The pocket runs u t-0.026 to t+0.026 with an 8 mm
      fade at each end, so it is only at full depth over t-0.018 to t+0.018,
-     and the cam disc is 31 mm across on the same centre: there is no floor
+     and the cam disc is 31 mm across on the same center: there is no floor
      left beside it. Seated at z 0.0038, which is inside the pocket's depth,
      the arrow's own footprint straddles the span end, where the fade has
      already carried the surface back to full height. Swept vertex by vertex
      against the built skin, 20 of its 28 corners sat 3.7 mm INSIDE the
      paint. It now sits on the outer face and stands 1.2 mm proud of it,
-     which is what a moulded marking on a bolt-on panel does. It costs
+     which is what a molded marking on a bolt-on panel does. It costs
      nothing: at its own height the skirt's widest point is its leading edge
      and the arrow does not reach it. */
   for (const t of LATCH) {
@@ -1062,7 +1188,16 @@ function buildSkirts(sys) {
    The capacitive strip is a real 3.5 mm recess 140 mm long at the beltline,
    because the part text deletes the handle and replaces it with one. */
 function buildDoors(sys) {
-  const doors = lib.part('doors', [0.08, 0, 0.85]);
+  /* ONE GROUP PER LEAF, plus a fixed one. Same meshes at the same
+     coordinates; what changed is which group owns them. The daylight opening
+     is drawn here as ONE pane spanning both doors, so unlike body.js it
+     cannot travel with either of them without being cut, and cutting it
+     would move geometry. It stays fixed and the checker says what that
+     costs. The camera pod at x 1.05 is ahead of the front door and is on the
+     A-pillar either way. */
+  const doors = lib.hinge(lib.part('doors', [0.08, 0, 0.85]), 'door-front');
+  const doorsR = lib.hinge(lib.part('doors', [0.08, 0, 0.85]), 'door-rear');
+  const fixedKit = lib.part('doors', [0.08, 0, 0.85]);
 
   const front = frame(0.607, 0.64, 0.935, 0, 0.07);
   front.add(gpanel({
@@ -1094,7 +1229,7 @@ function buildDoors(sys) {
         span: [-0.383, -0.243], runout: 0.012 },
     ],
   }));
-  doors.add(rear);
+  doorsR.add(rear);
 
   const dlo = profile(
     [[0.95, 0.0], [0.32, 0.44], [-0.50, 0.43], [-1.30, 0.0]],
@@ -1102,25 +1237,27 @@ function buildDoors(sys) {
   );
   dlo.rotation.x = -0.50;
   dlo.position.set(0, 0.92, 0.88);
-  doors.add(lib.shell(lib.crease(dlo, 34)));
+  fixedKit.add(lib.shell(lib.crease(dlo, 34)));
 
   /* Camera pod. |z| 1.0000 at the lens housing is the widest thing on the
      car and it owns the shadow from y 0.938 to 0.965, so the pod's outer
-     face stayed exactly there; the chamfer, the aerofoil stalk section and
+     face stayed exactly there; the chamfer, the airfoil stalk section and
      the rearward-looking barrel are all inboard of it. */
-  doors.add(acbox(0.024, 0.012, 0.090, 0.0018, M.plastic, 1.05, 0.95, 0.955));
-  doors.add(acbox(0.058, 0.030, 0.030, 0.0018, M.sensor, 1.05, 0.95, 0.985));
+  fixedKit.add(acbox(0.024, 0.012, 0.090, 0.0018, M.plastic, 1.05, 0.95, 0.955));
+  fixedKit.add(acbox(0.058, 0.030, 0.030, 0.0018, M.sensor, 1.05, 0.95, 0.985));
   const barrel = lib.cyl(0.0085, 0.012, M.plasticLt, 12);
   barrel.rotation.z = Math.PI / 2;
   barrel.position.set(1.016, 0.95, 0.985);
-  doors.add(barrel);
+  fixedKit.add(barrel);
   const lens = lib.cyl(0.0062, 0.003, M.glass, 12);
   lens.rotation.z = Math.PI / 2;
   lens.position.set(1.0095, 0.95, 0.985);
-  doors.add(lens);
+  fixedKit.add(lens);
 
-  sys.add(doors);
-  sys.add(mirrorZ(doors));
+  for (const g of [doors, doorsR, fixedKit]) {
+    sys.add(g);
+    sys.add(mirrorZ(g));
+  }
 }
 
 /* ── Kamm tail ───────────────────────────────────────────────────────────
@@ -1212,7 +1349,7 @@ function buildTail(sys) {
   sys.add(tail);
 }
 
-/* The marque: a chevron, extruded 2.4 mm with a bevelled rim, the same
+/* The marque: a chevron, extruded 2.4 mm with a beveled rim, the same
    outline body-8 wears. */
 const CHEVRON = [
   [-0.045, 0.000], [-0.017, -0.019], [0.000, -0.007], [0.017, -0.019],

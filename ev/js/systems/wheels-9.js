@@ -9,15 +9,15 @@
    direct parent: 155/65 R20 at Crr 3.8, full covers, and the rear track
    narrowed to |z| 0.74). This slot skipped Gen 4, Gen 6 and Gen 8.
 
-   THE MOVE. Front wheel centres go from |z| 0.81 to |z| 0.74, so the front
+   THE MOVE. Front wheel centers go from |z| 0.81 to |z| 0.74, so the front
    track falls 1.62 m to 1.48 and the two tracks match again for the first
    time since Gen 5. Nothing else about the corner changes position relative
-   to the wheel centre: the whole front assembly translates 70 mm inboard as
+   to the wheel center: the whole front assembly translates 70 mm inboard as
    a rigid body, which is the same discipline wheels-7 used at the rear.
 
    THE REAR ANNULUS CONTRACT IS BINDING AND UNTOUCHED, and this module
    verified it numerically rather than carrying wheels-7's prose. Both sides
-   swept vertex by vertex against the rear wheel centre (-1.45, 0.355, 0.74):
+   swept vertex by vertex against the rear wheel center (-1.45, 0.355, 0.74):
    - wheels-9 puts ZERO vertices inside r 0.155 to 0.235 over |z| 0.65 to
      0.73. Inside that axial band its rear profile holds r 0.2480 or greater,
      measured at |z| 0.7220, which is 13 mm clear of the 0.235 ceiling.
@@ -39,18 +39,18 @@
 
    WHAT THE FRONT MOVE COSTS AND BUYS, measured, never quoted:
 
-   1. STEERED SWEPT ENVELOPE. Sweeping every vertex of the built front tyre,
+   1. STEERED SWEPT ENVELOPE. Sweeping every vertex of the built front tire,
       wheel, cover and disc about the vertical axis through (1.45, 0.74):
       static |z| 0.6625 to 0.8190, and at lock the peak runs 0.8190 at 0
       degrees, 0.8926 at 14, 0.9097 at 17.25, 0.9238 at 20. The peak sits at
       hub height, 312 mm ahead of the axle while the cover binds and 334 mm
-      once the tyre shoulder takes over. Full table on the front wheels
+      once the tire shoulder takes over. Full table on the front wheels
       panel. Body-8's arch louvers bind wheels-7 at 17.25 degrees
       with 5.5 mm of residual; run the same measurement on this corner and
       that same residual is not reached until 32.0 degrees.
 
-   2. FRONTAL AREA. Front and rear tyre bands now coincide exactly at
-      |z| 0.6625 to 0.8175, so the sub-loft tyre columns fall from 0.1260 to
+   2. FRONTAL AREA. Front and rear tire bands now coincide exactly at
+      |z| 0.6625 to 0.8175, so the sub-loft tire columns fall from 0.1260 to
       0.0868 m2, measured with the same 2 x band x 0.28 integration that
       produced body-8's 0.1036 and 0.1260. That is 0.0392 m2, and it is
       collectable with body-8 carried unchanged.
@@ -58,7 +58,7 @@
    3. ROLL. Front roll stiffness through the spring path falls as track
       squared, (0.74/0.81)^2 = 0.8346, so 16.5 percent. Solving suspension-9's
       BUILT front pickups rather than assuming a shortened arm, the roll
-      centre falls with the track, 0.1037 to 0.0970, so the roll-moment arm
+      center falls with the track, 0.1037 to 0.0970, so the roll-moment arm
       lengthens and the injection suspension-9 owes to hold Gen 8's roll
       angle is 21.8 percent, MORE than the 19.8 the track term alone
       implies. The roll-couple distribution returns to 58.0/42.0, which is
@@ -72,7 +72,7 @@
      exactly, which lands on wheels-7's hub face and overruns this module's
      relocated hub face by 70.0 mm. Reported on the front wheels panel.
    - body-9: the preset body, swept after it landed. Its front fairing
-     inboard wall sits at |z| 0.6230 against the relocated tyre's inner face
+     inboard wall sits at |z| 0.6230 against the relocated tire's inner face
      at 0.6625, its arch louvers moved to |z| 0.8750 to 0.9164 and up into
      y 0.580 to 0.733, and the nearest approach anywhere on the corner is
      41.8 mm, cover to fairing. At the 14 degrees suspension-9's rack
@@ -104,7 +104,7 @@
    it when it moved the rear. Every earlier generation reads it, and so does
    body-8: its fairing inboard wall is literally P.wheelZ minus 0.110. Edit
    the constant to 0.74 and eight modules move silently and one partner foul
-   disappears by accident rather than by drawing. The front centre lives in
+   disappears by accident rather than by drawing. The front center lives in
    FRONTZ below and nowhere else.
 
    THE CRISPNESS PASS, and what it was and was not allowed to touch.
@@ -113,20 +113,20 @@
    envelope returns 0.8190 / 0.8298 / 0.8512 / 0.8720 / 0.8821 / 0.8926 /
    0.9032 / 0.9097 / 0.9238 / 0.9337 at the same ten angles it did before,
    the rear annulus still holds zero vertices in the band with 13.0 mm of
-   margin at r 0.2480, and the front hub face still realises
+   margin at r 0.2480, and the front hub face still realizes
    front-halfshaft-outboard at |z| 0.6925 with a vertex 0.0 mm off the plane.
    35,016 triangles to 55,244, 92 percent of the 60,000 budget.
 
    Where those 20,228 went was decided by a ray test rather than by taste,
    because a full aero cover hides most of a wheel. See the block above the
-   geometry. The short version: covers and tyres took 42 percent of the
+   geometry. The short version: covers and tires took 42 percent of the
    spend because they take 79 percent of the first hits, the disc took the
    next share because it owns the inboard view, and three features that a
    textbook would have added were measured and then not built.
 
    Five real defects turned up while measuring and are fixed rather than
-   noted: the tread rings stood 3.3 mm proud of the crown and put the tyre
-   below the ground plane; the disc's ceramic face band was a torus centred
+   noted: the tread rings stood 3.3 mm proud of the crown and put the tire
+   below the ground plane; the disc's ceramic face band was a torus centered
    ON the friction plane and reached 5.0 mm INSIDE the caliper it is
    supposed to have 0.5 mm of; twelve rear flange bolts seated 1.9 mm inside
    the titanium ring they bear on; the rear shell and that ring drew the same
@@ -136,8 +136,8 @@
    FOUR MORE THE REVIEW OF THAT PASS FOUND, all of them the pass's own new
    detail and all fixed here, with the measurement on the part that owns it:
    the four bayonet lugs per cover reached r 0.2543 because a 12 mm width was
-   read as a centreline, putting their outer bottom corner 1.26 mm inside the
-   tyre bead cone, 56 crossing triangles per side; the caliper's new pad
+   read as a centerline, putting their outer bottom corner 1.26 mm inside the
+   tire bead cone, 56 crossing triangles per side; the caliper's new pad
    backing plates fell wholly inside the caliper body and returned zero first
    hits over 216 directions at 1.11 mm per pixel; the banjo bolt was narrower
    than the boss it clamps and sat entirely inside it, which is the same
@@ -160,7 +160,7 @@ export const SYSTEM = {
   name: 'Wheels and brakes · Gen 9 matched track',
   color: 0xd0d6db,
   explode: [0, 0, 0],
-  blurb: 'The other end of the move wheels-7 started. Front wheel centres come in 70 mm to |z| 0.74, the tracks match at 1.48 m for the first time since Gen 5, and the two tyre shadows stack back into one: 0.0392 m2 of frontal area straight off the integral, collectable with body-8 carried. The steered envelope shrinks 70 mm at every angle, which is the whole of what lets body-9 pull its fairings onto the flank: this module predicted another 0.0607 from a translated pod and body-9 measured 0.0722 from a redrawn one. 74 kg. The honest half: front roll stiffness falls 16.5 percent and the roll centre falls with the track rather than rising, so suspension-9 has to inject about 22 percent, MORE than the 19.8 the track term alone implies. Roll-over margin goes 1.55 to 1.48, and wheels-7 declined this exact narrowing for reasons that were correct at the time.',
+  blurb: 'The other end of the move wheels-7 started. Front wheel centers come in 70 mm to |z| 0.74, the tracks match at 1.48 m for the first time since Gen 5, and the two tire shadows stack back into one: 0.0392 m2 of frontal area straight off the integral, collectable with body-8 carried. The steered envelope shrinks 70 mm at every angle, which is the whole of what lets body-9 pull its fairings onto the flank: this module predicted another 0.0607 from a translated pod and body-9 measured 0.0722 from a redrawn one. 74 kg. The honest half: front roll stiffness falls 16.5 percent and the roll center falls with the track rather than rising, so suspension-9 has to inject about 22 percent, MORE than the 19.8 the track term alone implies. Roll-over margin goes 1.55 to 1.48, and wheels-7 declined this exact narrowing for reasons that were correct at the time.',
   /* Mating features other modules have to land on. Schema in SPEC.md;
      tools/check-interfaces.sh proves these against the built mesh. The
      front hub face moves with the track, which is exactly the number
@@ -170,12 +170,12 @@ export const SYSTEM = {
     'front-halfshaft-outboard': {
       kind: 'face', axis: 'z', at: 0.6925, tol: 0.002,
       part: 'front-wheels', mirrored: true,
-      note: 'hub face inboard plane, ET47 off a rim centreline at FRONTZ 0.74. The titanium insert ring spans |z| 0.6925 to 0.7125.',
+      note: 'hub face inboard plane, ET47 off a rim centerline at FRONTZ 0.74. The titanium insert ring spans |z| 0.6925 to 0.7125.',
     },
   },
   parts: {
     tires: {
-      name: 'Tyres',
+      name: 'Tires',
       tagline: 'Unchanged in every dimension and every compound, and worth 0.0392 m2 of frontal area for the first time, because all four of them finally stand in the same two shadows.',
       mass: 28,
       count: 4,
@@ -184,38 +184,38 @@ export const SYSTEM = {
         ['Rolling resistance', '3.8 kg/t installed, carried construction and compound'],
         ['Cold pressure', '4.4 bar, now one placard figure for all four corners'],
         ['Envelope', 'OD 0.7100 m, faces at |z| 0.6625/0.8175 front AND rear'],
-        ['Tyre columns', '0.0868 m2 against wheels-7\'s 0.1260, same integration'],
+        ['Tire columns', '0.0868 m2 against wheels-7\'s 0.1260, same integration'],
         ['Maturity', 'Production practice; the 4.4 bar casing rating is pilot line'],
       ],
-      how: 'Not one number on the tyre itself moved. The section is 155, the rim is 20 inches, the sidewall is 100.75 mm, the pressure is 4.4 bar, the tread is 5.5 mm of low-void pattern on the same functionalised-polymer silica compound, and the installed Crr is the same deliberately pessimistic 3.8 kg/t wheels-7 carried into js/efficiency.js against a modelled 3.54. Reopening any of that would have been a second variable in a generation whose whole argument is a single translation, and design/retro-gen8.md is explicit that a rung claiming several wins at once should be distrusted. What changed is where the four of them stand.\n\nThe frontal-area arithmetic is this panel\'s work and it is done with ONE method run over BOTH configurations, which is design/retro-gen8.md\'s standing law after the Gen 7 area figure turned out to have been measured a different way from the Gen 8 one. The method is body-8\'s: below y 0.28 the silhouette is the tyre shadow, integrated as twice the union band width times 0.28. Measured off wheels-7\'s built meshes, its front tyre spans |z| 0.7325 to 0.8875 and its rear 0.6625 to 0.8175, so the union is 0.6625 to 0.8875, 225 mm per side, and the columns are 0.1260 m2. Measured off this module\'s built meshes, front and rear both span 0.6625 to 0.8175, the union is 155 mm per side, and the columns are 0.0868. The difference is 0.0392 m2, and no part of it depends on a body generation existing.\n\nThat number is bigger than the ladder has been quoting and the discrepancy is worth naming, because it is exactly the kind of drift design/retro-gen8.md was written about. body-8 measured the split-track penalty correctly at 0.0224 m2, which is the step from wheels-6\'s coincident 185-section shadow of 0.1036 up to wheels-7\'s split 155-section shadow of 0.1260. Then both body-8 and design/retro-gen8.md wrote that matching the tracks makes the columns "fall back to 155 mm per side, worth another 0.0224". Those two halves of the sentence do not agree with each other. Falling back to 155 mm per side is 0.0868, not 0.1036, because Gen 7 also made the tyre 30 mm narrower and the split track hid that gain inside a wider union. Recovering the split costs 0.0224; standing the narrow tyres in one shadow is worth 0.0392. Gen 7 paid for the extra 0.0168 two generations ago and this is the rung that collects it.',
-      why: 'design/gen9.md asks this generation to pull three levers and to state plainly what each returns, including the one that returns least. This is the lever that returns most for the least engineering, and the reason is structural rather than clever: frontal area is a projection, projections add shadows that do not overlap, and two axles on different tracks project two shadows where two axles on the same track project one. Nobody had to invent anything. The ladder simply spent a generation with its axles in different places and only measured the bill afterwards.',
+      how: 'Not one number on the tire itself moved. The section is 155, the rim is 20 inches, the sidewall is 100.75 mm, the pressure is 4.4 bar, the tread is 5.5 mm of low-void pattern on the same functionalized-polymer silica compound, and the installed Crr is the same deliberately pessimistic 3.8 kg/t wheels-7 carried into js/efficiency.js against a modeled 3.54. Reopening any of that would have been a second variable in a generation whose whole argument is a single translation, and design/retro-gen8.md is explicit that a rung claiming several wins at once should be distrusted. What changed is where the four of them stand.\n\nThe frontal-area arithmetic is this panel\'s work and it is done with ONE method run over BOTH configurations, which is design/retro-gen8.md\'s standing law after the Gen 7 area figure turned out to have been measured a different way from the Gen 8 one. The method is body-8\'s: below y 0.28 the silhouette is the tire shadow, integrated as twice the union band width times 0.28. Measured off wheels-7\'s built meshes, its front tire spans |z| 0.7325 to 0.8875 and its rear 0.6625 to 0.8175, so the union is 0.6625 to 0.8875, 225 mm per side, and the columns are 0.1260 m2. Measured off this module\'s built meshes, front and rear both span 0.6625 to 0.8175, the union is 155 mm per side, and the columns are 0.0868. The difference is 0.0392 m2, and no part of it depends on a body generation existing.\n\nThat number is bigger than the ladder has been quoting and the discrepancy is worth naming, because it is exactly the kind of drift design/retro-gen8.md was written about. body-8 measured the split-track penalty correctly at 0.0224 m2, which is the step from wheels-6\'s coincident 185-section shadow of 0.1036 up to wheels-7\'s split 155-section shadow of 0.1260. Then both body-8 and design/retro-gen8.md wrote that matching the tracks makes the columns "fall back to 155 mm per side, worth another 0.0224". Those two halves of the sentence do not agree with each other. Falling back to 155 mm per side is 0.0868, not 0.1036, because Gen 7 also made the tire 30 mm narrower and the split track hid that gain inside a wider union. Recovering the split costs 0.0224; standing the narrow tires in one shadow is worth 0.0392. Gen 7 paid for the extra 0.0168 two generations ago and this is the rung that collects it.',
+      why: 'design/gen9.md asks this generation to pull three levers and to state plainly what each returns, including the one that returns least. This is the lever that returns most for the least engineering, and the reason is structural rather than clever: frontal area is a projection, projections add shadows that do not overlap, and two axles on different tracks project two shadows where two axles on the same track project one. Nobody had to invent anything. The ladder simply spent a generation with its axles in different places and only measured the bill afterward.',
       fail: [
-        'The load index was inherited without being checked and it does not survive checking. Taking the mass-weighted longitudinal centroid of every built part in the Gen 8 preset, which is the only fully built fleet, gives a 56.9 percent front static split, and at 0.74 g on the matched 1.48 m track with a 58 percent front roll couple the outer front tyre carries about 768 kg fully laden against load index 95\'s 690. This is INHERITED rather than created, and showing that needs one mass convention run over both rungs. Gen 8 laden is 1,800 kg against Gen 9\'s 1,788, and on that pairing the same calculation over wheels-7\'s 1.62 m track at its 62.3 percent couple also gives 768 kg: the narrower track raises the transfer term 9.5 percent, and the recovered roll couple plus twelve kilograms of preset hand back the same amount, so Gen 9 leaves the worst-loaded corner exactly where it found it, 78 kg over. Pricing it against wheels-7\'s own 1,804 kg Gen 7 laden figure instead would have shown Gen 9 adding five kilograms, and that five is a convention artefact, not a load. The correct fix is load index 100, which is about half a kilogram of casing per tyre, and it is named rather than taken because changing the tyre is exactly the second variable this generation refused.',
-        'Aquaplaning and wet grip move in opposite directions and the second one is a genuine repair. wheels-7\'s fail list recorded that its 70 mm of rear offset meant the rear tyres no longer ran in the fronts\' cleared track, so on standing water the rear axle met water the front tyre had not moved. Matched tracks delete that defect completely: the rear tyre now follows the front through the same path. What does not improve is the underlying tyre, which still has 3.9 mm of usable tread above the legal floor rather than 5.9, so the car is better in deep water than wheels-7 and no better on a merely wet road.',
-        'One placard pressure for four corners sounds like a simplification and is partly a loss. wheels-7 could tune front and rear pressures separately against two different tracks and two different load cases; this configuration has one geometry, so a pressure change to fix understeer changes rolling resistance at both ends at once. The tuning freedom that the split track accidentally provided is gone, and the compensation is suspension-9\'s bars rather than the tyre.',
+        'The load index was inherited without being checked and it does not survive checking. Taking the mass-weighted longitudinal centroid of every built part in the Gen 8 preset, which is the only fully built fleet, gives a 56.9 percent front static split, and at 0.74 g on the matched 1.48 m track with a 58 percent front roll couple the outer front tire carries about 768 kg fully laden against load index 95\'s 690. This is INHERITED rather than created, and showing that needs one mass convention run over both rungs. Gen 8 laden is 1,800 kg against Gen 9\'s 1,788, and on that pairing the same calculation over wheels-7\'s 1.62 m track at its 62.3 percent couple also gives 768 kg: the narrower track raises the transfer term 9.5 percent, and the recovered roll couple plus twelve kilograms of preset hand back the same amount, so Gen 9 leaves the worst-loaded corner exactly where it found it, 78 kg over. Pricing it against wheels-7\'s own 1,804 kg Gen 7 laden figure instead would have shown Gen 9 adding five kilograms, and that five is a convention artifact, not a load. The correct fix is load index 100, which is about half a kilogram of casing per tire, and it is named rather than taken because changing the tire is exactly the second variable this generation refused.',
+        'Hydroplaning and wet grip move in opposite directions and the second one is a genuine repair. wheels-7\'s fail list recorded that its 70 mm of rear offset meant the rear tires no longer ran in the fronts\' cleared track, so on standing water the rear axle met water the front tire had not moved. Matched tracks delete that defect completely: the rear tire now follows the front through the same path. What does not improve is the underlying tire, which still has 3.9 mm of usable tread above the legal floor rather than 5.9, so the car is better in deep water than wheels-7 and no better on a merely wet road.',
+        'One placard pressure for four corners sounds like a simplification and is partly a loss. wheels-7 could tune front and rear pressures separately against two different tracks and two different load cases; this configuration has one geometry, so a pressure change to fix understeer changes rolling resistance at both ends at once. The tuning freedom that the split track accidentally provided is gone, and the compensation is suspension-9\'s bars rather than the tire.',
       ],
       explode: [0, 0, 0.85],
     },
     'front-wheels': {
       name: 'Front wheels',
-      tagline: 'Seventy millimetres inboard, and the swept envelope goes with them. This is the panel body-9 needs.',
+      tagline: 'Seventy millimeters inboard, and the swept envelope goes with them. This is the panel body-9 needs.',
       mass: 11,
       count: 2,
       specs: [
-        ['Wheel centre', '(+-1.45, 0.355, +-0.74); front track 1.48 m (was 1.62)'],
+        ['Wheel center', '(+-1.45, 0.355, +-0.74); front track 1.48 m (was 1.62)'],
         ['Size', '20 x 5.0J, ET47 off the hub face plane, now at |z| 0.6925'],
         ['Swept envelope', '|z| 0.8190 static, 0.8926 at 14 deg, 0.9097 at 17.25'],
-        ['Roll stiffness', 'Spring path x0.8346; roll centre DOWN 6.7 mm to 0.0970'],
+        ['Roll stiffness', 'Spring path x0.8346; roll center DOWN 6.7 mm to 0.0970'],
         ['Roll couple', '58.0/42.0 front/rear, from Gen 7 and Gen 8\'s 62.3/37.7'],
         ['Maturity', 'Pilot line, wheel carried from wheels-6 without a change'],
       ],
-      how: 'THE SWEPT ENVELOPE, which is the deliverable. Every vertex of the built front tyre, wheel, cover and disc was rotated about the vertical axis through (1.45, 0.74) and the maximum |z| recorded, because a single corner of a bounding box is not an envelope and body-7 was caught sizing a fairing against one. Static the corner reaches 0.8190 at the cover lip, 1.5 mm outboard of the tyre face at 0.8175. Under lock: 0.8298 at 2 degrees, 0.8512 at 6, 0.8720 at 10, 0.8926 at 14, 0.9032 at 16, 0.9097 at 17.25, 0.9238 at 20, 0.9337 at 22. The binding feature is the cover disc out to about 12 degrees and the tyre shoulder beyond it, and the peak sits at hub height y 0.355 throughout, 312 mm ahead of the axle while the cover binds and 334 mm once the shoulder does. Fore and aft the solid spans x 1.0932 to 1.8068 at 14 degrees and it tops out at y 0.7100. Those last two figures moved 3.3 mm in the crispness pass and no |z| moved at all, because the two smooth rings that used to stand for a tread stood at r 0.3583, 3.3 mm proud of the crown, and the tread is now cut INTO the crown instead. The old rings also put 3.3 mm of tyre below the ground plane at y -0.0033. The tyre now touches y 0.0000 exactly, which is what a wheel centre at y 0.355 on a 0.355 m radius means. Sliced into 50 mm height bands at 14 degrees, so a pod can be shaped rather than boxed: y 0.00 gives 0.8258, y 0.10 gives 0.8689, y 0.20 gives 0.8839, y 0.30 gives 0.8919, y 0.35 gives 0.8926, y 0.40 gives 0.8919, y 0.50 gives 0.8865, y 0.60 gives 0.8700, y 0.70 gives 0.8362. Every one of those is exactly 70 mm inboard of the same measurement on wheels-7, because the corner translated rigidly, and that is the single most useful property of this generation: body-9 does not need a new clearance study, it needs a subtraction.\n\nWhat the envelope is worth, measured against body-8\'s built loft rather than its prose. body-8\'s pod holds 1.008 half-width at station x 1.450, y 0.42, and its arch louver blades run |z| 0.9569 to 0.9986. Sweeping this corner against those two clouds and against wheels-7\'s corner with the same code: the louver residual that binds wheels-7 at its published 17.25 degrees is 5.5 mm, and on this corner that same residual is not reached until 32.0 degrees. The crossing angle is the honest way to state it, because a rigid 70 mm translation moves the whole swept surface 70 mm in z at every angle and every station, so whatever measure the residual is taken with, the question is only how many more degrees it takes to spend 70 mm at the blade the louvers bind on. So the 70 mm is a single currency and body-9 has to choose. Spend it all on lock and the pod stays at 1.008 and the contained lock roughly doubles. Spend it all on area and the pod comes to 0.938 at its widest, holding today\'s clearances exactly, which measured on body-8\'s own station integrator is 0.0607 m2 off the silhouette above y 0.28. Add this module\'s 0.0392 of tyre column and the front lever is 0.0999 m2 total. On the module convention that puts body-8 at 2.121 the answer is 2.020; on the audit convention that puts body-8 at 2.157 it is 2.057. design/gen9.md asks body-9 for 2.02 on the audit convention, and a translated pod says 2.057, so the target is 0.037 short before body-9 draws a line. That was said here rather than left for the integrator, because Gen 8 missed an area target it was never able to hit and design/retro-gen8.md asked for the warning to arrive earlier next time.\n\nbody-9 has drawn that line and beaten the estimate, which is recorded here rather than left as a stale prediction. It did not translate the pod, it deleted it: stations 3 to 5 go to a flat 0.925 half-width, the fairing becomes the flank, and its four-term integrator run over BOTH bodies measures 2.0415 on the audit convention. The 0.0392 of tyre column on this panel comes through into that total unchanged, to four decimals, which is the check that matters: two modules, two integrators, one number. The warning was still the right warning. The target is missed by 0.022 rather than 0.037, and it is missed for a reason no body can fix, which is that a third of the front lever is tyre shadow below y 0.28.\n\nIn miles, run through js/efficiency.js\'s own model on the Gen 8 configuration so both ends of the comparison use one method: Gen 8 ships at 117.2 Wh/mi and 1,621 miles, this module alone takes it to 116.3 and 1,633, and body-9 pulling the pod in with it takes it to 114.8 and 1,655. Twelve miles collectable with body-8 carried unchanged, 34 for the whole front lever. Those two runs stand at 1,396 and 1,386 kg, which is Gen 8\'s measured 1,400 less the mass each step itself removes, four kilograms of disc here and ten of nose structure there, so the mass term is neither double counted nor borrowed from thermal-9 and suspension-9, whose contributions belong to their own panels. With body-9\'s measured 2.0415 in place of the 2.057 estimate the pair reads 114.5 Wh/mi and 1,659 miles, so 38 miles rather than 34.\n\ndesign/retro-gen8.md priced "front track to 1.48 m" at 37 miles and A 2.047, and measured, that price was attached to the wrong object. The track change ALONE returns 12 miles and A 2.1178. It reaches the retro\'s neighbourhood only once the body the envelope unlocks is redrawn, at 38 miles and A 2.0415. So the retro was 25 miles optimistic about what a wheel module can deliver and one mile pessimistic about what the pair can, which is an estimate landing near the right answer for the wrong reason, and is exactly the failure design/retro-gen8.md made one method over both rungs a standing rule to catch. Note what is NOT in the numbers this panel books: no Cd credit at all. A narrower fairing has a smaller wake, but wake is a body measurement and this module does not book a coefficient it cannot measure. body-9 has since booked one count for one named mechanism, a 20.7 degree fairing shoulder deleted, 0.108 to 0.107 provisional until it is audited in its own right. Carrying that count takes the pair to 114.2 Wh/mi and 1,664 miles, and it belongs on body-9\'s panel rather than this one because a wheel module that starts crediting itself with drag coefficients is how a ladder loses track of who measured what.\n\nROLL, and what suspension-9 owes. Ride frequency is held by construction on this car, because suspension-4\'s air springs scale load and rate together, so the wheel rate is a fixed quantity and the spring path\'s roll stiffness goes as track squared: (0.74/0.81)^2 is 0.8346, a 16.5 percent loss at the front. The roll centre decides whether that is the whole bill, and it depends on HOW the corner narrows, so the answer is taken from suspension-9\'s built pickups rather than assumed. Solving suspension-4\'s built front wishbone lines in the z-y plane, inner pivots (0.45, 0.25) and (0.38, 0.55) against ball joints (0.71, 0.235) and (0.70, 0.565), the Gen 8 instant centre sits at z -2.450 and the front roll centre at 0.1037 m. The tempting reading is that shortening the arms buys something: translate ONLY the outer joints 70 mm inboard, hold the inner pivots, and the instant centre swings to -1.739 while the roll centre RISES to 0.1262. That corner does not exist. suspension-9 translates the inner pivots with the joints, to |z| 0.38 and 0.34 against ball joints 0.64 and 0.63, precisely so that arm lengths, camber gain, caster and bump steer all carry, and solving THAT puts the instant centre at -2.381 and the roll centre at 0.0970. Measured off the partner that shipped, the front roll centre FALLS 6.7 mm. A pure translation would give 0.0947, because rigid translation scales roll centre height by the track ratio exactly; the 2.3 mm back is suspension-9 parking its upper inner pivot at 0.34 rather than 0.31 to clear drivetrain-7\'s front housing.\n\nThat reverses the conclusion, and the reversal is the number body-9 and suspension-9 both have to plan around. Against a 0.500 m centre of gravity the front roll-moment arm LENGTHENS from 0.3963 to 0.4030, 1.7 percent, so the elastic path is asked for more rather than less. suspension-9 has to inject 21.8 percent of front roll stiffness to hold Gen 8\'s roll angle, MORE than the 19.8 percent the track term alone implies, not less. Kinematic congruence is not free: the property that makes suspension-9\'s corner carry every calibration it inherited is the same property that denies it the roll-centre rise a shortened arm would have handed over. The distribution is the part that gets better without anyone paying: Gen 1 tuned 58/42, wheels-7 narrowed only the rear and pushed it to 62.3/37.7, and scaling the front by the identical 0.8346 puts it back at 58.0/42.0 exactly. So suspension-9 must add its 21.8 percent at the front and the matching amount at the rear, or the balance it just recovered moves again. One number the injection cannot be checked against, and this is a live item rather than an inherited one: suspension-4\'s front bar arm measured 0.14 m in its built mesh, from the torsion axis at x 1.70 to the arm end at x 1.56, which is short enough that the 22 mm bar it draws there would behave as a rigid link rather than a spring. suspension-9 has shipped, grew the bar to 27.7 mm, and left the arm at exactly 0.14 m: torsion axis still x 1.70, drop-link pickup at (1.56, 0.33, 0.53). So the partner that owes 21.8 percent of front roll stiffness is claiming it through a lever whose built geometry cannot produce a bar rate at all. The 21.8 is a requirement this module can state and a number nobody can yet verify from geometry, and that is the honest status.',
-      why: 'wheels-7 held this track deliberately and wrote the reason down: "this is the axle carrying three quarters of the braking and all of the steering into a generation that has already given away 13 percent of tyre grip, and narrowing both ends is how a range car becomes undriveable one defensible decision at a time." That was correct in Gen 7 and four things have changed since. The price was wrong: wheels-7 valued this at 0.049 m2 and about 17 miles because the tyre-column term had not been discovered yet, and measured now it is 0.0999 m2. The catcher exists: design/gen9.md commissions suspension-9, where Gen 7 had a suspension slot frozen since Gen 4 and no partner able to put roll stiffness back, so wheels-7 was declining a narrowing nobody was going to catch. The spender exists: Gen 7 already had 69 unspendable miles of tail closure on the books and refusing to create a second unspendable credit was discipline, whereas Gen 9 runs the wheel, the suspension and the body in one rung. And the balance argument inverted: narrowing the front does not compound wheels-7\'s handling bill, it repairs the asymmetry that bill was made of, returning the roll couple to the split five generations were tuned around.',
+      how: 'THE SWEPT ENVELOPE, which is the deliverable. Every vertex of the built front tire, wheel, cover and disc was rotated about the vertical axis through (1.45, 0.74) and the maximum |z| recorded, because a single corner of a bounding box is not an envelope and body-7 was caught sizing a fairing against one. Static the corner reaches 0.8190 at the cover lip, 1.5 mm outboard of the tire face at 0.8175. Under lock: 0.8298 at 2 degrees, 0.8512 at 6, 0.8720 at 10, 0.8926 at 14, 0.9032 at 16, 0.9097 at 17.25, 0.9238 at 20, 0.9337 at 22. The binding feature is the cover disc out to about 12 degrees and the tire shoulder beyond it, and the peak sits at hub height y 0.355 throughout, 312 mm ahead of the axle while the cover binds and 334 mm once the shoulder does. Fore and aft the solid spans x 1.0932 to 1.8068 at 14 degrees and it tops out at y 0.7100. Those last two figures moved 3.3 mm in the crispness pass and no |z| moved at all, because the two smooth rings that used to stand for a tread stood at r 0.3583, 3.3 mm proud of the crown, and the tread is now cut INTO the crown instead. The old rings also put 3.3 mm of tire below the ground plane at y -0.0033. The tire now touches y 0.0000 exactly, which is what a wheel center at y 0.355 on a 0.355 m radius means. Sliced into 50 mm height bands at 14 degrees, so a pod can be shaped rather than boxed: y 0.00 gives 0.8258, y 0.10 gives 0.8689, y 0.20 gives 0.8839, y 0.30 gives 0.8919, y 0.35 gives 0.8926, y 0.40 gives 0.8919, y 0.50 gives 0.8865, y 0.60 gives 0.8700, y 0.70 gives 0.8362. Every one of those is exactly 70 mm inboard of the same measurement on wheels-7, because the corner translated rigidly, and that is the single most useful property of this generation: body-9 does not need a new clearance study, it needs a subtraction.\n\nWhat the envelope is worth, measured against body-8\'s built loft rather than its prose. body-8\'s pod holds 1.008 half-width at station x 1.450, y 0.42, and its arch louver blades run |z| 0.9569 to 0.9986. Sweeping this corner against those two clouds and against wheels-7\'s corner with the same code: the louver residual that binds wheels-7 at its published 17.25 degrees is 5.5 mm, and on this corner that same residual is not reached until 32.0 degrees. The crossing angle is the honest way to state it, because a rigid 70 mm translation moves the whole swept surface 70 mm in z at every angle and every station, so whatever measure the residual is taken with, the question is only how many more degrees it takes to spend 70 mm at the blade the louvers bind on. So the 70 mm is a single currency and body-9 has to choose. Spend it all on lock and the pod stays at 1.008 and the contained lock roughly doubles. Spend it all on area and the pod comes to 0.938 at its widest, holding today\'s clearances exactly, which measured on body-8\'s own station integrator is 0.0607 m2 off the silhouette above y 0.28. Add this module\'s 0.0392 of tire column and the front lever is 0.0999 m2 total. On the module convention that puts body-8 at 2.121 the answer is 2.020; on the audit convention that puts body-8 at 2.157 it is 2.057. design/gen9.md asks body-9 for 2.02 on the audit convention, and a translated pod says 2.057, so the target is 0.037 short before body-9 draws a line. That was said here rather than left for the integrator, because Gen 8 missed an area target it was never able to hit and design/retro-gen8.md asked for the warning to arrive earlier next time.\n\nbody-9 has drawn that line and beaten the estimate, which is recorded here rather than left as a stale prediction. It did not translate the pod, it deleted it: stations 3 to 5 go to a flat 0.925 half-width, the fairing becomes the flank, and its four-term integrator run over BOTH bodies measures 2.0415 on the audit convention. The 0.0392 of tire column on this panel comes through into that total unchanged, to four decimals, which is the check that matters: two modules, two integrators, one number. The warning was still the right warning. The target is missed by 0.022 rather than 0.037, and it is missed for a reason no body can fix, which is that a third of the front lever is tire shadow below y 0.28.\n\nIn miles, run through js/efficiency.js\'s own model on the Gen 8 configuration so both ends of the comparison use one method: Gen 8 ships at 117.2 Wh/mi and 1,621 miles, this module alone takes it to 116.3 and 1,633, and body-9 pulling the pod in with it takes it to 114.8 and 1,655. Twelve miles collectable with body-8 carried unchanged, 34 for the whole front lever. Those two runs stand at 1,396 and 1,386 kg, which is Gen 8\'s measured 1,400 less the mass each step itself removes, four kilograms of disc here and ten of nose structure there, so the mass term is neither double counted nor borrowed from thermal-9 and suspension-9, whose contributions belong to their own panels. With body-9\'s measured 2.0415 in place of the 2.057 estimate the pair reads 114.5 Wh/mi and 1,659 miles, so 38 miles rather than 34.\n\ndesign/retro-gen8.md priced "front track to 1.48 m" at 37 miles and A 2.047, and measured, that price was attached to the wrong object. The track change ALONE returns 12 miles and A 2.1178. It reaches the retro\'s neighborhood only once the body the envelope unlocks is redrawn, at 38 miles and A 2.0415. So the retro was 25 miles optimistic about what a wheel module can deliver and one mile pessimistic about what the pair can, which is an estimate landing near the right answer for the wrong reason, and is exactly the failure design/retro-gen8.md made one method over both rungs a standing rule to catch. Note what is NOT in the numbers this panel books: no Cd credit at all. A narrower fairing has a smaller wake, but wake is a body measurement and this module does not book a coefficient it cannot measure. body-9 has since booked one count for one named mechanism, a 20.7 degree fairing shoulder deleted, 0.108 to 0.107 provisional until it is audited in its own right. Carrying that count takes the pair to 114.2 Wh/mi and 1,664 miles, and it belongs on body-9\'s panel rather than this one because a wheel module that starts crediting itself with drag coefficients is how a ladder loses track of who measured what.\n\nROLL, and what suspension-9 owes. Ride frequency is held by construction on this car, because suspension-4\'s air springs scale load and rate together, so the wheel rate is a fixed quantity and the spring path\'s roll stiffness goes as track squared: (0.74/0.81)^2 is 0.8346, a 16.5 percent loss at the front. The roll center decides whether that is the whole bill, and it depends on HOW the corner narrows, so the answer is taken from suspension-9\'s built pickups rather than assumed. Solving suspension-4\'s built front wishbone lines in the z-y plane, inner pivots (0.45, 0.25) and (0.38, 0.55) against ball joints (0.71, 0.235) and (0.70, 0.565), the Gen 8 instant center sits at z -2.450 and the front roll center at 0.1037 m. The tempting reading is that shortening the arms buys something: translate ONLY the outer joints 70 mm inboard, hold the inner pivots, and the instant center swings to -1.739 while the roll center RISES to 0.1262. That corner does not exist. suspension-9 translates the inner pivots with the joints, to |z| 0.38 and 0.34 against ball joints 0.64 and 0.63, precisely so that arm lengths, camber gain, caster and bump steer all carry, and solving THAT puts the instant center at -2.381 and the roll center at 0.0970. Measured off the partner that shipped, the front roll center FALLS 6.7 mm. A pure translation would give 0.0947, because rigid translation scales roll center height by the track ratio exactly; the 2.3 mm back is suspension-9 parking its upper inner pivot at 0.34 rather than 0.31 to clear drivetrain-7\'s front housing.\n\nThat reverses the conclusion, and the reversal is the number body-9 and suspension-9 both have to plan around. Against a 0.500 m center of gravity the front roll-moment arm LENGTHENS from 0.3963 to 0.4030, 1.7 percent, so the elastic path is asked for more rather than less. suspension-9 has to inject 21.8 percent of front roll stiffness to hold Gen 8\'s roll angle, MORE than the 19.8 percent the track term alone implies, not less. Kinematic congruence is not free: the property that makes suspension-9\'s corner carry every calibration it inherited is the same property that denies it the roll-center rise a shortened arm would have handed over. The distribution is the part that gets better without anyone paying: Gen 1 tuned 58/42, wheels-7 narrowed only the rear and pushed it to 62.3/37.7, and scaling the front by the identical 0.8346 puts it back at 58.0/42.0 exactly. So suspension-9 must add its 21.8 percent at the front and the matching amount at the rear, or the balance it just recovered moves again. One number the injection cannot be checked against, and this is a live item rather than an inherited one: suspension-4\'s front bar arm measured 0.14 m in its built mesh, from the torsion axis at x 1.70 to the arm end at x 1.56, which is short enough that the 22 mm bar it draws there would behave as a rigid link rather than a spring. suspension-9 has shipped, grew the bar to 27.7 mm, and left the arm at exactly 0.14 m: torsion axis still x 1.70, drop-link pickup at (1.56, 0.33, 0.53). So the partner that owes 21.8 percent of front roll stiffness is claiming it through a lever whose built geometry cannot produce a bar rate at all. The 21.8 is a requirement this module can state and a number nobody can yet verify from geometry, and that is the honest status.',
+      why: 'wheels-7 held this track deliberately and wrote the reason down: "this is the axle carrying three quarters of the braking and all of the steering into a generation that has already given away 13 percent of tire grip, and narrowing both ends is how a range car becomes undriveable one defensible decision at a time." That was correct in Gen 7 and four things have changed since. The price was wrong: wheels-7 valued this at 0.049 m2 and about 17 miles because the tire-column term had not been discovered yet, and measured now it is 0.0999 m2. The catcher exists: design/gen9.md commissions suspension-9, where Gen 7 had a suspension slot frozen since Gen 4 and no partner able to put roll stiffness back, so wheels-7 was declining a narrowing nobody was going to catch. The spender exists: Gen 7 already had 69 unspendable miles of tail closure on the books and refusing to create a second unspendable credit was discipline, whereas Gen 9 runs the wheel, the suspension and the body in one rung. And the balance argument inverted: narrowing the front does not compound wheels-7\'s handling bill, it repairs the asymmetry that bill was made of, returning the roll couple to the split five generations were tuned around.',
       fail: [
         'suspension-4 as shipped cannot hold this corner and the distances are measured, not estimated. Sweeping every vertex of its built mesh against the relocated front corner, the same sweep run over wheels-7 for a matched pair: its front-structure knuckle comes to 0.9 mm of the wheel against 4.5 mm before, its front damper body to 1.5 mm of the disc against 50.3, its air-supply line to 3.2 mm against 45.0, its steering rack to 4.7 mm against 22.6, its anti-roll bar to 4.8 mm against 44.3, and its front air spring to 5.4 mm against 59.0. Six parts inside 6 mm, five of which were outside 20. None of this is a defect in suspension-4, which was drawn for a 1.62 m track and says so; it is the statement that the front corner does not relocate without suspension-9. suspension-9 has since shipped and the item is NOT closed, though it is much better. Every figure above and the seven that used to follow here for suspension-9, knuckle 2.5 mm to the wheel, subframe 4.0 to the disc, air supply 10.0, rack 17.6, bar 46.1, damper 55.2, spring 64.0, ending "nothing inside 2 mm and nothing that is not a designed clearance", are nearest-VERTEX readings and none of them reproduces. Re-measured surface to surface, one method over both suspensions against this wheel, the corner INTERPENETRATES both. suspension-4 crosses it in 20 part pairs over 6,717 crossing triangle pairs, deepest 47.29 mm where its rear structure passes through the rear wheel. suspension-9 crosses it in 9 part pairs over 3,163, deepest 20.00 mm where its rear structure passes through the park brake, then the steering 14.79 mm into the disc, front structure 14.78 into the disc, front knuckle 13.83 into the disc and 10.91 into the caliper, the 48 V feeds 12.46 into the front wheel, rear steer 9.79 and rear structure 7.27 into the master unit, and rear steer 2.46 into the park brake. Those totals are larger than the 14 over 4,727 and 5 over 1,224 first published on this panel, and the difference is not a change of method. Every figure that was published reproduces: both 47.29 and 14.79 to the digit, and the five suspension-9 pair counts to the pair, 212 + 148 + 572 + 35 + 251 against the 218 + 148 + 572 + 35 + 251 written down, the single six-pair change being edge touches that tools/check-interfaces.sh\'s predicate now refuses on the same tolerance as everything else. What was missing was two parts of THIS module. The earlier sweep walked a corner part list and left out park-brake and master-unit, and drop those two from the new numbers and 20 over 6,717 becomes exactly 14 over 4,720 and 9 over 3,163 becomes exactly 5 over 1,218. The omission mattered for one reason: suspension-9\'s deepest crossing anywhere on this wheel is not at the relocated front corner at all. It is 20.00 mm of rear structure through the park brake over 1,416 pairs, at the REAR, on the axle this generation deliberately did not touch, and a front-corner part list can never see it. So the direction of the story holds and is worth keeping, 47 percent of the crossings and 42 percent of the depth rather than the quarter and the third this panel claimed, but "nothing inside 2 mm" is not what this geometry builds and a clearance cannot be quoted across an intersection. THIS IS A SECOND OPEN DEFECT on this corner, separate from the pack one below, and it is left open for the same reason: it belongs to two slots. The suspension-4 column stays on this panel because it is the before half of a matched pair and because stepping the ladder back to Gen 8 puts it under this wheel again.',
         'drivetrain-7\'s front halfshafts overrun the relocated hub. Measured off its built mesh, the outboard end of each front shaft sits at |z| 0.7625, which lands exactly on wheels-7\'s hub face plane and is the correct joint on that car. This module puts the hub face at 0.6925, so the shaft ends 70.0 mm outboard of the face it drives into, passing through the wheel\'s hub insert, its spoke web and the cover behind it. The fix is one dimension, 70 mm off each front shaft, and it is drivetrain geometry. Worth stating that design/retro-gen8.md recorded this same interface failing in the other direction one generation ago, when a review found those shafts ending 10 mm SHORT of their wheel: the front halfshaft length has now been wrong at two consecutive rungs, in opposite directions, and it should be derived from the wheel rather than carried.',
-        'body-8\'s front fairing does not merely become oversized, it becomes interference. Its sealed inboard wall is a 14 mm panel spanning x 1.050 to 1.850, y 0.335 to 0.735 at |z| 0.693 to 0.707, and its position is written in the source as P.wheelZ minus 0.110. The relocated tyre\'s inner face is at |z| 0.6625, so where the wall stood 25.5 mm clear of wheels-7 it is now buried 30.5 mm inside the tyre, and 144 of this module\'s vertices per pair sit inside its box. body-9 has redrawn the pod for this envelope, and the sweep re-run over it closes the item: its fairing inboard wall lands at |z| 0.6230, 39.5 mm inboard of the tyre face, zero vertices of this module fall inside it, and the nearest approach anywhere on the corner is 41.8 mm from the cover to the fairing surface. The point worth carrying is that carrying body-8 unchanged was not merely suboptimal here, it was geometrically impossible, and the drift trap is that editing P.wheelZ would have made the foul vanish without anyone drawing a line.',
-        'The roll-over margin is a real loss and it is the third consecutive generation to take one. Static stability factor on a 0.500 m centre of gravity goes 1.620 at Gen 5\'s matched 1.62 m track, 1.550 on Gen 7 and Gen 8\'s 1.55 m mean, and 1.480 here. That is 8.6 percent off the apex car, it is still far above anything with a roof over it, and it is not recoverable by control: a bar can move where load transfers, it cannot move the point at which the inside wheels leave the ground. Lateral load transfer at the front rises by the reciprocal of the track ratio, 9.5 percent, on the axle that steers.',
+        'body-8\'s front fairing does not merely become oversized, it becomes interference. Its sealed inboard wall is a 14 mm panel spanning x 1.050 to 1.850, y 0.335 to 0.735 at |z| 0.693 to 0.707, and its position is written in the source as P.wheelZ minus 0.110. The relocated tire\'s inner face is at |z| 0.6625, so where the wall stood 25.5 mm clear of wheels-7 it is now buried 30.5 mm inside the tire, and 144 of this module\'s vertices per pair sit inside its box. body-9 has redrawn the pod for this envelope, and the sweep re-run over it closes the item: its fairing inboard wall lands at |z| 0.6230, 39.5 mm inboard of the tire face, zero vertices of this module fall inside it, and the nearest approach anywhere on the corner is 41.8 mm from the cover to the fairing surface. The point worth carrying is that carrying body-8 unchanged was not merely suboptimal here, it was geometrically impossible, and the drift trap is that editing P.wheelZ would have made the foul vanish without anyone drawing a line.',
+        'The roll-over margin is a real loss and it is the third consecutive generation to take one. Static stability factor on a 0.500 m center of gravity goes 1.620 at Gen 5\'s matched 1.62 m track, 1.550 on Gen 7 and Gen 8\'s 1.55 m mean, and 1.480 here. That is 8.6 percent off the apex car, it is still far above anything with a roof over it, and it is not recoverable by control: a bar can move where load transfers, it cannot move the point at which the inside wheels leave the ground. Lateral load transfer at the front rises by the reciprocal of the track ratio, 9.5 percent, on the axle that steers.',
       ],
       explode: [0, 0, 1.15],
     },
@@ -225,17 +225,17 @@ export const SYSTEM = {
       mass: 12,
       count: 2,
       specs: [
-        ['Wheel centre', '(-1.45, 0.355, +-0.74); rear track 1.48 m, carried'],
+        ['Wheel center', '(-1.45, 0.355, +-0.74); rear track 1.48 m, carried'],
         ['Flange face', '|z| 0.65 exactly; 1,392 vertices on the plane out to r 0.2440'],
         ['Motor annulus', 'r 0.155 to 0.235 over |z| 0.65 to 0.73, left void'],
         ['Void margin', 'Zero vertices in the band; r 0.2480 at |z| 0.7220, 13 mm clear'],
         ['Change this generation', 'None. Every coordinate is wheels-7\'s'],
         ['Maturity', 'Pilot line; the co-cured titanium flange stays extrapolated'],
       ],
-      how: 'This is wheels-7\'s rear wheel at wheels-7\'s coordinates, and the reason it gets a panel rather than a footnote is that a generation which moves one axle is exactly the generation most likely to disturb the other one by accident. So the contract was re-verified from built geometry on both sides rather than read out of either module\'s comments. Inside the contract band this profile holds r 0.2480 or greater, and the tightest point is the drop-well floor at |z| 0.7220, 13 mm clear of the 0.235 ceiling. Zero vertices fall inside the band with a half-millimetre inset. On the flange plane at |z| 0.6500 this module puts 1,392 vertices, 696 per side, running out to r 0.2440, and drivetrain-7 puts 2,136 rotor-ring vertices on the same plane at r 0.1880 to 0.2330, so the joint is face to face. What fills the rest is drivetrain-7\'s and it was measured too, inside the band: stator rings r 0.1352 to 0.1972 over |z| 0.6500 to 0.7260, hub bearings out to r 0.1680 over 0.6505 to 0.7290, corner inverters r 0.1288 to 0.1725 over 0.6501 to 0.6610. Three of those reach below r 0.155, which is the bore rather than the band and is drivetrain-7\'s to spend, but this module has to know the figure because its own park brake is the other tenant down there. That device holds r 0.100, so the tightest gap in the bore is 28.8 mm to the corner inverter, and nothing of this module\'s crosses the flange plane.\n\nThe rest of the drawing is unchanged and is described here so the panel stands alone. Twelve flange bolts sit on the r 0.225 circle with heads spanning |z| 0.6382 to 0.6460, wholly inboard of the contract plane, seating ON the inboard face of a 2 mm co-cured titanium ring that runs 0.646 to 0.650, so they bear on metal. That is a correction rather than a restatement: the bank used to be centred so its seating face landed at 0.6479, which is 1.9 mm INSIDE the ring it is supposed to bear on, and a bolt head grown into a laminate is not a bolted joint. The ring also now owns the whole flange face out to r 0.2440 on its own, where the CFRP shell used to draw the same annulus on the same plane and the two fought for the same pixels. The bore is a pilot at r 0.0605 to 0.072 over |z| 0.730 to 0.756 that seats over drivetrain-7\'s hub spigot with half a millimetre of fit and now carries a lead-in chamfer at its mouth, closed outboard by a clamp web at 0.732 to 0.7376 whose five nuts sit at |z| 0.7376 to 0.7471, so the pilot takes the axial clamp and the twelve flange bolts take the torque. The drop well is 6 mm deep against the front wheel\'s 24, because a 0.230 floor would put carbon inside the annulus at |z| 0.722, and that remains a shop-equipment consequence of putting a motor inside a wheel.\n\nOne thing did change about this wheel and it is not in its geometry. For three generations the rear corner has been the odd one: wheels-3 gave it a motor, wheels-6 gave it a different cover, wheels-7 gave it a different track. Matching the front track removes the last of those asymmetries, so the two axles now differ in exactly one respect, which is that this wheel bolts to a flange and the front one bolts to a hub face. That is the difference that has a reason.',
+      how: 'This is wheels-7\'s rear wheel at wheels-7\'s coordinates, and the reason it gets a panel rather than a footnote is that a generation which moves one axle is exactly the generation most likely to disturb the other one by accident. So the contract was re-verified from built geometry on both sides rather than read out of either module\'s comments. Inside the contract band this profile holds r 0.2480 or greater, and the tightest point is the drop-well floor at |z| 0.7220, 13 mm clear of the 0.235 ceiling. Zero vertices fall inside the band with a half-millimeter inset. On the flange plane at |z| 0.6500 this module puts 1,392 vertices, 696 per side, running out to r 0.2440, and drivetrain-7 puts 2,136 rotor-ring vertices on the same plane at r 0.1880 to 0.2330, so the joint is face to face. What fills the rest is drivetrain-7\'s and it was measured too, inside the band: stator rings r 0.1352 to 0.1972 over |z| 0.6500 to 0.7260, hub bearings out to r 0.1680 over 0.6505 to 0.7290, corner inverters r 0.1288 to 0.1725 over 0.6501 to 0.6610. Three of those reach below r 0.155, which is the bore rather than the band and is drivetrain-7\'s to spend, but this module has to know the figure because its own park brake is the other tenant down there. That device holds r 0.100, so the tightest gap in the bore is 28.8 mm to the corner inverter, and nothing of this module\'s crosses the flange plane.\n\nThe rest of the drawing is unchanged and is described here so the panel stands alone. Twelve flange bolts sit on the r 0.225 circle with heads spanning |z| 0.6382 to 0.6460, wholly inboard of the contract plane, seating ON the inboard face of a 2 mm co-cured titanium ring that runs 0.646 to 0.650, so they bear on metal. That is a correction rather than a restatement: the bank used to be centered so its seating face landed at 0.6479, which is 1.9 mm INSIDE the ring it is supposed to bear on, and a bolt head grown into a laminate is not a bolted joint. The ring also now owns the whole flange face out to r 0.2440 on its own, where the CFRP shell used to draw the same annulus on the same plane and the two fought for the same pixels. The bore is a pilot at r 0.0605 to 0.072 over |z| 0.730 to 0.756 that seats over drivetrain-7\'s hub spigot with half a millimeter of fit and now carries a lead-in chamfer at its mouth, closed outboard by a clamp web at 0.732 to 0.7376 whose five nuts sit at |z| 0.7376 to 0.7471, so the pilot takes the axial clamp and the twelve flange bolts take the torque. The drop well is 6 mm deep against the front wheel\'s 24, because a 0.230 floor would put carbon inside the annulus at |z| 0.722, and that remains a shop-equipment consequence of putting a motor inside a wheel.\n\nOne thing did change about this wheel and it is not in its geometry. For three generations the rear corner has been the odd one: wheels-3 gave it a motor, wheels-6 gave it a different cover, wheels-7 gave it a different track. Matching the front track removes the last of those asymmetries, so the two axles now differ in exactly one respect, which is that this wheel bolts to a flange and the front one bolts to a hub face. That is the difference that has a reason.',
       why: 'design/gen9.md calls the rear annulus contract binding and unchanged, and the useful thing a module can do with a binding contract is prove it rather than assert it. The proof is worth the panel because the failure mode is silent: nothing in this file touches the rear corner, so a drift would have to arrive through a shared constant or through a partner moving, and both have happened on this ladder before. Measuring both sides of the joint from built meshes is the only check that catches either.',
       fail: [
-        'The co-cured titanium flange is still the extrapolated claim, unchanged since wheels-6 and unchanged here. What must become true: a titanium-to-CFRP co-cure holding bolt preload through a design life of drive-to-regen torque reversals at hub temperature and salt exposure, with no delamination signature. Rigs show it, fleets close it, and until then the joint is inspected at every tyre change.',
+        'The co-cured titanium flange is still the extrapolated claim, unchanged since wheels-6 and unchanged here. What must become true: a titanium-to-CFRP co-cure holding bolt preload through a design life of drive-to-regen torque reversals at hub temperature and salt exposure, with no delamination signature. Rigs show it, fleets close it, and until then the joint is inspected at every tire change.',
         'The rear corner inherited wheels-7\'s open report against suspension-4 in full, and matching the front track did nothing for it: suspension-4\'s rear geometry is drawn around a wheel at |z| 0.81 and puts 364 vertices inside the annulus contract band, knuckle plate and both upper ball joints among them, with its 48 V leads across the stator. This module re-measured that and confirmed it, and flagged that if the rear knuckle did not translate too, Gen 9 would ship a Gen 7 defect two rungs old. suspension-9 translated it: rear outer joint plane to |z| 0.60, rear structure now stopping at 0.6395 outside the band, and the 364 breaching vertices down to 13. What is left is not structure. The 13 are 48 V cable at r 0.1657 and |z| 0.7100, inside a band reserved for a motor, and the honest reading is that the contract is 99.6 percent clean rather than clean. Reported here because this module owns the wheel side of that band and nobody else will sweep it.',
         'A rear wheel that did not change is a rear wheel that did not get re-validated. The 13 mm annulus margin, the 0.5 mm pilot fit and the 12-bolt flange were all sized against drivetrain-7 as built, which is right, but the corner now sees a different load spectrum: the rear axle\'s share of lateral load transfer rises from 37.7 to 42.0 percent when the roll couple returns to 58/42, so the outer rear wheel bearing and this flange see about 11 percent more transferred load in a limit corner than they did in Gen 8. The parts are the same and the duty is not.',
       ],
@@ -247,19 +247,19 @@ export const SYSTEM = {
       mass: 6,
       count: 4,
       specs: [
-        ['Type', 'Full-face CFRP disc, flush to the tyre section, no moving parts'],
+        ['Type', 'Full-face CFRP disc, flush to the tire section, no moving parts'],
         ['Extent', 'r 0.048 inlet bore to r 0.312, seated on the rim flange lip'],
         ['Mass', '1.5 kg each, carried from wheels-7 without a change'],
         ['Outer lip', '|z| 0.8190 at all four corners (wheels-7: 0.8890 front)'],
         ['Brake air', 'Fixed 6 mm annular exhaust slot, now fed 188 m3/h'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'The cover is wheels-7\'s and the construction argument is not reopened: a shallow CFRP dish from a r 0.048 inlet bore out to r 0.312, seated all the way round on the rim flange lip at r 0.2665 and flaring outboard so its edge stands 1.5 mm proud of the tyre section maximum, closing the annular gutter between rim flange and tyre shoulder. wheels-3 made the cover a fan, wheels-6 put the fan on pivots, wheels-7 deleted the mechanism when drivetrain-7 stopped making the heat that justified it. Nothing on that argument changed.\n\nWhat changed is that the four covers are now at the same |z|. wheels-7 had front lips at 0.8890 and rear lips at 0.8190, and that 70 mm is the whole of the frontal-area story the tyres panel tells: the outermost feature of each corner, front and rear, is this lip, and until this generation the front lip and the rear lip cast two shadows. They now cast one. The cover is therefore the part that literally defines the outer edge of the tyre column integral, and it is worth saying that the part which owns the number changed nothing to earn it.\n\nOne number on this panel does move, and it moves the wrong way. The front brake exhaust slot is fed by the disc, and the disc on the next panel goes from a 24 mm vane passage to 18 mm, so the flow through this cover falls from about 250 m3/h to about 188 at 100 km/h. The slot itself stays at 6 mm, 0.0118 m2 of exit area between the cover edge at r 0.312 and the tyre shoulder, because an exit sized for the higher flow is not a penalty at the lower one: it simply runs at a lower exit velocity into the wheel\'s own low-pressure region. Keeping it oversized is deliberate and is the opposite of the decision on the disc, where margin was spent. Exit area is free and thermal mass is not.',
+      how: 'The cover is wheels-7\'s and the construction argument is not reopened: a shallow CFRP dish from a r 0.048 inlet bore out to r 0.312, seated all the way round on the rim flange lip at r 0.2665 and flaring outboard so its edge stands 1.5 mm proud of the tire section maximum, closing the annular gutter between rim flange and tire shoulder. wheels-3 made the cover a fan, wheels-6 put the fan on pivots, wheels-7 deleted the mechanism when drivetrain-7 stopped making the heat that justified it. Nothing on that argument changed.\n\nWhat changed is that the four covers are now at the same |z|. wheels-7 had front lips at 0.8890 and rear lips at 0.8190, and that 70 mm is the whole of the frontal-area story the tires panel tells: the outermost feature of each corner, front and rear, is this lip, and until this generation the front lip and the rear lip cast two shadows. They now cast one. The cover is therefore the part that literally defines the outer edge of the tire column integral, and it is worth saying that the part which owns the number changed nothing to earn it.\n\nOne number on this panel does move, and it moves the wrong way. The front brake exhaust slot is fed by the disc, and the disc on the next panel goes from a 24 mm vane passage to 18 mm, so the flow through this cover falls from about 250 m3/h to about 188 at 100 km/h. The slot itself stays at 6 mm, 0.0118 m2 of exit area between the cover edge at r 0.312 and the tire shoulder, because an exit sized for the higher flow is not a penalty at the lower one: it simply runs at a lower exit velocity into the wheel\'s own low-pressure region. Keeping it oversized is deliberate and is the opposite of the decision on the disc, where margin was spent. Exit area is free and thermal mass is not.',
       why: 'The interesting property of this part in Gen 9 is that it demonstrates the difference between a part that changed and a part that mattered. Nothing here was redrawn, and yet the covers are where the 0.0392 m2 physically lives, because frontal area is decided at the outermost surface and this dish is it. A module that only wrote panels for the parts it edited would have left the reader without the part that owns the number, which is the same error as reporting a Cd without a frontal area.',
       fail: [
-        'A full cover is a full cover in a kerb strike, unchanged from wheels-7: the dish stands proud of the tyre section at its outer edge, which is the first thing a kerb touches, and a cracked cover is a whole cover. What is new is that the front covers have moved 70 mm into the arch and body-9 has drawn its pod tight to the envelope on this panel: the measured gap from this cover to the fairing surface is 41.8 mm, where body-8\'s oversized pod stood 91.7 mm off the same part. That is 50 mm of hand and tool access gone from the bayonet ring, bought with the frontal area on the tyres panel, and it is a service cost rather than an engineering one only until somebody has to change a cover in a car park.',
-        'The rear cover still rides the 0.90 explode vector rather than the corner\'s 0.78, matching drivetrain-7\'s rotor rings, exactly as wheels-3, wheels-6 and wheels-7 all disclosed. The real-world echo is unchanged: the cover cannot come off with the motor ring in place, so a cover service is a corner service. The front covers ride 1.45 and have no such constraint, which is now the only remaining behavioural difference between the two ends.',
-        'The front brake air path is scheduled by a louvre this module does not own, and the body generation has now redrawn it. body-8 opened its arch louvers on a brake-temperature model at |z| 0.9569 to 0.9986 across y 0.450 to 0.613, beside the wheel. body-9 has moved the bank to |z| 0.8750 to 0.9164 across y 0.580 to 0.733, which is up out of the steered envelope and above the cover\'s exhaust slot rather than beside it. Nobody has re-derived the flow across that change, and this is the module that has to say so: the 188 m3/h on the specs row is a pumped figure for the disc, not a measured exhaust into a pressure field that moved 150 mm up and 80 mm inboard. The disc behind this cover has 3,000 J/K rather than wheels-7\'s 4,000 to absorb the difference if the schedule is wrong.',
+        'A full cover is a full cover in a curb strike, unchanged from wheels-7: the dish stands proud of the tire section at its outer edge, which is the first thing a curb touches, and a cracked cover is a whole cover. What is new is that the front covers have moved 70 mm into the arch and body-9 has drawn its pod tight to the envelope on this panel: the measured gap from this cover to the fairing surface is 41.8 mm, where body-8\'s oversized pod stood 91.7 mm off the same part. That is 50 mm of hand and tool access gone from the bayonet ring, bought with the frontal area on the tires panel, and it is a service cost rather than an engineering one only until somebody has to change a cover in a parking lot.',
+        'The rear cover still rides the 0.90 explode vector rather than the corner\'s 0.78, matching drivetrain-7\'s rotor rings, exactly as wheels-3, wheels-6 and wheels-7 all disclosed. The real-world echo is unchanged: the cover cannot come off with the motor ring in place, so a cover service is a corner service. The front covers ride 1.45 and have no such constraint, which is now the only remaining behavioral difference between the two ends.',
+        'The front brake air path is scheduled by a louver this module does not own, and the body generation has now redrawn it. body-8 opened its arch louvers on a brake-temperature model at |z| 0.9569 to 0.9986 across y 0.450 to 0.613, beside the wheel. body-9 has moved the bank to |z| 0.8750 to 0.9164 across y 0.580 to 0.733, which is up out of the steered envelope and above the cover\'s exhaust slot rather than beside it. Nobody has re-derived the flow across that change, and this is the module that has to say so: the 188 m3/h on the specs row is a pumped figure for the disc, not a measured exhaust into a pressure field that moved 150 mm up and 80 mm inboard. The disc behind this cover has 3,000 J/K rather than wheels-7\'s 4,000 to absorb the difference if the schedule is wrong.',
       ],
       explode: [0, 0, 1.45],
     },
@@ -276,12 +276,12 @@ export const SYSTEM = {
         ['Steady descent', 'About 740 to 800 C ring (wheels-7: 650 to 700)'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'First the honest half, because it comes first in the reasoning. The sizing case did NOT get easier. Re-deriving it from the preset rather than from a design document: summing the built modules and taking design/gen9.md\'s briefed masses for the three that are not built yet, the Gen 9 preset comes to 1,388 kg against Gen 8\'s measured 1,400, so 1,788 laden, and a 10 percent grade at 60 km/h delivers 29.09 kW of gravity power, of which rolling takes 1.11 at Crr 0.0038 and aero takes 0.62 at the front-narrowed CdA. That leaves 27.36 kW for the friction brakes and 13.68 kW per front disc, against the 13.8 wheels-7 computed. Nine tenths of one percent. Worse, the aero term moved the wrong way on purpose: a cleaner car is a car whose air does less braking on a descent, so every count this generation buys is a watt the disc has to take instead. Anyone expecting a narrower track to shrink a brake should read that paragraph twice.\n\nSo the eight millimetres came out of temperature margin, and the module says so rather than dressing it as efficiency. C/SiC is comfortable well past 1,200 C and wheels-7 held the ring at 650 to 700 on the descent it was sized for, which is a large unused margin in the material and a deliberate one in a generation that had just made the drivetrain weaker. Gen 9 spends it. The ring becomes two 6 mm friction plates with 36 curved vanes in the 18 mm between them, spanning |z| 0.604 to 0.634 at r 0.145 to 0.1825, so the equivalent solid section falls from 21.0 mm to 15.8 and the thermal mass with it, roughly 4,000 J/K to 3,000. Passage area falls with the gap, so pumped flow goes about 250 m3/h to 188 at 747 rpm. Steady state on the descent is a balance between the 13.68 kW going in and the convection taking it out, and cutting the vane path by a quarter raises the equilibrium ring temperature from 650 to 700 C into the region of 740 to 800. The single-stop case barely notices: 0.52 MJ per disc after transfer on a 3,000 J/K ring is a 173 C rise against 130.\n\nThe diameter was checked again rather than assumed, because it is the constraint that forced wheels-7 into thickness in the first place. suspension-4\'s upper front ball joint sits at radial 0.210 from the wheel centre with a 0.024 sphere, inner edge 0.186, clearing the r 0.1825 ring by 3.5 mm. Translating the corner 70 mm inboard moves that joint in z and not in radius, so the clearance is exactly what it was and a 380 mm ring is exactly as impossible as it was in Gen 7. suspension-9 has since shipped a translated corner and the check re-runs against it rather than against the prediction: its front knuckle reaches radial 0.2335 and stands 6.5 mm off this ring in three dimensions, which is the same 3.5 mm radially with the axial offset added back. The lower joint\'s outer edge is still at radial 0.144 against the 0.145 ring bore, 1.0 mm. Both numbers survive the move because a rigid translation cannot change a radius, which is the same property that let this generation move an axle without redrawing a single part around it.',
-      why: 'design/gen9.md asks for the real mass figure rather than the wished-for one, and the real figure at a corner that only moved sideways is zero: a translated wheel weighs what it weighed. Four kilograms had to come from a decision, and the choice was between shaving margin off several parts, which is how a ledger quietly stops meaning anything, or taking it all out of one place where the margin is measurable and the cost lands on one panel. It went here because the excess was largest and best characterised: a ceramic ring held 500 degrees below its material limit by a generation that was being careful about a drivetrain change. The gain names its cost in one sentence: 4 kg of unsprung rotating mass at the front, bought with 100 degrees of ring temperature on the case that sizes it.',
+      how: 'First the honest half, because it comes first in the reasoning. The sizing case did NOT get easier. Re-deriving it from the preset rather than from a design document: summing the built modules and taking design/gen9.md\'s briefed masses for the three that are not built yet, the Gen 9 preset comes to 1,388 kg against Gen 8\'s measured 1,400, so 1,788 laden, and a 10 percent grade at 60 km/h delivers 29.09 kW of gravity power, of which rolling takes 1.11 at Crr 0.0038 and aero takes 0.62 at the front-narrowed CdA. That leaves 27.36 kW for the friction brakes and 13.68 kW per front disc, against the 13.8 wheels-7 computed. Nine tenths of one percent. Worse, the aero term moved the wrong way on purpose: a cleaner car is a car whose air does less braking on a descent, so every count this generation buys is a watt the disc has to take instead. Anyone expecting a narrower track to shrink a brake should read that paragraph twice.\n\nSo the eight millimeters came out of temperature margin, and the module says so rather than dressing it as efficiency. C/SiC is comfortable well past 1,200 C and wheels-7 held the ring at 650 to 700 on the descent it was sized for, which is a large unused margin in the material and a deliberate one in a generation that had just made the drivetrain weaker. Gen 9 spends it. The ring becomes two 6 mm friction plates with 36 curved vanes in the 18 mm between them, spanning |z| 0.604 to 0.634 at r 0.145 to 0.1825, so the equivalent solid section falls from 21.0 mm to 15.8 and the thermal mass with it, roughly 4,000 J/K to 3,000. Passage area falls with the gap, so pumped flow goes about 250 m3/h to 188 at 747 rpm. Steady state on the descent is a balance between the 13.68 kW going in and the convection taking it out, and cutting the vane path by a quarter raises the equilibrium ring temperature from 650 to 700 C into the region of 740 to 800. The single-stop case barely notices: 0.52 MJ per disc after transfer on a 3,000 J/K ring is a 173 C rise against 130.\n\nThe diameter was checked again rather than assumed, because it is the constraint that forced wheels-7 into thickness in the first place. suspension-4\'s upper front ball joint sits at radial 0.210 from the wheel center with a 0.024 sphere, inner edge 0.186, clearing the r 0.1825 ring by 3.5 mm. Translating the corner 70 mm inboard moves that joint in z and not in radius, so the clearance is exactly what it was and a 380 mm ring is exactly as impossible as it was in Gen 7. suspension-9 has since shipped a translated corner and the check re-runs against it rather than against the prediction: its front knuckle reaches radial 0.2335 and stands 6.5 mm off this ring in three dimensions, which is the same 3.5 mm radially with the axial offset added back. The lower joint\'s outer edge is still at radial 0.144 against the 0.145 ring bore, 1.0 mm. Both numbers survive the move because a rigid translation cannot change a radius, which is the same property that let this generation move an axle without redrawing a single part around it.',
+      why: 'design/gen9.md asks for the real mass figure rather than the wished-for one, and the real figure at a corner that only moved sideways is zero: a translated wheel weighs what it weighed. Four kilograms had to come from a decision, and the choice was between shaving margin off several parts, which is how a ledger quietly stops meaning anything, or taking it all out of one place where the margin is measurable and the cost lands on one panel. It went here because the excess was largest and best characterized: a ceramic ring held 500 degrees below its material limit by a generation that was being careful about a drivetrain change. The gain names its cost in one sentence: 4 kg of unsprung rotating mass at the front, bought with 100 degrees of ring temperature on the case that sizes it.',
       fail: [
         'The pads become the limiting component and they were not the limiting component before. C/SiC handles 800 C without complaint; the organic and metallic binders in the pad do not, and their friction window closes near the top of that range. wheels-7\'s descent ran the pad comfortably inside its band and this one runs it at the edge, so the fade that C/SiC was chosen to eliminate returns at the far end of a long alpine descent as a pad property rather than a disc property. It is the single weakest claim in this module, exactly as wheels-7 flagged its own 13.8 kW estimate, and the honest statement is that it is closed on a rig and not by a fleet.',
         'A narrower vane passage packs sooner. wheels-7 already warned that a vented ring can fill with brake dust and salt until the passage is a fraction of its area, and that the symptom is a disc running 150 degrees hotter rather than a noise. An 18 mm passage reaches that state on less debris than a 24 mm one, and it starts from a ring already 100 degrees hotter, so the same neglect that cost wheels-7 a hot descent costs this one a pad.',
-        'THE PACK CLEARANCES ON THIS CORNER DO NOT EXIST, and this panel published three of them as measurements. Re-swept against battery-7 as built, one method over wheels-7 and wheels-9 both, this corner and the pack INTERPENETRATE in five places: the tyre is 21.40 mm inside the floor lid over 108 crossing triangle pairs, 14.71 mm inside the coolant galleries over 336 and 12.83 mm inside the strike shield over 120; the rim is 17.35 mm inside the floor lid over 72; the disc is 15.32 mm inside the floor lid over 168. Eight hundred and four crossing pairs. A clearance of 2.8 mm to the strike shield is not a tighter version of a 12.83 mm overlap, it is a different fact, and the sentence that stood here reported the second as the first.\n\nThe before column was wrong too, which matters more, because a comparison measured two ways is this project\'s named failure class. Run the same sweep over wheels-7 and its disc does not clear the pack by 2.0 mm: it is 17.85 mm inside the floor lid over 99 crossing pairs. So the worst thermal adjacency on the car was already an interference at Gen 7, and the 19 mm repair this panel claimed was never on the table. What wheels-7 genuinely clears, measured as the true separation of the two surfaces: tyre to strike shield 35.09 mm against the 32.9 published, tyre to galleries 42.50, rim to galleries 50.15 against the 64.3 published, tyre to floor lid 22.50, rim to floor lid 30.00. Of the four figures this panel carried, exactly one survives contact with the geometry and only roughly: the rim clears the galleries by 4.38 mm, not 6.2. It is the only pack clearance this corner has.\n\nThat 4.38 wants its own sentence, because the first correction of this panel got it wrong in the same way the panel did. A clearance is the distance between two SURFACES. Walk the wheel\'s VERTICES to the pack\'s triangles instead and you miss every case where the closest approach lands on a triangle edge, which is exactly what happens here: the flange lip\'s nearest vertex reads 5.79 mm and the surfaces are 4.38 mm apart, the true minimum falling near (1.2025, 0.2600, 0.6704) where no vertex sits. Sampling the wheel surface on a barycentric grid converges on 4.38 from above, 4.457 mm at four subdivisions to 4.397 at thirty two. Two of the wheels-7 figures moved for the same reason, tyre to floor lid from 25.27 to 22.50 and rim to floor lid from 32.06 to 30.00, and both of those are flat plane to flat plane once measured properly: the floor lid\'s outboard edge stands at |z| 0.710 and wheels-7\'s tyre and rim inner faces at 0.7325 and 0.7400. The penetration depths in the paragraph above are unaffected, because a penetration is measured between surfaces already.\n\nThe mechanism is worth more than the correction. battery-7 is 1.56 m across its rocker rails and its floor lid reaches |z| 0.744. Gen 9 brought the front corner 70 mm inboard, so the front tyre now spans |z| 0.6625 to 0.8175 over x 1.095 to 1.805 while the pack runs out to x 1.300. Those two volumes intersect, and nothing can be quoted as a clearance across an intersection. The translation this whole generation rests on did not reshuffle the front package, it drove the wheel into the pack, and the panel said the opposite because it read a nearest-surface distance without asking which side of the surface it was on.\n\nOPEN, and deliberately left open. The geometry is fouled and this module has not moved it, because the fix belongs to two slots at once and is a design decision rather than a content edit: battery-7 gives up its outboard corner ahead of x 1.300, or the front corner comes back out and the area gain goes with it, or the lid is relieved through the arch. tools/check-interfaces.sh fails the Gen 9 preset on this every run, which is the correct state for that tool until somebody draws the answer. Read the five depths here rather than there. That tool reports one row per PART and prints only that part\'s single deepest crossing, so this corner appears as three rows, wheels-9/tires 564 pairs at 21.4 mm, wheels-9/front-wheels 72 at 17.4 and wheels-9/discs 168 at 15.3, and all three of them name the floor lid. The 336 pairs in the galleries and the 120 in the strike shield are folded inside the tyre\'s 564 and the tool never names either one.',
+        'THE PACK CLEARANCES ON THIS CORNER DO NOT EXIST, and this panel published three of them as measurements. Re-swept against battery-7 as built, one method over wheels-7 and wheels-9 both, this corner and the pack INTERPENETRATE in five places: the tire is 21.40 mm inside the floor lid over 108 crossing triangle pairs, 14.71 mm inside the coolant galleries over 336 and 12.83 mm inside the strike shield over 120; the rim is 17.35 mm inside the floor lid over 72; the disc is 15.32 mm inside the floor lid over 168. Eight hundred and four crossing pairs. A clearance of 2.8 mm to the strike shield is not a tighter version of a 12.83 mm overlap, it is a different fact, and the sentence that stood here reported the second as the first.\n\nThe before column was wrong too, which matters more, because a comparison measured two ways is this project\'s named failure class. Run the same sweep over wheels-7 and its disc does not clear the pack by 2.0 mm: it is 17.85 mm inside the floor lid over 99 crossing pairs. So the worst thermal adjacency on the car was already an interference at Gen 7, and the 19 mm repair this panel claimed was never on the table. What wheels-7 genuinely clears, measured as the true separation of the two surfaces: tire to strike shield 35.09 mm against the 32.9 published, tire to galleries 42.50, rim to galleries 50.15 against the 64.3 published, tire to floor lid 22.50, rim to floor lid 30.00. Of the four figures this panel carried, exactly one survives contact with the geometry and only roughly: the rim clears the galleries by 4.38 mm, not 6.2. It is the only pack clearance this corner has.\n\nThat 4.38 wants its own sentence, because the first correction of this panel got it wrong in the same way the panel did. A clearance is the distance between two SURFACES. Walk the wheel\'s VERTICES to the pack\'s triangles instead and you miss every case where the closest approach lands on a triangle edge, which is exactly what happens here: the flange lip\'s nearest vertex reads 5.79 mm and the surfaces are 4.38 mm apart, the true minimum falling near (1.2025, 0.2600, 0.6704) where no vertex sits. Sampling the wheel surface on a barycentric grid converges on 4.38 from above, 4.457 mm at four subdivisions to 4.397 at thirty two. Two of the wheels-7 figures moved for the same reason, tire to floor lid from 25.27 to 22.50 and rim to floor lid from 32.06 to 30.00, and both of those are flat plane to flat plane once measured properly: the floor lid\'s outboard edge stands at |z| 0.710 and wheels-7\'s tire and rim inner faces at 0.7325 and 0.7400. The penetration depths in the paragraph above are unaffected, because a penetration is measured between surfaces already.\n\nThe mechanism is worth more than the correction. battery-7 is 1.56 m across its rocker rails and its floor lid reaches |z| 0.744. Gen 9 brought the front corner 70 mm inboard, so the front tire now spans |z| 0.6625 to 0.8175 over x 1.095 to 1.805 while the pack runs out to x 1.300. Those two volumes intersect, and nothing can be quoted as a clearance across an intersection. The translation this whole generation rests on did not reshuffle the front package, it drove the wheel into the pack, and the panel said the opposite because it read a nearest-surface distance without asking which side of the surface it was on.\n\nOPEN, and deliberately left open. The geometry is fouled and this module has not moved it, because the fix belongs to two slots at once and is a design decision rather than a content edit: battery-7 gives up its outboard corner ahead of x 1.300, or the front corner comes back out and the area gain goes with it, or the lid is relieved through the arch. tools/check-interfaces.sh fails the Gen 9 preset on this every run, which is the correct state for that tool until somebody draws the answer. Read the five depths here rather than there. That tool reports one row per PART and prints only that part\'s single deepest crossing, so this corner appears as three rows, wheels-9/tires 564 pairs at 21.4 mm, wheels-9/front-wheels 72 at 17.4 and wheels-9/discs 168 at 15.3, and all three of them name the floor lid. The 336 pairs in the galleries and the 120 in the strike shield are folded inside the tire\'s 564 and the tool never names either one.',
       ],
       explode: [0, 0, 0.45],
     },
@@ -293,7 +293,7 @@ export const SYSTEM = {
       specs: [
         ['Type', 'Fixed monobloc, 6 x 32 mm pistons, carried from wheels-6'],
         ['Clamp force', '38 kN per side at 160 bar, unchanged'],
-        ['Torque available', '4.36 kNm per corner against the 1.36 a 0.74 g tyre takes'],
+        ['Torque available', '4.36 kNm per corner against the 1.36 a 0.74 g tire takes'],
         ['Straddle', 'Rebuilt for a 30 mm ring: halves at |z| 0.5885 and 0.6495'],
         ['Mass', '2.5 kg each against wheels-7\'s 3.0'],
         ['Maturity', 'Production practice'],
@@ -301,7 +301,7 @@ export const SYSTEM = {
       how: 'The casting, the six 32 mm pistons in three pairs, the titanium piston crowns conducting at 22 W/mK to keep C/SiC backplate heat out of the fluid, and the rollback seals pulling the pads 0.1 mm clear are all Gen 2\'s and are not reopened. Two things changed and one of them is only a coordinate. The whole caliper translates 70 mm inboard with its corner, so the two halves sit at |z| 0.5885 and 0.6495, the bridge crosses outside r 0.1825 at 0.619, and the two-lug bracket reaches for the inboard face of suspension-9\'s front upright at 0.6475 rather than the Gen 5 position of 0.7175, arriving 14.0 mm short of the knuckle as suspension-9 actually drew it, which is on the fail list rather than buried here. The other change is real: the ring lost 10 mm of thickness, so the two halves come 10 mm closer together and the bridge and spacer sections between them shorten by the same amount. That is where the kilogram is, and it is the entire mass story on this panel. The pads, the pistons, the bore diameters and the 160 bar clamp are untouched, so 38 kN per side and 4.36 kNm per corner stand exactly where wheels-6 put them.\n\nThe caliper is therefore still oversized and it is still oversized on purpose, and Gen 9 gives the same answer wheels-7 gave, for the same reason, with one number moved. A 0.74 g stop on the 1,388 kg Gen 9 preset is 10.1 kN at the road, about three quarters of it at the front once transfer has finished, 1.36 kNm per front corner. The caliper delivers a little over three times that. wheels-7 refused to bank the kilogram on the grounds that peak torque is not what sizes this part: fade-free clamp after months of disuse, at the end of a descent, with a rear axle contributing under 8 percent, is what sizes it. Every one of those cases is unchanged or slightly worse, so the refusal stands. The kilogram this panel does book is not the one wheels-7 refused. It is bridge section following a thinner ring, which is geometry rather than a re-argued margin, and the distinction matters because banking the other kilogram would mean overturning a predecessor\'s decision without a changed input, which is precisely the move design/retro-gen8.md warns a later generation not to make.',
       why: 'A part that survives four generations of the hardware around it survives because its sizing case never got easier, and the correct way to take mass out of it is to let the geometry take the mass rather than the argument. The straddle is set by the ring and the ring changed, so the caliper follows for free and the certification case is untouched. Had the mass instead come out of clamp force or pad area, the dead-electron stopping argument would have had to be reopened, and this module would be spending a safety case to buy a kilogram it already had for nothing.',
       fail: [
-        'Two calipers is still two single points, unchanged since Gen 2. These two components are the entire hydraulic system of the vehicle, one pressure block, two lines, twelve pistons, and the rear axle offers even less behind a mistake than it did in Gen 5 because the tyre behind it grips less too. The dual-circuit block and honest inspection remain the whole defence.',
+        'Two calipers is still two single points, unchanged since Gen 2. These two components are the entire hydraulic system of the vehicle, one pressure block, two lines, twelve pistons, and the rear axle offers even less behind a mistake than it did in Gen 5 because the tire behind it grips less too. The dual-circuit block and honest inspection remain the whole defense.',
         'The bracket does not yet land on the upright it is drawn against, and now that suspension-9 has shipped the gap is measurable rather than merely unknown. wheels-7 carried its bracket clearances unchanged from wheels-6 against an unmoved front upright and flagged that this was the one corner nobody had re-measured. Swept against suspension-9\'s built front knuckle, which spans |z| 0.5510 to 0.6900 at radii out to 0.2335, this module\'s two lugs and their pad at |z| 0.6475 stand 14.0 mm off the nearest knuckle surface. That is not a foul and not a float, since the caliper is captured by the ring it straddles at 1.0 mm; it is a bolted joint with no boss on the other side of it. The lug positions are still an interface requirement rather than a verified clearance, and the amendment now has an address: suspension-9 owes 14 mm of mounting face at radial 0.145, y 0.498, on the inboard flank of the front upright.',
         'C/SiC pad dust is abrasive rather than merely dirty and the disc now runs 100 degrees hotter, which shortens piston seal and dust-boot life again. The seal interval was already comfortably shorter than the pad interval in Gen 7, which is an inversion most workshops get wrong at least once; this generation widens the gap.',
       ],
@@ -309,7 +309,7 @@ export const SYSTEM = {
     },
     'park-brake': {
       name: 'Park-and-rescue brakes',
-      tagline: 'Untouched, re-derived anyway, and the arithmetic found twenty newton-metres going the other way for once.',
+      tagline: 'Untouched, re-derived anyway, and the arithmetic found twenty newton-meters going the other way for once.',
       mass: 2,
       count: 2,
       specs: [
@@ -320,12 +320,12 @@ export const SYSTEM = {
         ['Position', 'Inside the annulus bore: r to 0.100, |z| 0.596 to 0.732'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'The device is wheels-6\'s, relocated once by wheels-7 and not at all by this generation, and the whole point of re-running its arithmetic is that holding torque is a function of mass, grade and tyre radius, and this generation moved none of the three. It moved the mass, slightly, and in the direction this ladder is not used to. The Gen 9 preset sums to 1,388 kg against Gen 8\'s 1,400, so on the same 400 kg payload laden goes 1,800 to 1,788. On a 30 percent grade gravity pulls 1,788 times 9.81 times sin(arctan 0.30), 5,040 N down the slope, and this axle is the only axle holding it, so each corner resists 2,520 N and at the 0.355 m tyre radius that is 894 Nm. A simplex drum roughly doubles what its spindle applies, so 894 Nm at the 90 mm band radius asks 4.97 kN and the dry spindle is specified at 6, giving 1,080 Nm and a fifth of margin. Gen 8 needed 901 Nm on the same convention. Seven newton-metres came back, which is the first time in three generations that this number has fallen, and it is worth exactly what it sounds like it is worth. Worth naming the trap it sits in: wheels-7 published 902 Nm off a Gen 7 preset that summed to 1,404 kg, and quoting that 902 against a Gen 8 baseline would have turned seven newton-metres into eight by changing the baseline rather than the car.\n\nThe packaging is unchanged in every coordinate, because the rear corner did not move. The rotating carrier necks from r 0.090 onto the wheel\'s hub pilot at r 0.072 spanning |z| 0.658 to 0.732; the static half bolts its boss to the hub bearing housing at 0.6395; the backplate centres on 0.6315 at r 0.100, the shoes on 0.682, the gearmotor on 0.616 reaching inboard to 0.596. Every radius is inside 0.155, so the device lives in the annulus BORE and the contract band stays void. Actuation is still dry, a gearmotor and a spindle with no fluid anywhere, which is why the entire hydraulic system of this car sits at the front axle.\n\nWhat the matched track does change is the case behind this device rather than the device. In a dead-high-voltage stop the front tyres do the work and these drums cover the remainder, and the front axle\'s share of that work is now transferred differently: the roll couple returned to 58/42, so in any stop with steering in it the front outer tyre carries a higher share of a smaller total than it did on the split track. That does not change a straight-line hold, which is the case this part is sized for, and it is mentioned only so the panel does not imply the whole vehicle stood still.',
+      how: 'The device is wheels-6\'s, relocated once by wheels-7 and not at all by this generation, and the whole point of re-running its arithmetic is that holding torque is a function of mass, grade and tire radius, and this generation moved none of the three. It moved the mass, slightly, and in the direction this ladder is not used to. The Gen 9 preset sums to 1,388 kg against Gen 8\'s 1,400, so on the same 400 kg payload laden goes 1,800 to 1,788. On a 30 percent grade gravity pulls 1,788 times 9.81 times sin(arctan 0.30), 5,040 N down the slope, and this axle is the only axle holding it, so each corner resists 2,520 N and at the 0.355 m tire radius that is 894 Nm. A simplex drum roughly doubles what its spindle applies, so 894 Nm at the 90 mm band radius asks 4.97 kN and the dry spindle is specified at 6, giving 1,080 Nm and a fifth of margin. Gen 8 needed 901 Nm on the same convention. Seven newton-meters came back, which is the first time in three generations that this number has fallen, and it is worth exactly what it sounds like it is worth. Worth naming the trap it sits in: wheels-7 published 902 Nm off a Gen 7 preset that summed to 1,404 kg, and quoting that 902 against a Gen 8 baseline would have turned seven newton-meters into eight by changing the baseline rather than the car.\n\nThe packaging is unchanged in every coordinate, because the rear corner did not move. The rotating carrier necks from r 0.090 onto the wheel\'s hub pilot at r 0.072 spanning |z| 0.658 to 0.732; the static half bolts its boss to the hub bearing housing at 0.6395; the backplate centers on 0.6315 at r 0.100, the shoes on 0.682, the gearmotor on 0.616 reaching inboard to 0.596. Every radius is inside 0.155, so the device lives in the annulus BORE and the contract band stays void. Actuation is still dry, a gearmotor and a spindle with no fluid anywhere, which is why the entire hydraulic system of this car sits at the front axle.\n\nWhat the matched track does change is the case behind this device rather than the device. In a dead-high-voltage stop the front tires do the work and these drums cover the remainder, and the front axle\'s share of that work is now transferred differently: the roll couple returned to 58/42, so in any stop with steering in it the front outer tire carries a higher share of a smaller total than it did on the split track. That does not change a straight-line hold, which is the case this part is sized for, and it is mentioned only so the panel does not imply the whole vehicle stood still.',
       why: 'The temptation to delete a device that contributes under 8 percent of a dead-vehicle stop grows every generation and is wrong every generation, because the law requires a car with every electron gone to hold and to stop, and the law is right. What this generation adds is a second demonstration of the same discipline wheels-7 demonstrated: re-deriving a carried number rather than copying it is how you find the one input that moved. Last time it found 20 Nm of extra laden mass. This time it found 8 Nm of preset mass going the other way, and the value of both is the same, which is knowing that nothing else moved.',
       fail: [
         'It is still the least inspectable friction device on the vehicle, inside a motor inside a wheel, 70 mm deeper into the car than it was before Gen 7 and no better placed now. Shoe condition is inferred from the gearmotor current signature on hv-4\'s telemetry, and the self-adjusting spindle that could jam in Gen 2 can still jam here behind more hardware than ever.',
-        'The bore it lives in was crowded by suspension-4\'s un-relocated rear corner, and this module confirmed wheels-7\'s report rather than clearing it: knuckle plate and hub boss straddling the wheel centre plane, the rear-steer tie rod at radial 0.088 through the shoes, the damper foot at radial 0.1546 over |z| 0.6301 to 0.6598. suspension-9 pulled all of it inboard, and the sweep against the shipped partner now reads 0.5 mm from this backplate to its rear subframe and 1.3 mm from the aft harness to its rear-steer actuator. Those are contact-tight rather than fouled, and they are worse in one specific way that suits nobody: the crowding did not go away, it moved from inside the wheel, where it was at least stationary relative to a spinning part, to the backplate face, where a 0.5 mm gap is a tolerance stack rather than a clearance. Two generations reported the old condition and this one reports the new.',
-        'Two full applies from 20 km/h and it needs minutes to cool, unchanged and by disclosure. The fallback deceleration behind it is unchanged from wheels-7\'s 0.33 g, because neither the tyre nor the drivetrain moved this generation, so the one safety number that regressed in Gen 7 simply carries at its regressed value rather than improving.',
+        'The bore it lives in was crowded by suspension-4\'s un-relocated rear corner, and this module confirmed wheels-7\'s report rather than clearing it: knuckle plate and hub boss straddling the wheel center plane, the rear-steer tie rod at radial 0.088 through the shoes, the damper foot at radial 0.1546 over |z| 0.6301 to 0.6598. suspension-9 pulled all of it inboard, and the sweep against the shipped partner now reads 0.5 mm from this backplate to its rear subframe and 1.3 mm from the aft harness to its rear-steer actuator. Those are contact-tight rather than fouled, and they are worse in one specific way that suits nobody: the crowding did not go away, it moved from inside the wheel, where it was at least stationary relative to a spinning part, to the backplate face, where a 0.5 mm gap is a tolerance stack rather than a clearance. Two generations reported the old condition and this one reports the new.',
+        'Two full applies from 20 km/h and it needs minutes to cool, unchanged and by disclosure. The fallback deceleration behind it is unchanged from wheels-7\'s 0.33 g, because neither the tire nor the drivetrain moved this generation, so the one safety number that regressed in Gen 7 simply carries at its regressed value rather than improving.',
       ],
       explode: [0, 0, 0.78],
     },
@@ -341,11 +341,11 @@ export const SYSTEM = {
         ['Front lines', 'Re-landed at the relocated caliper fittings, (1.286, 0.484, +-0.620)'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'The hardware is carried whole from wheels-2 through wheels-3, wheels-6 and wheels-7: a dry pedal unit with a spring and elastomer simulator, dual ECUs on separate supplies, a ball-screw plunger block feeding two front calipers, and no push-through rod. Six generations have found nothing to improve in it, which is now the longest unbroken run of any part on this car. This generation changes routing at one end only. The two front hydraulic lines follow the corner inboard and terminate inside the caliper crossover fittings at (1.286, 0.484, plus and minus 0.620) rather than wheels-7\'s 0.691, and the last 200 mm of each run is redrawn to approach from inboard and below. The two aft harnesses are untouched at (-1.494, 0.287, plus and minus 0.616), because the rear corner did not move, which is the exact mirror of wheels-7, where the front pair was untouched and the aft pair moved.\n\nThe fallback number is unchanged and that is worth a sentence, because for two generations running this box has been where a regressed safety figure gets printed. wheels-6 published 0.38 g. wheels-7 published 0.33 after the tyre gave up 13 percent of its peak and drivetrain-7 gave up 46 percent of its peak power. Gen 9 touches neither the tyre nor the drivetrain, so the number does not move: about 0.33 g on wheel motors and two park-brake drums with hydraulics gone. It is printed again at the same value rather than quietly dropped, because a figure that only appears in the generation that made it worse is a figure the reader learns to distrust.\n\nThe pad conditioning duty carries over and gets slightly more important. When autonomy-4\'s forward model predicts a hard stop, a few newtons of pad drag lift the C/SiC face into its friction window beforehand, metered at about 0.17 Wh per event and logged. The disc on this car now has 3,000 J/K of thermal mass rather than 4,000, so it both heats and cools faster: the conditioning event reaches its target with less energy, and the disc falls back out of its window sooner after one. The schedule is a calibration item and this generation moved its inputs.',
+      how: 'The hardware is carried whole from wheels-2 through wheels-3, wheels-6 and wheels-7: a dry pedal unit with a spring and elastomer simulator, dual ECUs on separate supplies, a ball-screw plunger block feeding two front calipers, and no push-through rod. Six generations have found nothing to improve in it, which is now the longest unbroken run of any part on this car. This generation changes routing at one end only. The two front hydraulic lines follow the corner inboard and terminate inside the caliper crossover fittings at (1.286, 0.484, plus and minus 0.620) rather than wheels-7\'s 0.691, and the last 200 mm of each run is redrawn to approach from inboard and below. The two aft harnesses are untouched at (-1.494, 0.287, plus and minus 0.616), because the rear corner did not move, which is the exact mirror of wheels-7, where the front pair was untouched and the aft pair moved.\n\nThe fallback number is unchanged and that is worth a sentence, because for two generations running this box has been where a regressed safety figure gets printed. wheels-6 published 0.38 g. wheels-7 published 0.33 after the tire gave up 13 percent of its peak and drivetrain-7 gave up 46 percent of its peak power. Gen 9 touches neither the tire nor the drivetrain, so the number does not move: about 0.33 g on wheel motors and two park-brake drums with hydraulics gone. It is printed again at the same value rather than quietly dropped, because a figure that only appears in the generation that made it worse is a figure the reader learns to distrust.\n\nThe pad conditioning duty carries over and gets slightly more important. When autonomy-4\'s forward model predicts a hard stop, a few newtons of pad drag lift the C/SiC face into its friction window beforehand, metered at about 0.17 Wh per event and logged. The disc on this car now has 3,000 J/K of thermal mass rather than 4,000, so it both heats and cools faster: the conditioning event reaches its target with less energy, and the disc falls back out of its window sooner after one. The schedule is a calibration item and this generation moved its inputs.',
       why: 'A control box that outlives six generations of the hardware it commands is the strongest argument any part on this car makes, and the reason it survives is that it was designed around an interface rather than around a vehicle. Gen 9 is the cleanest demonstration of that so far: an axle moved 140 mm and the only consequence for this unit was two tube endpoints. Where the argument would become dishonest is if the module then claimed a mass saving for the shorter tubes, so it does not: 3 kg, unchanged, and the four kilograms this generation books are all on the disc panel.',
       fail: [
         'The arbitration line is still the single point it was in Gen 3, a disagreement between braking and vectoring settled by a 2 millisecond priority rule that has to be right every time. This generation adds a wrinkle rather than a risk: with the tracks matched, the yaw moment a given front-rear brake split produces is no longer the same function it was, so the vectoring coordinator\'s calibration is stale even though its logic is not.',
-        'The 0.33 g fallback was computed in Gen 7 against a drivetrain that did not exist yet, and drivetrain-7 now does. That number has still not been re-derived from the built machine, and this module did not do it either, because doing so properly means modelling short-duration rim-side inverter derate at low speed rather than reading a spec row. It is carried as an estimate with its inputs named, and it is the oldest open item in this file.',
+        'The 0.33 g fallback was computed in Gen 7 against a drivetrain that did not exist yet, and drivetrain-7 now does. That number has still not been re-derived from the built machine, and this module did not do it either, because doing so properly means modeling short-duration rim-side inverter derate at low speed rather than reading a spec row. It is carried as an estimate with its inputs named, and it is the oldest open item in this file.',
         'The independence case spans this unit, drivetrain-7\'s vectoring coordinator and two rim-side inverters, three codebases on dissimilar hardware arguing they cannot fail together. Every generation since Gen 2 has widened the set of common-mode failures it must rule out. This one moves two of the four corners and the front hydraulic runs with them, so the harness routing argument has to be re-walked even though not one line of software changed.',
       ],
       explode: [0.5, 0.35, 0],
@@ -355,7 +355,7 @@ export const SYSTEM = {
 
 /* ── Geometry ──
    Corner-local frame carried from wheels.js through wheels-7.js: origin at
-   the wheel centre, z along the axle, s = sign(world z) so +s is outboard.
+   the wheel center, z along the axle, s = sign(world z) so +s is outboard.
    The ONE change this generation makes is where the FRONT origin sits:
    FRONTZ 0.74 instead of P.wheelZ 0.81. REARZ is wheels-7's 0.74 unchanged,
    so for the first time since Gen 5 the two are the same number, and it is
@@ -371,10 +371,10 @@ export const SYSTEM = {
      0.5735  caliper inboard half, inboard face
      0.6040  disc friction ring, inboard face (30 mm ring, was 40 mm)
      0.6340  disc friction ring, outboard face
-     0.6625  tyre inner face          <- identical to the rear
+     0.6625  tire inner face          <- identical to the rear
      0.6925  hub face plane, ET47
-     0.7400  wheel centre plane       <- identical to the rear
-     0.8175  tyre outer face          <- identical to the rear
+     0.7400  wheel center plane       <- identical to the rear
+     0.8175  tire outer face          <- identical to the rear
      0.8190  cover outer lip          <- identical to the rear
 
    Key world planes, REAR corner (wheels-7, unchanged):
@@ -382,18 +382,18 @@ export const SYSTEM = {
      0.6382  flange bolt heads, inboard face
      0.6460  flange bolt heads, seating face on the titanium ring
      0.6500  CONTRACT flange face, drivetrain-7 rotor rings bolt here
-     0.6625  tyre inner face
+     0.6625  tire inner face
      0.7300  outboard edge of the CONTRACT annulus
-     0.7400  wheel centre plane
-     0.8175  tyre outer face
+     0.7400  wheel center plane
+     0.8175  tire outer face
      0.8190  cover outer lip */
 
-const FRONTZ = 0.74;             // front wheel centre |z|, the Gen 9 move
-const REARZ = 0.74;              // rear wheel centre |z|, carried from wheels-7
-const TSEG = 48;                 // tyre lathe segments
+const FRONTZ = 0.74;             // front wheel center |z|, the Gen 9 move
+const REARZ = 0.74;              // rear wheel center |z|, carried from wheels-7
+const TSEG = 48;                 // tire lathe segments
 const RSEG = 48;                 // cover, disc and flange-ring lathe segments
 /* Rim barrels stay at 40. Their silhouette is never the corner's outline:
-   the cover owns every radius out to 0.312 from outboard and the tyre owns
+   the cover owns every radius out to 0.312 from outboard and the tire owns
    everything past it, so the barrel is only ever seen inboard or exploded,
    where 40 segments carry 0.8 mm of chord sag on a 0.53 m circle. Holding
    the covers and discs at 48 and the barrels at 40 is worth 864 triangles
@@ -409,22 +409,22 @@ const EDGE = 30;                 // crease threshold in degrees, design/crispnes
    can see is a decal with a triangle budget.
 
    Orthographic ray grid on the front +z corner, 38,024 samples per side,
-   first hit by radius from the wheel centre:
+   first hit by radius from the wheel center:
 
      from OUTBOARD   r 0.000..0.048  front wheel, seen down the inlet bore
                      r 0.048..0.312  COVER, 100 percent, every band
-                     r 0.312..0.355  tyre shoulder and tread crown
+                     r 0.312..0.355  tire shoulder and tread crown
      from INBOARD    r 0.000..0.075  front wheel hub and disc hat
                      r 0.075..0.185  DISC, 87 to 100 percent
                      r 0.130..0.225  caliper, 3 to 13 percent
                      r 0.225..0.312  rim inboard flange and barrel
-                     r 0.260..0.355  tyre inboard sidewall
+                     r 0.260..0.355  tire inboard sidewall
 
    Three consequences that decided where this pass spent its triangles.
    The cover owns 87 percent of the corner from the one view a person
-   standing beside the car has, so it gets the largest share. A moulded
+   standing beside the car has, so it gets the largest share. A molded
    size legend on the OUTBOARD sidewall would be invisible at every radius
-   it could occupy, so the tyre's relief went to the shoulder band and the
+   it could occupy, so the tire's relief went to the shoulder band and the
    tread instead. And the disc is the second most visible mechanical part
    on the car, not the last, because the whole of it shows through the
    arch from inboard. ── */
@@ -433,8 +433,8 @@ const EDGE = 30;                 // crease threshold in degrees, design/crispnes
 function zc(mesh) { mesh.rotation.x = Math.PI / 2; return mesh; }
 
 /* Lathe in the corner-local frame: profile is [radius, axialOffset] pairs
-   in increasing axial order, where axialOffset = |z| - (corner centre).
-   deg creases the result: a moulded step, a bead seat or a groove wall
+   in increasing axial order, where axialOffset = |z| - (corner center).
+   deg creases the result: a molded step, a bead seat or a groove wall
    keeps its own normal instead of blurring into the surface beside it, and
    the triangle count does not move. Pass null to leave a surface smooth. */
 function zlathe(profile, s, mat, seg, deg = EDGE) {
@@ -479,34 +479,34 @@ function spokeMesh(sections, s, mat, ang) {
   return lib.crease(lib.loft(secs, mat, true), EDGE);
 }
 
-/* ── Tyres ──
+/* ── Tires ──
    155/65 R20 on wheels-7's section, every dimension the frontal-area
    integral and the steered sweep read off unchanged: bead seats at local
    +-0.0635 (5.0J), section maxima at +-0.0775 (world |z| 0.6625 / 0.8175),
    crown at P.tireR. Both corners now sit at the same |z|, so the front and
-   rear casings occupy exactly the same band and the integral sees one tyre
+   rear casings occupy exactly the same band and the integral sees one tire
    column per side instead of two.
 
    WHAT THIS PASS CHANGED, and it is all inside that envelope. The casing was
    a fourteen point torus with two smooth tori laid on the crown for a tread,
-   and it read as a torus. It is now a moulded section: the inboard bead
+   and it read as a torus. It is now a molded section: the inboard bead
    turns out over the rim flange, and the 5.5 mm low-void pattern is five
    circumferential grooves cut 5.5 and 5.0 mm INTO the crown rather than two
    rings sitting on it, so the void is real void.
 
    Two things the old ribs got wrong and this fixes. They stood at r 0.3583,
-   3.3 mm proud of the crown, so the tyre carried 3.3 mm of itself BELOW the
+   3.3 mm proud of the crown, so the tire carried 3.3 mm of itself BELOW the
    ground plane at y -0.0033 and the car was parked in its own floor
-   reflection. And a rib is not a tread: a moulded pattern removes rubber, it
+   reflection. And a rib is not a tread: a molded pattern removes rubber, it
    does not add it. Cutting inward puts the outermost surface back on
-   P.tireR, which is where a wheel centre at y 0.355 says the road is. The
+   P.tireR, which is where a wheel center at y 0.355 says the road is. The
    two consequences are reported on the front wheels panel: the swept solid's
    fore and aft span and its crown height each come in 3.3 mm, in |z| nothing
-   moves at all, and the tyre column integral is untouched because that is a
+   moves at all, and the tire column integral is untouched because that is a
    z band and no z coordinate on this profile changed.
 
-   THE SECTION IS ASYMMETRIC AND THAT IS A MEASUREMENT, NOT A STYLE. A tyre
-   this size would normally carry a rim-protector rib and a moulded legend on
+   THE SECTION IS ASYMMETRIC AND THAT IS A MEASUREMENT, NOT A STYLE. A tire
+   this size would normally carry a rim-protector rib and a molded legend on
    the sidewall, and the first attempt at this pass put both on. Neither
    survives the geometry. Interpolating wheels-7's own two profiles radius by
    radius, the axial gap between the OUTBOARD sidewall and the inside of the
@@ -519,7 +519,7 @@ function spokeMesh(sections, s, mat, ang) {
    it and 39.5 mm to body-9's fairing wall, and the outboard half of the
    profile is wheels-7's four stations byte for byte. That is also what a
    real covered wheel does: the cover is the rim protector. */
-const TYRE = [
+const TIRE = [
   /* inboard sidewall: the half a viewer can see */
   [BEAD,   -0.0635],   /* bead heel on the rim seat */
   [0.2670, -0.0720],   /* bead bulge, casing turned out over the flange lip */
@@ -538,7 +538,7 @@ const TYRE = [
   [0.3495, -0.0196],
   [P.tireR, -0.0174],
   [P.tireR, -0.0025],
-  [0.3500, -0.0008],   /* centre groove, 5.0 mm deep */
+  [0.3500, -0.0008],   /* center groove, 5.0 mm deep */
   [0.3500,  0.0008],
   [P.tireR,  0.0025],
   [P.tireR,  0.0174],
@@ -561,7 +561,7 @@ const TYRE = [
 
 function tirePart(s, rear) {
   const g = lib.part('tires', [0, 0, s * (rear ? 0.78 : 0.85)]);
-  g.add(zlathe(TYRE, s, M.rubber, TSEG));
+  g.add(zlathe(TIRE, s, M.rubber, TSEG));
   return g;
 }
 
@@ -580,7 +580,7 @@ function frontWheelPart(s) {
      flange lip at +-0.0700, bead seats at +-0.0635 and the 24 mm well floor
      at r 0.2300, and the profile between them is now a rim section rather
      than a straight line: a rolled flange lip with a radius under it, a
-     safety hump inboard of each bead seat so a deflated tyre stays on the
+     safety hump inboard of each bead seat so a deflated tire stays on the
      seat, and a radius into the well at each end. */
   /* The inboard flange lip stays exactly on local -0.0700, and the reason is
      a measurement rather than laziness. A first draft gave the flange a
@@ -645,7 +645,7 @@ function frontWheelPart(s) {
   ], s, M.steel, 24));
 
   /* Ten integral spokes, drafted and dished from the hub face out into the
-     well. This is where a one-piece wheel reads as moulded or does not. */
+     well. This is where a one-piece wheel reads as molded or does not. */
   for (let i = 0; i < 10; i++) {
     g.add(spokeMesh([
       [0.0700, -0.0340, 0.0215, 0.0120],
@@ -656,7 +656,7 @@ function frontWheelPart(s) {
     ], s, M.carbon, (i / 10) * Math.PI * 2));
   }
 
-  /* Five wheel nuts on the pocketed land, seen down the cover's inlet bore
+  /* Five lug nuts on the pocketed land, seen down the cover's inlet bore
      and nowhere else, which is why they are heads rather than cylinders. */
   for (let i = 0; i < 5; i++) {
     g.add(zat(zfast(0.0105, M.steel, 'hex', s, 1), 0.046, (i / 5) * Math.PI * 2, -0.0295, s, false));
@@ -678,7 +678,7 @@ function frontWheelPart(s) {
   /* Balance weights were drawn on the inboard flange and taken off again for
      the clearance reason in the barrel comment above. There is nowhere else
      on this wheel to put one: the outboard flange is under the cover and the
-     well is inside the sealed tyre cavity. */
+     well is inside the sealed tire cavity. */
 
   return g;
 }
@@ -738,11 +738,11 @@ function rearWheelPart(s) {
   /* Twelve flange bolts on the r 0.225 circle drivetrain-9's nuts share, all
      inboard of the 0.650 contract plane. They now SEAT on the titanium
      ring's inboard face at local -0.0940 and grow inboard from it. The bank
-     as it stood was centred at -0.0960, which put its seating face at
+     as it stood was centered at -0.0960, which put its seating face at
      -0.0921, 1.9 mm INSIDE the 2 mm ring it is supposed to bear on: a bolt
      head grown into the laminate rather than bolted to it. Left as plain
      heads rather than promoted to lib.fastener because these twelve sit on
-     the face drivetrain-9's rotor rings bolt to, and the rear tyre and rear
+     the face drivetrain-9's rotor rings bolt to, and the rear tire and rear
      wheel share an explode vector, so nothing ever uncovers them. */
   const flangeBolts = lib.bolts(12, 0.225, 0.0065, M.steel);
   flangeBolts.rotation.x = Math.PI / 2;
@@ -772,7 +772,7 @@ function rearWheelPart(s) {
     [0.0400, -0.0080],
   ], s, M.steel, 24));
 
-  /* centre web: ten spokes, pilot to drop well, every station outboard of
+  /* center web: ten spokes, pilot to drop well, every station outboard of
      local 0.000 so the whole web stands clear of the contract band */
   for (let i = 0; i < 10; i++) {
     g.add(spokeMesh([
@@ -796,7 +796,7 @@ function rearWheelPart(s) {
    wheels-7's cover, one part for all four corners, unchanged. A shallow CFRP
    dish from a r 0.048 inlet bore out to r 0.312, seated on the rim flange
    lip at r 0.2665 / local 0.0700 and flaring outboard so its edge stands
-   1.5 mm proud of the tyre section maximum. With the tracks matched, all
+   1.5 mm proud of the tire section maximum. With the tracks matched, all
    four lips now sit at world |z| 0.8190 and the corner's outermost surface
    is the same plane at both axles. */
 function coverPart(s, rear) {
@@ -806,7 +806,7 @@ function coverPart(s, rear) {
      at r 0.048, the flange seat at r 0.2665 / local 0.0700, and the outer lip
      at r 0.3120 / 0.0790, which is the plane the frontal-area integral and
      the static swept envelope are both measured to. What is new is that the
-     surface between them is a moulding rather than a cone. Inboard to
+     surface between them is a molding rather than a cone. Inboard to
      outboard: a bell mouth whose throat is the r 0.048 bore and whose lip
      flares to 0.062, a step down into a service recess over the hub, a 3 mm
      riser onto the main face, a land recessed 1.5 mm where the bayonet lock
@@ -839,10 +839,10 @@ function coverPart(s, rear) {
 
      The outer edge got 1.1 mm of rolled section and no more, and the reason
      is measured rather than stylistic. The gap from the cover's underside to
-     the tyre's outboard sidewall, taken as a perpendicular distance to the
+     the tire's outboard sidewall, taken as a perpendicular distance to the
      sidewall's own line, is 2.33 mm at the lip. A full return flange down to
      r 0.3050 took it to 1.30. This roll holds 2.08. A cover edge is allowed
-     to be thin; it is not allowed to spend a millimetre of somebody else's
+     to be thin; it is not allowed to spend a millimeter of somebody else's
      clearance to look thick. */
   const seal = lib.torus(0.2660, 0.0055, M.rubber, RSEG, 5);
   seal.position.z = s * 0.0645;
@@ -850,7 +850,7 @@ function coverPart(s, rear) {
 
   /* Inlet spider. The bore feeds the brake duct, so it is open, and an open
      bore r 0.048 across on the most-looked-at surface of the car wants
-     something in it: five struts off a centre boss, which is what a moulded
+     something in it: five struts off a center boss, which is what a molded
      cover actually carries and what stops the bore reading as a hole. */
   for (let i = 0; i < 5; i++) {
     g.add(zat(lib.cbox(0.036, 0.0055, 0.008, 0.0012, M.plasticLt),
@@ -862,7 +862,7 @@ function coverPart(s, rear) {
 
   /* Valve service door, on the same radius as the valve the wheel panel
      puts through the well floor. A full cover has to be openable somewhere
-     or the tyre cannot be inflated, and this is the somewhere. */
+     or the tire cannot be inflated, and this is the somewhere. */
   const door = zc(lib.cyl(0.0245, 0.0032, M.carbon, 18));
   zat(door, 0.2145, Math.PI * 0.30, 0.0678, s, false);
   g.add(door);
@@ -878,13 +878,13 @@ function coverPart(s, rear) {
      sized against the land it seats on: at r 0.0068 the flange overhung both
      edges of the 6 mm land the first draft gave it.
 
-     THE LUGS ARE SIZED BY THEIR OUTER EDGE, NOT THEIR CENTRELINE, and the
-     first draft of this pass was not. A lug centred on r 0.2480 that is
-     12 mm wide radially reaches r 0.2543, and the tyre's bead cone runs from
+     THE LUGS ARE SIZED BY THEIR OUTER EDGE, NOT THEIR CENTERLINE, and the
+     first draft of this pass was not. A lug centered on r 0.2480 that is
+     12 mm wide radially reaches r 0.2543, and the tire's bead cone runs from
      r 0.2540 at local 0.0635 out to 0.2790 at 0.0700 while the rim's bead
      seat holds r 0.2540 below it, so the outer bottom corner of every lug
-     stood 1.26 mm inside the tyre and 0.3 mm inside the rim seat: 56 lug
-     triangles crossed tyre triangles on the +z side alone. They are now
+     stood 1.26 mm inside the tire and 0.3 mm inside the rim seat: 56 lug
+     triangles crossed tire triangles on the +z side alone. They are now
      9 mm wide on r 0.2485, spanning 0.2440 to 0.2530, which puts the whole
      lug on the 12 mm bayonet land and leaves 1.0 mm to both bead surfaces. */
   g.add(zat(zfast(0.0050, M.steel, 'torx', s, 1), 0.2500, Math.PI * 1.30, 0.0682, s, false));
@@ -897,7 +897,7 @@ function coverPart(s, rear) {
 }
 
 /* ── Front discs ──
-   365 x 30 mm internally vented C/SiC, ten millimetres thinner than
+   365 x 30 mm internally vented C/SiC, ten millimeters thinner than
    wheels-7's 40. Two 6 mm friction plates at local -0.136..-0.130 and
    -0.112..-0.106, with 36 curved vanes in the 18 mm between them at
    r 0.145 to 0.1825. World: the ring spans |z| 0.604 to 0.634.
@@ -925,7 +925,7 @@ function discPart(s) {
      face the pad sweeps, so the pair still measures 6.0 mm from |z| 0.604 to
      0.610 and 0.628 to 0.634 and the 18 mm passage between them is untouched.
      The band the torus replaced was worse than decorative: at r 0.164 with a
-     5.5 mm tube centred ON the friction plane it reached local -0.1415, which
+     5.5 mm tube centered ON the friction plane it reached local -0.1415, which
      is 5.0 mm INSIDE the caliper's inboard half, so the part that publishes a
      1.0 mm straddle was in fact interpenetrating by five. */
   const c = 0.0012;
@@ -1004,7 +1004,7 @@ function discPart(s) {
 
 /* ── Front calipers ──
    Fixed monobloc at 160 degrees, straddling the 30 mm ring with a 0.5 mm
-   pad gap each side: halves centred at local -0.1515 and -0.0905, which is
+   pad gap each side: halves centered at local -0.1515 and -0.0905, which is
    world |z| 0.5885 and 0.6495, bridge outside r 0.1825 at 0.619, six piston
    crowns landing on the friction faces at 0.604 and 0.634. Bracketed back
    to a pad on the inboard face of the front upright at |z| 0.6475, which is
@@ -1105,7 +1105,7 @@ function caliperPart(x, z) {
      body, because a bleed screw has to be the highest point of its gallery
      or it bleeds nothing. The first draft ran them along the caliper's own
      radius at radial 0.113, which is 62 mm the WRONG way: that is toward the
-     wheel centre, so both nipples came out of the BOTTOM of the caliper half
+     wheel center, so both nipples came out of the BOTTOM of the caliper half
      buried to the shoulder. Seating face at cy + 0.065, which is the box's
      top; the pair tops out at y 0.4994 against the bracket's 0.5365, so the
      caliper's published extents do not move. */
@@ -1223,7 +1223,7 @@ function parkBackPart(x, z) {
 
   /* Mounting boss with a real bolt flange, in place of a plain cylinder.
      Spans local -0.1085 to -0.0925 as before, so |z| 0.6315 to 0.6475 and
-     the published 0.6395 centre are all untouched. */
+     the published 0.6395 center are all untouched. */
   g.add(zlathe([
     [0.0180, -0.1085],
     [0.0660, -0.1085],
@@ -1239,7 +1239,7 @@ function parkBackPart(x, z) {
   g.add(bosBolts);
 
   /* Backplate. It was a flat 7 mm disc; it is now a pressed plate with a
-     turned rim and an inspection plug, still centred on local -0.1085 and
+     turned rim and an inspection plug, still centered on local -0.1085 and
      still stopping at r 0.100, which is the ceiling that leaves 28.8 mm to
      drivetrain-9's deepest corner inverter. */
   g.add(zlathe([
@@ -1494,7 +1494,7 @@ export function build() {
     const front = x > 0;
     const s = Math.sign(z);
 
-    /* everything that turns with the wheel, centred on its own origin */
+    /* everything that turns with the wheel, centered on its own origin */
     const spinG = new THREE.Group();
     spinG.position.set(x, P.wheelY, z);
     lib.spin(spinG, 'z', 30);

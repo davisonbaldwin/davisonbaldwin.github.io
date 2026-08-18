@@ -49,7 +49,7 @@
    changes is where the loop closes: through two bolted terminal decks
    instead of through two busbar cross legs. The failure notes price that.
 
-   WHAT IS CARRIED WHOLE, because a redraw is not a licence to re-argue
+   WHAT IS CARRIED WHOLE, because a redraw is not a license to re-argue
    settled things. 48 V zonal architecture, the deleted 12 V island, the
    single 800 V class converter, four corner eFuse controllers, the LFP
    buffer as the ring's second source, bidirectional CCS2, dual by-wire
@@ -84,15 +84,15 @@
    with a boss. Lifting to y 0.4400 clears the rack entirely, which has no
    material at all in that box above y 0.42, and opens the outboard wall to
    0.5885 at the front and 0.6030 at the rear, because the caliper's inboard
-   face falls away above the disc centre and drivetrain-9's service loops are
+   face falls away above the disc center and drivetrain-9's service loops are
    the binding wall behind. The four stubs land on ONE plane at |z| 0.5200
    with their faces on it, at |x| 1.3000 and y 0.4400.
 
-   THE MARGINS ARE MEASURED OVER THE ASSEMBLY AND NOT AT ITS CENTRELINE, and
+   THE MARGINS ARE MEASURED OVER THE ASSEMBLY AND NOT AT ITS CENTERLINE, and
    that is not a formality: the set is 36 mm tall, y 0.4218 to 0.4582, and
    the caliper closes back to |z| 0.5675 at y 0.445 having been 0.5885 at
    0.4400. Surface to surface against the built partners the plane clears the
-   front caliper by 44.1 mm and the nearest tyre by 172.1, the rear service
+   front caliper by 44.1 mm and the nearest tire by 172.1, the rear service
    loops by 83.0, and its tightest clearance anywhere is 12.9 mm, to
    suspension-9's rear structure at the rear pair. Not 68.5 and not 152.5,
    which is what quoting a single height gives you and what the first draft
@@ -104,7 +104,7 @@
    is impossible on a part that also owns 2.14 m of rocker run.
    SYSTEM.interfaces asserts, from vertices, on every check run, that the
    faces are on |z| 0.5200, that nothing in the part passes that plane, and
-   that the station is |x| 1.3000. It realises: the built part carries 304
+   that the station is |x| 1.3000. It realizes: the built part carries 304
    vertices lying exactly on |z| 0.5200 and 384 exactly on |x| 1.3000, and
    tools/check-interfaces.sh reports both keys at nearest vertex 0.0 mm with
    the part spanning |z| 0.4863 to 0.5200, so `extent: max` is proved rather
@@ -145,7 +145,7 @@ export const SYSTEM = {
      Four keys, and none of them has a partner in this preset. That is worth
      stating rather than hiding: an unmet key warns instead of failing, and
      all four are still live assertions, because tools/interfaces.js proves
-     REALISATION and EXTENT from this module's own vertices whether or not
+     REALIZATION and EXTENT from this module's own vertices whether or not
      anybody declares the other half. Every one of them is a claim that has
      been made in a comment on this ladder before and was never checkable.
 
@@ -161,7 +161,7 @@ export const SYSTEM = {
     'bywire-stub-station': {
       kind: 'face', axis: 'x', at: 1.3000, tol: 0.002,
       part: 'bywire-stubs', mirrored: true,
-      note: 'the fore-and-aft station of the four stubs, carried from hv-4 unchanged. The stub axis runs along z, so its widest section has a real vertex on |x| 1.3000 and realisation proves the station rather than a comment claiming it.',
+      note: 'the fore-and-aft station of the four stubs, carried from hv-4 unchanged. The stub axis runs along z, so its widest section has a real vertex on |x| 1.3000 and realization proves the station rather than a comment claiming it.',
     },
     'sill-channel-inboard': {
       kind: 'face', axis: 'z', at: 0.6600, tol: 0.002,
@@ -189,7 +189,7 @@ export const SYSTEM = {
         ['Case', 'x -1.540 to -1.300, aft of the pack lid at -1.290'],
         ['Overhang', 'Keyed HV inlet reaches -1.256, 34.0 mm over the lid'],
       ],
-      how: 'The electrical box is hv-4\'s and nothing inside it moved: three interleaved LLC phases chop the pack bus through one planar transformer and rectify onto 48 V at 97 percent, the input silicon is qualified for the full 300 to 870 V class, and five solid-state HV branches leave the distribution deck on the input side with back-to-back SiC pairs instead of fuses. The HVIL interlock and the crash-discharge logic carry over unchanged, because nothing about a finger near a busbar changed.\n\nWhat moved is the box and what it now does structurally for the network. hv-4 centred it at x -1.320, which puts its forward wall at -1.200, 90 mm forward of the pack lid\'s rear edge at -1.290 and therefore over the cabin floor. It is at -1.420 now, so the CASE spans -1.540 to -1.300 and every part of the casting, its lid, its fins and its four mounting ears is aft of the lid. Measured against the built partners its tightest clearance is 46.8 mm, to drivetrain-9\'s torque-vectoring controller at the rear corner, then 55.0 mm to the pack lid itself and 78.8 mm to suspension-9\'s rear structure. The new feature is on the two side walls: a bolted 48 V through-bar deck, one per side, where each sill spine terminates. hv-4\'s ring closed on itself and merely landed here; this deck IS the rear half of the loop closure, so it is a bolted bar with a cover rather than a connector, and it is sized for the full 250 A ring rating in either direction.\n\nTHE KEYED HV INPUT DOES OVERHANG THE LID AND THE PANEL SAYS SO, because an earlier draft claimed the whole assembly was aft of it and 718 vertices disagreed. The inlet on the forward wall reaches x -1.2560, which is 34.00 mm forward of the lid\'s rear edge at -1.2900, over y 0.3570 to 0.4550. It cannot simply move back: the bay between that edge and the tv-controller\'s forward face at -1.5900 measures 300.0 mm and this assembly is 292.0 mm long, so all 8.0 mm of slack in the car goes to one end or the other. It is spent at the front, and the reason is measurable rather than aesthetic. The volume the inlet occupies, x -1.290 to -1.250 by y 0.308 to 0.520 inside |z| 0.22, contains ZERO vertices of every other module in the preset; its lowest point is 49.0 mm above the lid; and interior-11\'s rear seat cushion ends at x -1.0944, so the overhang starts 195.6 mm behind the rear occupant. The alternative is 8.0 mm of air behind a controller that has to come out to be serviced.',
+      how: 'The electrical box is hv-4\'s and nothing inside it moved: three interleaved LLC phases chop the pack bus through one planar transformer and rectify onto 48 V at 97 percent, the input silicon is qualified for the full 300 to 870 V class, and five solid-state HV branches leave the distribution deck on the input side with back-to-back SiC pairs instead of fuses. The HVIL interlock and the crash-discharge logic carry over unchanged, because nothing about a finger near a busbar changed.\n\nWhat moved is the box and what it now does structurally for the network. hv-4 centered it at x -1.320, which puts its forward wall at -1.200, 90 mm forward of the pack lid\'s rear edge at -1.290 and therefore over the cabin floor. It is at -1.420 now, so the CASE spans -1.540 to -1.300 and every part of the casting, its lid, its fins and its four mounting ears is aft of the lid. Measured against the built partners its tightest clearance is 46.8 mm, to drivetrain-9\'s torque-vectoring controller at the rear corner, then 55.0 mm to the pack lid itself and 78.8 mm to suspension-9\'s rear structure. The new feature is on the two side walls: a bolted 48 V through-bar deck, one per side, where each sill spine terminates. hv-4\'s ring closed on itself and merely landed here; this deck IS the rear half of the loop closure, so it is a bolted bar with a cover rather than a connector, and it is sized for the full 250 A ring rating in either direction.\n\nTHE KEYED HV INPUT DOES OVERHANG THE LID AND THE PANEL SAYS SO, because an earlier draft claimed the whole assembly was aft of it and 718 vertices disagreed. The inlet on the forward wall reaches x -1.2560, which is 34.00 mm forward of the lid\'s rear edge at -1.2900, over y 0.3570 to 0.4550. It cannot simply move back: the bay between that edge and the tv-controller\'s forward face at -1.5900 measures 300.0 mm and this assembly is 292.0 mm long, so all 8.0 mm of slack in the car goes to one end or the other. It is spent at the front, and the reason is measurable rather than aesthetic. The volume the inlet occupies, x -1.290 to -1.250 by y 0.308 to 0.520 inside |z| 0.22, contains ZERO vertices of every other module in the preset; its lowest point is 49.0 mm above the lid; and interior-11\'s rear seat cushion ends at x -1.0944, so the overhang starts 195.6 mm behind the rear occupant. The alternative is 8.0 mm of air behind a controller that has to come out to be serviced.',
       why: 'Folding routing and conversion into one casting saved Gen 4 eleven kilograms and that argument is unchanged. The move aft is not styling: the pack lid is the cabin floor now, and hv-4\'s forward 90 mm sat over it at the height a rear occupant\'s heels use. What Gen 11 buys with the 100 mm it moved is the whole case out of that volume; what it cannot buy is the connector, and design/gen11.md section 5 is absolute about the lid, so the 34 mm is stated as a breach with its measurement rather than described as a clearance. The through-bar deck is the price of deleting the ring\'s cross legs, and it is the honest place to pay it, because a bolted bar inside a sealed casting is the most reliable node in the network and the only one on the car that was going to be there anyway.',
       fail: [
         'The keyed HV input is 34.00 mm of this module standing over the pack lid, against a design rule that says nothing may. It is 49 mm above the lid, 196 mm behind the rear cushion and clear of every partner, so what it costs is not height and not clearance: it is the precedent. The next module that wants 34 mm over the lid will cite this panel, and the answer has to be the measurement rather than the exception.',
@@ -212,12 +212,12 @@ export const SYSTEM = {
         ['Loop', 'Converter, left spine, buffer, right spine, converter'],
         ['Ledger', '8 kg against hv-4\'s 9 kg ring, on 6.3 m against 7.0'],
       ],
-      how: 'Power is volts times amps, so the same kilowatt crosses this laminate at a quarter of the current a 12 V spine needed and resistive loss falls with the square of current. That arithmetic is Gen 4\'s and it is why the conductor is aluminium and still runs cool. What Gen 11 changes is the section and the route. hv-4 pressed two flat 240 mm² laminae face to face and laid them horizontally around the cabin floor perimeter, which needs a 50 mm wide shelf and a lid to stand on. The channel that survives at a 1.20 m cabin is 42.6 mm wide between suspension-9\'s air-supply trunk at |z| 0.6174 and the sill wall at 0.6600, so the laminate turns ninety degrees and stands on edge: two 8 by 30 mm rails with a 4 mm insulating lamina between them, 20 mm across the channel and 30 mm tall, the same 240 mm² per rail in a quarter of the width. Standing it on edge is also why it can be bracketed rather than stood up: 14 saddles bolt to the floor pan\'s upstand at |z| 0.6600, which is a measured face on body-11, so the spine hangs on structure instead of resting six insulator posts on the battery.\n\nThe loop is the part that had to be re-thought rather than re-drawn. hv-4 closed its rectangle with two cross legs over the pack lid at x 1.11 and -1.13, and both of them are now inside the cabin floor. So the two spines run the sill and close through the two sources instead: converter at the rear, left spine forward, buffer in the nose, right spine aft. Trace it and it is still one continuous conductive loop, which is the property that matters, because a cut anywhere still leaves every zonal controller reachable the other way round. The four corner boxes tap the spines in passing rather than sitting in series with them, so a dead controller is a dead controller and not a broken loop. The sill sections are laminate; the four corner transitions out to the converter and the buffer are 70 mm² flexible cable in convoluted loom, because a pressed bar cannot turn through 60 degrees of climb and 400 mm of z in the space available and a real car does not ask it to.',
+      how: 'Power is volts times amps, so the same kilowatt crosses this laminate at a quarter of the current a 12 V spine needed and resistive loss falls with the square of current. That arithmetic is Gen 4\'s and it is why the conductor is aluminum and still runs cool. What Gen 11 changes is the section and the route. hv-4 pressed two flat 240 mm² laminae face to face and laid them horizontally around the cabin floor perimeter, which needs a 50 mm wide shelf and a lid to stand on. The channel that survives at a 1.20 m cabin is 42.6 mm wide between suspension-9\'s air-supply trunk at |z| 0.6174 and the sill wall at 0.6600, so the laminate turns ninety degrees and stands on edge: two 8 by 30 mm rails with a 4 mm insulating lamina between them, 20 mm across the channel and 30 mm tall, the same 240 mm² per rail in a quarter of the width. Standing it on edge is also why it can be bracketed rather than stood up: 14 saddles bolt to the floor pan\'s upstand at |z| 0.6600, which is a measured face on body-11, so the spine hangs on structure instead of resting six insulator posts on the battery.\n\nThe loop is the part that had to be re-thought rather than re-drawn. hv-4 closed its rectangle with two cross legs over the pack lid at x 1.11 and -1.13, and both of them are now inside the cabin floor. So the two spines run the sill and close through the two sources instead: converter at the rear, left spine forward, buffer in the nose, right spine aft. Trace it and it is still one continuous conductive loop, which is the property that matters, because a cut anywhere still leaves every zonal controller reachable the other way around. The four corner boxes tap the spines in passing rather than sitting in series with them, so a dead controller is a dead controller and not a broken loop. The sill sections are laminate; the four corner transitions out to the converter and the buffer are 70 mm² flexible cable in convoluted loom, because a pressed bar cannot turn through 60 degrees of climb and 400 mm of z in the space available and a real car does not ask it to.',
       why: 'The channel is not a preference, it is the only free volume left, and finding that out is the whole content of this rung for this slot. Once the route is forced, standing the laminate on edge is what makes it fit, and bracketing to the pan upstand is what gets the module off the pack lid. The side benefit is the one design/gen11.md section 7 was written for: the conductor now runs inboard of a 7003-T6 merged sill rather than behind the 0.9 to 1.6 mm door skin hv-4\'s side leg sat under, so the single highest-value cable on the low-voltage network is finally inside the only rated crush member on the car.',
       fail: [
         'One channel per side carries the spine, the by-wire feed and, on the passenger side, the 810 V front-drive run. A side impact that opens one sill takes all three on that side. hv-4 was no better, its ring leg and its feed ran the same rocker 35 mm apart, but the geometry is denser now and the honest statement is that side separation on this car is 1.28 m of air and nothing else.',
         'The loop closes through the converter and the buffer, so their terminal decks are two single points the ring used to route around. Both are bolted metal, both are at opposite ends of the car, and neither is a semiconductor, but the topology is genuinely weaker than a closed busbar rectangle and it was traded for the height budget.',
-        'Aluminium terminations are the watch item exactly as they were: every Al to Cu junction is a galvanic couple, each landing is a bimetal transition plate, and joint resistance is trended per terminal. The channel is also wetter than hv-4\'s shelf, because it sits under the sill rather than on top of the lid, which suspension-9 predicted in writing when it proposed moving the by-wire stubs into the same volume.',
+        'Aluminum terminations are the watch item exactly as they were: every Al to Cu junction is a galvanic couple, each landing is a bimetal transition plate, and joint resistance is trended per terminal. The channel is also wetter than hv-4\'s shelf, because it sits under the sill rather than on top of the lid, which suspension-9 predicted in writing when it proposed moving the by-wire stubs into the same volume.',
       ],
       explode: [0, -0.42, 0.30],
     },
@@ -235,11 +235,11 @@ export const SYSTEM = {
         ['Telemetry', 'Per-circuit current at 1 kHz onto the zonal bus'],
         ['Compute', 'Lockstep dual core, ASIL D'],
       ],
-      how: 'A melting fuse is a thermal race: it needs two to ten times its rated current held for milliseconds before the element lets go, and every wire upstream must survive the wait. An eFuse measures, compares and opens in under ten microseconds at 1.3 times rating, retries after transients, and soft-starts motors so inrush stops being a sizing case. Every channel streams its current at 1 kHz, so the fuse became a sensor and a bearing starting to die draws its confession months before it seizes. All of that is Gen 4\'s and none of it moved.\n\nWhere the boxes sit did move, twice over. hv-4 put them at |z| 0.6150 with their cases spanning 0.5650 to 0.6650, which reads 10.06 mm into wheels-11\'s tyres, 18.27 into the rear wheels and 15.41 into drivetrain-9\'s rotor rings on this envelope, and it stood each box on a 49 mm plastic foot seated on the pack lid. They are at |z| 0.5600 now, cases spanning |z| 0.5100 to 0.6100 at y 0.4200 to 0.4800, which is 55 mm inboard and 68 mm higher than Gen 4. The 40 mm of that height is a correction rather than a choice: at y 0.4900 the fin bank stood in wheels-11\'s aft brake harness, which this generation reroutes and MIRRORS, so it is present on both flanks at y 0.438 to 0.635 inside |z| 0.6167 where wheels-10 carried it on the driver side alone. Dropped to 0.4500 the whole box clears that unit by 21.6 mm and the front caliper by 21.4 mm at its worst corner. The electrical change is smaller and worth one line: the boxes TAP the spine through a short laminated strap instead of sitting in series in the ring the way hv-4\'s did, so a controller that fails open no longer opens the loop with it.\n\nWHAT CARRIES THEM IS AN OPEN QUESTION AND THE PANEL WILL NOT PRETEND OTHERWISE. An earlier draft of this text bolted each box to a cage rocker hoop "at x 1.00 to 1.10 and -1.10 to -1.20", and the built cage does not go there: it ends at x 1.0300 at the front, and aft of x -1.10 its lowest material is at y 0.696, up in the pillar. Swept part by part, the nearest body-11 surface to anything in this part is 41.7 mm, and at the box stations themselves there is no body-11 vertex at all in the band y 0.395 to 0.525. That is not an accident of drawing: body-11\'s floor pan stops at |x| 1.0366, battery-11\'s sill at 1.080, and the boxes stand at 1.155 because autonomy-11 has already built its four node blocks 10 mm under them at |x| 1.115. So the ear is a bracket with nothing to bolt to, the boxes hang on their spine tap straps, and the failure list carries it as the open item it is.',
+      how: 'A melting fuse is a thermal race: it needs two to ten times its rated current held for milliseconds before the element lets go, and every wire upstream must survive the wait. An eFuse measures, compares and opens in under ten microseconds at 1.3 times rating, retries after transients, and soft-starts motors so inrush stops being a sizing case. Every channel streams its current at 1 kHz, so the fuse became a sensor and a bearing starting to die draws its confession months before it seizes. All of that is Gen 4\'s and none of it moved.\n\nWhere the boxes sit did move, twice over. hv-4 put them at |z| 0.6150 with their cases spanning 0.5650 to 0.6650, which reads 10.06 mm into wheels-11\'s tires, 18.27 into the rear wheels and 15.41 into drivetrain-9\'s rotor rings on this envelope, and it stood each box on a 49 mm plastic foot seated on the pack lid. They are at |z| 0.5600 now, cases spanning |z| 0.5100 to 0.6100 at y 0.4200 to 0.4800, which is 55 mm inboard and 68 mm higher than Gen 4. The 40 mm of that height is a correction rather than a choice: at y 0.4900 the fin bank stood in wheels-11\'s aft brake harness, which this generation reroutes and MIRRORS, so it is present on both flanks at y 0.438 to 0.635 inside |z| 0.6167 where wheels-10 carried it on the driver side alone. Dropped to 0.4500 the whole box clears that unit by 21.6 mm and the front caliper by 21.4 mm at its worst corner. The electrical change is smaller and worth one line: the boxes TAP the spine through a short laminated strap instead of sitting in series in the ring the way hv-4\'s did, so a controller that fails open no longer opens the loop with it.\n\nWHAT CARRIES THEM IS AN OPEN QUESTION AND THE PANEL WILL NOT PRETEND OTHERWISE. An earlier draft of this text bolted each box to a cage rocker hoop "at x 1.00 to 1.10 and -1.10 to -1.20", and the built cage does not go there: it ends at x 1.0300 at the front, and aft of x -1.10 its lowest material is at y 0.696, up in the pillar. Swept part by part, the nearest body-11 surface to anything in this part is 41.7 mm, and at the box stations themselves there is no body-11 vertex at all in the band y 0.395 to 0.525. That is not an accident of drawing: body-11\'s floor pan stops at |x| 1.0366, battery-11\'s sill at 1.080, and the boxes stand at 1.155 because autonomy-11 has already built its four node blocks 10 mm under them at |x| 1.115. So the ear is a bracket with nothing to bolt to, the boxes hang on their spine tap straps, and the failure list carries it as the open item it is.',
       why: 'Gen 4 made the topology argument, 34 kg zonal against roughly 50 point-to-point, and it holds. The corner stations are chosen by what is there rather than by symmetry, and what is there turned out to be less than the first draft of this panel claimed, which is why the mount is now a stated defect instead of a sentence about a hoop. Tapping rather than series-feeding costs one bolted joint per box and buys back the failure mode the new loop topology gave away at the converter.',
       fail: [
         'Fusing is firmware, carried from Gen 4 verbatim: a bad trip table would ship to every circuit at once, so the tables stay locked, safety-certified code with a hardware second source on safety channels.',
-        'A MOSFET\'s natural failure is short, not open; on by-wire channels a series redundant switch covers it, on comfort channels the upstream spine segment is the backstop and the load stays energised until service.',
+        'A MOSFET\'s natural failure is short, not open; on by-wire channels a series redundant switch covers it, on comfort channels the upstream spine segment is the backstop and the load stays energized until service.',
         'The boxes are 55 mm further inboard and 68 mm higher than Gen 4 put them, which puts them behind the sill trim rather than under the floor. That is drier and much harder to reach: the service access is through the trim panel and the seat, and on a tandem car the rear pair are behind the rear occupant.',
         'THE MOUNT IS UNRESOLVED AND IT IS THE largest open item in this module. Four 11 kg boxes stand at |x| 1.155, where the nearest body-11 surface is 41.7 mm away and there is no body vertex at all in their own height band, so nothing structural carries them: the bracket on each case is drawn against a cage hoop that ends 125 mm short. It cannot be fixed inside this module. Moving the boxes inboard to the hoop at |x| 1.03 strands autonomy-11\'s four node blocks, which are built 10 mm under these cases at |x| 1.115 and measured against them; reaching outboard to the pan upstand at |z| 0.6600 crosses the spine channel and the pan stops at |x| 1.0366 anyway; and standing a foot on the pack lid is the one thing design/gen11.md section 5 forbids. It closes when the sill, the cage or the autonomy mount is next redrawn, in a commit that moves both sides at once.',
       ],
@@ -261,7 +261,7 @@ export const SYSTEM = {
       why: 'Gen 1 called its 12 V island eight kilos of insurance and the policy does not lapse because the rail changed. The relocation is forced, and the tray is the part worth defending: a 6 kg mass on a 14 kW peak needs a real load path, and hv-4 gave it none in any of the six presets it shipped in. Putting it directly over the crash rails also puts it inside the front crush structure, which is a real objection and is answered in the failure list rather than argued away.',
       fail: [
         'It sits between the crash rails, so a front impact severe enough to fold them reaches the pack that is supposed to be holding the car up during the stop. The rear source survives that case and the ring is fed from both ends, which is the entire reason there are two, but the front node of the loop is now inside the front crush zone and hv-4\'s was not.',
-        'The century of 12 V roadside ritual is gone with the rail: a flat buffer cannot be jumped from a passing car, and recovery is a 48 V bench supply at a service point.',
+        'The century of 12 V roadside ritual is gone with the rail: a dead buffer cannot be jumped from a passing car, and recovery is a 48 V bench supply at a service point.',
         'Sub-zero charge current is limited to protect the plating window, so a deep winter drain recovers slowly; the cabin loop lends heat when the car is awake.',
       ],
       explode: [0.50, 0.35, 0],
@@ -280,19 +280,19 @@ export const SYSTEM = {
         ['Door', 'Hinge axis |z| 0.6110, base inner face 5.0 mm proud'],
         ['Export meter', 'Separate throughput counter, 2 MWh per year in warranty'],
       ],
-      how: 'The electronics are hv-4\'s and they are unchanged: a totem-pole plus CLLC stage that passes the full 11 kW in either direction at 96.5 percent each way, grid-forming rather than grid-following so it can energise a dead circuit and hold frequency, with DC export needing no hardware at all because the station\'s rectifier simply runs in reverse under ISO 15118-20. The pin thermistors, the arc-proof motorised lock and the software-before-current handshake all carry.\n\nWhat moved is the hole it sits in. hv-4 reads P.chargePort at z 0.88 and builds an inlet whose bezel reaches |z| 0.9838: against a car whose greenhouse half-width is 0.6000 the part does not merely foul the body, it is 384 mm out in the air beside it.\n\nTHE APERTURE IS RE-CUT AGAINST THE BUILT LOFT, AND ON ONE SET OF NUMBERS. An earlier draft of this panel carried three sets for the same two features, a flank at 0.5919 in the spec row, a flange at 0.5820 with a rim at 0.5940 in this paragraph, and a flank at 0.5950 falling to 0.5750 in the constant beside the geometry, and the mesh matched none of them. Ray-swept on the built body, the outermost surface at the datum station (x -1.845, y 0.790) is |z| 0.6000, and it is 0.6000 everywhere forward of x -1.840 because that is the greenhouse half-width. Aft of that the tail cone tapers, 0.5961 at x -1.860 and 0.5811 at -1.900, so the 110 mm inlet crosses 20 mm of taper and the station that binds is its aft edge. Swept over the whole footprint, x -1.900 to -1.790 by y 0.735 to 0.845, the minimum flank is 0.5801. The shroud rim therefore sits on 0.5720, which is 8.1 mm inside that minimum and 28.0 mm inside the flank at the datum; the mounting flange lands at |z| 0.5540 to 0.5600; and the seven AC contacts and two DC pins stand to 0.5675, 4.5 mm BEHIND the rim, where a coupler expects to find them and where hv-4 stood them 8 mm proud. P is not touched: PORT is a local constant in this file, the same way wheels-9 carried FRONTZ and REARZ, because a packaging constant that five other modules read is not a Gen 11 decision.\n\nThe door is the one piece outboard of the skin, because a leaf swinging about an axis that lies IN a surface sweeps through it. Its hinge axis is at |z| 0.6110 and the base spans 0.6050 to 0.6170, 5.0 mm proud of a flank that measures 0.6000 under all of it. That number was 0.6000 when the flank was read as 0.5950, which put the base astride the skin: 12.46 mm into body-11/tail-cone and a new pair against body-11/skin at 4.00 mm. The electronics box sits directly inboard and below at x -1.965 to -1.815, y 0.665 to 0.755, |z| 0.365 to 0.495, with a 190 mm AC pigtail instead of hv-4\'s 210.',
+      how: 'The electronics are hv-4\'s and they are unchanged: a totem-pole plus CLLC stage that passes the full 11 kW in either direction at 96.5 percent each way, grid-forming rather than grid-following so it can energize a dead circuit and hold frequency, with DC export needing no hardware at all because the station\'s rectifier simply runs in reverse under ISO 15118-20. The pin thermistors, the arc-proof motorized lock and the software-before-current handshake all carry.\n\nWhat moved is the hole it sits in. hv-4 reads P.chargePort at z 0.88 and builds an inlet whose bezel reaches |z| 0.9838: against a car whose greenhouse half-width is 0.6000 the part does not merely foul the body, it is 384 mm out in the air beside it.\n\nTHE APERTURE IS RE-CUT AGAINST THE BUILT LOFT, AND ON ONE SET OF NUMBERS. An earlier draft of this panel carried three sets for the same two features, a flank at 0.5919 in the spec row, a flange at 0.5820 with a rim at 0.5940 in this paragraph, and a flank at 0.5950 falling to 0.5750 in the constant beside the geometry, and the mesh matched none of them. Ray-swept on the built body, the outermost surface at the datum station (x -1.845, y 0.790) is |z| 0.6000, and it is 0.6000 everywhere forward of x -1.840 because that is the greenhouse half-width. Aft of that the tail cone tapers, 0.5961 at x -1.860 and 0.5811 at -1.900, so the 110 mm inlet crosses 20 mm of taper and the station that binds is its aft edge. Swept over the whole footprint, x -1.900 to -1.790 by y 0.735 to 0.845, the minimum flank is 0.5801. The shroud rim therefore sits on 0.5720, which is 8.1 mm inside that minimum and 28.0 mm inside the flank at the datum; the mounting flange lands at |z| 0.5540 to 0.5600; and the seven AC contacts and two DC pins stand to 0.5675, 4.5 mm BEHIND the rim, where a coupler expects to find them and where hv-4 stood them 8 mm proud. P is not touched: PORT is a local constant in this file, the same way wheels-9 carried FRONTZ and REARZ, because a packaging constant that five other modules read is not a Gen 11 decision.\n\nThe door is the one piece outboard of the skin, because a leaf swinging about an axis that lies IN a surface sweeps through it. Its hinge axis is at |z| 0.6110 and the base spans 0.6050 to 0.6170, 5.0 mm proud of a flank that measures 0.6000 under all of it. That number was 0.6000 when the flank was read as 0.5950, which put the base astride the skin: 12.46 mm into body-11/tail-cone and a new pair against body-11/skin at 4.00 mm. The electronics box sits directly inboard and below at x -1.965 to -1.815, y 0.665 to 0.755, |z| 0.365 to 0.495, with a 190 mm AC pigtail instead of hv-4\'s 210.',
       why: 'Moving the electronics to the port shortens the AC wiring to nothing and puts every grid-facing component in one serviceable enclosure. Re-cutting the aperture against the built loft rather than against P is the discipline this project keeps learning the hard way: hv-4\'s inlet was measured against a body that no longer exists and three of autonomy-4\'s five camera instances float today for the same reason. A car that is parked 95 percent of its life is the cheapest grid battery a household will own, and refusing bidirectionality on warranty fear would have been the dishonest choice.',
       fail: [
-        'A 1.20 m car has 204.4 mm less quarter panel per side at this station than the one this inlet was drawn for, body-9 measuring |z| 0.8044 against body-11\'s 0.6000, so the flap now opens into the space a person stands in to plug the car in. It clears the tyre by 215.6 mm and it does not clear a kerb.',
+        'A 1.20 m car has 204.4 mm less quarter panel per side at this station than the one this inlet was drawn for, body-9 measuring |z| 0.8044 against body-11\'s 0.6000, so the flap now opens into the space a person stands in to plug the car in. It clears the tire by 215.6 mm and it does not clear a curb.',
         'The hinge bracket is the only part of this module outboard of the body skin, 5.0 mm proud of it, because body-11 draws no pocket for a charge aperture and a door leaf cannot hinge on a surface it has to swing through. It is the tightest partner clearance in this part and it is a styling debt as much as a packaging one: a flush hinge needs a recess that only the body module can cut.',
         'Export doubles the connector\'s duty cycle, so contact pitting arrives in half the years; the pilot line still breaks current first and the pins still switch dead.',
-        'Grid-forming hardware inverts the threat model: a compromised session faces electronics that could energise a dead line, so islanding detection is certified hardware, not firmware, and fails to open.',
+        'Grid-forming hardware inverts the threat model: a compromised session faces electronics that could energize a dead line, so islanding detection is certified hardware, not firmware, and fails to open.',
       ],
       explode: [-0.55, 0.45, 0.45],
     },
     'hv-runs': {
       name: 'Orange HV runs',
-      tagline: 'The tunnel centreline was the most protected real estate on the car and it is the cabin floor now, so 810 V moves into the sill and says what that costs.',
+      tagline: 'The tunnel centerline was the most protected real estate on the car and it is the cabin floor now, so 810 V moves into the sill and says what that costs.',
       mass: 7,
       specs: [
         ['Runs', '6: pack feed, front drive, two rear corners, thermal, port'],
@@ -302,10 +302,10 @@ export const SYSTEM = {
         ['Pack landing', 'battery-11 service hatch, flange on the lid at 0.3080'],
         ['Ledger', '7 kg against hv-4\'s 8, on a car 332 mm shorter'],
       ],
-      how: 'hv-4 ran the 3.1 m front-drive cable along the pack-lid centreline on four standoff clips and called it, correctly, the most protected real estate in the car: a 50 mm² conductor inside the tunnel, under the console, surrounded by pack on both sides. That volume is the tandem cabin floor now and the occupants sit on it, so the run has to leave and there is exactly one place for it to go. It travels the passenger sill channel at |z| 0.5980, 16 mm inboard of the spine\'s inner rail and 24 mm outboard of the by-wire feed, three services in one 128 mm channel with the highest voltage in the middle and the safety-critical one furthest from the sill wall. The conductor does not change: 531 A peak at 508 V through 50 mm² against a carried 600 A, 30 s rating, because the front axle machine did not move either.\n\nThe pack end is the one landing this module makes above the battery lid and it is the partner\'s own feature. battery-11 carries hv-4\'s service-hatch feed at (-1.13, 0.315, 0.38) explicitly, in its header, as geometry it built for this module to arrive at, so the feedthrough flange seats there on the measured lid top at y 0.3080 and the key `pack-lid-top` asserts that nothing else in this part is below that plane. The thermal spur takes the driver sill for the same reason the front run takes the passenger one, which keeps 7 kW of cabin heat off the same channel as the traction feed, and the two rear corner runs and the port run never enter the cabin at all: they leave the converter aft and stay aft.\n\nTHE TWO ENDS THAT MOVED ARE BOTH AFT, AND BOTH MOVED BECAUSE A SWEEP SAID SO. The rear corner runs turn outboard at x -1.305 instead of -1.345, because suspension-9\'s rear structure carries a diagonal member filling |z| 0.4580 to 0.5020 at x -1.345 over every height these runs use, and the earlier station laid the conduit 0.1 mm off its face and 5.53 mm inside it. Forward of x -1.320 that band is empty, and the route now clears every partner by at least 22.7 mm. The port run reaches the V2G box: it ended at |z| 0.3400 against a box wall at 0.3650, so it stopped 25 mm short of the enclosure it feeds AND its gland was silently never built, because the crossing that places the fitting simply returned nothing. Both are the same lesson in different clothes, which is that a run is not finished until something has measured where it ends.',
+      how: 'hv-4 ran the 3.1 m front-drive cable along the pack-lid centerline on four standoff clips and called it, correctly, the most protected real estate in the car: a 50 mm² conductor inside the tunnel, under the console, surrounded by pack on both sides. That volume is the tandem cabin floor now and the occupants sit on it, so the run has to leave and there is exactly one place for it to go. It travels the passenger sill channel at |z| 0.5980, 16 mm inboard of the spine\'s inner rail and 24 mm outboard of the by-wire feed, three services in one 128 mm channel with the highest voltage in the middle and the safety-critical one furthest from the sill wall. The conductor does not change: 531 A peak at 508 V through 50 mm² against a carried 600 A, 30 s rating, because the front axle machine did not move either.\n\nThe pack end is the one landing this module makes above the battery lid and it is the partner\'s own feature. battery-11 carries hv-4\'s service-hatch feed at (-1.13, 0.315, 0.38) explicitly, in its header, as geometry it built for this module to arrive at, so the feedthrough flange seats there on the measured lid top at y 0.3080 and the key `pack-lid-top` asserts that nothing else in this part is below that plane. The thermal spur takes the driver sill for the same reason the front run takes the passenger one, which keeps 7 kW of cabin heat off the same channel as the traction feed, and the two rear corner runs and the port run never enter the cabin at all: they leave the converter aft and stay aft.\n\nTHE TWO ENDS THAT MOVED ARE BOTH AFT, AND BOTH MOVED BECAUSE A SWEEP SAID SO. The rear corner runs turn outboard at x -1.305 instead of -1.345, because suspension-9\'s rear structure carries a diagonal member filling |z| 0.4580 to 0.5020 at x -1.345 over every height these runs use, and the earlier station laid the conduit 0.1 mm off its face and 5.53 mm inside it. Forward of x -1.320 that band is empty, and the route now clears every partner by at least 22.7 mm. The port run reaches the V2G box: it ended at |z| 0.3400 against a box wall at 0.3650, so it stopped 25 mm short of the enclosure it feeds AND its gland was silently never built, because the crossing that places the fitting simply returned nothing. Both are the same lesson in different clothes, which is that a run is not finished until something has measured where it ends.',
       why: 'Cable mass is a voltage decision and the ledger here is a length decision: the car is 332 mm shorter, the rear machines are still in the wheels, and the total built run length falls with both. What is NOT claimed is a Cd, an area or a drag number of any kind, because the frontal-area coefficient is frozen project-wide and nothing about a loom disturbs it. The route is the whole argument and it is a trade rather than an improvement, which is why the failure list names it first.',
       fail: [
-        'AN 810 V RUN IS NOW IN THE SIDE-IMPACT LOAD PATH. hv-4 had it on the tunnel centreline with a metre of pack either side; Gen 11 has it 62 mm inboard of the sill wall. The mitigations are real and they are not equivalent: the merged sill is the only rated crush member on the car, the run is the innermost of the three services in the channel, and the pack pyro fuse is unchanged. A car that trades protection for packaging should say so in the panel, and this is the sentence.',
+        'AN 810 V RUN IS NOW IN THE SIDE-IMPACT LOAD PATH. hv-4 had it on the tunnel centerline with a meter of pack either side; Gen 11 has it 62 mm inboard of the sill wall. The mitigations are real and they are not equivalent: the merged sill is the only rated crush member on the car, the run is the innermost of the three services in the channel, and the pack pyro fuse is unchanged. A car that trades protection for packaging should say so in the panel, and this is the sentence.',
         'Three services in one channel means one loom clamp failure can chafe 810 V onto a 48 V conduit. The HV run keeps its bonded braid both ends and its own isolation monitor, and the 24 mm to the by-wire feed is the smallest separation anywhere on the low-voltage network.',
         'The front run kept its conductor but not its margin, carried from Gen 4: launch peaks of 531 A against the same 600 A, 30 s rating, so the thermal budget spends about 60 percent faster and back-to-back launches graze the derate line.',
       ],
@@ -341,13 +341,13 @@ export const SYSTEM = {
         ['Stations', '|x| 1.3000, y 0.4400, faces on |z| 0.5200'],
         ['Was', '|z| 0.7000 since Gen 4, 40 mm inside all four wheels'],
         ['Amendment', 'suspension-9 proposed 0.5800; measured 11.9 mm inside a caliper'],
-        ['Front margin', '44.1 mm to the wheels-11 caliper, 172.1 to the tyre'],
+        ['Front margin', '44.1 mm to the wheels-11 caliper, 172.1 to the tire'],
         ['Rear margin', '83.0 mm to drivetrain-9 service loops'],
         ['Tightest', '12.9 mm to suspension-9 rear structure, at the rear pair'],
         ['Declared', 'bywire-stub-outboard extent max, bywire-stub-station'],
       ],
-      how: 'Each stub is a 24 mm barrel on the feed axis with a mating flange, a crimp collar and a keyed cap, and suspension-9 lands a 30 by 20 by 20 mm connector boss on the flange face. The mated pair departs together on the shared explode vector, because a connection is one object with two owners. The barrel runs along z rather than along x, which is what lets the face be a face: the outboard end of the assembly is a flat annulus lying exactly on |z| 0.5200 and nothing in this part passes it, so `extent: max` on that key is a real assertion rather than a comment restated.\n\nThe plane was derived and the derivation is the content. hv-4 froze |z| 0.7000 in Gen 4 when both wheel centres sat at 0.81 and the stub was 33 mm inboard of the nearest rotating part. Gen 7 moved the rear centres to 0.74, Gen 9 moved the front, and all four contract points ended 40 mm inside their wheels with nothing on the car able to say so. suspension-9 measured that and wrote the fix, |z| 0.5800, into its own panel two generations ago. Swept against the built gen11 corner before applying it, that plane puts 11.9 mm of each front stub inside wheels-11\'s caliper, which occupies |z| 0.5681 to 0.6743 in the amendment\'s own box. So the free window at y 0.3600 is 38.2 mm wide and will not take a stub with a boss on it, and the assembly lifts to y 0.4400, where the caliper\'s inboard face has fallen back to 0.5885 and the rear wall is drivetrain-9\'s service loops at 0.6030.\n\nTHE MARGINS ARE QUOTED OVER THE FOOTPRINT AND NOT AT THE DATUM, WHICH CHANGES THREE OF THEM. A stub is 36 mm tall and this assembly occupies y 0.4218 to 0.4582, so what binds it is the worst station under all of it rather than the number at its centreline: 0.5885 is true at exactly y 0.4400 and the caliper closes back to |z| 0.5675 at y 0.445, which is inside the assembly. Measured surface to surface against the built partners, the set clears the front caliper by 44.1 mm and the nearest tyre by 172.1, the rear service loops by 83.0 and the rear stator ring by more, and its tightest clearance to anything on the car is 12.9 mm, to suspension-9\'s rear structure whose outboard face reaches |z| 0.4960 at x -1.328 beside the rear pair. Every one of those is a clearance and not a crossing: swept against every module in the preset this part penetrates nothing.',
-      why: 'A contract written in a comment is not a contract, and this project has now paid for that three times: drivetrain-7 said 0.7625 everywhere in its file while its shafts ran 70 mm past the wheel, hv-4 said "interface contract" twice on a plane that spent two generations inside a tyre, and suspension-9 wrote the correction and had no mechanism to make anyone apply it. Splitting the stubs into their own part costs one part id and buys two keys with extents on them, which is the smallest change that makes the next inheritance loud instead of silent.',
+      how: 'Each stub is a 24 mm barrel on the feed axis with a mating flange, a crimp collar and a keyed cap, and suspension-9 lands a 30 by 20 by 20 mm connector boss on the flange face. The mated pair departs together on the shared explode vector, because a connection is one object with two owners. The barrel runs along z rather than along x, which is what lets the face be a face: the outboard end of the assembly is a flat annulus lying exactly on |z| 0.5200 and nothing in this part passes it, so `extent: max` on that key is a real assertion rather than a comment restated.\n\nThe plane was derived and the derivation is the content. hv-4 froze |z| 0.7000 in Gen 4 when both wheel centers sat at 0.81 and the stub was 33 mm inboard of the nearest rotating part. Gen 7 moved the rear centers to 0.74, Gen 9 moved the front, and all four contract points ended 40 mm inside their wheels with nothing on the car able to say so. suspension-9 measured that and wrote the fix, |z| 0.5800, into its own panel two generations ago. Swept against the built gen11 corner before applying it, that plane puts 11.9 mm of each front stub inside wheels-11\'s caliper, which occupies |z| 0.5681 to 0.6743 in the amendment\'s own box. So the free window at y 0.3600 is 38.2 mm wide and will not take a stub with a boss on it, and the assembly lifts to y 0.4400, where the caliper\'s inboard face has fallen back to 0.5885 and the rear wall is drivetrain-9\'s service loops at 0.6030.\n\nTHE MARGINS ARE QUOTED OVER THE FOOTPRINT AND NOT AT THE DATUM, WHICH CHANGES THREE OF THEM. A stub is 36 mm tall and this assembly occupies y 0.4218 to 0.4582, so what binds it is the worst station under all of it rather than the number at its centerline: 0.5885 is true at exactly y 0.4400 and the caliper closes back to |z| 0.5675 at y 0.445, which is inside the assembly. Measured surface to surface against the built partners, the set clears the front caliper by 44.1 mm and the nearest tire by 172.1, the rear service loops by 83.0 and the rear stator ring by more, and its tightest clearance to anything on the car is 12.9 mm, to suspension-9\'s rear structure whose outboard face reaches |z| 0.4960 at x -1.328 beside the rear pair. Every one of those is a clearance and not a crossing: swept against every module in the preset this part penetrates nothing.',
+      why: 'A contract written in a comment is not a contract, and this project has now paid for that three times: drivetrain-7 said 0.7625 everywhere in its file while its shafts ran 70 mm past the wheel, hv-4 said "interface contract" twice on a plane that spent two generations inside a tire, and suspension-9 wrote the correction and had no mechanism to make anyone apply it. Splitting the stubs into their own part costs one part id and buys two keys with extents on them, which is the smallest change that makes the next inheritance loud instead of silent.',
       fail: [
         'suspension-9 is carried unchanged and its bosses are still on |z| 0.7000, so the joint does not close in the gen11 preset and both declared keys report UNMET. That is the correct visible state of a two-module change made on one side, and it is the reason the keys exist; the pairing lands when the suspension slot is next redrawn.',
         'The stubs sit 180 mm inboard of where a technician expects them, behind the sill trim rather than under the rocker, so the connector is no longer serviceable from underneath the car.',
@@ -357,7 +357,7 @@ export const SYSTEM = {
     },
     'zone-drops': {
       name: 'Zone sub-harnesses',
-      tagline: 'Forty centimetres to the nearest controller, and a tandem cabin deletes two door lines and a row of seats before a single wire is drawn.',
+      tagline: 'Forty centimeters to the nearest controller, and a tandem cabin deletes two door lines and a row of seats before a single wire is drawn.',
       mass: 4,
       count: 4,
       specs: [
@@ -396,10 +396,10 @@ const LID   = 0.3080;   /* battery-11 floorlid top, measured maximum over the
 const PANY  = 0.4200;   /* body-11 pan flange underside = battery-11 sill top.
    Declared by both of them under the key `sill-top`. */
 
-const SPZ   = 0.6380;   /* spine laminate centre |z|: rails at 0.6280..0.6360
+const SPZ   = 0.6380;   /* spine laminate center |z|: rails at 0.6280..0.6360
    and 0.6400..0.6480, so 12.0 mm of air to the wall at SILLZ. Swept along
    the whole run at 2 cm the nearest body-11 surface is 22.0 mm at x -1.02. */
-const SPY   = 0.4550;   /* channel centre height. The band is bounded BELOW by
+const SPY   = 0.4550;   /* channel center height. The band is bounded BELOW by
    wheels-11/master-unit, whose rerouted aft harness fills y 0.3077 to 0.3612
    inside the spine's own |z| 0.6280 to 0.6480 band and reaches y 0.3870
    anywhere in |z| 0.61 to 0.66 over the spine's x run, and ABOVE by
@@ -408,12 +408,12 @@ const SPY   = 0.4550;   /* channel centre height. The band is bounded BELOW by
    built spine clears that cage by 11.5 mm at (1.010, 0.471, 0.660), the
    tightest thing above it, and everything in the channel is inside
    y 0.4400 to 0.4700 for that reason. */
-const HVZ   = 0.5980;   /* 810 V front-drive run centreline, 16.0 mm inboard
+const HVZ   = 0.5980;   /* 810 V front-drive run centerline, 16.0 mm inboard
    of the spine's inner rail. Nearest body-11 surface along the run 62.0 mm. */
-const BWZ   = 0.5520;   /* by-wire feed centreline, innermost of the three,
+const BWZ   = 0.5520;   /* by-wire feed centerline, innermost of the three,
    24.0 mm inboard of the HV run. Nearest body-11 surface 101.8 mm. */
 
-const CX    = -1.4200;  /* converter centre. hv-4 uses -1.3200, which puts the
+const CX    = -1.4200;  /* converter center. hv-4 uses -1.3200, which puts the
    case's forward wall at -1.2000, 90 mm over the pack lid whose rear edge is
    -1.2900. The case is 240 mm long, so -1.4200 lands it at -1.5400..-1.3000
    and the CASE is aft of the lid. The keyed HV input on its forward wall is
@@ -455,7 +455,7 @@ const VBOX  = [-1.8900, 0.7100, 0.4300];  /* V2G electronics, case
    its forward edge where it reads 0.3540 to 0.4860 at x -1.611, and there is
    nothing at x -1.800 or aft of it. The box's forward wall stands 35 mm
    behind the casting's aft face, in the open part. */
-const BUFX  = 1.9000, BUFY = 0.6950, BUFZ = 0.0000;   /* buffer case centre.
+const BUFX  = 1.9000, BUFY = 0.6950, BUFZ = 0.0000;   /* buffer case center.
    The frunk free box at 20 mm clearance is x 1.80..2.00 by y 0.660..0.800
    across |z| 0.560; the tray under it lands on body-11/crash-rails, whose
    top face is y 0.6250 over |z| 0.3650..0.4850. */
@@ -468,15 +468,15 @@ const ZONX  = 1.1550;   /* zonal box station |x|, held because autonomy-11 has
    floor pan stops at |x| 1.0366 and the sill at 1.080, so the nearest
    body-11 surface to this part is 41.7 mm. The part panel names that as an
    open defect rather than describing a hoop that is not there. */
-const ZONZ  = 0.5600;   // zonal box centre |z|, case 0.5100..0.6100
-const ZONY  = 0.4500;   /* zonal box centre y, case 0.4200..0.4800. It was
+const ZONZ  = 0.5600;   // zonal box center |z|, case 0.5100..0.6100
+const ZONY  = 0.4500;   /* zonal box center y, case 0.4200..0.4800. It was
    0.4900 and the fin bank then stood in wheels-11/master-unit, which reroutes
    the aft brake harness this generation and MIRRORS it, so it fills y 0.438
    to 0.635 inside |z| 0.6167 over x 1.050 to 1.279 on BOTH flanks where
    wheels-10 carried it on the driver side alone. Dropped 40 mm the whole box
    clears that unit by 21.6 mm and wheels-11/calipers by 21.4 mm at its worst
    corner. Everything the part panel says about height is this number: 0.4500
-   centre, 0.4200 to 0.4800 case. */
+   center, 0.4200 to 0.4800 case. */
 
 /* lib.fastener seats its face on y = 0 and grows along +Y, so a head on any
    other face needs the rotation that carries +Y onto that face's outward
@@ -536,7 +536,7 @@ function place(obj, pos, xdir, ydir) {
    THE CONVOLUTION CUTS INWARD ONLY: crests on r, roots on r(1-2amp), so the
    swept envelope is exactly the smooth tube this replaces and no clearance in
    the module gets tighter for being detailed. Conduit is specified on its
-   outside diameter anyway, so this is also the honest way round. Carried from
+   outside diameter anyway, so this is also the honest way around. Carried from
    hv-4 with both notes, because both are still true. */
 function conduit(points, r, mat, o) {
   const q = o || {};
@@ -704,7 +704,7 @@ export function build() {
      decks where the loop closes.
 
      Mounting hardware is on ears standing outboard of the case wall, never
-     on the case centre plus a guess: hv-4 shipped four corner bolts wholly
+     on the case center plus a guess: hv-4 shipped four corner bolts wholly
      inside the box they were fixing for three generations. */
   const conv = lib.part('converter', [-0.55, 0.30, 0]);
   const cvBase = lib.cbox(0.240, 0.089, 0.440, 0.007, M.castAlu);
@@ -850,7 +850,7 @@ export function build() {
     /* data laminae on the inboard face, cut at the splices and the pads.
        Two counter-rotating 1 Gbit rings pressed against the power stack, so
        a severed section loses one direction of travel and the frames arrive
-       the other way round microseconds later: power and data fail together
+       the other way around microseconds later: power and data fail together
        or not at all, which is the property a by-wire car needs. */
     const spliceX = [-0.520, 0.560];
     const padX = [-0.990, -0.760, 0.760, 1.010];
@@ -870,7 +870,7 @@ export function build() {
       }
     }
     /* Saddle brackets onto the floor pan upstand. The foot's outboard face
-       lands ON |z| SILLZ, which is what realises the `sill-channel-inboard`
+       lands ON |z| SILLZ, which is what realizes the `sill-channel-inboard`
        key: the extent clause then proves nothing in this part passes it. */
     for (let i = 0; i < 7; i++) {
       const bx = SPX0 + 0.060 + i * ((SPX1 - SPX0 - 0.120) / 6);
@@ -982,7 +982,7 @@ export function build() {
         [zx > 0 ? 1.010 : -0.990, SPY + 0.008, zs * (SPZ - 0.014)],
       ], 0.005, M.busbar, false, 8));
       /* MOUNTING EAR, AND IT LANDS ON NOTHING. It is drawn on the wall that
-         faces the car's centre, which is where a bracket would go if there
+         faces the car's center, which is where a bracket would go if there
          were structure to take it, and there is not: measured part by part
          the nearest body-11 surface to this whole part is 41.7 mm, and in
          the band y 0.395 to 0.525 at |x| 1.155 body-11 has no vertex at all.
@@ -1230,7 +1230,7 @@ export function build() {
 
   /* ── orange HV runs ──────────────────────────────────────────────────
      Six runs and twelve terminated ends. The one that moved is the front
-     drive feed: hv-4 rode the pack-lid centreline on four standoff clips and
+     drive feed: hv-4 rode the pack-lid centerline on four standoff clips and
      that lid is the cabin floor now, so it takes the passenger sill channel
      at HVZ, 16.0 mm inboard of the spine's inner rail. The thermal spur
      takes the driver sill for the same reason, which keeps 7 kW of cabin
@@ -1239,7 +1239,7 @@ export function build() {
 
   /* pack feed: battery-11's own service hatch at (-1.13, 0.315, 0.38), which
      that module carries in its header as geometry built for this one. The
-     flange seats on the measured lid top and REALISES the `pack-lid-top`
+     flange seats on the measured lid top and REALIZES the `pack-lid-top`
      key; the extent clause proves nothing else in this part goes below it. */
   const packFeed = [
     [-1.130, 0.3220, 0.3800],
@@ -1475,7 +1475,7 @@ export function build() {
 
   /* ── by-wire stub set ────────────────────────────────────────────────
      FOUR MATING FACES ON ONE MEASURED PLANE, AND THE REASON THIS IS ITS OWN
-     PART. tools/interfaces.js realises an extent over EVERY vertex of the
+     PART. tools/interfaces.js realizes an extent over EVERY vertex of the
      named part, so a key with `extent: max` on |z| STUBZ is only meaningful
      if the part contains nothing but the stubs. Put them inside
      bywire-feeds, which owns 2.14 m of rocker run at |z| 0.5520, and the
@@ -1485,7 +1485,7 @@ export function build() {
      is a flat annulus lying exactly on STUBZ and the whole assembly grows
      inboard from it. lib.cyl's radial ring at 12 segments carries vertices
      at theta 90 and 270 degrees, which sit on |x| STUBX exactly, so the
-     station key realises off the same geometry. */
+     station key realizes off the same geometry. */
   for (const xs of [-1, 1]) {
     for (const zs of [-1, 1]) {
       const st = lib.part('bywire-stubs', [xs * 0.12, -0.30, zs * 0.55]);
@@ -1531,7 +1531,7 @@ export function build() {
     /* THE DROP STOPS AT THE DASH BEAM AND DOES NOT CLIMB THE A-PILLAR, AND
        THE REASON IS A MEMBER NOBODY LOOKED FOR. An earlier cut ran up the
        pillar to y 0.945 and ended in air 28.1 mm from the nearest body
-       surface, which is the floating-instance defect this file criticises
+       surface, which is the floating-instance defect this file criticizes
        hv-4 for. On the way there it also crossed body-11/cage at 4.48 mm
        over 64 pairs, because the cage carries a cross-car header at x 0.96
        to 1.00 that reaches |z| 0.0700: at (0.985, 0.846) the free gap is
@@ -1583,7 +1583,7 @@ export function build() {
   dropsR.add(conduit(rearP, 0.005, M.plasticLt, { pitch: 0.018, amp: 0.13, radial: 6 }));
   /* The gland goes on the LAST crossing of the box wall, not the first.
      crossing() walks from the start and this run leaves the corner box at
-     |z| 0.5600, so asked forwards it answers with the point where the drop
+     |z| 0.5600, so asked forward it answers with the point where the drop
      dives inboard, 400 mm short of the box and in mid air. Reversing the
      control points reverses the same curve, so the first crossing found is
      the last one on the run, which is the one that is on the wall. */

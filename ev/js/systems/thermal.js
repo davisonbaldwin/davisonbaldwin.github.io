@@ -17,14 +17,14 @@ export const SYSTEM = {
       tagline: 'The only surface where the car can hand heat to the outside world.',
       mass: 7,
       specs: [
-        ['Core', '880 x 500 x 42 mm, brazed aluminium'],
-        ['Fins', 'Louvred, 1.8 mm pitch'],
+        ['Core', '880 x 500 x 42 mm, brazed aluminum'],
+        ['Fins', 'Louvered, 1.8 mm pitch'],
         ['Heat rejection', '28 kW at 40 °C air-to-coolant delta'],
         ['Coolant flow', 'Up to 40 L/min'],
         ['Air management', 'Active grille shutters upstream'],
       ],
-      how: 'A crossflow core: coolant enters the driver-side tank, crosses through roughly fifty flat aluminium tubes, and collects in the passenger tank. Louvres stamped into the fins slice the airflow so the boundary layer keeps restarting, and that is where the transfer happens: the air side is about 80% of the total thermal resistance, so fin geometry, not tube count, sets the rating.\n\nAbove about 50 km/h ram air does the work and the fans idle. The grille shutters ahead of the core default to closed, because an open cooling duct costs 2 to 3% of motorway range; the controller opens them only when the loop actually has heat to shed. Radiator cooling is nearly free in energy terms, which is why the control logic always prefers it over the chiller.',
-      why: 'An EV needs a fraction of the radiator a combustion car carries: drivetrain losses at motorway cruise are around 2 kW against the 60 kW an engine throws away. The sizing case is not cruising, it is a hot-day DC fast charge on a heat-soaked pack with the condenser rejecting on top. Size for that afternoon and every other day is margin.',
+      how: 'A crossflow core: coolant enters the driver-side tank, crosses through roughly fifty flat aluminum tubes, and collects in the passenger tank. Louvers stamped into the fins slice the airflow so the boundary layer keeps restarting, and that is where the transfer happens: the air side is about 80% of the total thermal resistance, so fin geometry, not tube count, sets the rating.\n\nAbove about 50 km/h ram air does the work and the fans idle. The grille shutters ahead of the core default to closed, because an open cooling duct costs 2 to 3% of highway range; the controller opens them only when the loop actually has heat to shed. Radiator cooling is nearly free in energy terms, which is why the control logic always prefers it over the chiller.',
+      why: 'An EV needs a fraction of the radiator a combustion car carries: drivetrain losses at highway cruise are around 2 kW against the 60 kW an engine throws away. The sizing case is not cruising, it is a hot-day DC fast charge on a heat-soaked pack with the condenser rejecting on top. Size for that afternoon and every other day is margin.',
       fail: [
         'A stone strike punctures a tube; at 1.5 bar the loop seeps rather than bursts, showing up as slow reservoir loss.',
         'Leaves and insects packed between fan and core raise the approach temperature; the tell is higher fan duty at the same load.',
@@ -44,7 +44,7 @@ export const SYSTEM = {
         ['Control', 'PWM, continuous 0 to 100%'],
         ['Sizing case', 'DC fast charge, vehicle parked'],
       ],
-      how: 'Two five-blade axial fans sit in sealed shroud rings behind the core, so every cubic metre they move has passed through the fins rather than around them. Speed is continuously variable to 2800 rpm; ramping instead of stepping keeps the blade-pass tone from jumping out against an otherwise silent car.\n\nDriving barely needs them. The design point is a 250 kW charge stop: the pack pushes over 10 kW into the coolant, the condenser adds more if the cabin is cooling, and there is zero ram air. Shutters open, both fans ramp with coolant temperature, and they may hold full speed for twenty minutes, which is a duty cycle no combustion-car fan ever sees.',
+      how: 'Two five-blade axial fans sit in sealed shroud rings behind the core, so every cubic meter they move has passed through the fins rather than around them. Speed is continuously variable to 2800 rpm; ramping instead of stepping keeps the blade-pass tone from jumping out against an otherwise silent car.\n\nDriving barely needs them. The design point is a 250 kW charge stop: the pack pushes over 10 kW into the coolant, the condenser adds more if the cabin is cooling, and there is zero ram air. Shutters open, both fans ramp with coolant temperature, and they may hold full speed for twenty minutes, which is a duty cycle no combustion-car fan ever sees.',
       why: 'Two 400 mm fans beat one large one here: the package is only 60 mm deep behind the core, and redundancy matters when charge rate depends on airflow. If one fan stalls, the survivor at full speed still moves about 60% of design air and the car derates charging instead of stopping it.',
       fail: [
         'Bearing wear from long full-speed charge sessions presents as tonal noise well before failure.',
@@ -65,7 +65,7 @@ export const SYSTEM = {
         ['COP', 'About 3 in mild cold, 1.8 at -10 °C'],
         ['Accumulator', 'Suction side, 500 ml'],
       ],
-      how: 'The compressor is an electric scroll: one spiral orbits inside a fixed one, and the crescent-shaped gas pockets between them shrink toward the centre, compressing R1234yf to around 15 bar. That raises its condensing temperature above the cabin target, so the refrigerant gives up heat to a water-cooled condenser feeding the heater core loop, then expands and evaporates below ambient temperature, soaking heat back in from outside air or from the chiller. Motor speed is the capacity knob, 800 to 8500 rpm.\n\nThe accumulator on the suction line traps liquid refrigerant during mode changes, because a scroll ingesting liquid hydrolocks. As ambient falls, suction density falls and capacity and COP sink together; below about -25 °C the system deliberately runs lossy compressor modes so that even its inefficiency lands in the loop as useful heat.',
+      how: 'The compressor is an electric scroll: one spiral orbits inside a fixed one, and the crescent-shaped gas pockets between them shrink toward the center, compressing R1234yf to around 15 bar. That raises its condensing temperature above the cabin target, so the refrigerant gives up heat to a water-cooled condenser feeding the heater core loop, then expands and evaporates below ambient temperature, soaking heat back in from outside air or from the chiller. Motor speed is the capacity knob, 800 to 8500 rpm.\n\nThe accumulator on the suction line traps liquid refrigerant during mode changes, because a scroll ingesting liquid hydrolocks. As ambient falls, suction density falls and capacity and COP sink together; below about -25 °C the system deliberately runs lossy compressor modes so that even its inefficiency lands in the loop as useful heat.',
       why: 'A resistive heater turns 1 kWh of pack energy into 1 kWh of heat. The pump moves about 3 for 1 in mild cold. Cabin heating is the single largest parasitic load an EV has: roughly 15% of winter range goes to it with resistive heat, and the heat pump gives about two thirds of that back. The remaining loss is cold-cell chemistry and dense air, which no compressor can fix.',
       fail: [
         'COP collapses toward 1 below about -20 °C; the pump becomes an expensive resistive heater and range predictions must track that honestly.',
@@ -82,11 +82,11 @@ export const SYSTEM = {
         ['Ports', '8 coolant, quick-connect'],
         ['Actuation', '2 stepper-driven rotary spools'],
         ['Distinct modes', '14 plumbing configurations'],
-        ['Body', 'Die-cast aluminium, machined bores'],
+        ['Body', 'Die-cast aluminum, machined bores'],
         ['Integrated sensors', '4 temperature, 2 pressure'],
       ],
       how: 'Inside the casting sit two rotary spools, each a drum with galleries cut through it, indexed by a stepper motor against hard stops. Each pair of spool positions maps a different connection graph across the eight ports: pack loop and powertrain loop in series or in parallel, radiator in circuit or bypassed, chiller engaged or idle, heater core fed or isolated. Two spools multiply into 14 usable modes without a single external valve.\n\nThe modes are the car\'s thermal vocabulary. Cold morning: loops in series, radiator bypassed, motor waste heat warms the pack. Summer fast charge: pack loop through the chiller, powertrain loop through the radiator, fully parallel. Mild day: everything through the radiator and the compressor stays off entirely.',
-      why: 'Every deleted hose is two clamped joints that can leak, a metre of assembly work, and about 300 g. Folding five standalone valves into one block cut the hose count by more than half and left one part to leak-test instead of twenty. The price is concentration: a seized spool now touches every mode, which is why the steppers re-index against their hard stops on every sleep cycle.',
+      why: 'Every deleted hose is two clamped joints that can leak, a meter of assembly work, and about 300 g. Folding five standalone valves into one block cut the hose count by more than half and left one part to leak-test instead of twenty. The price is concentration: a seized spool now touches every mode, which is why the steppers re-index against their hard stops on every sleep cycle.',
       fail: [
         'A stepper losing its index is self-healed by recalibrating against the hard stops at the next sleep.',
         'Casting swarf scoring a spool seal cross-leaks the loops; the tell is two loop temperatures converging when the mode says they should not.',
@@ -128,7 +128,7 @@ export const SYSTEM = {
       how: 'Herringbone-pressed plates are stacked and copper-brazed so that refrigerant and coolant flow in alternating channels, counterflow, with the entire stack acting as one folded heat exchanger. The expansion valve drops refrigerant into the stack at whatever boiling point the controller asks for, typically 10 to 15 °C, and boiling refrigerant will pull the coolant below ambient temperature, which no radiator can ever do.\n\nThe duty split is economic. Radiator cooling costs fan watts; chiller cooling costs roughly 1 kW of compressor power per 3 kW moved. So the controller uses the radiator whenever the coolant target sits above ambient plus the approach temperature, and cuts the chiller in for the cases that break that rule: a fast charge in 40 °C heat, or pulling a heat-soaked pack down before a track session.',
       why: 'The chiller is sized for the fast-charge case, not for cruising. Steady-state pack losses are under 2 kW, which the radiator absorbs without noticing. This part exists for the twenty minutes when charge power, hot asphalt air, and a warm pack line up. It sits beside the manifold to keep the refrigerant run, and therefore the charge volume, as short as possible.',
       fail: [
-        'A braze crack cross-leaks refrigerant into the glycol: falling refrigerant charge plus a pressurised coolant reservoir is the classic signature.',
+        'A braze crack cross-leaks refrigerant into the glycol: falling refrigerant charge plus a pressurized coolant reservoir is the classic signature.',
         'Glycol-side fouling raises the approach temperature, so the same duty needs colder refrigerant and COP quietly falls.',
         'An expansion valve stuck closed starves the stack; pack charge rate derates within a minute.',
       ],
@@ -157,7 +157,7 @@ export const SYSTEM = {
     },
     'coolant-lines': {
       name: 'Coolant lines',
-      tagline: 'Eleven litres of glycol in transit: the fluid that makes one thermal system of the whole car.',
+      tagline: 'Eleven liters of glycol in transit: the fluid that makes one thermal system of the whole car.',
       mass: 21,
       specs: [
         ['Coolant', '50/50 ethylene glycol, 11 L total'],
@@ -167,10 +167,10 @@ export const SYSTEM = {
         ['Layout', 'Pack ring main + hot branches'],
       ],
       how: 'The cold loop leaves the manifold, runs the passenger side above the pack lid, arches over the rear drive unit, and returns along the driver side to its pump: a ring main that feeds the pack cooling plates along the way. Hot branches serve the radiator and the rear drive unit, and a third carries condenser heat to the HVAC core, passing under both cabins\' knee rolls rather than through them. Everything remote from the frunk is reached by pumped liquid, never by refrigerant.\n\nThe loop is also the preconditioning path. Cells at 10 °C accept perhaps 50 kW before lithium plating becomes a risk; the same cells at 45 °C take 250 kW. When navigation targets a fast charger, the manifold flips to series mode and pushes drive-unit waste heat plus heat pump output into this loop. Twenty minutes of driving adds about 25 °C to the pack, and the energy spent comes back several times over in charging minutes saved.',
-      why: 'Glycol at 3.3 kJ/kg·K in a 1.5 bar rubber hose is the cheapest, most leak-tolerant way to move kilowatts around a car. Running refrigerant to every device would multiply the charge volume and turn every metre of line into a pressurised leak surface. The 11 litres of fluid also act as thermal ballast, flattening any load spike shorter than about a minute.',
+      why: 'Glycol at 3.3 kJ/kg·K in a 1.5 bar rubber hose is the cheapest, most leak-tolerant way to move kilowatts around a car. Running refrigerant to every device would multiply the charge volume and turn every meter of line into a pressurized leak surface. The 11 liters of fluid also act as thermal ballast, flattening any load spike shorter than about a minute.',
       fail: [
         'Quick-connector O-rings disturbed in service are the dominant field leak path; single-use retention clips exist for this reason.',
-        'Corrosion inhibitors deplete over years; spent glycol quietly attacks brazed aluminium, so the fluid has a service interval even though it never wears out thermally.',
+        'Corrosion inhibitors deplete over years; spent glycol quietly attacks brazed aluminum, so the fluid has a service interval even though it never wears out thermally.',
         'Air trapped after a refill cavitates a pump and leaves cold spots on the pack plates; filling is done under vacuum, not by pouring.',
       ],
       explode: [0.1, -0.18, 0],
@@ -181,8 +181,8 @@ export const SYSTEM = {
 /* ── Geometry ── */
 
 const TF = P.thermalFront;                    // x [2.08,2.26] y [0.25,0.78] z ±0.45
-const RX = (TF.x[0] + TF.x[1]) / 2;           // 2.17 radiator centre x
-const RY = (TF.y[0] + TF.y[1]) / 2;           // 0.515 radiator centre y
+const RX = (TF.x[0] + TF.x[1]) / 2;           // 2.17 radiator center x
+const RY = (TF.y[0] + TF.y[1]) / 2;           // 0.515 radiator center y
 
 function xcyl(r, h, mat, seg) {               // cylinder with axis along X
   const c = lib.cyl(r, h, mat, seg);
@@ -347,8 +347,8 @@ export function build() {
      whether an HVAC case may stand there. Built, the case ends up at
      x 0.700 to 0.930 against a dashboard that starts at x 0.950 and seats
      that start at x 0.610, so it is entirely aft of the instrument panel
-     and 90 mm off the seat, in the front passenger's knees, and centred
-     130 mm to the passenger side of a car whose "centre stack" the
+     and 90 mm off the seat, in the front passenger's knees, and centered
+     130 mm to the passenger side of a car whose "center stack" the
      coolant-lines panel used to claim it was in. The overlap it escaped is
      habit D in design/penetration-triage.md, which that document calls
      correct packaging drawn as two overlapping solids. Nothing is moved
@@ -377,7 +377,7 @@ export function build() {
      interior.js and interior-4.js together: the console tub tops out at
      y 0.620 and its armrest at 0.670 but only out to x 0.600; the dash trim
      and both knee rolls start at x 0.950; interior/yoke's rim reaches
-     z -0.178 at its inboard edge; interior/displays' centre bezel spans
+     z -0.178 at its inboard edge; interior/displays' center bezel spans
      x 0.943 to 1.017. So the free volume is x below 0.94, y above 0.63, and
      z above -0.15, and the case is moved into it by 80 mm aft, 55 mm up and
      100 mm outboard, which puts its forward face at x 0.920 and leaves
@@ -390,7 +390,7 @@ export function build() {
   scroll.rotation.x = Math.PI / 2;
   scroll.position.set(0.810, 0.755, 0.41);
   hvac.add(scroll);
-  /* the demist stubs stand on the case top AFT of the cowl beam. body's
+  /* the defog stubs stand on the case top AFT of the cowl beam. body's
      pillars carry a cross member at x 0.81..0.89, y 0.890..0.970 across the
      full width on all four of these bodies, so anything standing above the
      case has to do it behind x 0.795. */
@@ -427,7 +427,7 @@ export function build() {
      z -0.75 to -0.55 to the nearest post-change triangle, and the pair
      thermal/coolant-lines x wheels/discs went from 4.51 mm over 10 crossings
      to 15.06 mm over 8 on Gen 1. lib.tube takes its segment count from
-     points.length * 6 and a closed Catmull-Rom is reparameterised over the
+     points.length * 6 and a closed Catmull-Rom is reparameterized over the
      whole loop, so every station on a 7 m hose resamples when one end of it
      gains a waypoint. The trap is written up on the hot branch below; this
      is the loop that paid for it.
@@ -496,10 +496,10 @@ export function build() {
        outboard of the bench pan edge at 0.610 and 81 mm clear of the leg, and
        stays under hv-4's rocker ring, whose lower tube starts at y 0.394.
        The point COUNT on this polyline is unchanged on purpose. lib.tube
-       reparameterises a Catmull-Rom over a fixed segment count, so adding a
+       reparameterizes a Catmull-Rom over a fixed segment count, so adding a
        control point re-tessellates the whole hose and moves every reported
        depth on it: the same fix written with one extra waypoint moved four
-       untouched crossings a thousand millimetres away by up to 3.2 mm. Same
+       untouched crossings a thousand millimeters away by up to 3.2 mm. Same
        count, and the forward half moves by 0.2 to 1.0 mm instead. */
     [0.50, 0.352, -0.626],
     [-0.50, 0.352, -0.626],

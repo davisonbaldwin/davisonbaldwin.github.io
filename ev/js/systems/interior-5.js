@@ -30,12 +30,12 @@ export const SYSTEM = {
       specs: [
         ['Crossbeam', 'Welded steel tube, 11.0 kg'],
         ['Ancestor beam', 'Cast magnesium, 6.4 kg (interior.js)'],
-        ['Substrate', 'Long-glass PP, self-coloured, unwrapped'],
+        ['Substrate', 'Long-glass PP, self-colored, unwrapped'],
         ['Vents', '4 manual ball vents, zero actuators'],
         ['Airbags', 'Passenger 90 L + knee, carried'],
         ['First bending mode', 'Above 38 Hz, same target'],
       ],
-      how: 'The dash still hangs everything on a beam bolted to both A-pillar bases: the display, the passenger airbag, the by-wire feedback loads, and the HVAC distribution box, which is the Gen 1 core that thermal-5 carries unchanged, because the dash was tooled around it. Gen 1 cast the beam in magnesium at 6.4 kg to save 5 kg high and forward. Gen 5 welds it from steel tube at 11.0 kg for roughly half the part cost: magnesium die casting needs dedicated tooling and a foundry that handles molten magnesium under cover gas, and its per-part price never falls far, while a bent-and-welded steel assembly comes off equipment every tier one already owns. The 38 Hz first-mode target that keeps the screen from shimmering is met either way; steel gets there by gauge instead of geometry. About 30 dollars comes off the invoice and 4.6 kg goes back on the scale, and at urban speeds with regen behind it, mass is the cheapest it ever gets.\n\nThe rest of the savings is process, not material. The TPO skin over PU foam is gone: the moulding is grained, self-coloured PP with a hard top pad, which deletes a wrapping station and a glue line from the build. Four manual ball vents replace the full-width motorised Coanda slot; Gen 1 flagged in its own fail list that the vane actuator was buried under the top pad, and a ball vent has no actuator to bury. Each one is aimed with gloved fingers and swaps from the front with a trim tool in a minute. The moulding count stays at one main piece, because Gen 1\'s squeak-and-rattle argument for few cutlines is worth more at 300,000 km, not less.',
+      how: 'The dash still hangs everything on a beam bolted to both A-pillar bases: the display, the passenger airbag, the by-wire feedback loads, and the HVAC distribution box, which is the Gen 1 core that thermal-5 carries unchanged, because the dash was tooled around it. Gen 1 cast the beam in magnesium at 6.4 kg to save 5 kg high and forward. Gen 5 welds it from steel tube at 11.0 kg for roughly half the part cost: magnesium die casting needs dedicated tooling and a foundry that handles molten magnesium under cover gas, and its per-part price never falls far, while a bent-and-welded steel assembly comes off equipment every tier one already owns. The 38 Hz first-mode target that keeps the screen from shimmering is met either way; steel gets there by gauge instead of geometry. About 30 dollars comes off the invoice and 4.6 kg goes back on the scale, and at urban speeds with regen behind it, mass is the cheapest it ever gets.\n\nThe rest of the savings is process, not material. The TPO skin over PU foam is gone: the molding is grained, self-colored PP with a hard top pad, which deletes a wrapping station and a glue line from the build. Four manual ball vents replace the full-width motorized Coanda slot; Gen 1 flagged in its own fail list that the vane actuator was buried under the top pad, and a ball vent has no actuator to bury. Each one is aimed with gloved fingers and swaps from the front with a trim tool in a minute. The molding count stays at one main piece, because Gen 1\'s squeak-and-rattle argument for few cutlines is worth more at 300,000 km, not less.',
       why: 'The Gen 1 dash was honest luxury: magnesium and foam bought grams and touch. The fleet dash keeps the engineering, beam stiffness, airbag package, and cutline discipline, and deletes the caresses. Nobody who rides in this car twice a day for money strokes the dash pad; everyone notices a rattle. Two dashboards, both correct, for two different invoices.',
       fail: [
         'Unwrapped PP reads cold in a showroom and scuffs show sooner than on a padded skin; the grain hides scratches, it does not delete them.',
@@ -70,14 +70,14 @@ export const SYSTEM = {
       tagline: 'A round urethane rim on the Gen 1 by-wire stub, and a third stalk where a menu used to be.',
       mass: 8,
       specs: [
-        ['Rim', 'Round, 370 mm, moulded urethane'],
+        ['Rim', 'Round, 370 mm, molded urethane'],
         ['Column', 'Gen 1 200 mm by-wire stub, carried'],
         ['Feedback', '8 Nm peak belt drive, carried (interior.js)'],
         ['Rack', 'Gen 1 12 kN belt drive (suspension.js)'],
-        ['Stalks', '3: indicators, wipers, drive select'],
+        ['Stalks', '3: turn signals, wipers, drive select'],
         ['Ratio', 'Variable, 1.7 turns lock to lock'],
       ],
-      how: 'Steering stays by-wire because the preset carries the Gen 1 suspension and its 12 kN steer-by-wire rack (suspension.js), and the redundancy bill, two of everything as that module puts it, was paid and amortized generations ago. Reverting to a mechanical column would mean a new firewall pass-through, a new crash path, and a new rack for a car that is trying to spend less: the cheap rung here is the rung already bought. So the 200 mm column stub, the duplex sensor pack, and the 8 Nm feedback motor carry over untouched from interior.js, and the variable ratio stays because software is the one component with zero marginal cost per car.\n\nWhat changes is everything the hand touches. The rim goes back to a full circle in self-coloured moulded urethane: leather on a shared car is polished to gloss by tens of thousands of hand-hours and cannot be wiped down between shifts, and urethane can. Gen 1 already kept wipers, indicators, lamps, and horn on stalks, the things that must work blind; Gen 5 extends the principle and puts drive selection on a third column stalk, so a driver who has never sat in this car, which is every driver on day one of a shift, finds reverse where seventy years of cars put it. A stalk set bills 8 to 12 dollars. The fleet buys three and considers it the best interface money it spends.',
+      how: 'Steering stays by-wire because the preset carries the Gen 1 suspension and its 12 kN steer-by-wire rack (suspension.js), and the redundancy bill, two of everything as that module puts it, was paid and amortized generations ago. Reverting to a mechanical column would mean a new firewall pass-through, a new crash path, and a new rack for a car that is trying to spend less: the cheap rung here is the rung already bought. So the 200 mm column stub, the duplex sensor pack, and the 8 Nm feedback motor carry over untouched from interior.js, and the variable ratio stays because software is the one component with zero marginal cost per car.\n\nWhat changes is everything the hand touches. The rim goes back to a full circle in self-colored molded urethane: leather on a shared car is polished to gloss by tens of thousands of hand-hours and cannot be wiped down between shifts, and urethane can. Gen 1 already kept wipers, turn signals, lamps, and horn on stalks, the things that must work blind; Gen 5 extends the principle and puts drive selection on a third column stalk, so a driver who has never sat in this car, which is every driver on day one of a shift, finds reverse where seventy years of cars put it. A stalk set bills 8 to 12 dollars. The fleet buys three and considers it the best interface money it spends.',
       why: 'The yoke answered a sight-line question this cabin no longer asks: with the cluster folded into the 9 inch panel, nothing hides behind the rim. A full circle also deletes outright the hand-over-hand punishment interior.js admitted full yokes inflicted, rather than mitigating it with a flattened bottom. The honest accounting: the yoke was solving a real problem, the problem moved, and the cheapest shape is also the shape every hired hand already knows.',
       fail: [
         'A urethane rim is cold on a winter morning and there is no heated-rim option; seat heat is where this car spends its comfort watts.',
@@ -99,8 +99,8 @@ export const SYSTEM = {
         ['Foam', 'Replaceable topper over carried base'],
         ['Mass', '28 kg per seat (Gen 1: 32)'],
       ],
-      how: 'Nothing structural changed because crash loads did not get cheaper: the 12 kg frame and recliner gears, the 4 kN pretensioner path, and the tracks bolted straight to the battery crossmembers all carry over from interior.js. What left is the powertrain of a furniture item: three 25 W motors, their gearboxes, a seat module, a switch bank, and the harness between them, about 4 kg and 150 to 250 dollars a seat at BOM. A slide lever, a height ratchet pump, and a recline wheel replace them for about 40 dollars. In a one-owner car that trade is a real loss; set-once powered comfort is worth its money. In a car whose driver changes twice a day, adjustment is a between-shifts event measured in seconds, and a lever beats a 25 W motor by a factor of five on the clock.\n\nThe wear system is where the fleet money goes instead. Gen 1\'s own fail list contains the fleet timeline: foam loses around 15 percent of its height by 100,000 entry cycles, a figure a shared car reaches in a fraction of the time a commuter car would. So the cushion splits into a carried structural base and a replaceable comfort topper, and every touched surface is a zip-off panel in contract-grade fabric rated past 100,000 Martindale rubs, roughly three times the Gen 1 knit. The yarn is solution-dyed because fade is a depreciation line even under body-5\'s steel roof: the glasshouse is still large, kerbside sun works on the cabin year round, and piece-dyed cloth fades in a couple of summers either way. A soiled driver cushion cover is a 30 dollar part and a four minute depot swap. The rails are the modular half of the name: the passenger seat comes out on four fasteners and one connector, and the same bosses take a cargo shelf, so a Tuesday parcel car and a weekend shuttle are the same car. Heater mats stay, 90 W on the Gen 1 12 V parts bin (hv.js), because 50 W at the body beats hundreds of watts in the air, which is the thermal ledger\'s own arithmetic (thermal.js ran it first).',
-      why: 'A power seat is the correct answer to a question this car is never asked. The BOM of one powered pair funds the entire cover-and-topper system through its first replacement cycle, and durability per dollar is the design target motors score zero on. Stated without pretence: the flagship seat is more comfortable on hour three of a motorway run, and this seat is unchanged on year three of a shift pattern. Both are correct.',
+      how: 'Nothing structural changed because crash loads did not get cheaper: the 12 kg frame and recliner gears, the 4 kN pretensioner path, and the tracks bolted straight to the battery crossmembers all carry over from interior.js. What left is the powertrain of a furniture item: three 25 W motors, their gearboxes, a seat module, a switch bank, and the harness between them, about 4 kg and 150 to 250 dollars a seat at BOM. A slide lever, a height ratchet pump, and a recline wheel replace them for about 40 dollars. In a one-owner car that trade is a real loss; set-once powered comfort is worth its money. In a car whose driver changes twice a day, adjustment is a between-shifts event measured in seconds, and a lever beats a 25 W motor by a factor of five on the clock.\n\nThe wear system is where the fleet money goes instead. Gen 1\'s own fail list contains the fleet timeline: foam loses around 15 percent of its height by 100,000 entry cycles, a figure a shared car reaches in a fraction of the time a commuter car would. So the cushion splits into a carried structural base and a replaceable comfort topper, and every touched surface is a zip-off panel in contract-grade fabric rated past 100,000 Martindale rubs, roughly three times the Gen 1 knit. The yarn is solution-dyed because fade is a depreciation line even under body-5\'s steel roof: the glasshouse is still large, curbside sun works on the cabin year round, and piece-dyed cloth fades in a couple of summers either way. A soiled driver cushion cover is a 30 dollar part and a four minute depot swap. The rails are the modular half of the name: the passenger seat comes out on four fasteners and one connector, and the same bosses take a cargo shelf, so a Tuesday parcel car and a weekend shuttle are the same car. Heater mats stay, 90 W on the Gen 1 12 V parts bin (hv.js), because 50 W at the body beats hundreds of watts in the air, which is the thermal ledger\'s own arithmetic (thermal.js ran it first).',
+      why: 'A power seat is the correct answer to a question this car is never asked. The BOM of one powered pair funds the entire cover-and-topper system through its first replacement cycle, and durability per dollar is the design target motors score zero on. Stated without pretense: the flagship seat is more comfortable on hour three of a highway run, and this seat is unchanged on year three of a shift pattern. Both are correct.',
       fail: [
         'The recline wheel is slower than a motor for large adjustments and drivers who swap between this car and anything powered will notice; the choice was cost, and it is not disguised as preference.',
         'Zips replace sewn seams as the wear point; they are tucked into garages out of the load path, and a dead zip still costs a 30 dollar cover, not a retrim.',
@@ -121,31 +121,31 @@ export const SYSTEM = {
         ['Mass', '33 kg (Gen 1: 36)'],
       ],
       how: 'The platform argument carries over whole: flat footwell, 480 mm cushions across all three places, belts anchored to the body so a folded seat never takes restraint loads. The bench also keeps its tenant: the Gen 1 dual-lane computer sits under this cushion on its coolant loop (autonomy.js), and the cushion base lifts off as the service panel above it, so 450 W of winter-cabin-heating silicon is a five minute reach instead of a trim-out.\n\nThe deletions are the parts passengers wear out without ever using: seatback carpet, map pockets, and the flocked parcel-shelf trim, 3.9 kg and a set of glue stations out of the build. Against that the cover system adds 0.9 kg of zips and heavier cloth, three panels per row, and the honest net is minus three. The middle-seat truth from Gen 1 stands unimproved: the pack raises the floor, tall adults ride slightly knees-up, and a value generation does not spend money lowering it.',
-      why: 'The bench was already the cheap part of the Gen 1 cabin because the battery layout did the work; Gen 5 stops dressing it as furniture. What a 300,000 km interior looks like is decided here and on the floor below: cloth chosen off abrasion charts instead of colour boards, and every surface a child seat or a Friday night can ruin priced as a part, not a repair.',
+      why: 'The bench was already the cheap part of the Gen 1 cabin because the battery layout did the work; Gen 5 stops dressing it as furniture. What a 300,000 km interior looks like is decided here and on the floor below: cloth chosen off abrasion charts instead of color boards, and every surface a child seat or a Friday night can ruin priced as a part, not a repair.',
       fail: [
         'Gen 1 called the foam around the ISOFIX bars sacrificial by design; Gen 5 agrees and prices it: an outboard zip panel plus a foam biscuit, about 40 dollars fitted.',
-        'Fold latches still wear into rattles at exactly the frequency coarse chip roads excite, same mechanism as Gen 1; the fleet answer is a latch check at every tyre rotation, not a better latch.',
-        'A cushion base refitted in a hurry can miss its rear hooks and the first hard stop finds it; the latch handles are colour-flagged so an unseated panel shows from the door.',
+        'Fold latches still wear into rattles at exactly the frequency coarse chip roads excite, same mechanism as Gen 1; the fleet answer is a latch check at every tire rotation, not a better latch.',
+        'A cushion base refitted in a hurry can miss its rear hooks and the first hard stop finds it; the latch handles are color-flagged so an unseated panel shows from the door.',
       ],
       explode: [-0.25, 0.45, 0],
     },
     floor: {
       name: 'Washable floor',
-      tagline: 'Carpet is a liability with a nap: one moulded tray, four drains, and a hose instead of a detailing invoice.',
+      tagline: 'Carpet is a liability with a nap: one molded tray, four drains, and a hose instead of a detailing invoice.',
       mass: 9,
       specs: [
-        ['Tray', 'One-piece moulded TPE, 2.5 mm'],
+        ['Tray', 'One-piece molded TPE, 2.5 mm'],
         ['Drains', '4x 30 mm plugs at the footwell low points'],
         ['Console', 'Deleted: 15 kg out, walk-through cabin'],
         ['Caddy bosses', '4 threaded inserts for a bolt-in console'],
         ['Turnaround', 'Hose and squeegee, minutes not a day'],
       ],
-      how: 'An interior that earns money gets things spilled in it on a schedule, and carpet amortizes none of that: a rideshare detail visit bills 100 to 200 dollars and, worse, costs a day of the car not driving. The tray is one moulded TPE piece from toe board to bench base, lipped at the sills, with four 30 mm drain plugs at the footwell low points. The rear pair sits outboard because the Gen 1 dual-lane computer lives under the bench just behind them (autonomy.js): wash water is denied any path that ends at silicon by geometry, not by care.\n\nThe deleted console is the biggest line item. Gen 1 weighed a walk-through cabin against an armrest and the armrest won its comfort clinic; a fleet re-runs the clinic with different judges. Deleting the console removes 15 kg, the cabin\'s most-soiled surfaces, Gen 1\'s own fail list has the cupholder drains clogging with sugar until coffee reaches the electronics, and the last obstacle to a straight hose line front to back. It also buys kerb-side exit across the cabin, which an urban driver uses dozens of times a week. Four threaded bosses under the tray take a 60 dollar bolt-in caddy for operators who want cupholders back, which is what modular means when it is real.',
+      how: 'An interior that earns money gets things spilled in it on a schedule, and carpet amortizes none of that: a rideshare detail visit bills 100 to 200 dollars and, worse, costs a day of the car not driving. The tray is one molded TPE piece from toe board to bench base, lipped at the sills, with four 30 mm drain plugs at the footwell low points. The rear pair sits outboard because the Gen 1 dual-lane computer lives under the bench just behind them (autonomy.js): wash water is denied any path that ends at silicon by geometry, not by care.\n\nThe deleted console is the biggest line item. Gen 1 weighed a walk-through cabin against an armrest and the armrest won its comfort clinic; a fleet re-runs the clinic with different judges. Deleting the console removes 15 kg, the cabin\'s most-soiled surfaces, Gen 1\'s own fail list has the cupholder drains clogging with sugar until coffee reaches the electronics, and the last obstacle to a straight hose line front to back. It also buys curb-side exit across the cabin, which an urban driver uses dozens of times a week. Four threaded bosses under the tray take a 60 dollar bolt-in caddy for operators who want cupholders back, which is what modular means when it is real.',
       why: 'This is the purest part of the generation: it adds nothing a spec sheet can see and attacks the two numbers the invoice does see, cleaning cost per week and downtime per incident. The flagship carpet is nicer in every showroom way and would not survive a month of this duty. Both cars are correct, which is the whole Gen 5 argument in one floor.',
       fail: [
-        'A washable floor returns road noise that carpet used to absorb; moulded damping ribs claw some back and the cabin is still about 2 dB(A) louder on coarse chip, an honest demotion.',
-        'A drain plug left open after a wash pulls draughts and, at speed, spray; the plugs seat proud so an open one is felt underfoot before it is a problem.',
-        'The caddy bosses are moulded-in blind inserts, not holes, because the one unrecoverable way to ruin a sealed floor is to drill it.',
+        'A washable floor returns road noise that carpet used to absorb; molded damping ribs claw some back and the cabin is still about 2 dB(A) louder on coarse chip, an honest demotion.',
+        'A drain plug left open after a wash pulls drafts and, at speed, spray; the plugs seat proud so an open one is felt underfoot before it is a problem.',
+        'The caddy bosses are molded-in blind inserts, not holes, because the one unrecoverable way to ruin a sealed floor is to drill it.',
       ],
       explode: [0, -0.45, 0],
     },
@@ -155,18 +155,18 @@ export const SYSTEM = {
       mass: 10,
       count: 4,
       specs: [
-        ['Cards', '4, self-coloured PP, grained'],
+        ['Cards', '4, self-colored PP, grained'],
         ['Fasteners', 'Steel quarter-turn, 50+ cycles rated'],
         ['Ancestor clips', 'Single-use press pins, ~1 in 3 lost per pull'],
         ['E-latch release', 'Surface pull, two-stage (body-aero doors)'],
         ['Armrest', 'Replaceable cap on 3 fasteners'],
         ['Top edge', 'y 0.88, under the 0.92 beltline (body-aero)'],
       ],
-      how: 'A door card is the most-removed trim in a car\'s life: regulator, speaker, latch, harness, and the water membrane all live behind it. The industry hangs it on press-in pins that are single-use by design, so every removal snaps a third of them, which is tolerable at one pull a decade and absurd at fleet rates. These cards land on steel quarter-turn fasteners rated past fifty cycles: one tool, ninety seconds, zero broken clips, and the armrest cap, the one surface a hand actually wears through, is its own three-fastener part in the same self-coloured PP.\n\nThe cards also settle a debt the preset owes. The Gen 5 body is body-aero: flush doors, capacitive strips, e-latches, and a legally required mechanical backup release that body-aero carries as a hidden cable and admits nobody uses until the day it matters. In a fleet cabin every passenger is a first-time passenger, so the release surfaces here as a visible two-stage pull on the card face, and the annual function test becomes a ten second tug instead of a trim-off inspection. The cards stop at y 0.88, tucked under the body\'s 0.92 beltline, and everything on them wipes down with the floor.',
+      how: 'A door card is the most-removed trim in a car\'s life: regulator, speaker, latch, harness, and the water membrane all live behind it. The industry hangs it on press-in pins that are single-use by design, so every removal snaps a third of them, which is tolerable at one pull a decade and absurd at fleet rates. These cards land on steel quarter-turn fasteners rated past fifty cycles: one tool, ninety seconds, zero broken clips, and the armrest cap, the one surface a hand actually wears through, is its own three-fastener part in the same self-colored PP.\n\nThe cards also settle a debt the preset owes. The Gen 5 body is body-aero: flush doors, capacitive strips, e-latches, and a legally required mechanical backup release that body-aero carries as a hidden cable and admits nobody uses until the day it matters. In a fleet cabin every passenger is a first-time passenger, so the release surfaces here as a visible two-stage pull on the card face, and the annual function test becomes a ten second tug instead of a trim-off inspection. The cards stop at y 0.88, tucked under the body\'s 0.92 beltline, and everything on them wipes down with the floor.',
       why: 'Interior generations are usually judged by surfaces; this one asks to be judged by fasteners. The cards join this slot\'s ledger so the interior bill finally carries every surface the cabin wears, and the parts that come off weekly belong, in the accounting, to the people who take them off.',
       fail: [
         'A visible release invites curious fingers; the two-stage pull and the latch\'s own speed inhibit make the curiosity harmless, the same promise the hidden cable made.',
-        'Self-coloured PP shows pale stress marks when struck; a heat gun raises them, which is depot knowledge and will never be owner knowledge.',
+        'Self-colored PP shows pale stress marks when struck; a heat gun raises them, which is depot knowledge and will never be owner knowledge.',
         'The butyl-sealed water membrane behind the card is the one non-reusable layer left in the stack, and it is the honest limit of a fifty-cycle door.',
       ],
       explode: [0, 0.1, 0.65],
@@ -199,7 +199,7 @@ export const SYSTEM = {
 export function build() {
   const sys = new THREE.Group();
 
-  /* dash: one main moulding, hard lower, steel tube beam, 4 ball vents */
+  /* dash: one main molding, hard lower, steel tube beam, 4 ball vents */
   const dash = lib.part('dash', [0.55, 0.35, 0]);
   const dashMain = lib.plate(0.30, 1.70, 0.12, 0.06, M.plastic);
   dashMain.position.set(1.12, 0.64, 0);            /* y 0.70..0.82 */
@@ -233,14 +233,14 @@ export function build() {
 
   /* controls: 9in fixed display, HVAC knob panel, two mirror displays */
   const controls = lib.part('controls', [0.6, 0.6, 0]);
-  const centre = new THREE.Group();
+  const center = new THREE.Group();
   const bezel = lib.box(0.02, 0.16, 0.24, M.plastic);
   const face = lib.box(0.006, 0.15, 0.23, M.sensor);
   face.position.x = -0.012;
-  centre.add(bezel, face);
-  centre.position.set(0.985, 0.80, 0);
-  centre.rotation.z = -0.15;                       /* raked, not yawed: shared car */
-  controls.add(centre);
+  center.add(bezel, face);
+  center.position.set(0.985, 0.80, 0);
+  center.rotation.z = -0.15;                       /* raked, not yawed: shared car */
+  controls.add(center);
   /* knob bank rides the aft face of the carried HVAC case, which bulges
      into the cabin to x 0.78 (thermal-5): mounting the controls on the box
      they command keeps them clear of its envelope and visible from the
@@ -293,7 +293,7 @@ export function build() {
   const sbwSensor = lib.box(0.085, 0.075, 0.06, M.sensor);
   sbwSensor.position.z = -0.25;                    /* Gen 1 duplex pack, carried */
   wheel.add(sbwSensor);
-  /* stalks: local +x maps to world +z. Left indicators, right wiper,
+  /* stalks: local +x maps to world +z. Left turn signals, right wiper,
      right-lower drive select. */
   const stalkAt = (lx, ly, tiltZ) => {
     const st = lib.box(0.10, 0.013, 0.015, M.plasticLt);
@@ -301,7 +301,7 @@ export function build() {
     st.rotation.z = tiltZ;
     return st;
   };
-  wheel.add(stalkAt(-0.105, 0.0, -0.12));          /* indicators, driver left */
+  wheel.add(stalkAt(-0.105, 0.0, -0.12));          /* turn signals, driver left */
   wheel.add(stalkAt(0.105, 0.012, 0.12));          /* wipers */
   wheel.add(stalkAt(0.10, -0.05, 0.3));            /* drive select */
   wheel.rotation.y = -Math.PI / 2;

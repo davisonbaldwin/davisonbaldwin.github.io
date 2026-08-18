@@ -2,7 +2,11 @@
 
 import * as THREE from '../vendor/three.module.js';
 import { createPicker } from './pick.js';
-import { bvhStats, bvhReset } from './bvh.js';
+/* lib.closureAt only. The kinematics of a closure live in common.js so that
+   the app and tools/closures.sh sweep the same motion rather than two copies
+   of it; see the note there. */
+import { lib } from './common.js';
+import { bvhStats, bvhReset, bvhRaycast, bvhFor } from './bvh.js';
 
 const BG = new THREE.Color(0x0b0e12);
 const EASE = (t) => 1 - Math.pow(1 - t, 3);
@@ -39,6 +43,29 @@ export function createViewer(canvas, onPick) {
      builds the map in the MAIN render and the mirrored pass is never allowed
      to be the one that builds it. */
   renderer.shadowMap.autoUpdate = false;
+
+  /* ── SECTION VIEWS ──────────────────────────────────────────────────
+     One clipping plane, shared by every part material in the vehicle and by
+     nothing else, which is the whole reason it is LOCAL clipping and not the
+     renderer-wide kind: a global plane would take the floor, the stage ring
+     and the halo with it, and half a floor under a sectioned car reads as a
+     rendering fault rather than as a cut.
+
+     THE ARRAY IS ASSIGNED AT MATERIAL-CLONE TIME AND NEVER SWAPPED. In
+     three.js the NUMBER of clipping planes on a material is a program
+     parameter, not a uniform, so turning the cut on by writing an array onto
+     two thousand materials would ask the driver to build two thousand new
+     programs at once. That is the same storm the ghost warm-up above exists
+     to prevent, and it is avoided the same way: every part material is built
+     knowing about this plane from the start, and the cut is turned OFF by
+     pushing the plane a kilometer out of the model where it clips nothing.
+     Moving a plane is a uniform write and costs a frame, not a compile.
+
+     The cut is a MEASUREMENT, so the plane is kept in the vehicle's own
+     coordinates: x runs along the car, y up from the floor, z across it. */
+  const clipPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), 1e3);
+  const clipPlanes = [clipPlane];
+  renderer.localClippingEnabled = true;
 
   const scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2(0x0a0d11, 0.016);
@@ -108,9 +135,9 @@ export function createViewer(canvas, onPick) {
      pad the car is standing on, so the energy state rides it rather than
      adding a second object to a scene that is drawn twice a frame.
 
-     The ring's own colour is remembered, not restated, so this cannot drift
+     The ring's own color is remembered, not restated, so this cannot drift
      from the value above. Charging pulses it toward the accent amber; the
-     pulse is a COLOUR change on one material with no geometry and no extra
+     pulse is a COLOR change on one material with no geometry and no extra
      draw call, and it stops entirely when the state does, so a parked car
      costs the frame gate nothing. */
   const RING_IDLE = ring.material.color.clone();
@@ -133,12 +160,63 @@ export function createViewer(canvas, onPick) {
      keeps the key light's shadows intact underneath: dark paint adds
      nothing, bright highlights streak across the floor. */
   const refRT = new THREE.WebGLRenderTarget(1280, 720, { type: THREE.HalfFloatType });
+
+  /* THE REFLECTION TARGET DECLARES THE CANVAS'S OWN OUTPUT, AND IT HALVES THE
+     FRAME. Measured at Gen 9, 1280x800: 11.46 ms a frame down to 6.11.
+
+     r160 derives two program parameters from whatever render target is bound,
+     not from the material. Both are in the file as vendored:
+
+       three.module.js:30139  colorSpace = target === null ? outputColorSpace
+                                         : LinearSRGBColorSpace
+       three.module.js:30151  toneMapping stays NoToneMapping unless target === null
+
+     and both are needsProgramChange tests at 30193 and 30262. The canvas pass
+     runs ACESFilmic and sRGB; the mirrored pass ran NoToneMapping and Linear.
+     So every material on the car alternated between two parameter sets twice a
+     frame, needsProgramChange was TRUE on every draw call in both passes, and
+     every one of them re-derived its parameters and went back to the program
+     cache. Nothing recompiled, which is why this never looked like a bug, but
+     the car is 675 materials and the bookkeeping is half the frame.
+
+     The one hook three.js leaves for "this target IS the output surface" is
+     isXRRenderTarget, at 30139 and 30151. Setting it plus an sRGB texture makes
+     both parameters agree with the canvas and needsProgramChange goes false.
+
+     WHAT THE FLAG DOES NOT DO, checked rather than assumed. Its only other use
+     is textures.js:25725, feeding forceLinearTransfer to getInternalFormat, and
+     there it is read at ONE branch: `glType === UNSIGNED_BYTE` picks
+     SRGB8_ALPHA8 against RGBA8. This target is HalfFloatType, so it takes the
+     RGBA16F line above that branch and the flag changes nothing. The 16-bit
+     float precision the reflection is drawn at is intact, and no sRGB texture
+     format is involved: the colorSpace here tells the SHADER what to write, and
+     the GPU stores the same floats it always did.
+
+     THE COST IS THAT THE TARGET NOW HOLDS ENCODED VALUES, and the shader below
+     decodes them. Left alone it made the reflection about six times stronger,
+     because sRGB lifts dim values hard and this reflection is dim by design.
+     Measured as the reflection's own contribution to floor luminance under the
+     car, isolated by setting uStrength to 0 and back: 0.30 before, 1.79 raw,
+     0.31 with the decode and uStrength at 0.60. The base scene with the
+     reflection off is 39.30 in both, to the hundredth.
+
+     UPGRADE HAZARD, and it is the reason for all of this text: three.js marks
+     isXRRenderTarget `// TODO Remove this when possible` at 27078. If the
+     vendored copy is ever replaced, check that line first. The failure would be
+     silent and it would look like a performance regression, not a bug. */
+  refRT.isXRRenderTarget = true;
+  refRT.texture.colorSpace = THREE.SRGBColorSpace;
   const refCam = new THREE.PerspectiveCamera();
   const refMat = new THREE.ShaderMaterial({
     uniforms: {
       tRef: { value: refRT.texture },
       uRes: { value: new THREE.Vector2(1, 1) },
-      uStrength: { value: 0.30 },
+      /* 0.60 rather than the 0.30 this carried while the target was linear.
+         The decode below returns tone-mapped values, which the ACES toe has
+         already pulled down, so the same reflection needs twice the gain to
+         land back where it was. Not a taste change: it is the strength at
+         which the measured contribution reproduces, 0.31 against 0.30. */
+      uStrength: { value: 0.60 },
     },
     transparent: true,
     blending: THREE.AdditiveBlending,
@@ -156,7 +234,14 @@ export function createViewer(canvas, onPick) {
       uniform float uStrength;
       varying vec3 vW;
       void main() {
-        vec3 refl = texture2D(tRef, gl_FragCoord.xy / uRes).rgb;
+        /* The target holds sRGB-encoded values now, see the note beside refRT,
+           so decode before the additive composite. This is a raw ShaderMaterial
+           and three.js appends no colorspace chunk to one, so the conversion
+           has to be here: sampled raw, the reflection came out about six times
+           too strong, because sRGB lifts exactly the dim values this effect is
+           made of. 2.2 rather than the piecewise curve on purpose, the toe of
+           which is below anything this reflection reaches. */
+        vec3 refl = pow(texture2D(tRef, gl_FragCoord.xy / uRes).rgb, vec3(2.2));
         /* fade out with distance so the reflection dissolves into the room
            instead of ending at a hard disc edge */
         float fade = 1.0 - smoothstep(2.5, 10.5, length(vW.xz));
@@ -300,7 +385,7 @@ export function createViewer(canvas, onPick) {
      peak channel delta 226 of 255. What it removes is the ghosted car's own
      reflection, and the focused part's reflection brightens underneath it
      because 993 layers of 7 percent geometry stop overdrawing it. That is a
-     look decision about the focus state, not a free optimisation, so it is
+     look decision about the focus state, not a free optimization, so it is
      implemented, measured and left switched off for Davis to judge with
      viewer.setFrameOpts({ ghostCull: true }) against one page without.
 
@@ -330,27 +415,27 @@ export function createViewer(canvas, onPick) {
   let spinners = [];
 
   /* ── The paint ────────────────────────────────────────────────────────
-     Every body on the ladder is sprayed in the one colour common.js calls
-     M.paint, 0x2a5666, a dark teal, and it has been the only colour any of
+     Every body on the ladder is sprayed in the one color common.js calls
+     M.paint, 0x2a5666, a dark teal, and it has been the only color any of
      these eleven cars has ever worn.
 
-     The set is found by BASE COLOUR rather than by the shell tag, and the
+     The set is found by BASE COLOR rather than by the shell tag, and the
      difference matters in both directions. lib.shell marks what fades under
      x-ray, so it also holds the glass canopy, the carbon floor and the
      splitter, none of which are painted; and hv, hv-4 and hv-11 each build a
      charge-port flap out of M.paint that carries no shell tag at all, which
-     is exactly the part that SHOULD follow the body colour, because that is
+     is exactly the part that SHOULD follow the body color, because that is
      what a charge flap does on a real car. Matching on the material's own
-     base colour asks the only question that is actually being asked here:
-     is this surface sprayed in body colour. Glass, alu, carbon, cast and
+     base color asks the only question that is actually being asked here:
+     is this surface sprayed in body color. Glass, alu, carbon, cast and
      rubber all answer no on their own and need no exception list.
 
      HELD PER PART, not as one flat list, which is what lets a panel wear a
-     colour of its own. Materials are already cloned per part in indexSystem,
+     color of its own. Materials are already cloned per part in indexSystem,
      so the key is free; a part with no entry in paintOverride simply takes
-     the body colour, and the override is consulted again when a variant
+     the body color, and the override is consulted again when a variant
      builds lazily, so a car resprayed an hour ago comes out of the box in
-     the colours it is already wearing rather than in teal.
+     the colors it is already wearing rather than in teal.
 
      The paintable set is small and it is the set a real paint shop would
      mask: on Gen 11 it is body-11's skin, shoulder, tail-cone and doors plus
@@ -358,29 +443,29 @@ export function createViewer(canvas, onPick) {
      and fascias plus hv's flap. Everything else on the car is glass, carbon,
      alu, cast, steel or rubber and answers no on its own. */
   const PAINT_BASE = 0x2a5666;
-  let paintKeys = {};          // "sys/part" -> [materials sprayed in body colour]
+  let paintKeys = {};          // "sys/part" -> [materials sprayed in body color]
   let paintHex = PAINT_BASE;
-  const paintOverride = {};    // "sys/part" -> hex, a panel wearing its own colour
+  const paintOverride = {};    // "sys/part" -> hex, a panel wearing its own color
 
   /* ── THE PEARL COAT ───────────────────────────────────────────────────
-     A finish is TWO colours, which is what automotive paint actually is: a
-     base coat carrying the colour, then a mid coat of mica flake that tints
+     A finish is TWO colors, which is what automotive paint actually is: a
+     base coat carrying the color, then a mid coat of mica flake that tints
      what comes back at a glancing angle, then clear over both. So the pearl
-     is modelled the way it works rather than as a blend. It does two things
+     is modeled the way it works rather than as a blend. It does two things
      at once and both are needed for it to read:
 
-       the BASE COLOUR takes a small amount of the pearl, so the panel is
+       the BASE COLOR takes a small amount of the pearl, so the panel is
        tinted face-on the way a flake load tints a solid coat;
        the SHEEN takes the pearl at full strength, so at a glancing angle
-       across a crease the second colour is what comes back.
+       across a crease the second color is what comes back.
 
      That is why Ember under a Cobalt pearl and Cobalt under an Ember pearl
      are different finishes rather than the same average, and why this is
-     worth more than one mixed colour: the car changes as it turns.
+     worth more than one mixed color: the car changes as it turns.
 
      THE PEARL IS A PROPERTY OF THE CAR AND NOT OF A PANEL, deliberately.
      A mid coat is sprayed over the whole body, so a panel wearing its own
-     base colour still wears the car's pearl over the top, which is what a
+     base color still wears the car's pearl over the top, which is what a
      real two-tone under a pearl clear does.
 
      SHEEN IS SWITCHED ON ONCE AND NEVER OFF, and this is the trap in here.
@@ -393,17 +478,17 @@ export function createViewer(canvas, onPick) {
      "no pearl" costs nothing and changes no program. */
   /* ── SOLID PAINT IS NOT A METAL, and one number decides which ─────────
      M.paint runs metalness 0.88, which is very nearly a mirror: at that
-     value there is almost no diffuse term and the base colour tints the
+     value there is almost no diffuse term and the base color tints the
      REFLECTION instead of providing brightness. In a dark studio that makes
-     a light colour read DARK. Measured on the shipped default, Alpine white
-     under a brass pearl: the base colour is #d8d6d4, genuinely near white,
+     a light color read DARK. Measured on the shipped default, Alpine white
+     under a brass pearl: the base color is #d8d6d4, genuinely near white,
      and the car renders bronze. Drop the same material to 0.25 with nothing
      else touched and it renders white.
 
      Eleven generations never surfaced this because every one of them wore a
      dark saturated teal, where a tinted mirror is exactly what you expect.
 
-     The fix is per COLOUR and not global, because the distinction is real:
+     The fix is per COLOR and not global, because the distinction is real:
      automotive paint is either a solid, which is a dielectric basecoat under
      clear, or a metallic, which is flake. A solid white is not a metal and a
      silver is. So a paint may declare its own metalness and everything that
@@ -420,6 +505,9 @@ export function createViewer(canvas, onPick) {
   const SHEEN_ROUGH = 0.32;    // tight enough to read as flake, not as cloth
   const PEARL_IN_BASE = 0.20;  // how much of the pearl the base coat carries
   const _c = new THREE.Color(), _p = new THREE.Color();
+  /* one scratch vector for api.project, which runs a few times a frame while
+     dimensions are on and has no business allocating in that loop */
+  const _prj = new THREE.Vector3();
 
   /* The two sets the mirrored pass sits out. ghostMeshes is rebuilt by
      paint(), which is event driven; smallMeshes is measured once per system
@@ -439,15 +527,16 @@ export function createViewer(canvas, onPick) {
      and an invalidation path. */
   let ghostMeshes = [];
   let smallMeshes = [];
-  const SMALL_R = 0.10;   // world bounding radius, metres
+  const SMALL_R = 0.10;   // world bounding radius, meters
 
   /* Index one system: capture homes, tag parts, clone materials. Used for
      the startup set and again for variants built lazily on first switch. */
-  function indexSystem(sysId, group, dir) {
+  function indexSystem(sysId, group, dir, def) {
     group.userData.home = group.position.clone();
     const parts = [];
     const meshes = [];
     const keys = new Set();
+    const hinged = [];
     group.traverse((o) => {
       if (o.userData?.part) {
         o.userData.home = o.position.clone();
@@ -458,12 +547,19 @@ export function createViewer(canvas, onPick) {
         const key = sysId + '/' + o.userData.part;
         keys.add(key);
         (partGroups[key] = partGroups[key] || []).push(o);
+        if (o.userData.hinge) hinged.push(o);
       }
       if (o.userData?.spin) spinners.push(o);
       /* the raycast candidate set is built from these, never from root */
       if (o.isMesh || o.isPoints || o.isLine) meshes.push(o);
     });
     systems[sysId] = { group, dir: new THREE.Vector3(...dir), parts, meshes };
+    indexClosures(sysId, def, hinged);
+    /* unconditionally, and NOT from inside indexClosures: a body is often
+       indexed before the module whose camera its door carries, and the
+       module that supplies a carried part declares no closures of its own,
+       so the only moment both sides are known is after any system lands */
+    resolveCarried();
     invalidatePick();
 
     /* clone materials per part so highlight and dim stay per part */
@@ -475,15 +571,42 @@ export function createViewer(canvas, onPick) {
           mlist.push(o);
           if (!map.has(o.material)) {
             const c = o.material.clone();
+            /* every part material knows about the section plane from birth;
+               see the note on clipPlane. Environment materials never do. */
+            c.clippingPlanes = clipPlanes;
             c.userData.base = c.color.clone();
+            /* THE COLOR THIS MATERIAL WAS BORN IN, kept apart from `base`
+               because `base` is what everything downstream writes to: the
+               body paint moves it on every respray and a part tint moves it
+               too, so without a pristine copy "put it back" has nothing to
+               put back. Captured here, before either of them has run. */
+            c.userData.base0 = c.color.clone();
             c.userData.baseEm = c.emissive ? c.emissive.clone() : new THREE.Color(0);
             c.userData.baseEmI = c.emissiveIntensity ?? 1;
             c.userData.baseOp = c.opacity;
             c.userData.baseT = c.transparent;
             /* the comparison is against the CONSTANT, not against paintHex:
                the clone comes straight off M.paint, which nothing mutates,
-               so a car already resprayed still recognises its own paint */
+               so a car already resprayed still recognizes its own paint */
             if (c.userData.base.getHex() === PAINT_BASE) {
+              /* THIS is the moment the key becomes a painted panel, and a
+                 color stored for it before that moment is filed in the wrong
+                 place. setPartPaint routes on paintKeys, which only exists
+                 for a system that has been BUILT, and the app always boots on
+                 Gen 1: so every stored override for body-11, wheels-11, hv-11
+                 and the rest was replayed into partTint on load and the panel
+                 came back in the body color, because two lines below the base
+                 is taken from paintOverride, which never received it. Every
+                 readout kept claiming the color anyway, since getPartPaint and
+                 partPaintCount read partTint too. Migrate it here, before that
+                 read, rather than teaching setPartPaint to guess at a system
+                 that does not exist yet. Also covers the mid-session path,
+                 where setFinishMode replays every stored color through
+                 setPartPaint while a rung is still cold. */
+              if (!(key in paintOverride) && key in partTint) {
+                paintOverride[key] = partTint[key];
+                delete partTint[key];
+              }
               (paintKeys[key] = paintKeys[key] || []).push(c);
               /* pinned for the life of the material: see the pearl note */
               if (c.sheenColor) {
@@ -504,6 +627,10 @@ export function createViewer(canvas, onPick) {
       }
       partMats[key] = list;
       partMeshes[key] = mlist;
+      /* a variant built an hour after somebody tinted one of its parts still
+         arrives wearing that tint, the same way paintOverride is read back
+         two lines above for a panel */
+      if (key in partTint) applyTint(key);
     }
 
     /* Which of this system's meshes are too small to read in a floor
@@ -562,8 +689,28 @@ export function createViewer(canvas, onPick) {
   const NO_WARM = typeof location !== 'undefined' &&
                   /[?&]nowarm=1/.test(location.search || '');
   let warmT = null;
+  /* IT WARMS BY DRAWING, AND renderer.compile() DID NOT WORK.
+
+     Measured on a fresh page, first selected part, one step each:
+     213.5 ms with this warm running and 214.4 ms with ?nowarm=1. Identical.
+     The mechanism above was inert for the whole time it has been shipped,
+     and the comment over it was describing an intent rather than a result.
+
+     Two reasons, and the second is the one a compile() call cannot reach.
+     `renderer.compile(scene, camera)` builds programs for the state the
+     renderer is in when it is called, which is the MAIN pass drawing to the
+     canvas. This viewer draws the scene TWICE, and the second pass renders
+     to `refRT` with a mirrored camera, so its programs are keyed differently
+     and were never built. Whatever compile() did manage to cover, the
+     reflection pass still paid for on the first click.
+
+     Drawing is the only thing guaranteed to compile exactly what a real
+     frame needs, because it IS a real frame. Both passes run in the ghost
+     state, the materials go straight back, and the true picture is drawn
+     again in the same task, so the browser never composites the ghosted
+     one and there is no flash to hide. */
   function warmGhosts() {
-    if (NO_WARM) return;
+    if (NO_WARM || !root) return;
     const touched = [];
     for (const list of Object.values(partMats)) {
       for (const m of list) {
@@ -574,29 +721,64 @@ export function createViewer(canvas, onPick) {
       }
     }
     if (!touched.length) return;
-    renderer.compile(scene, camera);
+    renderReflection();
+    renderer.render(scene, camera);
     for (const [m, t, d] of touched) { m.transparent = t; m.depthWrite = d; }
+    renderReflection();
+    renderer.render(scene, camera);
+    /* the gate still owns the next real frame; nothing above changed state */
+    needFrame();
   }
+
+  /* THE OTHER THING THE FIRST CLICK PAYS FOR, and it is not shaders.
+
+     js/bvh.js builds a tree per geometry on demand and caches it, so the
+     first pointer that reaches the car builds every tree in the ray's cone
+     at once: measured cold on Gen 1, a single probePick costs 25.6 ms
+     against 0.9 ms warm. design/pick-bvh.md records the same shape at 33 ms
+     on Gen 9. That is a real part of what a click feels like and it is
+     avoidable for the same reason the shader storm is: nothing about it has
+     to happen while the user is waiting.
+
+     Only the VISIBLE systems, and that is the whole discipline of it. The
+     trees are the memory this viewer is most careful with, 5.72 MB for a Gen
+     9 car, and building all 49 modules' worth on a page that shows nine of
+     them would spend it on geometry nobody can point at. What this does is
+     move a build the user's first hover was going to pay for anyway. */
+  function warmTrees() {
+    if (NO_WARM) return;
+    for (const rec of Object.values(systems)) {
+      if (!rec.group.visible) continue;
+      for (const o of rec.meshes) bvhFor(o);
+    }
+  }
+  /* Two timers rather than one, because these are two different costs and
+     running them in one task makes a generation switch hitch by the sum.
+     The draw warm goes first: it is the larger of the two and it is what the
+     user is most likely to trigger next by clicking. */
+  let warmT2 = null;
   function scheduleWarm() {
     if (warmT) clearTimeout(warmT);
+    if (warmT2) clearTimeout(warmT2);
     warmT = setTimeout(() => { warmT = null; warmGhosts(); }, 250);
+    warmT2 = setTimeout(() => { warmT2 = null; warmTrees(); }, 420);
   }
 
   function addVehicle(vroot, sysDefs) {
     root = vroot;
     scene.add(root);
-    for (const [sysId, rec] of Object.entries(sysDefs)) indexSystem(sysId, rec.group, rec.dir);
+    for (const [sysId, rec] of Object.entries(sysDefs)) indexSystem(sysId, rec.group, rec.dir, rec.def);
   }
 
   /* Register a variant built after startup, matching current view state. */
-  function addSystem(sysId, group, dir) {
+  function addSystem(sysId, group, dir, def) {
     if (systems[sysId]) return;
     root.add(group);
-    indexSystem(sysId, group, dir);
+    indexSystem(sysId, group, dir, def);
     applyExplode();
     /* applyPaint and not paint: indexSystem sets a new material's base from
        the override map but knows nothing about the pearl, so a variant built
-       after a pearl was chosen would arrive in a solid colour */
+       after a pearl was chosen would arrive in a solid color */
     applyPaint();
   }
 
@@ -616,11 +798,36 @@ export function createViewer(canvas, onPick) {
   };
   applyCam();
 
+  /* REDUCED MOTION REACHES THE SCENE, not only the stylesheet.
+
+     css/style.css has honored prefers-reduced-motion since the beginning, and
+     every plate slide and fade obeys it. The 3D never did: a reader who asks
+     their system for less movement still got a car that turns by itself after
+     seven idle seconds and a camera that swings across the room for a second
+     on every selection, every tour stop and every part they open. That is the
+     motion the preference is actually about.
+
+     So the turntable does not run and a flight becomes a cut. Read once at
+     load and not per frame: this is a system preference, not a control, and
+     the one place it could change under a session is a reader flipping it in
+     the OS, who can reload. */
+  const REDUCED = typeof matchMedia === 'function'
+    && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   function flyTo(pos, tgt, ms = 1050) {
     const toT = tgt.clone();
     const toS = new THREE.Spherical().setFromVector3(pos.clone().sub(toT));
     while (toS.theta - sph.theta > Math.PI) toS.theta -= Math.PI * 2;
     while (toS.theta - sph.theta < -Math.PI) toS.theta += Math.PI * 2;
+    if (REDUCED) {
+      /* arrive, rather than travel. The frame still has to be asked for,
+         because applyCam is what schedules one. */
+      target.copy(toT);
+      sph.copy(toS);
+      fly = null;
+      applyCam();
+      return;
+    }
     fly = { t0: performance.now(), ms, fromT: target.clone(), toT, fromS: sph.clone(), toS };
   }
 
@@ -677,10 +884,78 @@ export function createViewer(canvas, onPick) {
     needHover();
   }
 
+  /* ── HOLD TO NAME, which is the hover a finger never had ───────────────
+
+     On a desktop the pointer names every part it passes over: the tag reads
+     out the part and its system, the part lights, and a click is a decision
+     already made. A phone has none of that, so 455 parts are an unlabeled
+     surface and every tap is a guess that costs a camera flight and a panel.
+
+     So a touch that stays down for 320 ms stops being a tap and becomes a
+     hover: the tag appears above the finger, the part under it lights, and
+     sliding walks from part to part exactly as a mouse does. Lifting selects
+     whatever is named. Sliding off the car names nothing and lifting there
+     selects nothing, which is the cancel.
+
+     THE THRESHOLD IS THE WHOLE DESIGN. Arm it too eagerly and turning the car
+     starts labeling parts; arm it too late and the gesture is unreachable.
+     250 ms is past a tap and short of a decision, and any movement over
+     COARSE_SLOP before it fires means the finger is orbiting and the hold
+     never arms. Once armed, orbit stops for that gesture: a finger cannot do
+     both, and naming is what it asked for. */
+  const COARSE_SLOP = 10;     // px of net travel a finger is allowed while tapping
+  const HOLD_MS = 250;
+  let holdT = 0;              // the timer that arms the hold
+  let naming = false;         // this gesture is naming parts, not orbiting
+
+  const cancelHold = () => { clearTimeout(holdT); holdT = 0; };
+
   canvas.addEventListener('pointerdown', (e) => {
-    canvas.setPointerCapture(e.pointerId);
+    /* Capture keeps a drag alive when the pointer leaves the canvas, and it
+       is worth having, but it is not worth the gesture: setPointerCapture
+       throws NotFoundError whenever the id has no active pointer behind it,
+       and an exception on the first line of this handler means `drag` is
+       never set, so the whole down-move-up path dies silently and a click
+       stops selecting. Found with synthetic events, and the same shape
+       applies to any pointer the browser has already released. */
+    try { canvas.setPointerCapture(e.pointerId); } catch {}
     setPointer(e);
-    drag = { x: e.clientX, y: e.clientY, pan: e.button === 2 || e.shiftKey, moved: 0 };
+    drag = { x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY,
+             pan: e.button === 2 || e.shiftKey, moved: 0,
+             coarse: e.pointerType && e.pointerType !== 'mouse' };
+    /* A SECOND FINGER ENDS THE NAMING GESTURE, and it has to hand the disc
+       back. endDrag and pointercancel both pair `naming = false` with
+       setPickPx(0), and this line did not: a finger held long enough to arm
+       naming, then a second finger landing to pinch, cleared the flag and left
+       the picker at the 20 px fingertip radius for the rest of the session.
+       Nothing put it back, because nothing else ever sets it. The reader was
+       then picking with a disc three times the cursor's, which names a
+       neighboring part on anything dense. Ordered before the reset so the
+       widened radius is only ever undone by the gesture that widened it. */
+    if (naming) picker.setPickPx(0);
+    naming = false;
+    cancelHold();
+    if (drag.coarse) {
+      /* MOTION IS SILENT NOW. A finger that drags to orbit was flashing a
+         label at every part it swept past, because the last hover survives a
+         drag and main.js positions the tag wherever the pointer is. The
+         finger that held still and tapped got nothing. That is backwards, so
+         a coarse gesture drops the hover the moment it begins and only a
+         held finger earns it back. */
+      if (hovered) { hovered = null; canvas.style.cursor = 'grab'; paint(); }
+    }
+    if (drag.coarse && !drag.pan) {
+      holdT = setTimeout(() => {
+        holdT = 0;
+        if (!drag) return;
+        naming = true;
+        /* a fingertip is not a cursor: widen the fallback disc for the life
+           of this gesture so the part under the pad of the finger is the one
+           that gets named */
+        picker.setPickPx(20);
+        needHover();      // paint the tag and light the part under the finger
+      }, HOLD_MS);
+    }
     fly = null;
     idleT = 0;
   });
@@ -689,8 +964,19 @@ export function createViewer(canvas, onPick) {
     setPointer(e);
     if (!drag) return;
     const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
-    drag.moved += Math.abs(dx) + Math.abs(dy);
+    /* NET displacement from where the finger landed, not the accumulated
+       path. design/ux-audit.md finding 4: the old test summed |dx| + |dy|
+       over every move event, so four one-pixel wobbles back to the starting
+       pixel counted as four, and a still finger on a touchscreen that
+       reported eight of them failed a threshold of six without having moved
+       at all. What a tap means is "it ended where it started". */
+    drag.moved = Math.abs(e.clientX - drag.x0) + Math.abs(e.clientY - drag.y0);
     drag.x = e.clientX; drag.y = e.clientY;
+    /* a finger that travels before the hold arms is orbiting, not reading */
+    if (holdT && drag.moved > COARSE_SLOP) cancelHold();
+    /* and once it IS naming, the camera holds still: this gesture is the
+       hover, and a hover that also turns the car is unusable */
+    if (naming) { needHover(); return; }
     if (drag.pan) {
       const right = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0);
       const up = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 1);
@@ -704,14 +990,39 @@ export function createViewer(canvas, onPick) {
   });
 
   const endDrag = (e) => {
-    if (drag && drag.moved < 6 && e.button !== 2) pick();
+    cancelHold();
+    const coarse = e.pointerType && e.pointerType !== 'mouse';
+    /* a hold that named something selects it on lift, wherever the finger
+       ended; otherwise the old rule, a tap that ended where it started */
+    const slop = coarse ? COARSE_SLOP : 6;
+    if (drag && (naming || (drag.moved <= slop && e.button !== 2))) pick();
+    if (naming) picker.setPickPx(0);      // back to the cursor's own radius
+    naming = false;
     drag = null;
     /* a finger leaves no cursor behind, so the hover must not linger */
-    if (e.pointerType && e.pointerType !== 'mouse') clearPointer();
+    if (coarse) clearPointer();
     else needHover();
   };
   canvas.addEventListener('pointerup', endDrag);
-  canvas.addEventListener('pointercancel', () => { drag = null; needHover(); });
+  /* A cancel has to end the same way a lift does. endDrag finishes with
+     `if (coarse) clearPointer(); else needHover()`, and the note there is
+     that a finger leaves no cursor behind so the hover must not linger.
+     This handler called needHover() unconditionally, which re-establishes
+     the hover UNDER A FINGER THAT IS NO LONGER TOUCHING THE SCREEN: after a
+     cancel, viewer.hovered() stayed on the part indefinitely, where after a
+     lift it correctly went null. The browser fires pointercancel whenever it
+     takes the gesture over, which on a phone is the notification shade, a
+     system edge swipe or a scroll takeover, so this is the common case on
+     the one device the gesture exists for. The cancel carries a pointerType
+     like any other pointer event, so it can make the same distinction. */
+  canvas.addEventListener('pointercancel', (e) => {
+    cancelHold();
+    if (naming) picker.setPickPx(0);
+    naming = false;
+    drag = null;
+    if (e.pointerType && e.pointerType !== 'mouse') clearPointer();
+    else needHover();
+  });
   canvas.addEventListener('pointerleave', clearPointer);
   canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
@@ -723,11 +1034,21 @@ export function createViewer(canvas, onPick) {
     applyCam();
   }, { passive: false });
 
-  let pinch = null;
+  /* TWO FINGERS ZOOM AND NOW ALSO PAN. Pan was gated on the right button or
+     the shift key, so a phone could orbit and pinch and never move the car
+     off the middle of the screen: everything inside it had to be read past
+     the same fixed center. The pinch already tracks both touches, so the pan
+     is the midpoint of the same two points, and it costs no new gesture. */
+  let pinch = null, pinchMid = null;
   canvas.addEventListener('touchstart', (e) => {
     if (e.touches.length === 2) {
       pinch = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
                          e.touches[0].clientY - e.touches[1].clientY);
+      pinchMid = { x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+                   y: (e.touches[0].clientY + e.touches[1].clientY) / 2 };
+      cancelHold();
+      if (naming) picker.setPickPx(0);
+      naming = false;
       drag = null;
     }
   }, { passive: true });
@@ -737,10 +1058,22 @@ export function createViewer(canvas, onPick) {
                            e.touches[0].clientY - e.touches[1].clientY);
       sph.radius = Math.max(MIN_R, Math.min(MAX_R, sph.radius * (pinch / d)));
       pinch = d;
+      const mx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+      const my = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+      if (pinchMid) {
+        /* the same arithmetic the right-drag pan uses, off the midpoint of
+           the two fingers rather than off one pointer */
+        const right = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 0);
+        const up = new THREE.Vector3().setFromMatrixColumn(camera.matrix, 1);
+        const k = sph.radius * 0.0016;
+        target.addScaledVector(right, -(mx - pinchMid.x) * k)
+              .addScaledVector(up, (my - pinchMid.y) * k);
+      }
+      pinchMid = { x: mx, y: my };
       applyCam();
     }
   }, { passive: true });
-  canvas.addEventListener('touchend', () => { pinch = null; });
+  canvas.addEventListener('touchend', () => { pinch = null; pinchMid = null; });
 
   /* ── Picking ──────────────────────────────────────────────────────────
      The pipeline lives in js/pick.js, which needs a camera, a scene graph
@@ -757,8 +1090,11 @@ export function createViewer(canvas, onPick) {
   let selected = null;
   let pickMs = 0, pickRuns = 0, hoverUpdateMs = 0;   // read by api.pickDebug
 
-  const hitTest = (budgeted) =>
-    (hasPointer ? picker.hitTest(budgeted, root, pointer, viewW, viewH) : null);
+  /* coreOnly is the visibility question rather than the hover question; see
+     the note on hitTest in js/pick.js. Everything in the product passes it
+     undefined and gets exactly the behavior it always had. */
+  const hitTest = (budgeted, coreOnly) =>
+    (hasPointer ? picker.hitTest(budgeted, root, pointer, viewW, viewH, coreOnly) : null);
 
   function pick() {
     const k = hitTest(false);
@@ -803,13 +1139,13 @@ export function createViewer(canvas, onPick) {
   /* Focused work ghosts everything outside the active system so parts
      buried inside the car stay visible from outside the shell. */
 
-  /* THE HIGHLIGHT IS THE SYSTEM'S OWN COLOUR, and this amber is only the
+  /* THE HIGHLIGHT IS THE SYSTEM'S OWN COLOR, and this amber is only the
      fallback for a system that never declared one.
 
      Every module already carries SYSTEM.color and there are nine slot hues
      in the tree: battery cyan 0x4fc4d8, thermal green 0x58d6a6, autonomy
      blue 0x6ea8ff, suspension violet 0xc0a2ec, drivetrain amber 0xe8a24c,
-     hv orange 0xff8a3c, interior sand 0xd9c08a, wheels a pale grey and the
+     hv orange 0xff8a3c, interior sand 0xd9c08a, wheels a pale gray and the
      bodies a pale blue that lightens up the ladder. Until now the whole
      palette was spent on a 3 px bar beside a name in the rail while the one
      surface that could actually carry it, the car, highlighted everything in
@@ -817,7 +1153,7 @@ export function createViewer(canvas, onPick) {
 
      The two neutral slots stay neutral on purpose and are not boosted. Body
      and wheels are the largest surfaces on the car and the palette makes
-     them near-white and near-grey deliberately; pushing them to a hue would
+     them near-white and near-gray deliberately; pushing them to a hue would
      put the bodies at hue 200 next to battery at 189 and autonomy at 215,
      which is three blues where there are currently three distinguishable
      things. The palette separates on saturation as much as on hue, so it is
@@ -894,7 +1230,7 @@ export function createViewer(canvas, onPick) {
   }
 
   /* Teach the viewer the palette the modules already declare. Called once
-     from main.js with every SYSTEM_DEFS colour, so a variant built lazily
+     from main.js with every SYSTEM_DEFS color, so a variant built lazily
      three generations later is already keyed: the map is by system id and
      does not care whether the geometry exists yet. */
   function setSystemColors(map) {
@@ -909,7 +1245,7 @@ export function createViewer(canvas, onPick) {
 
      Every painted part is re-resolved on every respray rather than only the
      ones that changed. It is a handful of materials on a handful of parts and
-     doing it wholesale means there is ONE rule for what colour a panel is,
+     doing it wholesale means there is ONE rule for what color a panel is,
      `override ?? body`, evaluated in one place. A partial update would need a
      second rule for what happens to a panel whose override was just removed. */
   function applyPaint() {
@@ -944,25 +1280,385 @@ export function createViewer(canvas, onPick) {
   }
 
   /* hex null clears the pearl entirely, which is a different state from a
-     strength of zero: the control has to be able to say "solid colour" */
+     strength of zero: the control has to be able to say "solid color" */
   function setPearl(hex, amt) {
     pearlHex = hex;
     if (amt != null) pearlAmt = Math.max(0, Math.min(1, amt));
     applyPaint();
   }
 
-  /* One panel in its own colour. null puts it back on the body colour, which
-     is a different state from "happens to be painted the same": the panel
-     follows the car again the next time the car is resprayed. */
+  /* ── ONE PART IN ITS OWN COLOR, and there are two ways to be one ───────
+
+     A BODY PANEL takes the override into the body-paint machinery above:
+     `override ?? body`, under the same clearcoat and the same pearl, and
+     null puts it back on the car's color so it follows the next respray.
+     That is what shipped, and it is why only five parts per rung were ever
+     offered the control: the rest of the car is not sprayed in body color.
+
+     ANY OTHER PART is TINTED instead. Its own materials keep everything that
+     makes them what they are, roughness, metalness, sheen, and only the base
+     color moves, so a tinted tire still reads as rubber and a tinted cover
+     still reads as machined. Davis asked for the wheels and the covers and
+     that is the honest way to give them: a wheel is not a body panel and
+     pretending it is would put a clearcoat on a tire.
+
+     The two cannot collide. A part is tinted only where it has no body-paint
+     material at all, so nothing here can take a panel out from under the
+     respray. */
+  const partTint = {};
+
+  /* THE COLOR MAP HAS TO GO WHILE A TINT IS ON, and this is the whole reason
+     white did not look white. three.js multiplies the base color BY the map,
+     and wheels-11's cover face carries a 256 by 256 pattern whose mean
+     brightness is 0.32, so the brightest color that material can reach is a
+     third of the way to white and its own base of 0x191c1f rendered it black.
+     Davis picked white for the Gen 11 covers and got the same near-black
+     spiral back, which is exactly what the arithmetic says he should have.
+
+     So a tinted material sets its map aside and gets it back when the tint is
+     cleared. THE NORMAL MAP STAYS: the pattern is a relief as well as a
+     picture, and keeping it means a white cover still shows its spiral in the
+     shading rather than turning into a blank disc. Swapping a map in or out
+     is a shader recompile, which is why it happens on a click and never on a
+     frame. */
+  function applyTint(key) {
+    const list = partMats[key];
+    if (!list) return;
+    const hex = partTint[key];
+    for (const m of list) {
+      if (hex == null) {
+        m.userData.base.copy(m.userData.base0);
+        if (m.userData.map0 !== undefined) {
+          m.map = m.userData.map0;
+          delete m.userData.map0;
+          m.needsUpdate = true;
+        }
+      } else {
+        m.userData.base.setHex(hex);
+        if (m.map && m.userData.map0 === undefined) {
+          m.userData.map0 = m.map;
+          m.map = null;
+          m.needsUpdate = true;
+        }
+      }
+    }
+  }
+
   function setPartPaint(key, hex, metal) {
-    if (hex == null) { delete paintOverride[key]; delete partMetal[key]; }
+    if (!paintKeys[key]) {
+      /* not a painted panel: tint it, and leave its materials otherwise
+         exactly as common.js built them */
+      if (hex == null) delete partTint[key];
+      else partTint[key] = hex;
+      applyTint(key);
+      paint();
+      return;
+    }
+    /* partTint too, and not only paintOverride. A key can hold BOTH when it
+       was stored while its system was cold, and partPaintCount sums the two,
+       so clearing the color left the entry behind: the panel went back to the
+       body color, the "panels in their own color" list emptied, and the
+       faceplate went on reading "1 panel in its own color" with nothing able
+       to reach it. Re-picking a color then counted the same panel twice. */
+    if (hex == null) { delete paintOverride[key]; delete partMetal[key]; delete partTint[key]; }
     else {
       paintOverride[key] = hex;
-      /* a panel in a solid colour is solid even on a metallic car */
+      /* a panel in a solid color is solid even on a metallic car */
       if (metal == null) delete partMetal[key];
       else partMetal[key] = metal;
     }
     applyPaint();
+  }
+
+  /* ── CLOSURES: the panels that open ───────────────────────────────────
+
+     A closure is a rigid body on a declared path. The module owns the path
+     and the argument for it in SYSTEM.closures, and tags the geometry that
+     travels with lib.hinge. Nothing vehicle-specific lives here: this code
+     owns the arithmetic, the clock, and the measurement.
+
+     THE COMPOSITION, which is the whole of it. A part group's children are
+     authored in world coordinates, so the group's own matrix is the only
+     place a closure transform can live, and explode is already living
+     there. Both are rigid, so their product is rigid and decomposes into
+     the two fields a group has:
+
+       position   = home + explode * partK + translation(M)
+       quaternion = rotation(M)
+
+     with M the closure's transform at the current travel. That is why the
+     closure term is folded INTO applyExplode rather than written from
+     outside it. Measured on the running app before any of this was written:
+     setting the group transform directly and then touching the explode
+     slider erases the position and keeps the quaternion, which leaves a
+     door rotated about the world origin, on the far side of the car, in
+     silence. applyExplode writes p.position for every part every time
+     anything moves, so it has to be the one place that knows.
+
+     THE MIRROR. lib.mirrorZ builds the far side by negating scale.z, so a
+     mirrored group's children arrive already reflected and the closure has
+     to be reflected with them. A rotation does not mirror like a vector
+     does: the correct transform is the conjugate S M S with S = diag(1,1,-1),
+     which carries the pivot and the axis in one operation. Hand-mirroring
+     the fields instead means a sign rule per field, and the axis rule is
+     the counterintuitive one (x and y negate, z does not), so the module
+     authors one hinge on the +z side and never states the other.
+
+     STAGES. spec.motion is a list, because the interesting kinematics are
+     not one rotation. A door that pushes 30 mm outboard and then rises on a
+     canted axis is two stages over two slices of the same travel, and that
+     is the difference between a door that needs most of a meter beside the
+     car and one that needs a few centimeters. Stages compose in declaration
+     order and each runs over its own [start, end] window of t. */
+
+  const closures = {};       // `${sysId}/${id}` -> record
+  let closureMoving = false;
+  let closureSig = 0;        // bumped when the set changes, to drop caches
+
+  function indexClosures(sysId, def, hinged) {
+    if (!hinged || !hinged.length) return;
+    const specs = (def && def.closures) || {};
+    for (const g of hinged) {
+      const h = g.userData.hinge;
+      const spec = specs[h.id];
+      /* a tag with no declaration moves nothing, and says so on the console
+         rather than failing quietly: this is the one way a module can hand
+         the viewer a closure it never described */
+      if (!spec) { console.warn('[closures] ' + sysId + ' tags ' + h.id + ' with no SYSTEM.closures entry'); continue; }
+      const key = sysId + '/' + h.id;
+      const rec = closures[key] || (closures[key] = {
+        key, sysId, id: h.id, spec, groups: [], u: 0, at: 0, to: 0, metrics: null,
+      });
+      rec.groups.push(g);
+      g.userData.closure = key;
+    }
+    closureSig++;
+  }
+
+  /* ── WHAT A CLOSURE CARRIES FROM ANOTHER MODULE ────────────────────────
+
+     A door is not only the panel. A camera bolted through the door skin, a
+     handle, a mirror: on a real car they travel with the leaf, and in this
+     model they live in whatever module owns them. lib.hinge cannot reach
+     them, because a module can only tag its own geometry.
+
+     So a closure may DECLARE what it carries, and the declaration lives with
+     the body because the body is the module that knows where its own
+     aperture is:
+
+       carries: [{ part: 'autonomy-4/cameras', box: [x0,y0,z0, x1,y1,z1] }]
+
+     The box is in +z coordinates and selects by INSTANCE, because a part id
+     is several groups and only some of them are on the door: `cameras` is
+     five instances on autonomy-4 and exactly one a side rides the front
+     door. An instance whose box center falls inside the declared box joins
+     the closure, on the side its own z puts it.
+
+     This is the same shape of claim as SYSTEM.interfaces: one module stating
+     an agreement about a part it does not own, in terms a checker can
+     falsify. tools/closures.sh resolves the same declaration independently
+     and fails if it selects nothing, so a stale box is loud rather than
+     quiet. */
+  const _cbx = new THREE.Box3(), _cctr = new THREE.Vector3();
+  function resolveCarried() {
+    for (const rec of Object.values(closures)) {
+      const list = rec.spec.carries;
+      if (!list || !list.length) continue;
+      for (const c of list) {
+        const groups = partGroups[c.part];
+        if (!groups) continue;          // that module is not on the car
+        for (const g of groups) {
+          if (g.userData.closure) continue;   // already spoken for
+          _cbx.setFromObject(g);
+          if (_cbx.isEmpty()) continue;
+          _cbx.getCenter(_cctr);
+          const b = c.box;
+          const az = Math.abs(_cctr.z);
+          if (_cctr.x < b[0] || _cctr.x > b[3]) continue;
+          if (_cctr.y < b[1] || _cctr.y > b[4]) continue;
+          if (az < b[2] || az > b[5]) continue;
+          g.userData.closure = rec.key;
+          /* the side it is already on decides which way the motion mirrors,
+             and a carried group is NOT a lib.mirrorZ clone so its own z is
+             the only thing that can say */
+          g.userData.hinge = { id: rec.id, m: _cctr.z < 0 };
+          g.userData.home = g.position.clone();
+          rec.groups.push(g);
+        }
+      }
+    }
+  }
+
+  const _cm = new THREE.Matrix4();
+  const _cq = new THREE.Quaternion(), _cp = new THREE.Vector3(), _csc = new THREE.Vector3();
+
+  /* Fold one closure into a part group whose position applyExplode has just
+     written. Called from inside that loop and nowhere else. */
+  function applyClosureTo(p) {
+    const rec = closures[p.userData.closure];
+    if (!rec) return;
+    if (rec.at <= 0) { p.quaternion.set(0, 0, 0, 1); return; }
+    lib.closureAt(rec.spec, rec.at, !!p.userData.hinge.m, _cm);
+    _cm.decompose(_cp, _cq, _csc);
+    p.quaternion.copy(_cq);
+    p.position.add(_cp);
+  }
+
+  /* ── What an open closure costs in space, MEASURED ──────────────────────
+
+     Every number the closures card publishes is swept off the geometry on
+     screen, on the same principle the dimension read already works on:
+     nothing is declared, so nothing can drift from the car it describes.
+
+     The reference is the PARKED half-width, the widest thing on the whole
+     car with everything shut, because a door has to clear whatever is
+     actually there and on several rungs that is a tire rather than the
+     paint. It is captured while the car is closed and held, because
+     measuring it against a car with a door open would compare the door
+     against itself. */
+  let parked = null, parkedSig = -1;
+  function parkedBox() {
+    /* recompute only while the car is shut, and hold the last shut answer
+       otherwise: measuring a door's excursion against a box that already
+       contains the open door would compare the door against itself */
+    const shut = Object.values(closures).every((r) => r.at <= 0 && r.to <= 0);
+    if (shut && parkedSig !== closureSig) {
+      const box = new THREE.Box3();
+      for (const rec of Object.values(systems)) {
+        if (rec.group.visible) box.expandByObject(rec.group);
+      }
+      if (!box.isEmpty()) { parked = box; parkedSig = closureSig; }
+    }
+    return parked;
+  }
+
+  /* The mesh's transform relative to the part group, which is the closure's
+     own authored frame. Walks up rather than inverting the group's world
+     matrix, because that matrix carries the travel we are trying to remove. */
+  function localTo(group, mesh, out) {
+    out.identity();
+    for (let q = mesh; q && q !== group; q = q.parent) out.premultiply(q.matrix);
+    return out;
+  }
+
+  /* Sweep one closure's own vertices over its whole travel. Returns meters
+     of excursion past the PARKED car in each direction a parking space, a
+     low ceiling or the car in front actually constrains.
+
+     Measured on the +z authored side only, and that is not a shortcut: a
+     mirrored group is a clone of the same authored geometry with the mirror
+     in its scale, so both sides give the same |z|, the same height and the
+     same reach. */
+  const CLOSURE_SAMPLES = 48;
+  /* the stall a door has to open in. 2.50 m is the common surface-lot
+     width; the card reports how far into its travel this closure gets
+     before it crosses the line with the car centered in the stall. */
+  const BAY = 2.50;
+  function closureMetrics(key) {
+    const rec = closures[key];
+    if (!rec) return null;
+    if (rec.metrics && rec.metrics.sig === closureSig) return rec.metrics;
+    const pb = parkedBox();
+    if (!pb) return null;
+    const halfW = Math.max(Math.abs(pb.max.z), Math.abs(pb.min.z));
+
+    const xs = [], ys = [], zs = [];
+    const lm = new THREE.Matrix4(), v = new THREE.Vector3();
+    /* one side is enough, and taking both would only duplicate the points */
+    const side = rec.groups.filter((g) => !g.userData.hinge.m);
+    for (const g of (side.length ? side : rec.groups)) {
+      g.traverse((o) => {
+        if (!o.isMesh && !o.isInstancedMesh) return;
+        localTo(g, o, lm);
+        const pos = o.geometry.attributes.position;
+        for (let i = 0; i < pos.count; i++) {
+          v.fromBufferAttribute(pos, i).applyMatrix4(lm);
+          xs.push(v.x); ys.push(v.y); zs.push(v.z);
+        }
+      });
+    }
+    const n = xs.length;
+    if (!n) return null;
+
+    let lateral = 0, overhead = 0, fore = 0, aft = 0, bayAt = null;
+    const m = new THREE.Matrix4();
+    for (let k = 0; k <= CLOSURE_SAMPLES; k++) {
+      const t = k / CLOSURE_SAMPLES;
+      const e = lib.closureAt(rec.spec, t, false, m).elements;
+      let mz = 0, my = -Infinity, mx = -Infinity, nx = Infinity;
+      for (let i = 0; i < n; i++) {
+        const x = xs[i], y = ys[i], z = zs[i];
+        const X = e[0] * x + e[4] * y + e[8] * z + e[12];
+        const Y = e[1] * x + e[5] * y + e[9] * z + e[13];
+        const Z = e[2] * x + e[6] * y + e[10] * z + e[14];
+        if (Math.abs(Z) > mz) mz = Math.abs(Z);
+        if (Y > my) my = Y;
+        if (X > mx) mx = X;
+        if (X < nx) nx = X;
+      }
+      if (mz - halfW > lateral) lateral = mz - halfW;
+      if (my - pb.max.y > overhead) overhead = my - pb.max.y;
+      if (mx - pb.max.x > fore) fore = mx - pb.max.x;
+      if (pb.min.x - nx > aft) aft = pb.min.x - nx;
+      if (bayAt === null && mz > BAY / 2) bayAt = t;
+    }
+    rec.metrics = {
+      sig: closureSig, points: n,
+      lateral: Math.max(0, lateral),
+      overhead: Math.max(0, overhead),
+      fore: Math.max(0, fore),
+      aft: Math.max(0, aft),
+      halfWidth: halfW,
+      /* null means it never leaves the stall at any point in its travel */
+      bayFrac: bayAt,
+      bay: BAY,
+    };
+    return rec.metrics;
+  }
+
+  function closureList() {
+    return Object.values(closures)
+      .filter((r) => systems[r.sysId] && systems[r.sysId].group.visible)
+      .map((r) => ({
+        key: r.key, id: r.id, sys: r.sysId, spec: r.spec,
+        open: r.to > 0, at: r.at,
+      }));
+  }
+
+  function setClosure(key, open) {
+    const rec = closures[key];
+    if (!rec) return false;
+    const to = open ? 1 : 0;
+    if (rec.to === to) return true;
+    rec.to = to;
+    closureMoving = true;
+    return true;
+  }
+
+  function setAllClosures(open) {
+    let any = false;
+    for (const r of closureList()) any = setClosure(r.key, open) || any;
+    return any;
+  }
+
+  /* Advance every closure that is not where it is going. Linear in time and
+     then smoothed, rather than the exponential approach the explode slider
+     uses, because a door has a duration and an exponential never lands on
+     one: a reader watching a hinge wants it to arrive. */
+  function stepClosures(dt) {
+    if (!closureMoving) return false;
+    let moving = false, moved = false;
+    for (const rec of Object.values(closures)) {
+      if (rec.u === rec.to) continue;
+      const per = dt / (rec.spec.seconds || 1.2);
+      rec.u = rec.to > rec.u ? Math.min(rec.to, rec.u + per)
+                             : Math.max(rec.to, rec.u - per);
+      rec.at = rec.u * rec.u * (3 - 2 * rec.u);
+      moved = true;
+      if (rec.u !== rec.to) moving = true;
+    }
+    closureMoving = moving;
+    return moved;
   }
 
   /* ── Staged explode ── */
@@ -990,6 +1686,7 @@ export function createViewer(canvas, onPick) {
       rec.group.position.copy(rec.group.userData.home).addScaledVector(rec.dir, sysK);
       for (const p of rec.parts) {
         p.position.copy(p.userData.home).addScaledVector(p.userData.explode, partK);
+        if (p.userData.closure) applyClosureTo(p);
       }
     }
   }
@@ -999,6 +1696,233 @@ export function createViewer(canvas, onPick) {
   function setXray(on) {
     xray = on;
     paint();   /* paint owns opacity; its x-ray branch fades the shell */
+  }
+
+  /* ── The section ─────────────────────────────────────────────────────
+     Three axes, and they are the three sections an engineering drawing has
+     always had: along the car, across it, and through it in plan.
+
+     `at` is a position in the vehicle's own meters, so the number the UI
+     prints beside the slider is a real station on the car and not a
+     percentage of a bounding box. `flip` chooses which half survives.
+
+     Deliberately ONE plane. Two would let a reader take a quarter out and
+     look into the corner of it, which sounds better than it is: with every
+     material DoubleSide the cut faces are already the inside of a shell, and
+     two of them turn a section into a chewed edge. */
+  const CUT_N = { long: [0, 0, 1], cross: [1, 0, 0], plan: [0, 1, 0] };
+  let cut = null;
+  /* "has the section removed this world point", or null when nothing is cut.
+     Named once and handed to everything that has to agree with what is on
+     screen: the picker, and partVisibility below. It used to be written out
+     inline at the picker's call and nowhere else, so partVisibility went on
+     casting its rays through geometry the shader had already taken away and
+     reported a part as buried by the very panel a reader had just cut open.
+     One expression, so the two answers cannot drift. */
+  const clipTest = () => (cut ? (x, y, z) =>
+    clipPlane.normal.x * x + clipPlane.normal.y * y +
+    clipPlane.normal.z * z + clipPlane.constant < 0 : null);
+  function setCut(spec) {
+    cut = spec && CUT_N[spec.axis] ? { ...spec } : null;
+    if (!cut) {
+      /* parked a kilometer out, where it keeps every point in the model and
+         costs one comparison per fragment. See the note on clipPlane. */
+      clipPlane.normal.set(0, 0, -1);
+      clipPlane.constant = 1e3;
+    } else {
+      const n = CUT_N[cut.axis];
+      /* keep p . axis < at, or the other half when flipped. three.js keeps
+         the side where normal . p + constant is positive. */
+      const s = cut.flip ? 1 : -1;
+      clipPlane.normal.set(n[0] * s, n[1] * s, n[2] * s);
+      clipPlane.constant = -s * cut.at;
+    }
+    /* the picker tests the same plane the shader does, or nothing at all;
+       see the note on clipTest in js/pick.js */
+    picker.setClip(clipTest());
+    /* NOT invalidatePick: the candidate list is a function of what is
+       visible and built, and a section changes neither. Rebuilding it on
+       every input event of a slider drag would walk every mesh on the car
+       for an answer that cannot have changed. */
+    needFrame();
+    needShadow();   /* the shadow map is built from the same geometry */
+    needHover();    /* what is under the pointer changed without it moving */
+  }
+  const getCut = () => (cut ? { ...cut } : null);
+
+  /* The vehicle's own extents, over the systems that are VISIBLE, which is
+     the car in front of you rather than every variant ever built. The slider
+     that drives the section needs a real range, and a range taken off the
+     whole root would include eight hidden generations of bodywork. */
+  function vehicleBox(skipSys) {
+    const box = new THREE.Box3();
+    for (const [id, rec] of Object.entries(systems)) {
+      if (rec.group.visible && id !== skipSys) box.expandByObject(rec.group);
+    }
+    return box.isEmpty() ? null : box;
+  }
+
+  /* One world box PER INSTANCE of a part, which is not the same question as
+     labelFor's single box over all of them. A wheel module's `tires` part is
+     four objects, and four boxes are a wheelbase and two track widths where
+     one box is only an overall width. */
+  function partBoxes(key) {
+    const groups = partGroups[key];
+    if (!groups || !groups.length) return [];
+    return groups.map((g) => new THREE.Box3().setFromObject(g)).filter((b) => !b.isEmpty());
+  }
+
+  /* ── CAN THIS PART BE SEEN FROM HERE, AND IF NOT, WHAT IS OVER IT ───────
+
+     Asked because a control that changes something invisible looks broken.
+     Gen 11 wears full-face covers, and behind them the forged wheels, the
+     discs, the calipers and the park brake are not reachable by any ray from
+     outside the car: a sweep of 3,225 pixels across the whole canvas at the
+     front corner returned `tires` and `covers` and nothing else. So picking a
+     color for the wheel did exactly what it was asked and showed nothing,
+     which is indistinguishable from a bug.
+
+     Sampled off the part's OWN box rather than guessed: the box center, its
+     six face centers and its eight corners, stopping the moment the part
+     answers. Two instances at most, because these are symmetric corner parts
+     and a third probe buys nothing but milliseconds. The first key that comes
+     back from somewhere else is what is standing in front of it, which is
+     what the panel gets to name. */
+  /* ── IS THIS PART ENCLOSED ON THIS CAR ────────────────────────────────
+
+     Asked because a control that changes something invisible looks broken.
+     Davis reported that the Gen 11 wheels do not change color. They do: that
+     rung wears full-face covers, and behind them the forged wheels, the discs
+     and the calipers cannot be reached by any ray from outside, so the swatch
+     worked and the picture never moved.
+
+     WORLD SPACE, NOT SCREEN SPACE, and that is the whole design of this. The
+     first version probed pixels through the picker, which made the answer
+     depend on two things it must not depend on: where the camera happens to
+     be standing, and the fact that selecting a part ghosts everything outside
+     its system, which makes almost any selected part "visible" to a pick. The
+     statement the panel wants to make is about the CAR: is this part buried
+     under something no matter where you stand. So it is eighteen rays cast
+     from outside the vehicle toward each instance, against every mesh that is
+     built and visible, ghosted or not.
+
+     Cheap because of the sphere filter: each ray keeps only the meshes whose
+     world bounding sphere it can actually touch, which is the same narrowing
+     js/pick.js does and the reason this costs milliseconds rather than a
+     full intersectObjects over seven hundred meshes. */
+  const _rc = new THREE.Raycaster();
+  const _rcO = new THREE.Vector3(), _rcD = new THREE.Vector3(), _rcC = new THREE.Vector3();
+  const _rcHits = [], _rcInv = new THREE.Matrix4();
+  /* nine directions, all of them from outside and none from under the floor:
+     four square-on, four three-quarter, one from above */
+  const LOOKS = [[1, 0.25, 0], [-1, 0.25, 0], [0, 0.25, 1], [0, 0.25, -1],
+                 [1, 0.35, 1], [1, 0.35, -1], [-1, 0.35, 1], [-1, 0.35, -1], [0.2, 1, 0.2]];
+
+  function keyOfObject(o) {
+    let p = o, part = null;
+    while (p) {
+      if (p.userData?.env) return null;
+      if (!part && p.userData?.part) part = p.userData.part;
+      if (p.userData?.sys) return part ? p.userData.sys + '/' + part : null;
+      p = p.parent;
+    }
+    return null;
+  }
+
+  function partVisibility(key) {
+    /* a part whose module is not on this car has nothing to say: its groups
+       still exist, hidden, and their boxes are wherever they were left */
+    const rec = systems[key.split('/')[0]];
+    if (!rec || !rec.group.visible) return { known: false };
+    const boxes = partBoxes(key);
+    if (!boxes.length) return { known: false };
+
+    /* every built, visible mesh, INCLUDING the ones a ghost has faded: what
+       is in front of this part does not stop being in front of it because
+       the reader selected something */
+    const meshes = [];
+    for (const rec of Object.values(systems)) {
+      if (!rec.group.visible) continue;
+      for (const o of rec.meshes) if (o.isMesh && o.visible) meshes.push(o);
+    }
+    if (!meshes.length) return { known: false };
+
+    const blockers = {};
+    let known = false;
+    for (const box of boxes.slice(0, 2)) {
+      box.getCenter(_rcC);
+      for (const look of LOOKS) {
+        _rcD.set(look[0], look[1], look[2]).normalize();
+        _rcO.copy(_rcC).addScaledVector(_rcD, 14);
+        _rcD.negate();
+        _rc.set(_rcO, _rcD);
+
+        /* sphere narrowing, the same test js/pick.js opens with */
+        const near = [];
+        for (const o of meshes) {
+          const g = o.isInstancedMesh ? o : o.geometry;
+          if (o.isInstancedMesh) { if (o.boundingSphere === null) o.computeBoundingSphere(); }
+          else if (o.geometry.boundingSphere === null) o.geometry.computeBoundingSphere();
+          const bs = o.isInstancedMesh ? o.boundingSphere : o.geometry.boundingSphere;
+          if (!bs) continue;
+          const e = o.matrixWorld.elements;
+          const cx = e[0] * bs.center.x + e[4] * bs.center.y + e[8] * bs.center.z + e[12] - _rcO.x;
+          const cy = e[1] * bs.center.x + e[5] * bs.center.y + e[9] * bs.center.z + e[13] - _rcO.y;
+          const cz = e[2] * bs.center.x + e[6] * bs.center.y + e[10] * bs.center.z + e[14] - _rcO.z;
+          const sc = Math.sqrt(Math.max(
+            e[0] * e[0] + e[1] * e[1] + e[2] * e[2],
+            e[4] * e[4] + e[5] * e[5] + e[6] * e[6],
+            e[8] * e[8] + e[9] * e[9] + e[10] * e[10]));
+          const rad = bs.radius * sc;
+          const along = cx * _rcD.x + cy * _rcD.y + cz * _rcD.z;
+          if (along < -rad) continue;
+          const perp2 = cx * cx + cy * cy + cz * cz - along * along;
+          if (perp2 > rad * rad) continue;
+          near.push(o);
+        }
+        if (!near.length) continue;
+        /* THE TREE, not intersectObjects. Stock raycasting tests every
+           triangle of every candidate, and the merged body panels are ten
+           thousand triangles each, which took a buried part to 273 ms of
+           panel-open time. js/bvh.js is why picking is cheap and it is why
+           this is: a few box tests per mesh and the triangles in the leaves
+           the ray actually reaches. */
+        let bestD = Infinity, bestKey = null;
+        /* the section counts here for the same reason it counts in the picker:
+           a surface the reader cannot see is not a surface that buries
+           anything. Without it, cutting a body panel away to expose a part
+           left the panel still reporting that part as buried BY THE THING THE
+           READER HAD JUST REMOVED. Into the tree so it can return the nearest
+           SURVIVING hit rather than the nearest one, and over the fallback's
+           hits below because the stock raycaster pushes all of them. */
+        const clip = clipTest();
+        for (const o of near) {
+          _rcHits.length = 0;
+          _rcInv.copy(o.matrixWorld).invert();
+          if (!bvhRaycast(o, _rc, _rcHits, bestD, _rcInv, clip)) o.raycast(_rc, _rcHits);
+          for (const h of _rcHits) {
+            if (h.distance >= bestD) continue;
+            if (clip) {
+              const org = _rc.ray.origin, dir = _rc.ray.direction;
+              if (clip(org.x + dir.x * h.distance,
+                       org.y + dir.y * h.distance,
+                       org.z + dir.z * h.distance)) continue;
+            }
+            const k = keyOfObject(h.object);
+            if (!k) continue;
+            bestD = h.distance; bestKey = k;
+          }
+        }
+        if (bestKey) {
+          known = true;
+          if (bestKey === key) return { known: true, visible: true, blockedBy: null };
+          blockers[bestKey] = (blockers[bestKey] || 0) + 1;
+        }
+      }
+    }
+    if (!known) return { known: false };
+    const worst = Object.entries(blockers).sort((a, b) => b[1] - a[1])[0];
+    return { known: true, visible: false, blockedBy: worst ? worst[0] : null };
   }
 
   /* ── Drive mode: spin tagged groups ── */
@@ -1046,13 +1970,37 @@ export function createViewer(canvas, onPick) {
   const api = {
     addVehicle, select, focusSystem, setExplode, setXray, setDrive, setAutoRotate,
     setSystemColors, setPaint, setPartPaint, setPearl, setFocusSystems, setCharging,
+    setCut, getCut, vehicleBox, partBoxes, partVisibility,
+    /* the closures a reader can open on the car in front of them, what they
+       cost in space, and the switch. parkedBox is the car with everything
+       shut, which is the only honest reference for a swing measurement and
+       the figure the dimension read wants too. */
+    closureList, setClosure, setAllClosures, closureMetrics, parkedBox,
+    closureOpenCount: () => closureList().filter((c) => c.open).length,
     getPaint: () => paintHex,
     getPearl: () => ({ hex: pearlHex, amt: pearlAmt }),
     /* the UI asks these two before it offers a finish, so a part that is not
-       sprayed in body colour never gets a swatch row it cannot honour */
+       sprayed in body color never gets a swatch row it cannot honor */
     isPainted: (key) => !!paintKeys[key],
-    getPartPaint: (key) => (key in paintOverride ? paintOverride[key] : null),
-    partPaintCount: () => Object.keys(paintOverride).length,
+    /* every part with a material of its own can take a tint, which is every
+       part; the UI asks so it can label the control for what it does */
+    isTintable: (key) => !!(partMats[key] && partMats[key].length),
+    /* the color this part is wearing right now, for a control that has to
+       show it: the override if it has one, the body color if it is a painted
+       panel, otherwise the color its own largest material was born in */
+    partColor: (key) => {
+      if (key in paintOverride) return paintOverride[key];
+      if (key in partTint) return partTint[key];
+      if (paintKeys[key]) return paintHex;
+      const list = partMats[key];
+      if (!list || !list.length) return null;
+      const m = list.reduce((a, b) =>
+        ((b.userData.base0 || b.color).getHex() > 0 && !a ? b : a), null) || list[0];
+      return (m.userData.base0 || m.color).getHex();
+    },
+    getPartPaint: (key) => (key in paintOverride ? paintOverride[key]
+                            : (key in partTint ? partTint[key] : null)),
+    partPaintCount: () => Object.keys(paintOverride).length + Object.keys(partTint).length,
     setSystemVisible: (sysId, on) => {
       const rec = systems[sysId];
       if (rec && rec.group.visible !== on) {
@@ -1060,11 +2008,50 @@ export function createViewer(canvas, onPick) {
         invalidatePick();
         needShadow();   // a whole system appeared or went away
         needHover();
+        /* THE CAR IS A DIFFERENT CAR NOW, so every closure measurement taken
+           against it is stale. The parked half-width is the one that matters:
+           it runs from 1.917 m on Gen 1 to 1.204 m on Gen 11, and a clearance
+           measured against the wrong one would be wrong by the difference.
+           A system going away also takes its own closures off the band, and
+           shutting them first stops a door coming back open on a body that
+           was swapped out from under it. */
+        if (!on) {
+          /* SHUT ITS CLOSURES, AND THEN PUT THE PARTS BACK, which is the half
+             this used to miss and the reason a generation switch could leave
+             a door in orbit.
+
+             A closure contributes BOTH a rotation and a translation: the
+             quaternion is the hinge and the position carries the pivot
+             offset, `home + explode + (pivot - R*pivot)`. Zeroing the state
+             and the quaternion here left the position exactly where the open
+             door had put it, and nothing rewrote it: stepClosures only runs
+             while something is traveling, and this has just made everything
+             settled, so it returns immediately and applyExplode never fires.
+             Switch away from a rung mid-animation and back, and its panels
+             come back translated but not rotated, which is a door sitting a
+             quarter of a meter off the car. Measured on Gen 1: door-front
+             returns at position (-0.175, 0, 0.257) with an identity
+             quaternion.
+
+             applyExplode is the one function that owns where a part sits, so
+             the fix is to let it do that rather than to patch a field here. */
+          let shut = false;
+          for (const r of Object.values(closures)) {
+            if (r.sysId !== sysId) continue;
+            if (r.to !== 0 || r.u !== 0 || r.at !== 0) shut = true;
+            r.to = 0; r.u = 0; r.at = 0;
+          }
+          if (shut) applyExplode();
+        }
+        closureSig++;
       }
     },
     addSystem,
     hasSystem: (sysId) => !!systems[sysId],
     flyHome: () => select(null),
+    /* where the camera is standing, which is what decides the half a section
+       takes out; a copy, so a caller cannot move the camera by writing to it */
+    cameraPos: () => ({ x: camera.position.x, y: camera.position.y, z: camera.position.z }),
     getSelected: () => selected,
     hovered: () => hovered,
     debug: () => ({ drive, spinnerCount: spinners.length, explode, focusSys, selected }),
@@ -1078,7 +2065,7 @@ export function createViewer(canvas, onPick) {
        pointer is standing and oldBudgetAffordable is what the retired
        triangle budget said about the same pointer.
        benchPick runs hitTest n times for a timing that is not lost in the
-       0.1 ms clock quantisation of a single call. */
+       0.1 ms clock quantization of a single call. */
     pickDebug: () => ({ pickMs, pickRuns, hoverUpdateMs, ...picker.debug(),
                         bvh: bvhStats(), bvhOn: picker.getBVH(),
                         pending: hoverPending }),
@@ -1114,19 +2101,33 @@ export function createViewer(canvas, onPick) {
                          ghosts: ghostMeshes.length, small: smallMeshes.length }),
     /* Probe an arbitrary CSS pixel without disturbing the pointer or
        selecting anything, so pick reach can be swept over a part. */
-    probePick: (cx, cy, budgeted = true) => {
+    probePick: (cx, cy, budgeted = true, coreOnly = false) => {
       const r = canvas.getBoundingClientRect();
       if (!r.width || !r.height) return null;
       const keepX = pointer.x, keepY = pointer.y, keepHas = hasPointer;
       pointer.set((cx / r.width) * 2 - 1, -(cy / r.height) * 2 + 1);
       hasPointer = true;
-      const k = hitTest(budgeted);
+      const k = hitTest(budgeted, coreOnly);
       pointer.set(keepX, keepY);
       hasPointer = keepHas;
       return k;
     },
     step: (dt = 0.016) => update(dt),
     view: (pos, tgt, ms = 900) => flyTo(new THREE.Vector3(...pos), new THREE.Vector3(...tgt), ms),
+    /* An arbitrary world point in CSS pixels, for anything that has to draw
+       ON the scene without being in it. labelFor below answers the same
+       question for a part; this one takes coordinates, which is what a
+       dimension line between two points nobody has modeled needs.
+       `behind` rather than null: a dimension with one end behind the camera
+       still has a visible end, and the caller decides what to do about it. */
+    /* viewW and viewH, never getBoundingClientRect: this runs several times
+       per frame inside main.js's tag loop, and that loop carries a long note
+       about what a layout read costs there. resize() already keeps the CSS
+       size of the canvas, which is the same number. */
+    project: (x, y, z) => {
+      const v = _prj.set(x, y, z).project(camera);
+      return { x: (v.x * 0.5 + 0.5) * viewW, y: (-v.y * 0.5 + 0.5) * viewH, behind: v.z > 1 };
+    },
     labelFor: (key) => {
       const groups = partGroups[key];
       if (!groups?.length) return null;
@@ -1147,6 +2148,7 @@ export function createViewer(canvas, onPick) {
       /* a pending warm holds the scene and the renderer, so a disposed viewer
          that left one armed would compile against geometry nobody is showing */
       if (warmT) { clearTimeout(warmT); warmT = null; }
+      if (warmT2) { clearTimeout(warmT2); warmT2 = null; }
     },
   };
 
@@ -1157,14 +2159,32 @@ export function createViewer(canvas, onPick) {
     update(dt);
   }
 
-  /* One simulation + render step. Kept callable (api.step) so behaviour can
+  /* One simulation + render step. Kept callable (api.step) so behavior can
      be tested deterministically even when the tab is hidden and RAF pauses. */
   function update(dt) {
     const now = performance.now();
     resize();
 
     if (fly) {
-      const k = Math.min(1, (now - fly.t0) / fly.ms);
+      /* A duration of zero means ARRIVE, and it has to be said here rather
+         than left to the arithmetic. (now - t0) / 0 is Infinity once the
+         clock has moved, which lands on 1 and is harmless, but it is 0/0
+         when it has NOT moved, and performance.now() is coarsened enough
+         that a view() and the update() after it routinely read the same
+         value. Math.min(1, NaN) is NaN, lerping by NaN puts NaN in the
+         camera, and `k >= 1` is FALSE for NaN, so the fly is never cleared
+         and every frame after it recomputes the same NaN from the same
+         spec. One call therefore killed the renderer for the life of the
+         page: the reflection pass throws on the NaN matrices, and there is
+         no way back, because flyHome and a fresh view both interpolate FROM
+         the poisoned spherical.
+
+         Nothing in the product passes 0 (the tour uses 1200, home 900, the
+         default is 1050), so no reader could reach it. view() is on
+         window.__ev precisely so a verification pass can drive the camera,
+         and 0 is the obvious way to ask for no animation, so the hazard sat
+         on the surface this project tests itself through. */
+      const k = fly.ms > 0 ? Math.min(1, (now - fly.t0) / fly.ms) : 1;
       const e = EASE(k);
       target.lerpVectors(fly.fromT, fly.toT, e);
       sph.theta = fly.fromS.theta + (fly.toS.theta - fly.fromS.theta) * e;
@@ -1195,6 +2215,11 @@ export function createViewer(canvas, onPick) {
       needFrame();
     }
 
+    /* a closure mid-travel moves geometry, so it goes through applyExplode
+       for the same reason the slider does: that is the function that owns
+       where a part sits, and it already asks for the shadow and the hover */
+    if (stepClosures(dt)) { applyExplode(); needFrame(); }
+
     if (drive) {
       for (const g of spinners) {
         const sp = g.userData.spin;
@@ -1207,7 +2232,7 @@ export function createViewer(canvas, onPick) {
 
     /* gentle turntable once the view has been idle a while */
     idleT += dt;
-    if (autoRotate && idleT > 7 && !drag && !fly && !selected && !focusSys) {
+    if (autoRotate && !REDUCED && idleT > 7 && !drag && !fly && !selected && !focusSys) {
       sph.theta += dt * 0.055;
       applyCam();
     }
@@ -1215,7 +2240,10 @@ export function createViewer(canvas, onPick) {
     /* Hover only when something that could change it has moved. Nothing
        decrements while a drag is in flight, so the recompute a drag earned
        is still owed when the button comes up. */
-    if (!drag && hoverPending > 0) {
+    /* A NAMING HOLD IS A HOVER, so it recomputes while the finger is down.
+       Everything else waits for the drag to end, which is what keeps a spin
+       of the car from raycasting on every move event. */
+    if ((!drag || naming) && hoverPending > 0) {
       hoverPending--;
       const t0 = performance.now();
       const h = hitTest(true);

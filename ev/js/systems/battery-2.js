@@ -62,7 +62,7 @@ export const SYSTEM = {
       count: 12,
       specs: [
         ['Preload', '2 MPa across each cell face'],
-        ['Clamp force', '68 kN per stack, ~7 tonnes'],
+        ['Clamp force', '68 kN per stack, ~7 metric tons'],
         ['Tie rods', '4x M12, 42CrMo4, 17 kN each'],
         ['Compliance', 'Disc-spring stacks, force held within ±10%'],
         ['Breathing absorbed', '~30 mm per stack, empty to full'],
@@ -82,7 +82,7 @@ export const SYSTEM = {
       mass: 9,
       count: 2,
       specs: [
-        ['Construction', 'Brazed two-sheet aluminium, vertical, at the pack edges'],
+        ['Construction', 'Brazed two-sheet aluminum, vertical, at the pack edges'],
         ['Continuous capacity', '4 kW (Gen 1: ~10 kW)'],
         ['Flow rate', '9 L/min (Gen 1: 28)'],
         ['Cell window', '15 to 75 °C (Gen 1: 10 to 45)'],
@@ -271,7 +271,7 @@ export function build() {
     sys.add(cool);
   }
 
-  /* busbars: centre spine, row take-offs, stack jumpers, HV leads rearward */
+  /* busbars: center spine, row take-offs, stack jumpers, HV leads rearward */
   const bus = lib.part('busbars', [0, 0.55, 0]);
   const spine = lib.box(2.10, 0.008, 0.036, M.busbar);
   spine.position.set(0.05, 0.294, 0);

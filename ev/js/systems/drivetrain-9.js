@@ -5,7 +5,7 @@
    the vertex, because Gen 9 does not ask the drivetrain for anything new.
    It asks it to fit a car whose front track moved.
 
-   WHY IT EXISTS. wheels-9 brings the front wheel centres in from |z| 0.81
+   WHY IT EXISTS. wheels-9 brings the front wheel centers in from |z| 0.81
    to 0.74 and puts the front hub face inboard plane on |z| 0.6925. Swept
    off its BUILT mesh rather than read out of its comments, that plane is
    the inboard face of a hub face disc of radius 0.074 about the front
@@ -43,11 +43,11 @@
                inboard joint face seats 2.50 mm inside its outboard end.
                Nothing else in this module may move: the differential, the
                dog collars, both gear cases and every housing are fixed.
-   Half-span (0.6925 - 0.2775) / 2 = 0.2075. Pair centre (0.6925 + 0.2775)
+   Half-span (0.6925 - 0.2775) / 2 = 0.2075. Pair center (0.6925 + 0.2775)
    / 2 = 0.4850, against drivetrain-7's 0.5200. With a 55 mm joint the
-   joint centre offset is 0.2075 - 0.0275 = 0.1800, against 0.2150, so each
-   joint centre comes in 35.0 mm and the bar goes from 0.400 m to 0.330.
-   Boot centres follow their joints, 0.155 to 0.120. Every overlap in the
+   joint center offset is 0.2075 - 0.0275 = 0.1800, against 0.2150, so each
+   joint center comes in 35.0 mm and the bar goes from 0.400 m to 0.330.
+   Boot centers follow their joints, 0.155 to 0.120. Every overlap in the
    drawing is preserved: the bar still runs 12.5 mm into each joint bore,
    each boot still laps its joint by 2.5 mm, and the bar's inboard end
    stays at |z| 0.3200 exactly where drivetrain-7 left it.
@@ -86,17 +86,17 @@
    built meshes of suspension-4 and suspension-9, not their prose:
      suspension-4  lower pivot (z 0.450, y 0.250), lower ball joint
                    (0.710, 0.235); upper pivot (0.380, 0.550), upper ball
-                   joint (0.700, 0.565); wheel centre |z| 0.810
+                   joint (0.700, 0.565); wheel center |z| 0.810
      suspension-9  lower pivot (0.380, 0.250), lower ball joint (0.640,
                    0.235); upper pivot (0.340, 0.550), upper ball joint
-                   (0.630, 0.565); wheel centre |z| 0.740
+                   (0.630, 0.565); wheel center |z| 0.740
    Arm lengths measure 0.2604 m lower on both, 0.3204 upper on
    suspension-4 and 0.2904 on suspension-9, and the knuckle is 0.3302 on
    both, which is suspension-9's congruence claim confirmed from geometry
    with the one exception it declares. Travel is the Gen 1 figure both
    carry, 95 mm bump and 85 mm droop at the wheel, from the coilover row
-   in suspension.js. Joint centre to joint centre the shaft goes 0.4300 m
-   to 0.3600, down 16.28 percent, and the inboard joint centre does not
+   in suspension.js. Joint center to joint center the shaft goes 0.4300 m
+   to 0.3600, down 16.28 percent, and the inboard joint center does not
    move at all: |z| 0.3050 on both.
 
    Result, same solver, both rungs:
@@ -109,7 +109,7 @@
    So the shaft articulates about a fifth harder for the same road, and
    the one thing that gets easier is the plunge, because a shorter shaft
    recovers more length from the vertical component than it loses to the
-   wheel centre's inboard arc. Both are stated on the front-unit panel.
+   wheel center's inboard arc. Both are stated on the front-unit panel.
 
    MASS, and it is small. The only steel deleted is 70.0 mm off each of
    two bars. The DRAWN bar is a 44 mm solid section and deleting it at
@@ -121,7 +121,7 @@
    differential each shaft carries 714 Nm, and a 22 mm solid bar holds
    that at 342 MPa of torsional shear, which is 1.194 kg over 400 mm and
    leaves 1.40 kg for each of the four joints with its boot and grease.
-   Seventy millimetres off two 22 mm bars is 0.418 kg. Booked at 0.42 kg:
+   Seventy millimeters off two 22 mm bars is 0.418 kg. Booked at 0.42 kg:
    halfshafts 8 to 7.58, front unit 38 to 37.58, module 118 to 117.58.
    The system chip still reads 118 kg because it rounds, and that is the
    honest summary of the mass case for this generation.
@@ -238,8 +238,8 @@
    measure; this file states 4.0 because that is what the deepest partner
    vertex inside this module's built solid actually is. Its landing points
    are confirmed rather than assumed: the front tunnel run is a tube of
-   radius 0.0140 whose centreline ends at (1.30, 0.402, 0.015), and the
-   two rear corner runs are tubes of radius 0.0070 whose centrelines end
+   radius 0.0140 whose centerline ends at (1.30, 0.402, 0.015), and the
+   two rear corner runs are tubes of radius 0.0070 whose centerlines end
    at (-1.36, 0.425, +/-0.625). This module lands on all three exactly.
 
    battery-7 stays clear. ZERO of its points fall inside the 235 mm
@@ -324,7 +324,7 @@
         channel open at that station is the gap between them, and see
         finding 13 below for what its width actually is on the built mesh.
 
-   AND THREE THE REVIEW SWEEP FOUND AFTERWARDS, because the first sweep
+   AND THREE THE REVIEW SWEEP FOUND AFTERWARD, because the first sweep
    scored a face on whether ANY ray escaped the whole module and the second
    scored it twice, once against the module and once against the mesh's own
    PART. The second question is the one that matters here: explode separates
@@ -343,7 +343,7 @@
         flange, up to 6.93 mm inside it, and that flange is the part of this
         housing that turns. Four control points could not hold an arc of up
         to 158 degrees so the spline chorded across the hub face to
-        r 0.0260, and the routing always stepped anticlockwise so the
+        r 0.0260, and the routing always stepped counterclockwise so the
         5.75 rad probe took the 277 degree way round. Short way, nine
         stations, and the tube surface holds r 0.0618..0.0690.
     10. The outboard HV loop shroud took 1.8 mm out of wheels-9's park
@@ -362,7 +362,7 @@
         pocket whose lid is 40 mm deep and, being a cbox, presents only
         z -0.063..-0.033 as flat. Four blades stood 11.06 mm inside the
         front unit's disc housing, which starts at z -0.022, and four more
-        floated with their nearest neighbour 3.73 mm away and nothing under
+        floated with their nearest neighbor 3.73 mm away and nothing under
         them. Six blades at the same 5.6 mm pitch fit the face that exists.
     12. The corner inverter's new fin bank ran the full 88 mm of its lid and
         went straight through the ceramic DC link that already stood on it,
@@ -379,7 +379,7 @@
         relief to match. This is the boot clamp lesson from finding 5 a
         second time: nest the polygons, not the nominal radii.
     14. The two forward mounting ears on the vectoring controller stood only
-        8 mm proud of a casting they were centred 4 mm inside, so 85 percent
+        8 mm proud of a casting they were centered 4 mm inside, so 85 percent
         of each head was buried: 4 percent exposed against 67 for the aft
         pair. They could not move forward, because P.penthouse starts at
         x -1.58 and this box is drawn to clear it, so all four ears moved to
@@ -415,7 +415,7 @@
    at 0.6500, and the part's whole crossing of the plate band holds
    r <= 0.14706 against a 0.150 bore. What a triangle-triangle sweep finds
    is 24 pairs where the tube's FACET between two clean vertices dips about
-   0.3 mm under the lip, which is a tessellation artefact of a 10 mm bar
+   0.3 mm under the lip, which is a tessellation artifact of a 10 mm bar
    turning radially at |z| 0.6560 rather than a part in the wrong place.
    Swept at 10, 14, 18, 24 and 32 tubular segments the lowest vertex moves
    between 0.65008 and 0.65024 and never crosses, so no segment count fixes
@@ -443,7 +443,7 @@ export const SYSTEM = {
     'front-halfshaft-outboard': {
       kind: 'face', axis: 'z', at: 0.6925, tol: 0.002,
       part: 'front-unit', mirrored: true, extent: 'max',
-      note: 'outboard CV joint face. Shaft pair centre |z| 0.485, joint centre 0.180 out, joint 55 mm long, so the face lands on 0.6925.',
+      note: 'outboard CV joint face. Shaft pair center |z| 0.485, joint center 0.180 out, joint 55 mm long, so the face lands on 0.6925.',
     },
   },
   parts: {
@@ -460,7 +460,7 @@ export const SYSTEM = {
         ['Core loss at 100 km/h', 'About 24 W per ring (Gen 5 ring: about 145)'],
         ['Maturity', 'Machine production practice; 0.10 mm 6.5% Si stack pilot line'],
       ],
-      how: 'Start with what did not change. The annulus is still a binding contract, r 0.155 to 0.235 m, and drivetrain-3 already computed that 900 Nm out of a 76 mm gap at 195 mm radius is roughly 50 kPa of magnetic shear stress, the ragged top of what liquid-cooled permanent-magnet machines reach. Shear stress does not care how much money is in the room. So this ring does not try to beat it: it holds 48 kPa and simply gets shorter. Active length falls from 76 to 60 mm and peak torque falls in exact proportion, 900 Nm to 710. That is 21% less iron to magnetise on every revolution the car ever makes, in exchange for torque the car will use for a few seconds a week. Then the pole count goes from 20 to 32 in 36 slots. More poles means a higher electrical frequency at the same road speed, 208 Hz at 100 km/h against drivetrain-6\'s 130 (780 wheel rpm on a 0.34 m dynamic rolling radius, a touch above Gen 3\'s 0.335 because a low-Crr casing at higher inflation deflects less), which sounds like the wrong direction until you follow the flux: flux per pole falls with pole count, so the yoke that carries it thins from 20 mm to 7, and the loss it burns goes as frequency times flux density squared. The frequency term rises by 1.6 and the squared-flux term falls by more than that, and 6 kg of yoke iron leaves the car with it.\n\nThe third change is the material, and it is the largest. Gen 3 chose soft magnetic composite and gave an honest reason: at 297 Hz maximum, "iron loss stops mattering", which was true when the comparison was a geared machine spinning at 1.7 kHz. It stopped being true when the road load did. This car cruises on about 4.7 kW at 100 km/h, so a hundred watts of core loss is not a rounding error, it is 2% of everything the wheels are asked to do. The stack is now 0.10 mm laminations of 6.5% silicon steel, whose specific loss at these frequencies is roughly a quarter of SMC\'s, and the three changes compound: about 24 W per ring at 100 km/h where the drivetrain-6 ring, computed from its own geometry and its own material, burns about 145. Magnetic slot wedges close the slot openings so the rotor sees a smoother field and stops paying eddy loss for the stator\'s teeth. Windings stay vacuum-potted and the corner stays dry-air purged, both carried from drivetrain-6 without change, because both were right.',
+      how: 'Start with what did not change. The annulus is still a binding contract, r 0.155 to 0.235 m, and drivetrain-3 already computed that 900 Nm out of a 76 mm gap at 195 mm radius is roughly 50 kPa of magnetic shear stress, the ragged top of what liquid-cooled permanent-magnet machines reach. Shear stress does not care how much money is in the room. So this ring does not try to beat it: it holds 48 kPa and simply gets shorter. Active length falls from 76 to 60 mm and peak torque falls in exact proportion, 900 Nm to 710. That is 21% less iron to magnetize on every revolution the car ever makes, in exchange for torque the car will use for a few seconds a week. Then the pole count goes from 20 to 32 in 36 slots. More poles means a higher electrical frequency at the same road speed, 208 Hz at 100 km/h against drivetrain-6\'s 130 (780 wheel rpm on a 0.34 m dynamic rolling radius, a touch above Gen 3\'s 0.335 because a low-Crr casing at higher inflation deflects less), which sounds like the wrong direction until you follow the flux: flux per pole falls with pole count, so the yoke that carries it thins from 20 mm to 7, and the loss it burns goes as frequency times flux density squared. The frequency term rises by 1.6 and the squared-flux term falls by more than that, and 6 kg of yoke iron leaves the car with it.\n\nThe third change is the material, and it is the largest. Gen 3 chose soft magnetic composite and gave an honest reason: at 297 Hz maximum, "iron loss stops mattering", which was true when the comparison was a geared machine spinning at 1.7 kHz. It stopped being true when the road load did. This car cruises on about 4.7 kW at 100 km/h, so a hundred watts of core loss is not a rounding error, it is 2% of everything the wheels are asked to do. The stack is now 0.10 mm laminations of 6.5% silicon steel, whose specific loss at these frequencies is roughly a quarter of SMC\'s, and the three changes compound: about 24 W per ring at 100 km/h where the drivetrain-6 ring, computed from its own geometry and its own material, burns about 145. Magnetic slot wedges close the slot openings so the rotor sees a smoother field and stops paying eddy loss for the stator\'s teeth. Windings stay vacuum-potted and the corner stays dry-air purged, both carried from drivetrain-6 without change, because both were right.',
       why: 'Every earlier ring on this ladder was designed at its peak, where copper loss dominates and fixed losses are noise. A range car lives at 4% of peak torque, where the opposite is true and the only losses that matter are the ones that do not scale with load. The whole redesign follows from moving the design point: shorter stack, thinner yoke, finer poles, better steel, all of them trades that would look like regressions on a stopwatch. The material change alone is 89 W per ring, close to 3 Wh per mile at cruise. On the mixed cycle the efficiency model uses, this module\'s entire efficiency gain is about 1.2% of range, near 20 miles of the 1,800, and the content states it that small because it is that small: driveline efficiency is the fifth of five levers in design/gen7.md and pretending otherwise would be the easiest lie in this generation.',
       fail: [
         '6.5% silicon steel is brittle, which is exactly why it is not already everywhere. Punching 0.10 mm laminations at 400 mm diameter without cracked teeth or burr-shorted edges is the pilot-line claim, and what has to become true is a stamping yield that holds across a production year rather than across a sample lot.',
@@ -476,18 +476,18 @@ export const SYSTEM = {
       count: 2,
       specs: [
         ['Magnets', 'NdFeB, 32 poles, Halbach array (Gen 5: 20 poles)'],
-        ['Carrier', 'Aluminium hoop: a Halbach needs no back iron'],
-        ['Centre', '|z| 0.74; Gen 9 brings the front to 0.74 as well'],
+        ['Carrier', 'Aluminum hoop: a Halbach needs no back iron'],
+        ['Center', '|z| 0.74; Gen 9 brings the front to 0.74 as well'],
         ['Mounting', 'Twelve titanium bolts, flange face |z| 0.65 exactly'],
         ['Coasting drag', 'About 12 W per corner at 100 km/h from magnets and can'],
         ['Maturity', 'Pilot line (hermetic canning at wheel scale, carried)'],
       ],
-      how: 'The magnetics are drivetrain-3\'s idea in its third posting: tangentially magnetised segments between the poles steer flux inward at the stator and leave the outer face nearly dead, so there is no back iron anywhere and the carrier can be aluminium instead of steel. Thirty-two poles instead of twenty means each pole carries less flux, so the magnet thins from 12 mm to 8 and the whole array loses weight without losing airgap flux density. The hermetic 0.3 mm stainless can that drivetrain-6 introduced carries over unchanged, because a canned pole is inspected like a pressure part and an uncanned one is inspected like a chemistry experiment. Finer poles would ordinarily cost the rotor more eddy loss, since the slot harmonics that heat the can arrive more often; the stator\'s magnetic slot wedges cancel that and then some, and the pair lands at about 12 W of magnet and can drag per corner at 100 km/h. That figure is stated as magnet and can only, which is what drivetrain-6\'s 55 W row also measured. This generation states the whole coasting number somewhere it can be found: core plus magnets plus bearings and seals is about 51 W per corner, against about 188 for the drivetrain-6 corner computed the same way.\n\nThe geometry was the real news at Gen 7 and the accounting is the real news now. The flange bolt circle sits at |z| 0.74 with the rotor flange\'s inboard face exactly on the contract plane at |z| 0.650, which is a defect drivetrain-6\'s reviewer found and this module does not inherit. Seventy millimetres per side was 140 mm of rear track, and the Gen 6 aero audit had said the whole car was waiting on it: the haunch was pinned at 0.950 half-width by the old rear track, so all 400 mm of plan closure was crammed into the last 845 mm at 21 to 33 degrees, past the 12 to 15 degree limit where flow stays attached, and the tail separated. drivetrain-7 stated plainly that it delivered the precondition and banked nothing, and named about 52 miles on the Wh per mile that configuration actually modelled. Two rungs later the ledger can be closed with js/efficiency.js\'s own audited numbers rather than a promise. body-7 ran Cd 0.118 on area 2.163, CdA 0.2552. body-8 spent the released rear track on the tail and took the coefficient to 0.108 on an essentially unchanged area, CdA 0.2330, down 8.73 percent. body-9 spends the FRONT track and takes the area to 2.043 at the same 0.108, CdA 0.2206, down a further 5.29 and 13.55 percent from body-7 in total. The distinction is the lesson design/retro-gen8.md paid for: an afterbody buys coefficient and only the front and the package buy area, so the rear track this ring moved bought the first half and the front track wheels-9 moved bought the second. Neither half is banked on this panel, because a drivetrain does not get to collect a body\'s drag.\n\nMoving a wheel also breaks things, and this one broke the pack. A ring at |z| 0.74 reaches into the battery envelope design/gen4.md has declared since Gen 4, x -1.300 to -1.222 and y 0.179 to 0.309 per side, and it landed 116 vertices inside battery-6\'s floor-lid corner. The pack was the side that moved and battery-7 shipped with the cut made, re-verified here against its built mesh in the Gen 9 preset: zero of its points fall inside the 235 mm cylinder this ring needs over |z| 0.65 to 0.73, and the closest approach at this corner, re-swept, is 38.8 mm nearest vertex to nearest vertex, this flange at (-1.274, 0.287, -0.650) to the pack floor lid. tools/check-interfaces.sh sweeps it independently and reports the same 38.8 mm. It was published at 35.0 mm surface to surface and 37.5 mm vertex to vertex, and it has moved 1.3 mm the safe way because both halves were detailed: this flange gained a machined chamfer on its bore and battery-7 is being drawn crisper alongside it. The reason the number is re-quoted rather than carried is that the argument for carrying it has gone. Until this pass the rear halves of this file and drivetrain-7 were identical to the vertex, so any figure that differed between them was a convention drifting rather than a car changing. They are not identical any more. Every rear figure on this panel is now swept off this module\'s own built mesh.',
+      how: 'The magnetics are drivetrain-3\'s idea in its third posting: tangentially magnetized segments between the poles steer flux inward at the stator and leave the outer face nearly dead, so there is no back iron anywhere and the carrier can be aluminum instead of steel. Thirty-two poles instead of twenty means each pole carries less flux, so the magnet thins from 12 mm to 8 and the whole array loses weight without losing airgap flux density. The hermetic 0.3 mm stainless can that drivetrain-6 introduced carries over unchanged, because a canned pole is inspected like a pressure part and an uncanned one is inspected like a chemistry experiment. Finer poles would ordinarily cost the rotor more eddy loss, since the slot harmonics that heat the can arrive more often; the stator\'s magnetic slot wedges cancel that and then some, and the pair lands at about 12 W of magnet and can drag per corner at 100 km/h. That figure is stated as magnet and can only, which is what drivetrain-6\'s 55 W row also measured. This generation states the whole coasting number somewhere it can be found: core plus magnets plus bearings and seals is about 51 W per corner, against about 188 for the drivetrain-6 corner computed the same way.\n\nThe geometry was the real news at Gen 7 and the accounting is the real news now. The flange bolt circle sits at |z| 0.74 with the rotor flange\'s inboard face exactly on the contract plane at |z| 0.650, which is a defect drivetrain-6\'s reviewer found and this module does not inherit. Seventy millimeters per side was 140 mm of rear track, and the Gen 6 aero audit had said the whole car was waiting on it: the haunch was pinned at 0.950 half-width by the old rear track, so all 400 mm of plan closure was crammed into the last 845 mm at 21 to 33 degrees, past the 12 to 15 degree limit where flow stays attached, and the tail separated. drivetrain-7 stated plainly that it delivered the precondition and banked nothing, and named about 52 miles on the Wh per mile that configuration actually modeled. Two rungs later the ledger can be closed with js/efficiency.js\'s own audited numbers rather than a promise. body-7 ran Cd 0.118 on area 2.163, CdA 0.2552. body-8 spent the released rear track on the tail and took the coefficient to 0.108 on an essentially unchanged area, CdA 0.2330, down 8.73 percent. body-9 spends the FRONT track and takes the area to 2.043 at the same 0.108, CdA 0.2206, down a further 5.29 and 13.55 percent from body-7 in total. The distinction is the lesson design/retro-gen8.md paid for: an afterbody buys coefficient and only the front and the package buy area, so the rear track this ring moved bought the first half and the front track wheels-9 moved bought the second. Neither half is banked on this panel, because a drivetrain does not get to collect a body\'s drag.\n\nMoving a wheel also breaks things, and this one broke the pack. A ring at |z| 0.74 reaches into the battery envelope design/gen4.md has declared since Gen 4, x -1.300 to -1.222 and y 0.179 to 0.309 per side, and it landed 116 vertices inside battery-6\'s floor-lid corner. The pack was the side that moved and battery-7 shipped with the cut made, re-verified here against its built mesh in the Gen 9 preset: zero of its points fall inside the 235 mm cylinder this ring needs over |z| 0.65 to 0.73, and the closest approach at this corner, re-swept, is 38.8 mm nearest vertex to nearest vertex, this flange at (-1.274, 0.287, -0.650) to the pack floor lid. tools/check-interfaces.sh sweeps it independently and reports the same 38.8 mm. It was published at 35.0 mm surface to surface and 37.5 mm vertex to vertex, and it has moved 1.3 mm the safe way because both halves were detailed: this flange gained a machined chamfer on its bore and battery-7 is being drawn crisper alongside it. The reason the number is re-quoted rather than carried is that the argument for carrying it has gone. Until this pass the rear halves of this file and drivetrain-7 were identical to the vertex, so any figure that differed between them was a convention drifting rather than a car changing. They are not identical any more. Every rear figure on this panel is now swept off this module\'s own built mesh.',
       why: 'The honest version of this panel changed shape between Gen 7 and Gen 9 without a single vertex moving, and that is worth more than the geometry. At Gen 7 the correct sentence was that the ring had bought a precondition and banked nothing, because body-7 was carried by instruction and it would have been very easy to write the drag reduction as though it had already happened. The aero audit is on record about how the last such claim went. At Gen 9 the correct sentence is that the precondition was real: 13.55 percent of CdA has come off across two body generations, half of it unlocked by this ring and half by the front track, and this panel still banks none of it. A part that enables something is not the part that delivers it, and a ladder that lets enablers collect twice stops being a ledger.',
       fail: [
-        'The deliberate track asymmetry drivetrain-7 created is gone, and its replacement is a car narrow at both ends. Rear lateral load transfer is still about 9 percent up on the 1.62 m car, and now the front is too, so suspension-9 measures total roll stiffness 10.3 percent below Gen 8 and grows both bars to put the rate and the 58/42 split back. What a bar cannot reach is the roll centre, and suspension-9 states the residual as 0.9 percent of roll gradient. This ring is upstream of all of it and none of it is fixable here.',
+        'The deliberate track asymmetry drivetrain-7 created is gone, and its replacement is a car narrow at both ends. Rear lateral load transfer is still about 9 percent up on the 1.62 m car, and now the front is too, so suspension-9 measures total roll stiffness 10.3 percent below Gen 8 and grows both bars to put the rate and the 58/42 split back. What a bar cannot reach is the roll center, and suspension-9 states the residual as 0.9 percent of roll gradient. This ring is upstream of all of it and none of it is fixable here.',
         'The can is still hermetic until it is not, and a breach is still invisible from outside; the tell is still a slow per-corner back-EMF amplitude drift, watched every drive, and it is still the pilot-line claim on this panel.',
-        'Thirty-two poles means thirty-two segment joints per ring instead of twenty, so the adhesive bond population that holds the array against 4 kN per millimetre of magnetic pull grew by 60% while each joint got smaller. More joints is more places to be wrong, and the retention argument restarts its statistics.',
+        'Thirty-two poles means thirty-two segment joints per ring instead of twenty, so the adhesive bond population that holds the array against 4 kN per millimeter of magnetic pull grew by 60% while each joint got smaller. More joints is more places to be wrong, and the retention argument restarts its statistics.',
       ],
       explode: [0, 0, 0.90],
     },
@@ -504,10 +504,10 @@ export const SYSTEM = {
         ['Cornering load', 'Up about 9% at the outer rear; both tracks 1.48 m now'],
         ['Maturity', 'Hybrid bearings production practice; probes pilot line'],
       ],
-      how: 'The unit is drivetrain-6\'s, and the three answers it gave to drivetrain-3\'s three confessions all carry: silicon nitride rolling elements so the inverter\'s common-mode current has no path and the grounding ring stays deleted, ceramic hardness so the brinelling threshold moves even though the mechanism does not, and three eddy-current probes trending the hub flange orbit every revolution so preload relaxation is telemetry rather than archaeology. Two things about it changed for Gen 7 and they pull in opposite directions. Peak corner torque fell from 900 to 710 Nm, which takes about a kilogram of race section and carrier web out of each unit. Then the rear track narrowed by 140 mm, and for a given cornering force the load transferred onto the outer rear wheel rises roughly in inverse proportion to track: about 9% more load on the outer bearing, and since ball-bearing life goes as the cube of the load ratio, about a quarter less L10 life if nothing is done. Something is done: the ball complement grows to put the life back where it was, and the net mass change is a single kilogram out.\n\nThe carrier structure was redrawn rather than inherited, and the reason is that the load path has to thread a hole. drivetrain-6\'s stator carrier sleeve ran r 0.150 to 0.156, dipping five millimetres inside the annulus floor and into volume the wheel owns. Here the sleeve is r 0.1555 to 0.168, wholly inside the contract, and it reaches the upright through a neck at r 0.132 to 0.149, because the rim flange has a 0.150 bore and nothing wider gets past it. wheels-9 carries wheels-7\'s rear wheel unchanged and the sweep confirms it station by station: flange plate r 0.1500 to 0.2440 over |z| 0.6460 to 0.6500, drum shell r 0.0720 to 0.0900 over 0.6580 to 0.7320, park brake backplate r 0.1000 or less over 0.6280 to 0.6350. The step between neck and sleeve sits at |z| 0.6505 to 0.6625, where wheels-9 owns only its drum at r 0.094 and its rim at r 0.254, so the carrier passes through a 160 mm wide gap it did not have to invent. The gap probes moved too, and the reason is worth stating: drivetrain-6 aimed them at the rotor flange, which in this corner is bolted face to face against the rim flange and cannot be seen at all. They now read the hub flange from the housing, which is where bearing tilt is largest anyway, and every one of them sits on the housing instead of floating, because design/retro-gen5-apex.md recorded that a part which touches nothing reads as floating even when it passes every zone check. One partner is no longer reported, and the closing of it is the largest thing that happened to this housing between Gen 7 and Gen 9 without a vertex moving. drivetrain-7 measured itself against suspension-4\'s SHIPPED file, which still drew its rear corner around a wheel at |z| 0.81, and found five suspension parts sharing volume with three of its own. Re-run as an exact point-in-solid test in both directions rather than a bounding-box screen, that pairing gives 171 interfering mesh pairs at the rear corner, deepest 25.5 mm where a 48 V damper lead runs through this housing. suspension-9 redraws the rear corner rather than translating it, moving the pickups 100 mm inboard and the outer joint plane from |z| 0.70 to 0.60, and the SAME test over the Gen 9 pairing gives 19 pairs, deepest 10.5 mm, and that deepest one is deliberate, so the number to compare against 25.7 is the deepest UNINTENDED overlap, which is 3.5 mm. Ten of the nineteen are intended face-to-face contacts at 0.0 mm, one is this module\'s own yaw-demand link landing 10.5 mm inside the chassis ECU on purpose, four are a 48 V damper lead crossing a carrier spoke by 3.5 mm, and four are the corner inverter pack taking 0.5 mm of an upper-link plate. What drivetrain-7 asked for is what it got: it wrote that the rear upright had to become an annular carrier meeting this neck at r 0.149 or less inboard of |z| 0.65, that a translated corner was not a redrawn one, and that a Gen 4 partner was not its to fix. suspension-9 did the redraw. The specific defect this panel named, a rear-steer outboard ball joint sitting 23 mm INSIDE this housing, is gone: suspension-9 lands that joint at |z| 0.6123 to 0.6377 on its built mesh, wholly inboard of this housing\'s inboard face at 0.6475. The 23 mm was drivetrain-7\'s figure on drivetrain-7\'s measure; the exact test used throughout this file, which reports the deepest partner VERTEX inside this module\'s built solid, scores the same overlap at 9.5 mm. Both describe the same defect and the convention is stated so the two numbers are not read as a disagreement. Running suspension-9 against drivetrain-7 returns the same 19 pairs and the same depths as against this module, which is the check that proves the Gen 9 halfshaft change touched nothing at this corner.',
-      why: 'These are still the least optional kilograms in the system, because gap collapse is still a magnet ring meeting a coil ring at road speed, and the magnetic negative spring still pulls about 4 kN per millimetre of eccentricity whatever the track is. What Gen 7 adds is a reminder that moving a wheel is never free: the aero prize came with a bearing bill, the bill was 9% of load and a quarter of life, and it was paid in steel rather than argued away.',
+      how: 'The unit is drivetrain-6\'s, and the three answers it gave to drivetrain-3\'s three confessions all carry: silicon nitride rolling elements so the inverter\'s common-mode current has no path and the grounding ring stays deleted, ceramic hardness so the brinelling threshold moves even though the mechanism does not, and three eddy-current probes trending the hub flange orbit every revolution so preload relaxation is telemetry rather than archaeology. Two things about it changed for Gen 7 and they pull in opposite directions. Peak corner torque fell from 900 to 710 Nm, which takes about a kilogram of race section and carrier web out of each unit. Then the rear track narrowed by 140 mm, and for a given cornering force the load transferred onto the outer rear wheel rises roughly in inverse proportion to track: about 9% more load on the outer bearing, and since ball-bearing life goes as the cube of the load ratio, about a quarter less L10 life if nothing is done. Something is done: the ball complement grows to put the life back where it was, and the net mass change is a single kilogram out.\n\nThe carrier structure was redrawn rather than inherited, and the reason is that the load path has to thread a hole. drivetrain-6\'s stator carrier sleeve ran r 0.150 to 0.156, dipping five millimeters inside the annulus floor and into volume the wheel owns. Here the sleeve is r 0.1555 to 0.168, wholly inside the contract, and it reaches the upright through a neck at r 0.132 to 0.149, because the rim flange has a 0.150 bore and nothing wider gets past it. wheels-9 carries wheels-7\'s rear wheel unchanged and the sweep confirms it station by station: flange plate r 0.1500 to 0.2440 over |z| 0.6460 to 0.6500, drum shell r 0.0720 to 0.0900 over 0.6580 to 0.7320, park brake backplate r 0.1000 or less over 0.6280 to 0.6350. The step between neck and sleeve sits at |z| 0.6505 to 0.6625, where wheels-9 owns only its drum at r 0.094 and its rim at r 0.254, so the carrier passes through a 160 mm wide gap it did not have to invent. The gap probes moved too, and the reason is worth stating: drivetrain-6 aimed them at the rotor flange, which in this corner is bolted face to face against the rim flange and cannot be seen at all. They now read the hub flange from the housing, which is where bearing tilt is largest anyway, and every one of them sits on the housing instead of floating, because design/retro-gen5-apex.md recorded that a part which touches nothing reads as floating even when it passes every zone check. One partner is no longer reported, and the closing of it is the largest thing that happened to this housing between Gen 7 and Gen 9 without a vertex moving. drivetrain-7 measured itself against suspension-4\'s SHIPPED file, which still drew its rear corner around a wheel at |z| 0.81, and found five suspension parts sharing volume with three of its own. Re-run as an exact point-in-solid test in both directions rather than a bounding-box screen, that pairing gives 171 interfering mesh pairs at the rear corner, deepest 25.5 mm where a 48 V damper lead runs through this housing. suspension-9 redraws the rear corner rather than translating it, moving the pickups 100 mm inboard and the outer joint plane from |z| 0.70 to 0.60, and the SAME test over the Gen 9 pairing gives 19 pairs, deepest 10.5 mm, and that deepest one is deliberate, so the number to compare against 25.7 is the deepest UNINTENDED overlap, which is 3.5 mm. Ten of the nineteen are intended face-to-face contacts at 0.0 mm, one is this module\'s own yaw-demand link landing 10.5 mm inside the chassis ECU on purpose, four are a 48 V damper lead crossing a carrier spoke by 3.5 mm, and four are the corner inverter pack taking 0.5 mm of an upper-link plate. What drivetrain-7 asked for is what it got: it wrote that the rear upright had to become an annular carrier meeting this neck at r 0.149 or less inboard of |z| 0.65, that a translated corner was not a redrawn one, and that a Gen 4 partner was not its to fix. suspension-9 did the redraw. The specific defect this panel named, a rear-steer outboard ball joint sitting 23 mm INSIDE this housing, is gone: suspension-9 lands that joint at |z| 0.6123 to 0.6377 on its built mesh, wholly inboard of this housing\'s inboard face at 0.6475. The 23 mm was drivetrain-7\'s figure on drivetrain-7\'s measure; the exact test used throughout this file, which reports the deepest partner VERTEX inside this module\'s built solid, scores the same overlap at 9.5 mm. Both describe the same defect and the convention is stated so the two numbers are not read as a disagreement. Running suspension-9 against drivetrain-7 returns the same 19 pairs and the same depths as against this module, which is the check that proves the Gen 9 halfshaft change touched nothing at this corner.',
+      why: 'These are still the least optional kilograms in the system, because gap collapse is still a magnet ring meeting a coil ring at road speed, and the magnetic negative spring still pulls about 4 kN per millimeter of eccentricity whatever the track is. What Gen 7 adds is a reminder that moving a wheel is never free: the aero prize came with a bearing bill, the bill was 9% of load and a quarter of life, and it was paid in steel rather than argued away.',
       fail: [
-        'Ceramic elements still fail by cracking rather than the slow spalling steel announces for thousands of kilometres. The pairing with gap telemetry is deliberate and unchanged: quieter failure mode, louder instrumentation.',
+        'Ceramic elements still fail by cracking rather than the slow spalling steel announces for thousands of kilometers. The pairing with gap telemetry is deliberate and unchanged: quieter failure mode, louder instrumentation.',
         'The narrower track raises cornering load every corner of the car\'s life, not occasionally, so the recovered life depends on a ball complement change holding its preload distribution across temperature. That is a rig claim today and a fleet claim later.',
         'The 171 pairs against suspension-4 and the 19 against suspension-9 come from one test run over both, which is the only way that comparison means anything, and the number is still not zero. The 3.5 mm the 48 V damper lead takes out of a carrier spoke is small enough to look like rounding and it is not: a spoke is the load path from the bearing out to the neck, and a lead buried in one is a lead that gets pinched rather than chafed. It is reported and not edited because the lead is suspension-9\'s to route, exactly as the 23 mm rear-steer joint was suspension-4\'s.',
       ],
@@ -531,7 +531,7 @@ export const SYSTEM = {
       fail: [
         'A variable carrier means the acoustic signature of the car changes with load, and a 25 kHz whine is inaudible to most adults and not to all of them, nor to dogs. The threshold hysteresis exists so the car does not hunt across it in traffic, and the fleet microphones are the referee, as they were for the front unit\'s 1.7 kHz whine three generations ago.',
         'Discontinuous modulation raises the ripple current the DC link sees at the same time as it lowers switching loss, and the ceramic stack was sized for the continuous scheme; the margin is real but it is margin, not headroom.',
-        'The pack measures x -1.5000 to -1.3760, y 0.4780 to 0.5270, |z| 0.6100 to 0.6610 on the built mesh, and the column it lives in changed shape under it between generations. Against suspension-4 it was a 32 mm box in a 40 mm window, 5 mm over a body-side air-spring top plate with its phase busbars 1 mm off the same plate, and because this pack is UNSPRUNG and the plate was body-side, that 1 mm was one millimetre of wheel travel rather than a clearance. suspension-9 moves the rear spring seat to |z| 0.539 and the plate leaves the column. Swept off the built meshes: straight down from every point on this pack the nearest suspension-9 surface is 43.3 mm away, and the nearest suspension-9 surface anywhere below the pack\'s floor plane is that relocated seat at 27.6 mm, against drivetrain-7\'s 5 mm to a plate and 1 mm from its busbars. What replaced the conflict is smaller and it is still real: the pack\'s forward-inboard corner takes 0.5 mm of a rear upper-link plate, and the ball joint on that link, y 0.5280 to 0.5620 over |z| 0.5834 to 0.6166, overhangs the pack\'s inboard flank with 26.5 mm of vertical gap and 11.5 mm surface to surface at the closest. It does not stand over the lid, which runs |z| 0.6215 to 0.6345. Both numbers are unsprung-to-body-side again, so both are travel numbers rather than clearances, and the 0.5 mm is the tightest thing at this corner.',
+        'The pack measures x -1.5000 to -1.3760, y 0.4780 to 0.5270, |z| 0.6100 to 0.6610 on the built mesh, and the column it lives in changed shape under it between generations. Against suspension-4 it was a 32 mm box in a 40 mm window, 5 mm over a body-side air-spring top plate with its phase busbars 1 mm off the same plate, and because this pack is UNSPRUNG and the plate was body-side, that 1 mm was one millimeter of wheel travel rather than a clearance. suspension-9 moves the rear spring seat to |z| 0.539 and the plate leaves the column. Swept off the built meshes: straight down from every point on this pack the nearest suspension-9 surface is 43.3 mm away, and the nearest suspension-9 surface anywhere below the pack\'s floor plane is that relocated seat at 27.6 mm, against drivetrain-7\'s 5 mm to a plate and 1 mm from its busbars. What replaced the conflict is smaller and it is still real: the pack\'s forward-inboard corner takes 0.5 mm of a rear upper-link plate, and the ball joint on that link, y 0.5280 to 0.5620 over |z| 0.5834 to 0.6166, overhangs the pack\'s inboard flank with 26.5 mm of vertical gap and 11.5 mm surface to surface at the closest. It does not stand over the lid, which runs |z| 0.6215 to 0.6345. Both numbers are unsprung-to-body-side again, so both are travel numbers rather than clearances, and the 0.5 mm is the tightest thing at this corner.',
       ],
       explode: [0, 0, 0.78],
     },
@@ -548,11 +548,11 @@ export const SYSTEM = {
         ['Body landing', '(-1.36, 0.425, +/-0.625), hv-4\'s build geometry'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'Two loops per corner, each rated to carry the whole corner alone, joined at the inverter through ideal-diode ORing stages: that architecture is drivetrain-6\'s and it carries because it turned a wear-out failure from announced into unhurried. The Gen 7 story is what moving the wheel did to it. hv-4 is a Gen 4 module carried unchanged, so its corner runs still terminate where they always did, and this module lands on the coordinates in hv-4\'s build code, (-1.36, 0.425, +/-0.625), rather than the (-1.36, 0.40, +/-0.63) that hv-4\'s own comment claims and that drivetrain-6 copied out of the prose. That is a 25 mm correction and it exists because design/retro-gen5-apex.md made partner geometry, not partner prose, the standard. The corner then moved 70 mm inboard while the body-side bracket stayed put, so the free span between fixed and moving ends shrank by 70 mm with the wheel travel unchanged. A shorter umbilical is not a gentler one: the same suspension stroke folded into a shorter cable is a tighter bend radius and more strand strain per kilometre.\n\nWhat pays for it is the same arithmetic that cut the power. Peak corner current falls from 130 A to 80 because peak corner power fell from 105 kW to 65 on the same bus, so each loop drops from 16 mm2 to 10. Bending strain on a stranded conductor is the strand radius divided by the bend radius, and a 10 mm2 class 6 bundle reaches the same strand strain at a 70 mm radius that the 16 mm2 bundle needed 90 mm for. The loop lost 70 mm of span and gained 20 mm of bend allowance, and the two very nearly cancel; the remainder is taken up as deliberate slack routed forward of the bracket rather than pretended away. The 4 mm dry-air purge line to the stator cavity still rides the same jacketed bundle, so the corner\'s whole umbilical still flexes as one engineered object, and the per-loop resistance trend still runs every drive, because strand fatigue is still the thing this part exists to see coming.',
+      how: 'Two loops per corner, each rated to carry the whole corner alone, joined at the inverter through ideal-diode ORing stages: that architecture is drivetrain-6\'s and it carries because it turned a wear-out failure from announced into unhurried. The Gen 7 story is what moving the wheel did to it. hv-4 is a Gen 4 module carried unchanged, so its corner runs still terminate where they always did, and this module lands on the coordinates in hv-4\'s build code, (-1.36, 0.425, +/-0.625), rather than the (-1.36, 0.40, +/-0.63) that hv-4\'s own comment claims and that drivetrain-6 copied out of the prose. That is a 25 mm correction and it exists because design/retro-gen5-apex.md made partner geometry, not partner prose, the standard. The corner then moved 70 mm inboard while the body-side bracket stayed put, so the free span between fixed and moving ends shrank by 70 mm with the wheel travel unchanged. A shorter umbilical is not a gentler one: the same suspension stroke folded into a shorter cable is a tighter bend radius and more strand strain per kilometer.\n\nWhat pays for it is the same arithmetic that cut the power. Peak corner current falls from 130 A to 80 because peak corner power fell from 105 kW to 65 on the same bus, so each loop drops from 16 mm2 to 10. Bending strain on a stranded conductor is the strand radius divided by the bend radius, and a 10 mm2 class 6 bundle reaches the same strand strain at a 70 mm radius that the 16 mm2 bundle needed 90 mm for. The loop lost 70 mm of span and gained 20 mm of bend allowance, and the two very nearly cancel; the remainder is taken up as deliberate slack routed forward of the bracket rather than pretended away. The 4 mm dry-air purge line to the stator cavity still rides the same jacketed bundle, so the corner\'s whole umbilical still flexes as one engineered object, and the per-loop resistance trend still runs every drive, because strand fatigue is still the thing this part exists to see coming.',
       why: 'Every serious argument against in-wheel drive names unsprung mass first and this cable second. Gen 3 answered with monitoring, Gen 5 answered with a twin, and Gen 7 had to answer a new question, which is what happens to a fatigue-critical flexing joint when you move one of its ends. The answer here is that it got harder and then the voltage arithmetic paid for it, and the honest version of that sentence includes the first half.',
       fail: [
-        'Both loops still share one routing plane and one bracket, so the redundancy is against fatigue and not against geometry: the kerb strike that crushes one crushes both, and the corner isolation that follows is the same event Gen 3 owned.',
-        'Ten square millimetres is a smaller conductor in a wetter, saltier place, and connector fretting scales with contact count, not with copper area; the flagged-loop policy still replaces the cable with both its connectors and attempts no diagnosis, because the ambiguity did not shrink with the wire.',
+        'Both loops still share one routing plane and one bracket, so the redundancy is against fatigue and not against geometry: the curb strike that crushes one crushes both, and the corner isolation that follows is the same event Gen 3 owned.',
+        'Ten square millimeters is a smaller conductor in a wetter, saltier place, and connector fretting scales with contact count, not with copper area; the flagged-loop policy still replaces the cable with both its connectors and attempts no diagnosis, because the ambiguity did not shrink with the wire.',
         'The 70 mm bend radius is a design minimum on nominal geometry, and the rear corner it hangs off has now been redrawn once. suspension-9 moves the rear pickups 100 mm inboard and the outer joint plane from |z| 0.70 to 0.60, which changes the arc the sprung end of this loop swings through even though both of this part\'s own ends stayed put. The static sweep is clean and a static sweep is not a travel sweep, so if the redrawn links carry more articulation than the drawing implies, this is still the part that finds out first.',
       ],
       explode: [0, 0, 0.78],
@@ -569,11 +569,11 @@ export const SYSTEM = {
         ['Safety', 'Dual channel, dissimilar code, 5 ms cross-check (carried)'],
         ['Maturity', 'Loops production practice; connection arbitration pilot line'],
       ],
-      how: 'The yaw arithmetic first, because it is the cost. A pair of opposed rear wheels makes a yaw moment equal to the longitudinal force difference times the track. Continuous torque per corner fell from 550 to 400 Nm and the track fell from 1.62 to 1.48 m, so standing yaw authority from the rear pair falls from about 2,620 Nm to about 1,740, a third of it gone: roughly a quarter from torque and the remaining tenth from the track itself. Nothing recovers that, and the panel says so. What softens it is that suspension-9 carries the same plus or minus 3.0 degrees of rear steer, still the fourth input and still costing nothing to hold, so the split that drivetrain-6 learned stands: torque buys the transient, geometry holds the steady state, and the coordinator spends the smaller torque budget only where an angle cannot arrive fast enough. Ownership is unchanged and exact, because it has to be: suspension-9\'s chassis ECU owns the rear-steer schedule and its fail ladder, its casting measuring 0.217 by 0.036 by 0.150 about (-0.9525, 0.326, -0.280) on the built mesh with its aft wall on x -1.0380, so this module\'s yaw-demand link lands 8.0 mm inside that wall rather than stopping at the centre coordinate, the two computers exchange yaw demands at 1 kHz over hv-4\'s zonal bus, and a braking demand from the wheels-9 master unit overrides any vectoring demand within 2 ms, always.\n\nGen 9 hands this box one more subtraction and it is not its own. Narrowing the FRONT track takes 8.6 percent off the yaw moment the front brakes can make, by suspension-9\'s arithmetic on the same lever-arm argument this panel used for the rear pair at Gen 7. So every yaw actuator on the car that works through a lever has now been cut: rear vectoring by a third at Gen 7, front brake-based yaw by 8.6 percent at Gen 9. The one that does not care about track is rear steer, because it works through slip angle rather than a force difference across a width, and the arbitration schedule shifts onto it accordingly, leaning on angle earlier and on brake-based yaw later than Gen 8 did. Nothing in this box\'s hardware changed to accommodate that. Its authority table did.\n\nThe new job is connection. With the front axle mechanically disconnected at cruise the car is rear drive with a third of its old yaw authority, and this box decides when that stops being acceptable. Commanded reconnect takes about 180 ms, of which roughly 140 is spinning the front rotor and both gear stages up to synchronous speed before the dog collars can engage. That is far too slow to be a reaction, so it is not one: the coordinator reconnects on prediction, from steering rate, pedal rate, the friction estimate, and autonomy-4\'s forward camera wedge, the same preview feed suspension-9 uses for its valves. Predicted reconnect lands in about 40 ms of actual clutch travel because the rotor is already turning. The arbitration is deliberately asymmetric and biased toward waking up: any of a dozen cues closes the clutches, only a sustained quiet cruise opens them, and the energy cost of a wrong wake-up is a few watt-hours while the cost of a wrong sleep is a car that understeers into an event with one axle.',
+      how: 'The yaw arithmetic first, because it is the cost. A pair of opposed rear wheels makes a yaw moment equal to the longitudinal force difference times the track. Continuous torque per corner fell from 550 to 400 Nm and the track fell from 1.62 to 1.48 m, so standing yaw authority from the rear pair falls from about 2,620 Nm to about 1,740, a third of it gone: roughly a quarter from torque and the remaining tenth from the track itself. Nothing recovers that, and the panel says so. What softens it is that suspension-9 carries the same plus or minus 3.0 degrees of rear steer, still the fourth input and still costing nothing to hold, so the split that drivetrain-6 learned stands: torque buys the transient, geometry holds the steady state, and the coordinator spends the smaller torque budget only where an angle cannot arrive fast enough. Ownership is unchanged and exact, because it has to be: suspension-9\'s chassis ECU owns the rear-steer schedule and its fail ladder, its casting measuring 0.217 by 0.036 by 0.150 about (-0.9525, 0.326, -0.280) on the built mesh with its aft wall on x -1.0380, so this module\'s yaw-demand link lands 8.0 mm inside that wall rather than stopping at the center coordinate, the two computers exchange yaw demands at 1 kHz over hv-4\'s zonal bus, and a braking demand from the wheels-9 master unit overrides any vectoring demand within 2 ms, always.\n\nGen 9 hands this box one more subtraction and it is not its own. Narrowing the FRONT track takes 8.6 percent off the yaw moment the front brakes can make, by suspension-9\'s arithmetic on the same lever-arm argument this panel used for the rear pair at Gen 7. So every yaw actuator on the car that works through a lever has now been cut: rear vectoring by a third at Gen 7, front brake-based yaw by 8.6 percent at Gen 9. The one that does not care about track is rear steer, because it works through slip angle rather than a force difference across a width, and the arbitration schedule shifts onto it accordingly, leaning on angle earlier and on brake-based yaw later than Gen 8 did. Nothing in this box\'s hardware changed to accommodate that. Its authority table did.\n\nThe new job is connection. With the front axle mechanically disconnected at cruise the car is rear drive with a third of its old yaw authority, and this box decides when that stops being acceptable. Commanded reconnect takes about 180 ms, of which roughly 140 is spinning the front rotor and both gear stages up to synchronous speed before the dog collars can engage. That is far too slow to be a reaction, so it is not one: the coordinator reconnects on prediction, from steering rate, pedal rate, the friction estimate, and autonomy-4\'s forward camera wedge, the same preview feed suspension-9 uses for its valves. Predicted reconnect lands in about 40 ms of actual clutch travel because the rotor is already turning. The arbitration is deliberately asymmetric and biased toward waking up: any of a dozen cues closes the clutches, only a sustained quiet cruise opens them, and the energy cost of a wrong wake-up is a few watt-hours while the cost of a wrong sleep is a car that understeers into an event with one axle.',
       why: 'Gen 5 argued that authority compounds, and it was right, so Gen 7 has to be honest that it just spent some. What it bought is a drivetrain whose fixed losses at cruise fell by roughly 980 W, and yaw authority is a capability the car uses for seconds while cruise loss is a bill it pays for hours. That is the whole generation in one trade. The part that is genuinely new engineering rather than genuinely new sacrifice is the arbitration: a car that can switch between two drivetrain topologies at speed needs one computer that owns the switch, and putting it here rather than in the chassis ECU keeps the safety demotion clean, because this box has always been allowed to fail into three-motor allocation and now fails into two.',
       fail: [
         'A stuck-open clutch is the failure that matters, and it is silent: the car simply is not all-wheel drive any more, and finds out at the first split-grip launch. The detection is a torque-versus-speed residual on the front machine checked at every reconnect, and the fallback is that the rear pair plus friction braking is a complete, if slower, car.',
-        'Prediction that is biased toward waking up will wake up wrongly, and every false reconnect spends the energy this part exists to save. The bias is deliberate and the ledger is real: the model budgets a few false wakes per hundred kilometres, which is watt-hours, against a single late one, which is a handling event.',
+        'Prediction that is biased toward waking up will wake up wrongly, and every false reconnect spends the energy this part exists to save. The bias is deliberate and the ledger is real: the model budgets a few false wakes per hundred kilometers, which is watt-hours, against a single late one, which is a handling event.',
         'Two computers negotiating one yaw budget was already a live-disagreement fault class in Gen 5; a third state, whether the front axle even exists right now, multiplies the cases the dissimilar-code validation has to cover, and every release of either controller reopens the file.',
       ],
       explode: [0, 0.5, 0],
@@ -590,8 +590,8 @@ export const SYSTEM = {
         ['Mass detail', '28 kg unit + 7.58 kg halfshafts + 2 kg mounts'],
         ['Maturity', 'Machine production practice; AM housing pilot line'],
       ],
-      how: 'The machine is unchanged from drivetrain-7 and so is everything bolted to it: the yokeless axial-flux topology with concentrated coils on two stator discs either side of a carbon-hooped rotor, the 5.95:1 two-stage reduction and open differential drivetrain-2 introduced, the additively built housing whose ribs follow a topology optimiser\'s load paths, 130 kW and 240 Nm sized by the deceleration the axle can catch rather than the acceleration it can deliver. Under braking, load transfer puts roughly 70 percent of the car\'s weight on the front axle, so front regeneration is where the recoverable energy is, and 130 kW at 100 km/h is about 0.32 g captured electrically. None of that moved, because Gen 9 did not ask it to. What moved is the wheel.\n\nwheels-9 brings the front centres in from |z| 0.81 to 0.74 and puts the hub face inboard plane on |z| 0.6925. That plane is not a claim off its comments. Swept off the built mesh, it is the inboard face of a hub face disc of radius 0.074 about the front axle, and the disc surface sits on 0.6925 at every radius inside 0.074, which is the whole of what a 55 mm joint at r 0.036 has to land on. Outboard of r 0.074 the corner runs inboard of the plane rather than up to it, 0.6903 at r 0.075 to 0.080, 0.6850 at 0.080 to 0.085 and 0.6040 from r 0.085 out where the disc bell and the caliper live, so 0.6925 is a hub face and not a wall across the corner. drivetrain-7 ends its outboard CV joint face on 0.7625, which is wheels-7\'s plane and is exactly right there. Against wheels-9 it overruns by 70.0 mm, and the sweep is unambiguous: 192 wheels-9 vertices inside drivetrain-7 solids across 6 mesh pairs at up to 21.6 mm past the nearest surface, and 154 drivetrain-7 vertices inside wheels-9 solids across 4 more at up to 5.0 mm. So the shaft is re-derived from the two faces that actually constrain it. The inboard end does not move, because the disconnect collar spans |z| 0.2100 to 0.2800 and the inboard joint face seats 2.50 mm inside it; move that face and the collar grips nothing. Half-span becomes 0.2075, the pair centre 0.4850 against 0.5200, the joint centre offset 0.1800 against 0.2150, and the bar 0.330 m against 0.400. On the built mesh the outboard face lands at |z| 0.69250 against a hub face of 0.69250. The gap is 0.000 mm and the sweep against wheels-9 returns zero penetration in either direction.\n\nA shorter shaft at unchanged wheel travel is not free, and the numbers come from one four-bar solver run over both rungs with pivot coordinates read off suspension-4\'s and suspension-9\'s built meshes. Travel is the Gen 1 figure both carry, 95 mm bump and 85 mm droop at the wheel. Joint centre to joint centre the shaft falls from 0.4300 m to 0.3600, down 16.28 percent, while the inboard joint centre stays at |z| 0.3050 on both. At full bump the inboard joint articulates 15.069 degrees where it articulated 12.661, and the outboard joint 13.555 where it did 11.484. At full droop it is 13.426 against 11.200 inboard and 11.545 against 9.204 outboard. About static the rate goes from 0.1302 to 0.1553 degrees per millimetre of wheel travel, 19.3 percent more angle for the same road, every kilometre, for the life of the car. One thing gets easier and it is the plunge: the required inner-joint stroke over full travel falls from 6.00 mm to 4.71, because a shorter shaft recovers more length from the vertical component than it loses to the wheel centre\'s 14 mm inboard arc. That is the entire engineering ledger of this generation on this axle, and the mass side of it is on the why.',
-      why: 'This panel exists for a process reason more than a geometric one. design/retro-gen8.md records that clearing drivetrain-7\'s review debt found these same front halfshafts ending 10 mm SHORT of the wheel they drive. One rung later, against a wheel that moved, the same interface is 70 mm LONG. Twice in a row, in opposite directions, and both times because the length was carried from the previous drawing and then patched rather than derived from the wheel it drives. The 10 mm miss came from pulling the pair inboard to reach new dog collars; the collars moved instead and the number went back to one that was only ever right for a 0.81 track. A third manual fix is not the answer. The predicate is one line and it is exact: the outboard CV joint face |z| must equal the active wheels module\'s front hub face inboard plane. It is now enforced rather than written down. This module declares that plane under the interface key front-halfshaft-outboard with extent max, wheels-9 declares the same plane from the wheel side, and tools/check-interfaces.sh sweeps both built meshes and fails the preset if they disagree or if either half does not actually reach the plane it named. Agreement between two comments would have proved nothing here, because every comment in drivetrain-7 said 0.7625 while its shafts ran 70 mm past the wheel; the check is against vertices.\n\nThe mass case is deliberately unflattering. The only steel deleted is 70.0 mm off each of two bars. Booked against the DRAWN 44 mm section that would be 1.671 kg, and that would be an overclaim, because the full drawn steel volume of the pair is 16.58 kg against the 8 kg this ledger has carried since Gen 1, so the drawn cylinder is 2.073 times the massed part. The massed bar is the structural one: 240 Nm through 5.95:1 into an open differential is 714 Nm per shaft, a 22 mm solid bar holds that at 342 MPa of torsional shear, that bar is 1.194 kg over 400 mm, and it leaves 1.40 kg for each of four joints with boot and grease. Seventy millimetres off two of them is 0.418 kg. Booked at 0.42: halfshafts 8 to 7.58, this part 38 to 37.58, the module 118 to 117.58, which still rounds to the 118 kg the system chip shows. A generation that bought a fifth more articulation angle for four hundred grams should say the four hundred grams out loud rather than round it up.',
+      how: 'The machine is unchanged from drivetrain-7 and so is everything bolted to it: the yokeless axial-flux topology with concentrated coils on two stator discs either side of a carbon-hooped rotor, the 5.95:1 two-stage reduction and open differential drivetrain-2 introduced, the additively built housing whose ribs follow a topology optimizer\'s load paths, 130 kW and 240 Nm sized by the deceleration the axle can catch rather than the acceleration it can deliver. Under braking, load transfer puts roughly 70 percent of the car\'s weight on the front axle, so front regeneration is where the recoverable energy is, and 130 kW at 100 km/h is about 0.32 g captured electrically. None of that moved, because Gen 9 did not ask it to. What moved is the wheel.\n\nwheels-9 brings the front centers in from |z| 0.81 to 0.74 and puts the hub face inboard plane on |z| 0.6925. That plane is not a claim off its comments. Swept off the built mesh, it is the inboard face of a hub face disc of radius 0.074 about the front axle, and the disc surface sits on 0.6925 at every radius inside 0.074, which is the whole of what a 55 mm joint at r 0.036 has to land on. Outboard of r 0.074 the corner runs inboard of the plane rather than up to it, 0.6903 at r 0.075 to 0.080, 0.6850 at 0.080 to 0.085 and 0.6040 from r 0.085 out where the disc bell and the caliper live, so 0.6925 is a hub face and not a wall across the corner. drivetrain-7 ends its outboard CV joint face on 0.7625, which is wheels-7\'s plane and is exactly right there. Against wheels-9 it overruns by 70.0 mm, and the sweep is unambiguous: 192 wheels-9 vertices inside drivetrain-7 solids across 6 mesh pairs at up to 21.6 mm past the nearest surface, and 154 drivetrain-7 vertices inside wheels-9 solids across 4 more at up to 5.0 mm. So the shaft is re-derived from the two faces that actually constrain it. The inboard end does not move, because the disconnect collar spans |z| 0.2100 to 0.2800 and the inboard joint face seats 2.50 mm inside it; move that face and the collar grips nothing. Half-span becomes 0.2075, the pair center 0.4850 against 0.5200, the joint center offset 0.1800 against 0.2150, and the bar 0.330 m against 0.400. On the built mesh the outboard face lands at |z| 0.69250 against a hub face of 0.69250. The gap is 0.000 mm and the sweep against wheels-9 returns zero penetration in either direction.\n\nA shorter shaft at unchanged wheel travel is not free, and the numbers come from one four-bar solver run over both rungs with pivot coordinates read off suspension-4\'s and suspension-9\'s built meshes. Travel is the Gen 1 figure both carry, 95 mm bump and 85 mm droop at the wheel. Joint center to joint center the shaft falls from 0.4300 m to 0.3600, down 16.28 percent, while the inboard joint center stays at |z| 0.3050 on both. At full bump the inboard joint articulates 15.069 degrees where it articulated 12.661, and the outboard joint 13.555 where it did 11.484. At full droop it is 13.426 against 11.200 inboard and 11.545 against 9.204 outboard. About static the rate goes from 0.1302 to 0.1553 degrees per millimeter of wheel travel, 19.3 percent more angle for the same road, every kilometer, for the life of the car. One thing gets easier and it is the plunge: the required inner-joint stroke over full travel falls from 6.00 mm to 4.71, because a shorter shaft recovers more length from the vertical component than it loses to the wheel center\'s 14 mm inboard arc. That is the entire engineering ledger of this generation on this axle, and the mass side of it is on the why.',
+      why: 'This panel exists for a process reason more than a geometric one. design/retro-gen8.md records that clearing drivetrain-7\'s review debt found these same front halfshafts ending 10 mm SHORT of the wheel they drive. One rung later, against a wheel that moved, the same interface is 70 mm LONG. Twice in a row, in opposite directions, and both times because the length was carried from the previous drawing and then patched rather than derived from the wheel it drives. The 10 mm miss came from pulling the pair inboard to reach new dog collars; the collars moved instead and the number went back to one that was only ever right for a 0.81 track. A third manual fix is not the answer. The predicate is one line and it is exact: the outboard CV joint face |z| must equal the active wheels module\'s front hub face inboard plane. It is now enforced rather than written down. This module declares that plane under the interface key front-halfshaft-outboard with extent max, wheels-9 declares the same plane from the wheel side, and tools/check-interfaces.sh sweeps both built meshes and fails the preset if they disagree or if either half does not actually reach the plane it named. Agreement between two comments would have proved nothing here, because every comment in drivetrain-7 said 0.7625 while its shafts ran 70 mm past the wheel; the check is against vertices.\n\nThe mass case is deliberately unflattering. The only steel deleted is 70.0 mm off each of two bars. Booked against the DRAWN 44 mm section that would be 1.671 kg, and that would be an overclaim, because the full drawn steel volume of the pair is 16.58 kg against the 8 kg this ledger has carried since Gen 1, so the drawn cylinder is 2.073 times the massed part. The massed bar is the structural one: 240 Nm through 5.95:1 into an open differential is 714 Nm per shaft, a 22 mm solid bar holds that at 342 MPa of torsional shear, that bar is 1.194 kg over 400 mm, and it leaves 1.40 kg for each of four joints with boot and grease. Seventy millimeters off two of them is 0.418 kg. Booked at 0.42: halfshafts 8 to 7.58, this part 38 to 37.58, the module 118 to 117.58, which still rounds to the 118 kg the system chip shows. A generation that bought a fifth more articulation angle for four hundred grams should say the four hundred grams out loud rather than round it up.',
       fail: [
         'Nineteen percent more articulation angle is paid at the joint every revolution of the car\'s life. A Rzeppa joint\'s friction and heat both rise with angle rather than with load, and the boot fails on angle and heat rather than on load, so the part of this generation that will show up in fleet data first is boot life on the front axle. The statistics restart, and the panel does not pretend the 0.42 kg was free.',
         'THE BOOT NOW FITS, AND WHAT FIXED IT IS THE SENTENCE THIS ENTRY USED TO END ON. It reported that suspension-9\'s upright body, 85 mm wide in x over |z| 0.5510 to 0.5830, left 13.0 mm of the outboard boot standing inside solid metal at its full r 0.042, that an 84 mm bore does not go through an 85 mm upright, and then, filed separately as NOT a finding, that the bar, the joint and the boot all run 47.0 mm through the hub carrier because "neither module draws the bore a real upright would have". The bore is now drawn. suspension-9\'s plate reaches 42.5 mm further aft, to a built edge of x 1.3770, which is what makes room for it, and carries a bore of r 0.052 nominal and 0.0487 as built through the body, opening to 0.0575 at the seal land, with both z faces exactly where they were. The tightest radial gap through that plate is 4.6 mm, at z 0.575 where this boot\'s big clamp presents r 0.0420. Crossings between this part and front-knuckle went 2,036 to zero, and 2,036 was the largest crossing count anywhere on the ladder. The 109.5 mm between the upright\'s outboard face and the hub face, against 122.5 needed by a 55 mm joint and a 70 mm boot lapping it by 2.5, was correct arithmetic and a bore is what dissolves it: the boot passes through the body instead of having to fit outboard of it. STILL OPEN one rung down, because suspension-4 has no bore either: the same sweep puts drivetrain-7\'s bar 17.5 mm inside its carrier plate on the Gen 7 and Gen 8 car.',
@@ -602,7 +602,7 @@ export const SYSTEM = {
     },
     'front-disconnect': {
       name: 'Front axle disconnect',
-      tagline: 'Two dog clutches so the front machine, both gear stages and the whole oil sump can stop turning: the largest single lever in this module.',
+      tagline: 'Two dog clutches so the front machine, both gear stages and the whole oil pan can stop turning: the largest single lever in this module.',
       mass: 5,
       specs: [
         ['Type', 'Two dog collars, one per differential output, 48 V actuated'],
@@ -612,7 +612,7 @@ export const SYSTEM = {
         ['Collar station', '|z| 0.2100 to 0.2800; the shaft face seats 2.50 mm in'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'A permanent-magnet machine geared to the road cannot be switched off. With the wheels turning at 100 km/h the front rotor turns at about 4,640 rpm whatever the inverter does, and open-circuit core loss and windage in a machine that size come to roughly 540 W, with another 180 in the two gear stages churning oil and loading their bearings, and about 60 in the inverter keeping the bus honest. That is close to 780 W of pure parasitic draw on a car whose entire road load at that speed is about 4,700, and it is there every hour of every long drive. So the axle gets to stop. Two dog collars, one on each differential output, are pushed by 48 V actuators fed from hv-4\'s dual by-wire feeds, and when they open the halfshafts turn with the wheels while the differential carrier, both gear stages, the rotor and every litre of oil in the sump go still. Production cars that do this use one clutch and accept the carrier still turning in its bath, because the second clutch costs money. Cost is not an argument on this project, and the second collar deletes the last of the churning.\n\nThe reconnect is the engineering. There is no synchroniser, so the collars can only engage when the speeds already match, which in a car with an electric motor is easier than in a car with a gearbox: the machine spins its own rotor and both gear stages up to synchronous speed using its resolver against the wheel speed sensors, and it has 240 Nm to do it with against roughly 0.07 kg m2 of inertia reflected to the rotor, so 486 rad/s arrives in about 140 ms. Add collar travel and the commanded reconnect is about 180 ms. That is far too slow to be a reaction, which is why the coordinator on the neighbouring panel reconnects on prediction and keeps the rotor pre-spun whenever the situation is even slightly interesting, cutting the actual engagement to about 40 ms. On the mixed cycle the efficiency model uses, the disconnect plus the corner work moves battery-to-wheel efficiency from 0.945 to about 0.958, roughly 1.2% of range or near 20 miles; at a steady 100 km/h, which is what a record attempt actually looks like, the same hardware is worth about 16 Wh per mile. The smaller number is the one this module leads with.\n\nNothing in this part moved for Gen 9 and that is the point of it. When the front track came in 70 mm per side, the halfshaft had to be re-solved between two faces, and this collar is the one that does not get a vote: it spans |z| 0.2100 to 0.2800 on the built mesh, its inboard end overlaps the right-hand output shaft which ends at 0.2200 and the gear case drum which ends at 0.2150, and its outboard end is where the halfshaft\'s inboard joint face seats, 2.50 mm in. Move that face to share the shortening between both ends and the collar has nothing to grip, so the whole 70 mm comes off the outboard end and the bar\'s inboard end stays at |z| 0.3200 exactly where drivetrain-7 left it. A dog clutch is the least forgiving thing on this axle about axial position, which is why it is the datum rather than the variable.',
+      how: 'A permanent-magnet machine geared to the road cannot be switched off. With the wheels turning at 100 km/h the front rotor turns at about 4,640 rpm whatever the inverter does, and open-circuit core loss and windage in a machine that size come to roughly 540 W, with another 180 in the two gear stages churning oil and loading their bearings, and about 60 in the inverter keeping the bus honest. That is close to 780 W of pure parasitic draw on a car whose entire road load at that speed is about 4,700, and it is there every hour of every long drive. So the axle gets to stop. Two dog collars, one on each differential output, are pushed by 48 V actuators fed from hv-4\'s dual by-wire feeds, and when they open the halfshafts turn with the wheels while the differential carrier, both gear stages, the rotor and every liter of oil in the oil pan go still. Production cars that do this use one clutch and accept the carrier still turning in its bath, because the second clutch costs money. Cost is not an argument on this project, and the second collar deletes the last of the churning.\n\nThe reconnect is the engineering. There is no synchronizer, so the collars can only engage when the speeds already match, which in a car with an electric motor is easier than in a car with a gearbox: the machine spins its own rotor and both gear stages up to synchronous speed using its resolver against the wheel speed sensors, and it has 240 Nm to do it with against roughly 0.07 kg m2 of inertia reflected to the rotor, so 486 rad/s arrives in about 140 ms. Add collar travel and the commanded reconnect is about 180 ms. That is far too slow to be a reaction, which is why the coordinator on the neighboring panel reconnects on prediction and keeps the rotor pre-spun whenever the situation is even slightly interesting, cutting the actual engagement to about 40 ms. On the mixed cycle the efficiency model uses, the disconnect plus the corner work moves battery-to-wheel efficiency from 0.945 to about 0.958, roughly 1.2% of range or near 20 miles; at a steady 100 km/h, which is what a record attempt actually looks like, the same hardware is worth about 16 Wh per mile. The smaller number is the one this module leads with.\n\nNothing in this part moved for Gen 9 and that is the point of it. When the front track came in 70 mm per side, the halfshaft had to be re-solved between two faces, and this collar is the one that does not get a vote: it spans |z| 0.2100 to 0.2800 on the built mesh, its inboard end overlaps the right-hand output shaft which ends at 0.2200 and the gear case drum which ends at 0.2150, and its outboard end is where the halfshaft\'s inboard joint face seats, 2.50 mm in. Move that face to share the shortening between both ends and the collar has nothing to grip, so the whole 70 mm comes off the outboard end and the bar\'s inboard end stays at |z| 0.3200 exactly where drivetrain-7 left it. A dog clutch is the least forgiving thing on this axle about axial position, which is why it is the datum rather than the variable.',
       why: 'Gen 1 got this right by accident and Gen 3 lost it by inattention. An induction front axle costs nothing when idle, which drivetrain-2 said in one sentence and then the ladder forgot for four generations while permanent magnets took over the front. The disconnect buys the property back without giving up the regeneration efficiency that makes a magnet machine the right choice for the axle that catches most of the braking. It is 5 kg that removes 780 W, against 17 kg of mass taken out elsewhere when this module was drivetrain-7 and a further 0.42 kg of halfshaft bar at Gen 9, which on js/efficiency.js\'s own cycle is 0.48 Wh per km of rolling and stop-go and works out at about 10 miles. The module\'s net against drivetrain-6 is the 12.42 kg between them. The comparison is the lesson: on a car this slippery, fixed losses matter far more than mass, and any range work that starts with a diet is starting in the wrong place.',
       fail: [
         'A dog clutch cannot slip, so it either engages or it does not, and a mis-timed engagement is a shock load into the gear teeth rather than a slur. The speed-match window is tight by design and the failure of the window is a tooth, not a noise.',
@@ -633,8 +633,8 @@ export const SYSTEM = {
         ['DC landing', '(1.30, 0.402, 0.015), hv-4\'s tunnel run end exactly'],
         ['Maturity', 'Pilot line'],
       ],
-      how: 'One power-electronics family in two homes is a Gen 1 idea in its third silicon generation: the corner and the pocket share dies, gate drivers, balancing logic and one qualification file, and the flying-capacitor bridge that lets 650 V GaN serve an 810 V nominal bus is the same argument in both places. Halving the axle rating halves the current and lets the DC link fall from 30 to 16 uF of stacked ceramic. The genuinely new behaviour is that this inverter is allowed to be completely off. In drivetrain-6 the front machine was the daily machine, so its inverter held the bus and modulated on every kilometre; here the disconnect opens first and the gates stop second, so the inverter is not idling into a spinning magnet field, it is dark next to a stationary one. That ordering matters: opening the clutch while the inverter still commands current would leave torque going nowhere, and closing it while the gates are off would let the machine be back-driven into an uncontrolled rectifier.\n\nThe reconciliation paragraph is the uncomfortable one. hv-4 is carried unchanged from Gen 4, and its front run is 3.1 m of 50 mm2 copper sized against Gen 3\'s 531 A at 508 V. At the 810 V nominal string battery-6 set and battery-7 carries unchanged, 210 series layers over a 630 to 861 V window, drivetrain-6\'s 270 kW peaked at 333 A and the run was already generous. At this axle\'s 130 kW the run peaks near 160 A, about 27% of its 600 A thirty-second rating, and roughly 1.7 kg of that copper pair now has no job at all. On a generation whose entire mass ledger is being scrutinised for miles, 1.7 kg of dead conductor is worth about a mile of range, and it stays, because hv-4 is not this generation\'s to edit. The panel names the number rather than pretending a carry-over is free. One thing was fixed at Gen 7 and is re-verified here rather than assumed: this module\'s DC feed terminates at (1.30, 0.402, 0.015), which is where hv-4\'s front tunnel run ends, and drivetrain-6 landed the same feed 21 mm off. The proof of it used to be that hv-4\'s run was a bare tube of radius 0.0140 and its nearest vertex to that point sat at exactly 14.00 mm, the radius, so the point had to be on the centreline end. That proof has expired rather than failed: hv-4 is being detailed in parallel and its run now carries real hardware at the same station, so the nearest hv-4 vertex to this landing is 4.6 mm rather than 14.00. The landing coordinate is unchanged and it is the coordinate that is the contract. What the arithmetic-from-a-radius shows is that a proof which depends on a partner being a primitive stops working the day the partner stops being one.',
-      why: 'Retiring the hardest qualification in the family into the easiest seat was drivetrain-6\'s good idea and it carries. What Gen 7 adds is the discipline of naming what the carried architecture costs: a harness sized for a car that no longer exists is 1.7 kg of copper travelling 1,800 miles to do nothing, and a generation that claims miles from a 12 kg drivetrain diet has to be willing to count that in the other direction.',
+      how: 'One power-electronics family in two homes is a Gen 1 idea in its third silicon generation: the corner and the pocket share dies, gate drivers, balancing logic and one qualification file, and the flying-capacitor bridge that lets 650 V GaN serve an 810 V nominal bus is the same argument in both places. Halving the axle rating halves the current and lets the DC link fall from 30 to 16 uF of stacked ceramic. The genuinely new behavior is that this inverter is allowed to be completely off. In drivetrain-6 the front machine was the daily machine, so its inverter held the bus and modulated on every kilometer; here the disconnect opens first and the gates stop second, so the inverter is not idling into a spinning magnet field, it is dark next to a stationary one. That ordering matters: opening the clutch while the inverter still commands current would leave torque going nowhere, and closing it while the gates are off would let the machine be back-driven into an uncontrolled rectifier.\n\nThe reconciliation paragraph is the uncomfortable one. hv-4 is carried unchanged from Gen 4, and its front run is 3.1 m of 50 mm2 copper sized against Gen 3\'s 531 A at 508 V. At the 810 V nominal string battery-6 set and battery-7 carries unchanged, 210 series layers over a 630 to 861 V window, drivetrain-6\'s 270 kW peaked at 333 A and the run was already generous. At this axle\'s 130 kW the run peaks near 160 A, about 27% of its 600 A thirty-second rating, and roughly 1.7 kg of that copper pair now has no job at all. On a generation whose entire mass ledger is being scrutinized for miles, 1.7 kg of dead conductor is worth about a mile of range, and it stays, because hv-4 is not this generation\'s to edit. The panel names the number rather than pretending a carry-over is free. One thing was fixed at Gen 7 and is re-verified here rather than assumed: this module\'s DC feed terminates at (1.30, 0.402, 0.015), which is where hv-4\'s front tunnel run ends, and drivetrain-6 landed the same feed 21 mm off. The proof of it used to be that hv-4\'s run was a bare tube of radius 0.0140 and its nearest vertex to that point sat at exactly 14.00 mm, the radius, so the point had to be on the centerline end. That proof has expired rather than failed: hv-4 is being detailed in parallel and its run now carries real hardware at the same station, so the nearest hv-4 vertex to this landing is 4.6 mm rather than 14.00. The landing coordinate is unchanged and it is the coordinate that is the contract. What the arithmetic-from-a-radius shows is that a proof which depends on a partner being a primitive stops working the day the partner stops being one.',
+      why: 'Retiring the hardest qualification in the family into the easiest seat was drivetrain-6\'s good idea and it carries. What Gen 7 adds is the discipline of naming what the carried architecture costs: a harness sized for a car that no longer exists is 1.7 kg of copper traveling 1,800 miles to do nothing, and a generation that claims miles from a 12 kg drivetrain diet has to be willing to count that in the other direction.',
       fail: [
         '650 V GaN at the 431 V a die sees at an 861 V ceiling is 66% of rating, and GaN\'s neutron burnout dataset is still a decade younger than SiC\'s; the fleet failure model carries wider error bars and says so, unchanged from Gen 5.',
         'An inverter that spends most of its life dark thermal-cycles differently from one that runs warm all day, and the ceramic link now sees deeper, less frequent excursions rather than shallow constant ones. Cracked ceramic is an open rather than a short, so the failure is a ripple alarm and a limp, which is the designed order.',
@@ -648,8 +648,8 @@ export const SYSTEM = {
 /* ── Geometry ── */
 
 const RX = P.axleR;             // -1.45, rear axle x
-const WY = P.wheelY;            // 0.355, wheel centre height
-/* Rear wheel centre |z|, set at Gen 7 and unchanged. P.wheelZ is still
+const WY = P.wheelY;            // 0.355, wheel center height
+/* Rear wheel center |z|, set at Gen 7 and unchanged. P.wheelZ is still
    0.81 and MUST STAY 0.81: eight modules read it, including body-8's
    fairing wall, and editing it to 0.74 would silently move every earlier
    generation's wheels. wheels-9 narrows the FRONT axle with its own local
@@ -657,7 +657,7 @@ const WY = P.wheelY;            // 0.355, wheel centre height
    neither of them comes from P.wheelZ. The front geometry in this file
    reads 0.74 through the two measured hub faces below, never through P. */
 const REAR_Z = 0.74;
-const RING_Z = 0.69;            // motor annulus centre plane, |z| 0.65..0.73
+const RING_Z = 0.69;            // motor annulus center plane, |z| 0.65..0.73
 const FLANGE_Z = 0.65;          // contract flange face, |z|
 
 /* Front unit axes, carried from drivetrain-2's installation through Gen 3
@@ -665,7 +665,7 @@ const FLANGE_Z = 0.65;          // contract flange face, |z|
 const A7 = [1.48, 0.40];        // motor disc axis
 const B7 = [1.505, 0.458];      // intermediate axis
 const C7 = [1.45, P.wheelY];    // ring gear / halfshaft axis
-const GZ7 = -0.16;              // gear case centre plane, z
+const GZ7 = -0.16;              // gear case center plane, z
 
 /* Cylinder with its axis along z instead of y. */
 function zc(mesh) { mesh.rotation.x = Math.PI / 2; return mesh; }
@@ -719,13 +719,13 @@ function zrev(profile, mat, seg = 32, o = {}) {
       pos[k * 3] = Math.cos(ang) * r;
       pos[k * 3 + 1] = Math.sin(ang) * r;
       pos[k * 3 + 2] = z;
-      /* NORMALISED UVs, 0 to 1, not the metre-scale ones _arcUV uses.
+      /* NORMALIZED UVs, 0 to 1, not the meter-scale ones _arcUV uses.
          That looks like the wrong call against the note in common.js and it
          is not, because the note is about PAINT: TEX.paintFlakeNormal tiles
-         40 times and paintPeelNormal 50, so in metres they land on 25 mm and
+         40 times and paintPeelNormal 50, so in meters they land on 25 mm and
          20 mm, which is flake and peel scale. Every material a mechanical
          part in this module wears is cast or brushed grain at repeat 4 to 6,
-         which in metres tiles every 170 to 250 mm. Rendered, a housing came
+         which in meters tiles every 170 to 250 mm. Rendered, a housing came
          out covered in 20 mm blisters while the lib.cyl beside it, whose UVs
          are 0 to 1, looked machined. Matching the primitives is what keeps a
          part that used to be a cylinder looking like the same part. */
@@ -751,7 +751,7 @@ function zrev(profile, mat, seg = 32, o = {}) {
   return lib.crease(lib.mesh(geo, mat), o.crease != null ? o.crease : 30);
 }
 
-/* Chamfered annulus about z, centred on its own origin: the drop-in
+/* Chamfered annulus about z, centered on its own origin: the drop-in
    replacement for the old ringMesh. `edges` names which of the four
    circular edges carry the chamfer, in the order outer-plus, outer-minus,
    inner-plus, inner-minus, so a ring buried in a bore only pays for the
@@ -802,7 +802,7 @@ function boltRing(n, r, size, mat, cx, cy, z, dir, phase = 0, type = 'hex') {
   return g;
 }
 
-/* One halfshaft, centred on its own origin so lib.spin works.
+/* One halfshaft, centered on its own origin so lib.spin works.
    Local +z points outboard. Same joints, same boots, same forgings as
    Gen 1 through Gen 8. THE BAR IS 70 MM SHORTER AND THAT IS THE WHOLE
    GEOMETRIC CHANGE IN THIS MODULE.
@@ -817,11 +817,11 @@ function boltRing(n, r, size, mat, cx, cy, z, dir, phase = 0, type = 'hex') {
                collar spans |z| 0.2100 to 0.2800 and the joint face seats
                2.5 mm inside its outboard end. Move this face and the
                collar has nothing to grip.
-   Half-span is therefore (0.6925 - 0.2775) / 2 = 0.2075, the pair centre
+   Half-span is therefore (0.6925 - 0.2775) / 2 = 0.2075, the pair center
    is (0.6925 + 0.2775) / 2 = 0.4850, and with a 55 mm joint the joint
-   centre offset is 0.2075 - 0.0275 = 0.1800, against drivetrain-7's
-   0.2150. Each joint centre comes in 35 mm, so the bar loses 70 mm and
-   the boot centres come in 35 mm with their joints. Every overlap the
+   center offset is 0.2075 - 0.0275 = 0.1800, against drivetrain-7's
+   0.2150. Each joint center comes in 35 mm, so the bar loses 70 mm and
+   the boot centers come in 35 mm with their joints. Every overlap the
    drawing had is preserved exactly: the bar still runs 12.5 mm into each
    joint bore and each boot lip still laps its joint by 2.5 mm. */
 function halfshaft(out) {
@@ -844,7 +844,7 @@ function halfshaft(out) {
        a groove behind it, and a face at each end. Both joints keep the
        drawn 55 mm length and the drawn r 0.036 body, because the front-unit
        panel solves the shaft from the two joint FACES: the outboard one at
-       local |z| 0.2075, which with the pair centred on |z| 0.4850 lands on
+       local |z| 0.2075, which with the pair centered on |z| 0.4850 lands on
        0.6925, wheels-9's hub face and the plane SYSTEM.interfaces declares
        with extent 'max'; and the inboard one at local -0.2075, which is
        |z| 0.2775 and seats 2.50 mm inside the dog collar. Nothing here
@@ -873,7 +873,7 @@ function halfshaft(out) {
        line anywhere on it; a convoluted boot has five, and it is the one
        part of a driveshaft a person can name on sight.
 
-       The envelope is held to the millimetre and that is deliberate. This
+       The envelope is held to the millimeter and that is deliberate. This
        boot runs |z| 0.5700 to 0.6400 and presents its full r 0.042 there,
        which used to be 13.0 mm inside suspension-9's solid upright body.
        suspension-9 now bores that body, r 0.052 opening to 0.0575, so the
@@ -930,7 +930,7 @@ function halfshaft(out) {
      and the only one that fits.
 
      Flange OD 0.052 is inboard of that carrier bore, and the flange's
-     outboard face is ON local 0.2075, so the declared plane is now realised
+     outboard face is ON local 0.2075, so the declared plane is now realized
      by a 104 mm face with a 86 mm bolt circle rather than by a shaft end. */
   const fs = new THREE.Shape();
   fs.absarc(0, 0, 0.0520, 0, Math.PI * 2, false);
@@ -949,19 +949,19 @@ function halfshaft(out) {
   return g;
 }
 
-/* Rotor ring: canned 32-pole Halbach array on an aluminium hoop, bolted to
+/* Rotor ring: canned 32-pole Halbach array on an aluminum hoop, bolted to
    the wheels-9 rim flange at the |z| 0.65 contract plane. Lives entirely
    inside the annulus (r 0.155..0.235, |z| 0.65..0.73).
 
    Defect corrected from drivetrain-6: its rotor flange inboard face sat at
    |z| 0.722 against a 0.720 contract plane, a 2 mm standoff. Here the
-   flange is 8 mm thick at local z -0.036 from a ring centre of 0.69, so its
+   flange is 8 mm thick at local z -0.036 from a ring center of 0.69, so its
    inboard face lands on |z| 0.650 exactly. */
 function rotorRingPart(s) {
   const part = lib.part('rotor-rings', [0, 0, s * 0.90]);
   const spinG = new THREE.Group();
 
-  /* structural hoop, r 0.2070..0.2160, |z| 0.658..0.728. Aluminium because
+  /* structural hoop, r 0.2070..0.2160, |z| 0.658..0.728. Aluminum because
      a Halbach array self-closes its flux and needs no back iron, and a
      non-magnetic hoop keeps the outer face field near zero.
 
@@ -1053,7 +1053,7 @@ function statorRingPart(s) {
   g.position.set(RX, WY, s * RING_Z);
 
   /* THE YOKE IS A STACK, NOT A TUBE. r 0.174..0.181 over |z| 0.655..0.725,
-     seven millimetres of it because 32 poles carry a third less flux each
+     seven millimeters of it because 32 poles carry a third less flux each
      than Gen 5's 20 did. Every one of those numbers is drivetrain-7's and
      none of them move here. What moves is that the ring stops pretending to
      be one turned part.
@@ -1433,7 +1433,7 @@ function hubBearingPart(s) {
      the quantity wanted anyway, and this is where it is largest. */
   /* THREE EDDY PROBES WITH LEADS AND A CONNECTOR, which is the difference
      between an instrument and a rectangle. Each is a stepped body with a
-     sensing face, a moulded backshell and a pigtail into a common junction
+     sensing face, a molded backshell and a pigtail into a common junction
      block on the housing: the panel's claim is that bearing tilt is trended
      every revolution, and a probe with no way out of the corner cannot
      trend anything. drivetrain-6 aimed these at the rotor flange, which is
@@ -1454,7 +1454,7 @@ function hubBearingPart(s) {
      THE PIGTAIL FOLLOWS THE SHOULDER, and that sentence is a fix rather
      than a description. Four control points cannot hold an arc this long:
      the spline chorded straight across the hub face, and the routing always
-     stepped anticlockwise, so the 5.75 rad probe went 277 degrees the wrong
+     stepped counterclockwise, so the 5.75 rad probe went 277 degrees the wrong
      way round and its tube swept in to r 0.0260. Measured against the built
      mesh that put two of the three leads per side up to 6.93 mm INSIDE the
      stud flange, which is the one part of this housing that turns. Taking
@@ -1489,11 +1489,11 @@ function hubBearingPart(s) {
   g.add(jbox);
 
   /* Stud flange on the rotating race. 0.685 is this group's plane, so the
-     face lands 15 mm inboard of the new REAR_Z wheel centre, on the r 0.060
+     face lands 15 mm inboard of the new REAR_Z wheel center, on the r 0.060
      spigot wheels-9's rear disc bolts to.
 
      It is now a turned hub face rather than a disc: a pilot spigot standing
-     2 mm proud at r 0.030 so the wheel centres on something, a relieved
+     2 mm proud at r 0.030 so the wheel centers on something, a relieved
      face inside the bolt circle so the flange bears only where it should,
      and five real wheel studs with a lead thread instead of five hexagonal
      stubs. The 5 by r 0.048 pattern and the flange's own r 0.060 by 14 mm
@@ -1718,7 +1718,7 @@ function serviceLoopPart(s) {
 
   /* purge air line, dry side of the bundle, landing on the carrier boss
      rather than crossing the flange face the way the Gen 5 stub implied.
-     The boss moved with the bundle, from 125 degrees round the carrier to
+     The boss moved with the bundle, from 125 degrees around the carrier to
      55, so the umbilical still flexes as one object. */
   part.add(lib.tube([
     [-1.352, 0.402, s * 0.614],
@@ -1786,7 +1786,7 @@ function tvControllerPart() {
   part.add(pcb);
   /* THE EARS LEAVE THROUGH THE z FACES, NOT THE x ONES, and that is a fix
      rather than a preference. The box spans x -1.730..-1.590, and the
-     forward pair was drawn at x -1.5940: a 24 mm ear centred 4 mm inside
+     forward pair was drawn at x -1.5940: a 24 mm ear centered 4 mm inside
      the wall stands only 8 mm proud, and the head seated on it then sat
      x -1.5997..-1.5883, so 85 percent of each head was inside the casting
      it bolts to. A cone sweep scored those two at 4 percent exposed against
@@ -1874,7 +1874,7 @@ function tvControllerPart() {
      0.18 by 0.036 by 0.12 spanning x -1.040..-0.860, y 0.308..0.344,
      z -0.340..-0.220 on its BUILT mesh, the same station suspension-4 used,
      so its aft face is at x -1.04 and the run has to reach past it rather
-     than stop at the centre coordinate. It lands at (-1.030, 0.330,
+     than stop at the center coordinate. It lands at (-1.030, 0.330,
      -0.282), 10 mm inside that face. This is the only run that crosses the
      penthouse footprint, so it descends aft of x -1.66 and then holds
      y 0.320 through a corridor only 20 mm tall: the battery envelope lid
@@ -1930,7 +1930,7 @@ function frontUnitPart() {
 
   /* FOURTEEN BOLTS THAT WERE INSIDE THE PART THEY HELD. lib.bolts drew them
      at r 0.136 on a plane 2 mm under a solid r 0.142 dish, so 5.6 mm of
-     each 7.2 mm stub was buried in aluminium and a ray sweep found zero of
+     each 7.2 mm stub was buried in aluminum and a ray sweep found zero of
      the bank's faces exposed. That is the third bank on this car to land
      that way and the note in common.js says why: the caller has to state
      the VISIBLE face, not a datum. The face here is the outboard side of
@@ -1938,8 +1938,8 @@ function frontUnitPart() {
      lib.fastener seats itself on it. */
   part.add(boltRing(10, 0.1470, 0.0058, M.steel, A7[0], A7[1], 0.0420, '+z'));
 
-  /* Printed load-path ribs following the optimiser's spider, now chamfered
-     and drafted, and tied into a hub collar at the centre so they read as
+  /* Printed load-path ribs following the optimizer's spider, now chamfered
+     and drafted, and tied into a hub collar at the center so they read as
      one printed spider rather than seven loose bars. Nine of them, because
      seven at 0.82 radians left a 0.86 rad gap the eye finds. */
   const spider = zrev([
@@ -1991,7 +1991,7 @@ function frontUnitPart() {
   part.add(cover);
   part.add(boltRing(6, 0.0755, 0.0052, M.steel, C7[0], C7[1], -0.2225, '-z'));
 
-  /* OIL. A gear case with a sump has a drain and a level plug and two
+  /* OIL. A gear case with an oil pan has a drain and a level plug and two
      galleries feeding the cooler, and none of them were drawn: the cooler
      was a box under the case with two water stubs and no oil side at all.
      Both galleries are external pipes on the case flank, which is what an
@@ -2037,7 +2037,7 @@ function frontUnitPart() {
       [1.4640, 0.2900, -0.0700], [1.4620, 0.2830, -0.0520]], M.coolant]]) {
     part.add(lib.tube(route, 0.0055, mat, false, 14));
   }
-  /* Drain plug on the sump floor, fill and level plug on the flank. A hex
+  /* Drain plug on the oil pan floor, fill and level plug on the flank. A hex
      head on the lowest face of a gear case is the single most legible
      service feature a drive unit has, and the first placement of this one
      was at (1.477, 0.356), which is 27 mm from the output axis and
@@ -2284,7 +2284,7 @@ function frontInverterPart() {
      inverter losing 400 W at load has to put it somewhere, and this pocket
      is on the housing's inboard flank with the coolant plumbing already on
      its other side. Six fins at 5.6 mm pitch is a real spacing, not a
-     texture: a 2 mm blade on a 3.6 mm gap is what casts into aluminium and
+     texture: a 2 mm blade on a 3.6 mm gap is what casts into aluminum and
      still passes air.
 
      THE BANK IS AS DEEP AS THE FACE IT STANDS ON, and the first draft was
@@ -2307,7 +2307,7 @@ function frontInverterPart() {
      They now stand off the two ends at x 1.378 and 1.602 and reach back in
      +z to the housing's inboard face at z -0.022, which is the surface this
      pocket is actually bolted to, with the heads on the outboard side where
-     a spanner could reach them. Three points, not two, because a 200 mm box
+     a wrench could reach them. Three points, not two, because a 200 mm box
      on two ears rocks about their line. */
   for (const [ex, ey] of [[1.3780, 0.4700], [1.3780, 0.4300], [1.6020, 0.4500]]) {
     const ear = lib.cbox(0.024, 0.022, 0.012, 0.0026, M.castAlu);
@@ -2326,7 +2326,7 @@ function frontInverterPart() {
     part.add(seat(lib.fastener(0.0038, M.steel, 'torx'), 1.49 + lx, 0.450 + ly, -0.0740, '-z'));
   }
 
-  /* embedded-die GaN packs on the lid face, each a moulded module with a
+  /* embedded-die GaN packs on the lid face, each a molded module with a
      chamfered lip rather than a slab */
   for (let i = 0; i < 3; i++) {
     const pack = lib.cbox(0.040, 0.040, 0.010, 0.0030, M.plasticLt);
@@ -2392,7 +2392,7 @@ function frontInverterPart() {
 export function build() {
   const sys = new THREE.Group();
 
-  /* rear corners at the NEW |z| 0.74 centres: motor rings, bearing unit,
+  /* rear corners at the NEW |z| 0.74 centers: motor rings, bearing unit,
      corner inverter, dual loops, per side */
   for (const s of [-1, 1]) {
     sys.add(rotorRingPart(s));

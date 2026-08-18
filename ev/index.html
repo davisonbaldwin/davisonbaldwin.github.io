@@ -4,6 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>EV·01 · complete vehicle engineering model</title>
+<meta name="description" content="An interactive 3D engineering model of an electric car: eleven generations, 455 clickable parts, and the measured reason behind every one.">
+<!-- THE MARK IS THE LADDER: three rungs, each one longer than the last, the
+     newest in the interface's one accent color. It is drawn rather than
+     fetched, so the app still has no dependencies and no second request, and
+     an SVG icon is the one format that stays sharp on a retina tab strip.
+     Everything else here is a plate color out of css/style.css. -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%230b0e12'/%3E%3Crect x='6' y='21' width='9' height='3' rx='1.5' fill='%236d7784'/%3E%3Crect x='6' y='14.5' width='14' height='3' rx='1.5' fill='%23aeb7c1'/%3E%3Crect x='6' y='8' width='20' height='3' rx='1.5' fill='%23d4a24c'/%3E%3C/svg%3E">
+<!-- the phone's own chrome takes the app's plate color instead of white -->
+<meta name="theme-color" content="#0b0e12">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -62,6 +71,12 @@
   <div class="grp" id="pView">
     <button id="btnSpin" class="icon on" title="Auto-rotate when idle">⟳</button>
     <button id="btnXray" title="Fade the body shell">X-ray</button>
+    <!-- "Cut" and not "Section", which is what the plate it opens is called.
+         Row two of the two-row phone faceplate measures 330 px against a 375
+         px window, so a control added here has 45 px to live in: SECTION at
+         9 px mono with 0.16em tracking needs 66 and CUT needs 38. -->
+    <button id="btnCut" title="Section the car on a plane">Cut</button>
+    <button id="btnOpen" title="Open the doors, hood and decklid, and measure what they cost in space">Open</button>
     <button id="btnDrive" title="Spin wheels, rotors, fans">Drive</button>
     <button id="btnHome" title="Reset view">Home</button>
   </div>
@@ -69,6 +84,20 @@
 
 <nav id="rail">
   <div class="r-head">Vehicle systems</div>
+  <!-- THE ONE THING THIS APP DOES THAT A SLIDESHOW CANNOT, and it was the one
+       thing nothing pointed at. Every row below carries a dropdown that takes
+       that system from ANY rung, so a reader can put Gen 9 wheels on a Gen 1
+       car and watch the waterfall and the range move. Davis, who has looked at
+       this app more than anyone: "it feels hidden like the user has to stumble
+       into the feature." He is right. The dropdowns are styled as controls but
+       they READ as status, because "Gen 1 · reference" is a statement about
+       where a module came from and not an invitation to change it.
+       Same contract as the hint in the footer: it teaches one thing, it goes
+       away the moment the reader does that thing, and it stays away. -->
+  <div id="mixHint">
+    <span>Any system can come from any rung. Mix them to build your own car.</span>
+    <button id="mixHintX" title="Hide this for good" aria-label="Hide the note">&times;</button>
+  </div>
   <!-- The index that did not exist. Until this, finding a part meant already
        knowing which of 53 modules owned it, and the 232,633 words of written
        engineering behind those parts were reachable only by opening them one
@@ -84,6 +113,11 @@
 <button id="railToggle" title="Hide or show the systems panel">‹</button>
 
 <aside id="panel">
+  <!-- The reading column. The longest part in the model, wheels-11's
+       brake-by-wire unit, is 4,820 words, and at the panel's resting 380 px
+       that is a column 55 characters wide and about eleven thousand pixels
+       long. This widens it for a long read and remembers the choice. -->
+  <button id="panelWide" title="Widen the reading column">⤢</button>
   <button id="panelClose" aria-label="Close">×</button>
   <div id="panelIn"></div>
 </aside>
@@ -113,6 +147,15 @@
     <small>estimated range</small>
     <div class="e-big"><b id="effRange">0</b><i id="effRangeU">mi</i></div>
   </div>
+
+  <!-- THE LADDER, under the number the ladder is about. The whole argument
+       of this project is eleven rungs each strictly better than the last, and
+       the readout showed one of them at a time with nothing to say where it
+       stood. Eleven bars, built by js/main.js from js/compare.js's own rung()
+       figures, the rung on screen lit, and every bar is the way to that rung.
+       Empty here because the numbers are not typed into a document. -->
+  <div class="e-ladder" id="effLadder" role="group" aria-label="Range at every rung of the ladder"></div>
+  <div class="e-axis lad-foot"><span id="ladLo">0</span><b id="ladHi">0</b></div>
   <!-- EFFICIENCY, NOT CONSUMPTION. It is the same measurement read the way
        every other figure on this card reads. Wh/mi was the one number here
        that got SMALLER as the car got better, 228.2 at Gen 1 down to 97.9 at
@@ -152,7 +195,16 @@
 
 <div id="hoverTag"></div>
 
-<footer id="hint">drag to orbit · scroll to zoom · right-drag to pan · click any part</footer>
+<!-- The hint is instruction rather than instrument, so it can be dismissed
+     for good. The class is set here rather than in js/main.js because the
+     module runs after the parse and a hint somebody turned off a week ago
+     would otherwise be painted for a frame on every load. -->
+<footer id="hint">
+  <span>drag to orbit · scroll to zoom · right-drag to pan · click any part</span>
+  <button id="hintX" title="Hide this for good" aria-label="Hide the hint">×</button>
+</footer>
+<script>try{if(localStorage.getItem('ev-hint-hidden')==='1')document.body.classList.add('no-hint');
+if(localStorage.getItem('ev-mix-learned')==='1')document.body.classList.add('mix-learned');}catch(e){}</script>
 
 <!-- ── ACCESS GATE ──────────────────────────────────────────────────────
      Injected by tools/sync-ev.py; do not hand-edit ev/index.html, it is a

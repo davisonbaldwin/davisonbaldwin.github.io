@@ -2,7 +2,7 @@
    The car is a measuring device, so the chrome around it is one too.
    A graded neutral scale does the work. Hairlines instead of shadows.
    Every number tabular. Everything on a 4 px grid. One accent, and it
-   is the model's own selection colour, so it only ever means "current". */
+   is the model's own selection color, so it only ever means "current". */
 
 :root {
   /* neutral scale, cool, zeroed on the scene fog (0x0a0d11) */
@@ -28,11 +28,11 @@
   --acc-dim: rgba(212, 162, 76, 0.5);
   --acc-wash: rgba(212, 162, 76, 0.1);
 
-  /* THE SELECTION COLOUR, which is the accent until something is selected.
+  /* THE SELECTION COLOR, which is the accent until something is selected.
      Every module declares SYSTEM.color and the tree holds nine slot hues;
      js/main.js writes the focused one onto the document element and clears
      it again on close, so the rail row, the panel rules and the light on
-     the part in the 3D scene are the same colour at the same instant.
+     the part in the 3D scene are the same color at the same instant.
      Declared here as a fallback rather than left undefined, which is what
      keeps the resting interface monochrome: with nothing open these two
      resolve to the amber and not one pixel moves. */
@@ -49,6 +49,32 @@
   --plate: rgba(9, 12, 16, 0.86);
   --plate-hi: rgba(10, 13, 18, 0.93);
   --plate-op: rgba(9, 12, 16, 0.97);
+
+  /* the reading column; body.read-wide overrides it, and the two plates that
+     stand clear of an open panel are positioned off it */
+  --panelw: 380px;
+
+  /* THE FACEPLATE'S OWN HEIGHT, measured and written by js/main.js on every
+     resize. Everything anchored under the bar is positioned off this instead
+     of off a hand-computed row count.
+
+     It used to be arithmetic. The bar was fixed at 96 px below 580 and the
+     rail, the panel, both latches and the section strip carried a literal
+     108, so the layout was correct only while the controls happened to wrap
+     into exactly two rows: css further down still records the day the paint
+     control made it three and pushed 48 px of view switches out of a 96 px
+     box. Adding the tour button put row one at 399 px against a 375 px phone
+     with compare open, which is the same failure again. Measured, the bar can
+     wrap to as many rows as it needs at any width and nothing below it is
+     ever wrong. */
+  --barh: 48px;
+  /* the readout's own height and the section strip's, both written by
+     js/main.js. Defaults matter: a calc() that reads an UNSET custom property
+     is invalid at computed-value time and the whole declaration is dropped,
+     silently, so a rule guarded on one of these would simply not apply. The
+     strip is built lazily and is 0 until it exists. */
+  --effh: 0px;
+  --cuth: 0px;
 
   --r: 2px;
   --t: 120ms;
@@ -73,7 +99,7 @@ html, body {
      floor plane covers the lower two thirds, so the light belongs on the
      HORIZON where the backdrop is actually visible behind the car, with the
      corners falling away. The warmth is held to a low saturation so it reads
-     as a lit backdrop rather than a colour wash, and so it agrees with the
+     as a lit backdrop rather than a color wash, and so it agrees with the
      amber accent instead of fighting the cool neutral scale. The last stop
      still lands on the scene fog 0x0a0d11 so the horizon does not seam. */
   background:
@@ -93,7 +119,7 @@ html, body {
 
 /* Film grain, behind the canvas. A pure gradient is flat at any size; a
    little noise is what makes a backdrop read as photographed. Soft-light so
-   it modulates the gradient rather than greying it. */
+   it modulates the gradient rather than graying it. */
 body::before {
   content: "";
   position: fixed; inset: -6%;
@@ -150,7 +176,9 @@ button { font-family: var(--sans); color: inherit; }
 
 #topbar {
   position: fixed; top: 0; left: 0; right: 0;
-  height: 48px;
+  /* min-height, not height: the bar is allowed to grow a row when the
+     controls need one, and --barh is what it grew to */
+  min-height: 48px;
   display: flex; align-items: stretch;
   border-width: 0 0 1px;
   border-radius: 0;
@@ -173,6 +201,13 @@ button { font-family: var(--sans); color: inherit; }
 }
 
 /* one group per question, divided by a hairline rather than floated apart */
+/* The bar wraps, and so must the groups inside it, or a group is one
+   unbreakable block however narrow the window gets. #pGen with compare open is
+   the stepper, the rung dropdown, the comparison dropdown and TOUR: 318 px of
+   content that stayed 318 px at a 280 px viewport, so TOUR sat at x 263 to 308
+   with 28 px of it past the edge and body{overflow:hidden} over the rest. The
+   faceplate measured itself correctly the whole time; it was measuring a row
+   that could not fit. */
 .grp {
   display: flex; align-items: center; gap: 12px;
   padding: 0 16px;
@@ -337,7 +372,7 @@ button { font-family: var(--sans); color: inherit; }
 }
 
 /* ── Swatches ──────────────────────────────────────────────────────────
-   A paint chip reads as paint only if it is not a flat disc of colour: the
+   A paint chip reads as paint only if it is not a flat disc of color: the
    inner shadow gives it an edge and the outer hairline separates it from
    the plate the way every other control here is separated. */
 .sw {
@@ -361,9 +396,9 @@ button { font-family: var(--sans); color: inherit; }
 .dd-item.has-sw .sw { grid-row: 1; }
 .dd-item.has-sw b, .dd-item.has-sw span { grid-column: 2; }
 
-/* The paint control is the colour it sets. The name lives in the menu and
+/* The paint control is the color it sets. The name lives in the menu and
    in the button's title, so the faceplate spends 26 px on it instead of the
-   90 the longest colour name would need. */
+   90 the longest color name would need. */
 /* The finish control IS the finish: the base coat as the chip and the pearl
    as a ring around it, so the button shows the combination rather than the
    name of half of it. --pearl resolves to transparent when the car is solid,
@@ -412,7 +447,7 @@ button { font-family: var(--sans); color: inherit; }
 .sw-grid .sw-pick { width: 20px; height: 20px; }
 .sw-grid .sw-pick::before { width: 10px; height: 10px; }
 
-/* solid or metallic, on any colour. A segmented pair rather than a checkbox,
+/* solid or metallic, on any color. A segmented pair rather than a checkbox,
    because neither state is the absence of the other. */
 .fin-seg {
   display: flex;
@@ -527,11 +562,11 @@ button { font-family: var(--sans); color: inherit; }
               0 0 0 1px rgba(0, 0, 0, 0.6);
 }
 .sw-pick:hover { border-color: var(--rule-hi); }
-/* the current one takes the selection colour, which in an open part panel is
+/* the current one takes the selection color, which in an open part panel is
    that part's own system hue, so the chip agrees with the rest of the panel */
 .sw-pick.on { border-color: var(--sel); }
-/* "match the body" is the ABSENCE of a colour and is drawn as one: an empty
-   well with a stroke through it, not a tenth colour that happens to be grey */
+/* "match the body" is the ABSENCE of a color and is drawn as one: an empty
+   well with a stroke through it, not a tenth color that happens to be gray */
 .sw-none::before { background: var(--n15); box-shadow: inset 0 0 0 1px var(--n40); }
 .sw-none::after {
   content: "";
@@ -541,13 +576,151 @@ button { font-family: var(--sans); color: inherit; }
   transform: rotate(-45deg);
 }
 
+/* the color control, as a chip in the data strip rather than a swatch grid
+   above the engineering. The dot carries the color the part is wearing, so
+   the chip reports as well as opens. */
+.chip-fin {
+  background: none;
+  border: none;
+  border-right: 1px solid var(--rule);
+  cursor: pointer;
+  align-items: center;
+}
+.chip-fin:hover .chip-sw { border-color: var(--rule-hi); }
+.chip-fin.open .chip-sw { border-color: var(--sel, var(--acc)); }
+.chip-sw {
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  border: 1px solid var(--edge);
+  background: var(--sw, transparent);
+  box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.4);
+}
+/* the popover is the same plate as every other menu; it only has to be wide
+   enough for the swatch row to wrap the way it did in the panel */
+.fin-pop { padding: 12px; max-width: 300px; }
+.fin-pop .sw-note, .fin-pop .sw-hidden { margin-top: 10px; }
+
+/* what share of its module and of the car this part is */
+.p-share {
+  margin-top: 10px;
+  font: 400 10px/1.4 var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--n60);
+}
+
+/* what a term is worth on this car, in the panel about that term. One line
+   per lever, on the plate's own rule, at one step down the type scale from
+   the prose above it. */
+.lever {
+  margin-top: 14px;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--rule);
+  font: 400 12px/1.6 var(--sans);
+  color: var(--n80);
+}
+.lever b {
+  display: block;
+  margin-bottom: 6px;
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--n50);
+}
+.lever-row {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.lever-row:last-of-type { border-bottom: none; }
+.lever-row u {
+  text-decoration: none;
+  font: 500 12px/1 var(--mono);
+  color: var(--n99);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.lever small {
+  display: block;
+  margin-top: 8px;
+  font: 400 10px/1.5 var(--sans);
+  color: var(--n60);
+}
+
+/* ── The part on the ladder ────────────────────────────────────────────
+   Eleven ticks under the mass chip, filled on the rungs that draw this part,
+   the rung on screen marked, each one a way to that rung's version of it. The
+   same visual language as the readout's ladder strip, at panel scale: this is
+   the same climb, told through one part. */
+.lin { margin: 14px 0 4px; }
+.lin-ticks { display: flex; gap: 3px; height: 14px; }
+.lin-t {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: none;
+  border-radius: 1px;
+  background: var(--n20);
+  cursor: pointer;
+  transition: background var(--t) var(--ease);
+}
+/* a rung that draws this part */
+.lin-t.has { background: var(--n50); }
+.lin-t.has:hover { background: var(--n80); }
+/* the rung on screen, in the selection color the whole panel is already
+   keyed to, so the mark agrees with the part's own system hue */
+.lin-t.on { background: var(--sel, var(--acc)); }
+.lin-t.on:hover { background: var(--sel, var(--acc)); }
+/* a rung with no such part is a gap you cannot press */
+.lin-t:disabled { cursor: default; }
+.lin-foot {
+  margin-top: 6px;
+  font: 400 10px/1.4 var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--n60);
+}
+
+/* what a tint does, said once under the row that does it */
+.sw-note {
+  margin-top: 10px;
+  font: 400 11px/1.5 var(--sans);
+  color: var(--n60);
+}
+
+/* the part is buried on this car. Amber, because this is the one line in a
+   panel that is about the CONTROL not working the way it looks like it should,
+   and it carries the way out with it. */
+.sw-hidden b { color: var(--n99); font-weight: 500; }
+.sw-hidden {
+  margin-top: 10px;
+  padding: 9px 10px;
+  background: var(--acc-wash);
+  border-left: 2px solid var(--acc-dim);
+  border-radius: 0 var(--r) var(--r) 0;
+  font: 400 11px/1.5 var(--sans);
+  color: var(--n80);
+}
+.sw-xray {
+  display: inline-block;
+  margin-top: 8px;
+  height: 22px; padding: 0 8px;
+  background: var(--well);
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  color: var(--n70);
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  cursor: pointer;
+}
+.sw-xray:hover:not(:disabled) { color: var(--n99); border-color: var(--rule-hi); }
+.sw-xray:disabled { opacity: 0.5; cursor: default; }
+
 /* ── Systems rail ──────────────────────────────────────────────────── */
 
 /* sized to its contents, so it reads as an object on the plate rather than
    a full-height chrome column with nothing in the bottom half */
 #rail {
-  position: fixed; top: 60px; left: 12px;
-  max-height: calc(100vh - 72px);
+  position: fixed; top: calc(var(--barh) + 12px); left: 12px;
+  max-height: calc(100vh - var(--barh) - 24px);
   width: 280px;
   border-radius: var(--r);
   overflow-y: auto;
@@ -563,6 +736,55 @@ body.rail-hidden #rail { transform: translateX(calc(-100% - 16px)); }
   background: var(--plate-op);
   border-bottom: 1px solid var(--rule);
 }
+
+/* THE INVITATION. It sits above the search field and below the heading, which
+   is the only place in the app a reader is already looking at the rows it is
+   about. Deliberately NOT a callout: no accent fill, no icon, no border box.
+   This app teaches by writing a sentence in the same voice as everything else,
+   and a yellow panel saying TIP would be the first thing here that shouts.
+   It reads at --n70 against the rail's own plate, one step up from the
+   dismissed state's --n50, and it goes for good on the first swap. */
+#mixHint {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 9px 12px 8px;
+  border-bottom: 1px solid var(--rule);
+  font: 400 11px/1.45 var(--sans);
+  color: var(--n70);
+}
+#mixHint span { flex: 1; min-width: 0; }
+/* the accent lands on the two words that name the action, not on the plate */
+#mixHint span::first-line { color: var(--n70); }
+#mixHintX {
+  flex: none;
+  width: 18px; height: 18px;
+  display: grid; place-items: center;
+  background: none;
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  color: var(--n50);
+  font: 400 12px/1 var(--sans);
+  cursor: pointer;
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease);
+}
+#mixHintX:hover { color: var(--n99); border-color: var(--rule-hi); }
+body.mix-learned #mixHint { display: none; }
+/* the tour takes the rail off screen anyway, and a first-time reader running
+   the tour is being taught something else */
+body.tour #mixHint { display: none; }
+
+/* THE WAY BACK, shown only while the car is a mix. It is a gen-step like the
+   arrows beside it, so it reads as part of the same control rather than as a
+   new kind of thing, but it carries a rung name instead of a chevron and so
+   needs room for one. */
+.gen-back {
+  width: auto; padding: 0 8px;
+  font: 500 10px/1 var(--mono);
+  letter-spacing: 0.04em;
+  color: var(--acc);
+  border-color: var(--acc-dim);
+}
+.gen-back:hover { color: var(--n99); border-color: var(--acc); background: var(--acc-wash); }
+.gen-back[hidden] { display: none; }
 
 /* ── Search ────────────────────────────────────────────────────────────
    The field sits under the rail's own heading and above the list it filters,
@@ -630,14 +852,14 @@ body.rail-hidden #rail { transform: translateX(calc(-100% - 16px)); }
   font: 400 11px/1.45 var(--sans);
   color: var(--n60);
 }
-/* the matched run itself, marked in the selection colour rather than in a
+/* the matched run itself, marked in the selection color rather than in a
    highlighter yellow that belongs to no part of this palette */
 .r-hit mark {
   background: var(--acc-wash);
   color: var(--n99);
   padding: 0 1px;
 }
-/* a part from a rung that is not on screen: labelled, never hidden */
+/* a part from a rung that is not on screen: labeled, never hidden */
 .r-hit em {
   display: block;
   margin-top: 5px;
@@ -657,7 +879,7 @@ body.rail-hidden #rail { transform: translateX(calc(-100% - 16px)); }
    scratch on every variant change, and replaying a 160 ms fade on 27 rows
    with delays out to 324 ms made a one-slot swap look like the whole panel
    reloading. main.js adds .intro for the opening build and takes it off. */
-#railList.intro > * { animation: row-in 160ms linear backwards; }
+#railList.intro > * { animation: row-in 160ms linear backward; }
 
 .r-sys {
   position: relative;
@@ -676,18 +898,18 @@ body.rail-hidden #rail { transform: translateX(calc(-100% - 16px)); }
 .r-sys:hover { background: var(--wash); color: var(--n99); }
 .r-sys.open { color: var(--n99); }
 
-/* colour key as an index tab on the plate edge, not a glowing bead. The row
+/* color key as an index tab on the plate edge, not a glowing bead. The row
    carries --sys, so opening a system grows its own tab the full height of
-   the row instead of lighting a second, differently coloured thing. */
+   the row instead of lighting a second, differently colored thing. */
 .r-sys .dot {
   position: absolute; left: 0; top: 8px; width: 3px; height: 16px;
   background: var(--sys, var(--n40));
   transition: top 160ms var(--ease), height 160ms var(--ease);
 }
 .r-sys.open .dot, .r-sys:hover .dot { top: 0; height: 100%; }
-/* the index number takes the system colour when its list is open, which is
+/* the index number takes the system color when its list is open, which is
    the one place in the rail where a number can carry the key without
-   turning nine rows of type into nine colours */
+   turning nine rows of type into nine colors */
 .r-sys.open .ix { color: var(--sys, var(--n50)); }
 .r-sys .car {
   flex: none; width: 8px;
@@ -732,7 +954,7 @@ body.rail-hidden #rail { transform: translateX(calc(-100% - 16px)); }
   transition: color var(--t) var(--ease), background var(--t) var(--ease);
 }
 .r-item:hover { color: var(--n99); background: var(--wash); }
-/* the selected part, in the colour it is glowing in out on the car */
+/* the selected part, in the color it is glowing in out on the car */
 .r-item.on { color: var(--n99); background: var(--sel-wash); border-left-color: var(--sel); }
 
 /* latch tabs: they belong to the plate they open, so they sit flush to it */
@@ -749,7 +971,7 @@ body.rail-hidden #rail { transform: translateX(calc(-100% - 16px)); }
 }
 #railToggle:hover, #effToggle:hover { color: var(--n99); background: var(--n20); }
 
-#railToggle { top: 60px; left: 292px; border-left: none; border-radius: 0 var(--r) var(--r) 0; }
+#railToggle { top: calc(var(--barh) + 12px); left: 292px; border-left: none; border-radius: 0 var(--r) var(--r) 0; }
 body.rail-hidden #railToggle { left: 12px; border-left: 1px solid var(--edge); border-radius: var(--r); }
 
 #effToggle { bottom: 12px; right: 292px; border-right: none; border-radius: var(--r) 0 0 var(--r); }
@@ -759,9 +981,14 @@ body.eff-hidden #effToggle { right: 12px; border-right: 1px solid var(--edge); b
 /* ── Part panel ────────────────────────────────────────────────────── */
 
 #panel {
-  position: fixed; top: 60px; right: 12px;
-  max-height: calc(100vh - 72px);
-  width: 380px;
+  position: fixed; top: calc(var(--barh) + 12px); right: 12px;
+  max-height: calc(100vh - var(--barh) - 24px);
+  /* THE PANEL'S WIDTH IS A VARIABLE because two other plates are positioned
+     off it: the tour bar and the section strip both stand clear of an open
+     panel, and before this they did it with a literal 404, which is this
+     width plus its two margins. The reading toggle changes one number and
+     all three follow. */
+  width: var(--panelw);
   background: var(--plate-hi);
   border-radius: var(--r);
   z-index: 11;
@@ -806,7 +1033,72 @@ body.eff-hidden #effToggle { right: 12px; border-right: 1px solid var(--edge); b
 }
 #panelClose:hover { color: var(--n99); border-color: var(--rule-hi); background: var(--wash); }
 
+/* ── The reading column ────────────────────────────────────────────────
+   The model's longest part is 4,820 words and its median is 583. At the
+   resting 380 px those are a 55 character measure eleven thousand pixels
+   long, which is a fine width for a caption and a poor one for an essay, and
+   this app is 328,613 words of essay.
+
+   Wide takes the plate to 720 and then CAPS THE TEXT at 62 characters rather
+   than letting the line grow with it. A 95 character line is harder to read
+   than a 55 character one, so the extra width goes to the things that were
+   actually starved: the specification table, whose value column was breaking
+   "0 to 180 bar in 120 ms" across three lines, and the figures in it. */
+#panelWide {
+  position: absolute;
+  top: 12px; right: 42px;
+  z-index: 3;
+  width: 24px; height: 24px;
+  display: grid; place-items: center;
+  background: var(--well);
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  color: var(--n60);
+  font: 400 11px/1 var(--sans);
+  cursor: pointer;
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease),
+              background var(--t) var(--ease);
+}
+#panelWide:hover { color: var(--n99); border-color: var(--rule-hi); background: var(--wash); }
+body.read-wide #panelWide { color: var(--acc); border-color: var(--acc-dim); }
+body.read-wide { --panelw: min(720px, 52vw); }
+body.read-wide #panelIn p,
+body.read-wide #panelIn .p-tag,
+body.read-wide #panelIn ul,
+body.read-wide #panelIn .cmp-lede,
+body.read-wide #panelIn .cmp-foot { max-width: 62ch; }
+/* the nav row reserves room for the close button; wide reserves it for both */
+body.read-wide .p-nav { padding-right: 62px; }
+
 #panelIn { flex: 1; overflow-y: auto; padding: 20px 20px 24px; }
+
+/* ── Section marks ─────────────────────────────────────────────────────
+   Four headings and eleven thousand pixels between them. The strip sticks to
+   the top of the scroll as soon as the title has gone past, so the structure
+   of a part is readable from anywhere inside it and any section is one click
+   away. It is not a table of contents pinned above the title: at the top of
+   a panel the title and tagline say what this is, and the strip is only
+   worth its 28 px once they are gone. */
+.p-sects {
+  position: sticky; top: -20px;
+  z-index: 2;
+  display: flex; gap: 4px; flex-wrap: wrap;
+  margin: 0 -20px 4px; padding: 10px 20px 8px;
+  background: var(--plate-op);
+  border-bottom: 1px solid var(--rule);
+}
+.p-sects button {
+  background: none; border: none;
+  padding: 3px 6px;
+  border-radius: var(--r);
+  color: var(--n60);
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--t) var(--ease), background var(--t) var(--ease);
+}
+.p-sects button:hover { color: var(--n99); background: var(--wash); }
+.p-sects button.on { color: var(--sel, var(--acc)); background: var(--sel-wash, var(--acc-wash)); }
 
 .p-nav {
   display: flex; align-items: flex-start; gap: 12px;
@@ -814,7 +1106,7 @@ body.eff-hidden #effToggle { right: 12px; border-right: 1px solid var(--edge); b
   margin-bottom: 20px;
   padding-right: 32px;
 }
-/* the system tag: colour key as a 3 px tab, label in the neutral scale */
+/* the system tag: color key as a 3 px tab, label in the neutral scale */
 .p-sys {
   display: inline-block;
   padding-left: 8px;
@@ -889,8 +1181,8 @@ body.eff-hidden #effToggle { right: 12px; border-right: 1px solid var(--edge); b
 /* ── Cross-references ──────────────────────────────────────────────────
    2,988 of these in the tree, in 65 percent of the parts. At rest they are
    the running text with a dotted rule under them, because a paragraph that
-   names four modules must not become four coloured words. The TARGET's
-   system colour arrives on hover, so where the link goes is answered by
+   names four modules must not become four colored words. The TARGET's
+   system color arrives on hover, so where the link goes is answered by
    pointing at it. */
 .xref {
   color: var(--n90);
@@ -903,7 +1195,7 @@ body.eff-hidden #effToggle { right: 12px; border-right: 1px solid var(--edge); b
 .xref:focus-visible { outline-offset: 1px; }
 .spec-t .xref { color: var(--n99); }
 
-/* the same web read backwards, handed to the search */
+/* the same web read backward, handed to the search */
 .p-back-ref {
   display: block; width: calc(100% + 12px);
   margin: 16px 0 0 -12px;
@@ -966,7 +1258,7 @@ ul.fail li::before {
 }
 .p-part:first-of-type { border-top: 1px solid var(--rule); }
 /* inside a system overview every row belongs to the open system, so the
-   hover rule is that system's colour */
+   hover rule is that system's color */
 .p-part:hover { background: var(--wash); border-left-color: var(--sel); }
 .p-part u {
   grid-column: 1; grid-row: 1 / 3;
@@ -994,12 +1286,18 @@ ul.fail li::before {
    layout: compare is a question about generations asked where generations
    are already chosen. */
 
-.gen-step.cmp {
+/* A WORDED STEPPER BUTTON HAS TO SAY SO. `.gen-step` is a 24 px square built
+   for one glyph, and a four letter label inside it measures 29: the text
+   overflows its own border, centered, so the box appears cut off around the
+   word. The tour button shipped that way because this rule named only .cmp
+   and the tour arrived later; it is now the rule for both, and the on state
+   with it, which the tour was also missing. */
+.gen-step.cmp, .gen-step.tour {
   width: auto; padding: 0 8px;
   font: 500 9px/1 var(--mono);
   letter-spacing: 0.16em; text-transform: uppercase;
 }
-.gen-step.cmp.on {
+.gen-step.cmp.on, .gen-step.tour.on {
   color: var(--n99);
   border-color: var(--acc);
   background: var(--acc-wash);
@@ -1089,7 +1387,7 @@ body.cmp .dd-cmp { display: inline-flex; }
   color: var(--n60);
 }
 
-/* Every slot, every time, changed or not. The coloured rule is the system's
+/* Every slot, every time, changed or not. The colored rule is the system's
    own key from the rail, so the list reads as the same nine things. */
 .cmp-slot {
   display: grid;
@@ -1245,6 +1543,44 @@ body.eff-hidden #eff {
   color: var(--n50);
 }
 
+/* ── The ladder, under the number it is about ──────────────────────────
+   Eleven bars, height by range, the rung on screen lit, every one of them a
+   way to that rung. It sits directly under the big range figure because that
+   figure is the last point on it: 416 at the left, 1,942 at the right, and a
+   reader can see at a glance both how far this car goes and how far the
+   climb was.
+
+   Bars and not a line. Eleven rungs are eleven things, a flex row is crisp at
+   any card width with no viewBox to distort, and a bar is a target you can
+   press on a phone. */
+.e-ladder {
+  display: flex; align-items: flex-end; gap: 2px;
+  height: 34px;
+  margin-top: 10px;
+}
+/* THE HIT AREA IS THE WHOLE COLUMN AND THE BAR IS PAINT. Sized as a bar,
+   Gen 1's is 9 px tall on a phone, and a 17 by 9 target is not a target. The
+   button is full height and the bar is a gradient stop inside it, so the
+   shortest rung is as easy to press as the tallest. */
+.lad {
+  flex: 1;
+  height: 100%;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: linear-gradient(to top, var(--n30) var(--h, 10%), rgba(0, 0, 0, 0) var(--h, 10%));
+  cursor: pointer;
+  transition: background 200ms var(--ease);
+}
+.lad:hover { background: linear-gradient(to top, var(--n60) var(--h), rgba(0, 0, 0, 0) var(--h)); }
+/* the rung on screen, in the one accent, which everywhere else in this app
+   means exactly "current" */
+.lad.on,
+.lad.on:hover { background: linear-gradient(to top, var(--acc) var(--h), rgba(0, 0, 0, 0) var(--h)); }
+/* the strip's own scale, printed the way the budget bars print theirs: the
+   two ends of the climb, so a bar height is a measurement and not a shape */
+.lad-foot { margin: 5px 0 0; }
+
 .e-out { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--rule); }
 .e-out > small, .e-cell small {
   display: block;
@@ -1327,7 +1663,16 @@ body.eff-hidden #eff {
 /* no width transition: this bar is driven every frame, and a 500 ms ease on
    a value that moves every 16 ms fights itself and lags the figure beside it */
 body.driving #ergFill { background: var(--n90); }
-#ergMode[data-mode="charging"] ~ .e-soc #ergFill { background: var(--acc-dim); }
+/* on the body beside `driving`, and not a sibling selector: #ergMode lives in
+   .e-head and #ergFill in .e-soc, which makes them cousins rather than
+   siblings, so `#ergMode[data-mode="charging"] ~ .e-soc #ergFill` matched
+   nothing and charging drew in the same gray as driving. */
+body.erg-charging #ergFill { background: var(--acc-dim); }
+/* "empty" takes the dimmest neutral rather than an alarm color: this palette
+   is thirteen grays and one amber on purpose, and a red invented for one
+   readout would be the only one in the interface. The bar is at zero width
+   when this applies, so the state is carried by the word. */
+#ergMode[data-mode="empty"] { color: var(--n60); }
 
 .e-erg {
   display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
@@ -1360,6 +1705,16 @@ body.driving #ergFill { background: var(--n90); }
      would dirty layout on each of them */
   position: fixed; left: 0; top: 0; z-index: 12;
   display: flex; align-items: baseline; gap: 8px;
+  /* THE TAG HAS TO FIT THE WINDOW, because the clamp that keeps it on screen
+     inverts when it does not. js/main.js holds x between tagW/2 + 8 and
+     innerWidth - tagW/2 - 8, and once tagW passes innerWidth - 16 the low
+     bound is above the high one, Math.max wins, and the tag is pinned with its
+     right edge past the window. "Occupant restraint set, re-derived" and its
+     system name need 456 px, so every viewport under 472 clipped the longest
+     names mid-word. It wraps to a second line here rather than being cut; the
+     height is measured after the text is written, so the position follows. */
+  max-width: calc(100vw - 16px);
+  flex-wrap: wrap; row-gap: 2px;
   background: rgba(6, 8, 11, 0.92);
   border: 1px solid var(--rule-hi);
   border-radius: var(--r);
@@ -1374,7 +1729,7 @@ body.driving #ergFill { background: var(--n90); }
   white-space: nowrap;
 }
 #hoverTag.on { opacity: 1; }
-/* the system name in the system's own colour, which is the colour the part
+/* the system name in the system's own color, which is the color the part
    under the pointer is lit in, so the label and the light agree */
 #hoverTag small {
   font: 500 9px/1 var(--mono);
@@ -1385,11 +1740,460 @@ body.driving #ergFill { background: var(--n90); }
 #hint {
   position: fixed; bottom: 14px; left: 50%;
   transform: translateX(-50%);
+  display: flex; align-items: center; gap: 10px;
   font: 400 9px/1 var(--mono);
   letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--n50);
   z-index: 8;
+  /* the line itself is not a target; only its dismiss is */
   pointer-events: none;
+  white-space: nowrap;
+}
+/* THE ONE CONTROL HERE THAT DOES NOT COME BACK. Everything else on this
+   faceplate is a toggle with a way home; this is instruction, and once it is
+   read it is a line of type across the car forever.
+
+   It carries its own dimness rather than appearing on hover, because #hint is
+   pointer-events: none on purpose and must stay that way: it lies across the
+   bottom of the canvas and a 500 px strip that swallows a drag would break
+   the first thing the line itself tells you to do. Only the cross takes the
+   pointer, so only the cross can be hovered, and a control that reveals
+   itself only once you are already on it is not a control anybody finds. */
+#hintX {
+  pointer-events: auto;
+  width: 14px; height: 14px;
+  display: grid; place-items: center;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--r);
+  color: var(--n40);
+  font: 400 11px/1 var(--sans);
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease);
+}
+#hintX:hover { color: var(--n99); border-color: var(--rule-hi); }
+body.no-hint #hint { display: none; }
+
+/* ── Dimensions ────────────────────────────────────────────────────────
+   A drawing laid over the model. Hairlines, ticks and mono figures, in the
+   same gray scale as every other instrument here, and pointer-events none
+   from the root: a dimension must never be a thing you can click.
+
+   It sits BELOW every plate (z 7, under the readout's 8) and above nothing
+   but the canvas, so a figure can never end up over a control. */
+/* WIDTH AND HEIGHT, not inset alone. An <svg> is a replaced element with an
+   intrinsic 300 by 150, and inset: 0 does not override that the way it does
+   for a div: the overlay laid out at 300 by 150 in the top left corner and
+   clipped every dimension line outside it, which was all of them. */
+#dims {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 7;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 160ms var(--ease);
+}
+body.dims #dims { opacity: 1; }
+.dim line { stroke: var(--n60); stroke-width: 1; }
+.dim .dim-t { stroke: var(--n70); }
+/* the figure carries its own darkness with it, because it lands on paint,
+   on glass and on the floor within one orbit */
+.dim text {
+  font-family: var(--mono);
+  fill: var(--n99);
+  paint-order: stroke;
+  stroke: rgba(5, 7, 10, 0.85);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  text-anchor: middle;
+}
+.dim .dim-v { font-size: 12px; font-weight: 500; }
+.dim .dim-n {
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  fill: var(--n60);
+}
+
+/* ── The section ───────────────────────────────────────────────────────
+   A strip under the faceplate, centered, and that position is the only one
+   left: the rail owns the left edge, the panel and the readout the right,
+   the tour the bottom. It is also the right one, because a section is a
+   VIEW mode and the switch that opened it is directly above.
+
+   It reads as one instrument rather than five controls: axis, travel,
+   station, flip. The station is the only number and it is set large. */
+
+/* Centered IN THE FREE SPACE, not in the window, which is the same trick the
+   tour bar uses one line down. Centered in the window the strip measured 716
+   px wide on a 1280 screen and its left edge landed at 282, ten pixels under
+   a rail that ends at 292, so the word it starts with was half eaten. Left
+   and right insets with auto margins put it in the middle of whatever is
+   actually free, and an open part panel moves it rather than covering it. */
+#cut {
+  position: fixed; z-index: 10;
+  top: calc(var(--barh) + 24px); left: 304px; right: 316px;
+  display: flex; justify-content: center;
+  transform: translateY(-8px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 160ms var(--ease), transform 200ms var(--ease),
+              left 240ms var(--ease), right 240ms var(--ease);
+}
+.cut-in {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 12px; height: 40px;
+  background: var(--plate-hi);
+  border-radius: var(--r);
+}
+body.cut #cut { opacity: 1; transform: none; }
+body.cut .cut-in { pointer-events: auto; }
+body.rail-hidden #cut { left: 12px; }
+body.eff-hidden #cut { right: 12px; }
+#panel.on ~ #cut { right: calc(var(--panelw) + 24px); }
+.cut-in > small {
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--n50);
+}
+.cut-ax { display: flex; gap: 0; }
+.cut-axb {
+  height: 24px; padding: 0 9px;
+  background: var(--well);
+  border: 1px solid var(--edge);
+  border-right-width: 0;
+  color: var(--n70);
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--t) var(--ease), background var(--t) var(--ease);
+}
+.cut-axb:first-child { border-radius: var(--r) 0 0 var(--r); }
+.cut-axb:last-child { border-radius: 0 var(--r) var(--r) 0; border-right-width: 1px; }
+.cut-axb:hover { color: var(--n99); background: var(--wash); }
+.cut-axb.on { color: var(--acc); background: var(--acc-wash); }
+.cut-slide { width: 132px; }
+/* the station, in the car's own meters. The unit and the label are set
+   small beside it so the figure itself is the thing being read. */
+.cut-val {
+  display: flex; align-items: baseline; gap: 4px;
+  font: 300 15px/1 var(--mono);
+  color: var(--n99);
+  font-variant-numeric: tabular-nums;
+  min-width: 146px;
+}
+.cut-val i { font-style: normal; font-size: 10px; color: var(--n60); }
+.cut-val span {
+  font: 400 9px/1 var(--mono);
+  letter-spacing: 0.1em;
+  color: var(--n50);
+  padding-left: 4px;
+}
+.cut-flip, .cut-x {
+  height: 24px;
+  background: var(--well);
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  color: var(--n70);
+  cursor: pointer;
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease);
+}
+.cut-flip { padding: 0 9px; font: 500 9px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; }
+.cut-x { width: 24px; font: 400 13px/1 var(--sans); }
+.cut-flip:hover, .cut-x:hover { color: var(--n99); border-color: var(--rule-hi); }
+
+/* ── The closures band ─────────────────────────────────────────────────
+   Deliberately the section strip's twin: same band, same plate, same
+   position, because it is the same kind of control and a second visual
+   language for it would be an invention with nothing behind it. It sits one
+   plate lower when the section is also up, which is the only case where two
+   of these can be on at once.
+
+   What it does NOT share is the right-hand end. The section's readout is a
+   coordinate; this one is a sentence about how much room the panel needs
+   from the world, and it is a button, because the argument behind that
+   number is a page rather than a tooltip. */
+#open {
+  position: fixed; z-index: 10;
+  top: calc(var(--barh) + 24px); left: 304px; right: 316px;
+  display: flex; justify-content: center;
+  transform: translateY(-8px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 160ms var(--ease), transform 200ms var(--ease),
+              left 240ms var(--ease), right 240ms var(--ease), top 200ms var(--ease);
+}
+body.cut.opening #open { top: calc(var(--barh) + 24px + var(--cuth, 40px) + 8px); }
+.open-in {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 12px; height: 40px; max-width: 100%;
+  background: var(--plate-hi);
+  border-radius: var(--r);
+}
+body.opening #open { opacity: 1; transform: none; }
+body.opening .open-in { pointer-events: auto; }
+body.rail-hidden #open { left: 12px; }
+body.eff-hidden #open { right: 12px; }
+#panel.on ~ #open { right: calc(var(--panelw) + 24px); }
+.open-in > small {
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--n50);
+}
+.open-list { display: flex; gap: 0; }
+.open-b {
+  height: 24px; padding: 0 10px;
+  background: var(--well);
+  border: 1px solid var(--edge); border-right-width: 0;
+  color: var(--n70); cursor: pointer;
+  font: 500 10px/1 var(--sans); letter-spacing: 0.02em;
+  white-space: nowrap;
+  transition: color var(--t) var(--ease), background var(--t) var(--ease);
+}
+.open-b:first-child { border-radius: var(--r) 0 0 var(--r); }
+.open-b:last-child { border-radius: 0 var(--r) var(--r) 0; border-right-width: 1px; }
+.open-b:only-child { border-radius: var(--r); border-right-width: 1px; }
+.open-b:hover { color: var(--n99); background: var(--wash); }
+.open-b.on { color: var(--acc); background: var(--acc-wash); }
+.open-all, .open-x {
+  height: 24px;
+  background: var(--well);
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  color: var(--n70);
+  cursor: pointer;
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease);
+}
+.open-all { padding: 0 9px; font: 500 9px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; }
+.open-x { width: 24px; font: 400 13px/1 var(--sans); }
+.open-all:hover, .open-x:hover { color: var(--n99); border-color: var(--rule-hi); }
+
+/* the sourcing line under a measured table in the panel */
+.p-note {
+  font: 400 11px/1.5 var(--sans);
+  color: var(--n50);
+  margin: 8px 0 0;
+}
+
+/* ── The guided tour ───────────────────────────────────────────────────
+   A plate along the bottom, between the rail and the readout, because the
+   tour is about the CAR and the car has to stay the largest thing on screen.
+   It is not a modal and it is not a takeover: every other control keeps
+   working underneath it, which is the same decision compare mode made.
+
+   BOTH SIDE PLATES GIVE WAY WHILE IT IS OPEN, and that is measured rather
+   than tasteful. Fitted between the rail and the readout on a 1280 window
+   the plate is 660 px wide, the text column inside it is 330, and the Gen 11
+   stop wraps to fourteen lines: a 320 px bar over a 400 px car, which is the
+   opposite of the rule in design/app-brief.md section 1. Full width the same
+   stop is six lines and the bar is 215.
+
+   So the rail and the readout slide out for the duration. The tour is the
+   readout while it is running, which is why the three figures on the right
+   of it are the same three the card shows, and it is the navigation too. It
+   restores them by removing one class, never by writing their persisted
+   state: a tour must not change what the app looks like after it ends. */
+
+#tour {
+  position: fixed; z-index: 10;
+  left: 12px; right: 12px; bottom: 12px;
+  background: var(--plate-hi);
+  border-radius: var(--r);
+  display: flex; flex-direction: column;
+  transform: translateY(calc(100% + 20px));
+  opacity: 0;
+  transition: transform 260ms var(--ease), opacity 200ms var(--ease),
+              right 240ms var(--ease);
+  pointer-events: none;
+}
+body.tour #tour { transform: none; opacity: 1; pointer-events: auto; }
+body.tour #rail { transform: translateX(calc(-100% - 16px)); }
+body.tour #eff { transform: translateX(calc(100% + 16px)); }
+body.tour #railToggle, body.tour #effToggle { opacity: 0; pointer-events: none; }
+/* a part panel opened FROM a stop is the one surface that outranks the bar,
+   because the stop is what sent the reader there */
+#panel.on ~ #tour { right: calc(var(--panelw) + 24px); }
+/* the tour bar says what the hint says, and more of it */
+body.tour #hint { display: none; }
+
+/* THE CLOSE BUTTON HAS TO SURVIVE A NARROW WINDOW. This row is theme, title,
+   thirteen stop marks and the x, all of them flex:none, so its content width
+   is a fixed 468 px: 14 + 82 + 12 + 84 + 12 + 218 + 12 + 20 + 14. Under that
+   the overflow went off the right of the plate and #tour does not scroll, so
+   at 375 px the x sat at a fixed x of 445.8 with body{overflow:hidden} over
+   it and THE TOUR COULD NOT BE CLOSED. Wrapping is the fix rather than
+   shrinking: the marks are a 14 px scrubber target each and squeezing them is
+   how the prev/play/next row below got to 9 px. The title may ellipsize, the
+   marks may take a line of their own, and the x is on whichever line it lands
+   on and always inside the plate. */
+.t-head {
+  display: flex; align-items: baseline; gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--rule);
+}
+.t-theme {
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--acc);
+  flex: none;
+}
+/* the one thing on the row allowed to give way, and it ellipsizes rather
+   than pushing the scrubber and the x off the plate */
+.t-title {
+  font: 500 14px/1 var(--sans); color: var(--n99);
+  flex: 0 1 auto; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* One mark per stop, the current one lit and the ones behind it dimmed but
+   present. It is a scrubber, not a progress bar: every mark is clickable,
+   because a tour you cannot walk backward is a video. */
+.t-marks { display: flex; align-items: center; gap: 3px; margin-left: auto; flex-wrap: wrap; }
+.t-mark {
+  width: 14px; height: 12px;
+  background: none; border: none; padding: 0;
+  cursor: pointer;
+  position: relative;
+}
+.t-mark::after {
+  content: "";
+  position: absolute; left: 1px; right: 1px; top: 5px; height: 2px;
+  background: var(--n40);
+  transition: background var(--t) var(--ease);
+}
+.t-mark:hover::after { background: var(--n70); }
+.t-mark.seen::after { background: var(--n60); }
+.t-mark.on::after { background: var(--acc); }
+
+.t-x {
+  width: 20px; height: 20px; flex: none;
+  display: grid; place-items: center;
+  background: var(--well);
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  color: var(--n60);
+  font: 400 13px/1 var(--sans);
+  cursor: pointer;
+  align-self: center;
+}
+.t-x:hover { color: var(--n99); border-color: var(--rule-hi); }
+
+.t-body {
+  display: flex; gap: 32px; padding: 12px 14px 12px;
+  align-items: flex-start; justify-content: space-between;
+}
+/* a measure, not a column that grows with the window: past about 900 px a
+   12.5 px line is too long to track back to the start of the next one */
+.t-text { flex: 1; min-width: 0; max-width: 900px; }
+.t-text p {
+  font: 400 12.5px/1.6 var(--sans);
+  color: var(--n80);
+  margin-bottom: 8px;
+}
+.t-text p:last-child { margin-bottom: 0; }
+
+/* A LIVE FIGURE INSIDE A SENTENCE, and it is set as a figure rather than as
+   text: mono, tabular, brighter than the prose around it. Every one of these
+   is computed at the moment the stop is shown, so a sentence can say what a
+   rung bought without anybody having typed the number into the sentence.
+
+   NO BOX AROUND IT. A padded chip put a visible gap between the figure and
+   the punctuation after it, so "4.38 mi/kWh." rendered as "4.38 mi/kWh ."
+   in the middle of a sentence. The contrast that matters is already the
+   app's own convention, mono for a measurement against sans for prose, and
+   that convention costs no horizontal space at all. */
+.t-n {
+  font: 500 12px/1 var(--mono);
+  color: var(--n99);
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* The same three quantities at every stop, in the same place, so a reader
+   tracking the ladder watches one column instead of hunting the layout. */
+.t-figs { display: flex; gap: 20px; flex: none; padding-top: 2px; }
+.t-fig { text-align: right; min-width: 76px; }
+.t-fig small {
+  display: block;
+  font: 500 8px/1 var(--mono);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--n50);
+  margin-bottom: 6px;
+}
+.t-fig b {
+  display: block;
+  font: 300 21px/1 var(--mono);
+  color: var(--n99);
+  font-variant-numeric: tabular-nums;
+}
+.t-fig i {
+  display: block;
+  font: 400 10px/1 var(--mono);
+  font-style: normal;
+  color: var(--n60);
+  margin-top: 5px;
+}
+
+.t-foot {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 9px 14px 11px;
+  border-top: 1px solid var(--rule);
+}
+.t-step, .t-play, .t-read, .t-vs {
+  background: var(--well);
+  border: 1px solid var(--edge);
+  border-radius: var(--r);
+  color: var(--n70);
+  cursor: pointer;
+  transition: color var(--t) var(--ease), border-color var(--t) var(--ease),
+              background var(--t) var(--ease);
+}
+/* flex:none, because a 26 px width is not a width in a flex row that runs out
+   of space: these shrank to 9 and 10 px at 280 px, which is a third of what a
+   mouse needs and a fifth of what a finger does. The row wraps instead. */
+.t-step { width: 26px; height: 24px; font: 400 12px/1 var(--mono); flex: none; }
+.t-play { width: 26px; height: 24px; display: grid; place-items: center; flex: none; }
+.t-play i {
+  width: 0; height: 0;
+  border-left: 7px solid currentColor;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  margin-left: 1px;
+}
+#tour.playing .t-play { color: var(--acc); border-color: var(--acc-dim); }
+#tour.playing .t-play i {
+  width: 8px; height: 9px;
+  border: none;
+  border-left: 3px solid currentColor;
+  border-right: 3px solid currentColor;
+  margin-left: 0;
+}
+.t-read, .t-vs {
+  height: 24px; padding: 0 9px;
+  font: 500 9px/1 var(--mono);
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+/* the module's own color on the way in, so the button and the light that
+   comes on in the 3D scene when it opens are the same color */
+.t-read:hover { color: var(--sys, var(--n99)); border-color: var(--sys, var(--rule-hi)); }
+.t-vs:hover, .t-step:hover:not(:disabled), .t-play:hover {
+  color: var(--n99); border-color: var(--rule-hi); background: var(--wash);
+}
+.t-step:disabled { opacity: 0.3; cursor: default; }
+.t-count {
+  font: 400 10px/1 var(--mono);
+  color: var(--n50);
+  font-variant-numeric: tabular-nums;
+  padding-left: 2px;
+}
+/* the document this stop's prose comes from. A claim about engineering that
+   cannot be traced is decoration, so every stop names its source. */
+.t-cite {
+  margin-left: auto;
+  font: 400 9px/1 var(--mono);
+  letter-spacing: 0.1em;
+  color: var(--n50);
   white-space: nowrap;
 }
 
@@ -1401,15 +2205,85 @@ body.driving #ergFill { background: var(--n90); }
   .slider { width: 112px; }
 }
 @media (max-width: 980px) {
-  #panel { width: 340px; }
+  :root { --panelw: 340px; }
   #rail { width: 248px; }
   #railToggle { left: 260px; }
   #eff { width: 248px; }
   #effToggle { right: 260px; }
   #hint { display: none; }
+  #cut { left: 272px; right: 284px; }
+  .t-figs { gap: 14px; }
+  .t-fig b { font-size: 18px; }
 }
 @media (max-width: 640px) {
   #panel { width: auto; left: 12px; }
+  /* THE DELTA COLUMN IS WHAT THE COMPARE TABLE IS FOR, and it was the half
+     that fell off. Three columns, two of them white-space:nowrap with a mono
+     middle, gives a min-content wider than a 280 px panel: measured, 281 px of
+     content in 244 px of panel, with .cmp-d hanging past the right edge. The
+     label and the pair wrap here instead. The delta keeps its nowrap, because
+     a number broken across two lines is worse than a narrow one. */
+  .cmp-t td:first-child { white-space: normal; }
+  .cmp-ab { white-space: normal; overflow-wrap: anywhere; }
+  /* the panel is the window here, so widening it means nothing and the
+     control that offers to would be a lie */
+  #panelWide { display: none; }
+  /* THE FIGURE COLUMN GOES FIRST on a phone, not the prose. Those three
+     numbers are also in the readout card one tap away; the paragraph saying
+     why the rung happened is nowhere else in the app. */
+  .t-figs, .t-cite { display: none; }
+  .t-text p { font-size: 12px; }
+  /* an open part panel takes the whole window here, so the tour steps aside
+     rather than being read through it */
+  #panel.on ~ #tour { display: none; }
+  body.tour #rail { max-height: min(calc(100vh - var(--barh) - 24px), 40vh); }
+
+  /* THE SECTION STRIP WRAPS RATHER THAN SHRINKS. Trimmed to fit one row on
+     a 375 px phone it still measured 410, and the parts that would have had
+     to go are the two that make it an instrument: the travel and the
+     station in meters. Two rows of 32 is the honest answer. */
+  #cut, #panel.on ~ #cut { left: 12px; right: 12px; }
+  /* and the readout starts below the strip rather than under it. Both are
+     anchored to the bar, so on a short window in this band the strip covered
+     the card's stats strip and its budget heading. Measured, not counted:
+     .cut-in wraps to two rows here, so the strip is 40 px or 72 px according
+     to width and --cuth is whichever it currently is. */
+  body.cut #eff {
+    top: calc(var(--barh) + 36px + var(--cuth));
+    max-height: calc(100vh - var(--barh) - 48px - var(--cuth));
+  }
+  .cut-in { flex-wrap: wrap; height: auto; padding: 8px 10px; row-gap: 8px; max-width: 100%; }
+  .cut-in > small { display: none; }
+  .cut-slide { width: 104px; }
+  .cut-val { min-width: 0; }
+  .cut-val span { display: none; }
+
+  /* The closures band wraps on the same argument, and the thing that must
+     survive the wrap is the opposite one: the section keeps its numbers and
+     drops its label, and this band keeps its SENTENCE, because the sentence
+     is the measurement. What goes is the word "open" over a band whose
+     buttons are already named after panels. */
+  #open, #panel.on ~ #open { left: 12px; right: 12px; }
+  .open-in { flex-wrap: wrap; height: auto; padding: 8px 10px; row-gap: 8px; max-width: 100%; }
+  .open-in > small { display: none; }
+  .open-list { flex-wrap: wrap; }
+  /* a chip that may wrap cannot be part of one rounded run, so on a phone
+     each one closes itself rather than trusting where the line breaks */
+  .open-list { gap: 6px; }
+  .open-list .open-b { border-right-width: 1px; border-radius: var(--r); }
+  /* the chips wrap, so the close button rides the right edge of whatever row
+     it lands on rather than sitting loose at the left */
+  .open-x { margin-left: auto; }
+  /* both bands are anchored to the bar, so with the section up as well the
+     readout card starts below BOTH of them rather than under them */
+  body.cut.opening #eff {
+    top: calc(var(--barh) + 44px + var(--cuth) + var(--openh, 40px));
+    max-height: calc(100vh - var(--barh) - 56px - var(--cuth) - var(--openh, 40px));
+  }
+  body.opening #eff {
+    top: calc(var(--barh) + 36px + var(--openh, 40px));
+    max-height: calc(100vh - var(--barh) - 48px - var(--openh, 40px));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1475,7 +2349,7 @@ body.booted #boot { opacity: 0; pointer-events: none; }
    on the main thread, and the main thread is the exact thing this indicator
    exists to report as blocked: a cold Gen 9 builds for 318 ms measured on
    this machine, and for all 318 of those milliseconds the amber line stood
-   still. An indicator that freezes during the freeze it is signalling tells
+   still. An indicator that freezes during the freeze it is signaling tells
    the user the page is dead, which is the reading it was added to prevent.
    transform and opacity are the two properties Chrome can run on the
    compositor, so the sweep keeps moving while the build blocks. It is also
@@ -1546,7 +2420,7 @@ body.busy #gl { cursor: progress; }
 
 /* 2. Cap the readout the way the rail and the panel are already capped. */
 #eff {
-  max-height: calc(100vh - 72px);
+  max-height: calc(100vh - var(--barh) - 24px);
   overflow-y: auto;
 }
 
@@ -1574,7 +2448,7 @@ body.eff-hidden #eff { visibility: hidden; transition: transform 240ms var(--eas
    same 2 px of visible rule inside a 10 px hit area. It costs 8 px of row
    width and the widest label in the rail, "Crash rails and bumper beam",
    needs 230 px of the 276 available, so nothing newly truncates: measured 0
-   ellipsised rows at 280, 272, 270 and 264 px of rail width. */
+   ellipsized rows at 280, 272, 270 and 264 px of rail width. */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb {
   background: var(--n40);
@@ -1602,7 +2476,7 @@ body.eff-hidden #eff { visibility: hidden; transition: transform 240ms var(--eas
 .p-steps button { width: 24px; height: 24px; }
 
 /* 4, continued. The way back up a level from a part to its system was a
-   150x14 px target. .p-back sets align-items: flex-start so the colour tab
+   150x14 px target. .p-back sets align-items: flex-start so the color tab
    lines up with the top of a label that wraps, and its two children are 9 px
    and 12 px type, so the button collapsed to the height of one line of small
    caps while the stepper beside it in the same row measured 24. The nav row
@@ -1659,43 +2533,110 @@ body.eff-hidden #eff { visibility: hidden; transition: transform 240ms var(--eas
 }
 
 /* 1, continued. The trim above takes the faceplate from 785 px to 574 and
-   that clears iPad portrait, but a phone is 375. Below 580 the bar becomes
-   two rows, breaking at .brk so the pairing is chosen rather than left to
-   label widths, and everything anchored under it moves down by one row. */
+   that clears iPad portrait, but a phone is 375. Below 580 the bar wraps,
+   breaking at .brk so which controls share the first row is a decision
+   rather than an accident of label widths, and everything anchored under it
+   follows --barh. It is allowed to be two rows or three or four: the bar
+   measures itself now, which is why none of the old row arithmetic is left
+   in this block. */
 .brk { display: none; }
 @media (max-width: 580px) {
-  #topbar { height: 96px; flex-wrap: wrap; }
+  /* THE GROUPS WRAP ONLY HERE. The bar wraps at every width, but a group
+     inside it was one unbreakable block: #pGen with compare open is the
+     stepper, the rung dropdown, the comparison dropdown and TOUR, 318 px of
+     content that stayed 318 px at a 280 px viewport with 28 px of TOUR past
+     the edge. Scoped to this block rather than set on .grp, because .grp >
+     small is a separate flex line the moment wrapping is allowed: at 1280 px
+     an unscoped wrap put every group's LABEL on its own row and took the
+     faceplate from 48 px to 97 for no reason at all. */
+  .grp { flex-wrap: wrap; row-gap: 8px; }
+  .gen { flex-wrap: wrap; row-gap: 8px; }
+  #topbar { flex-wrap: wrap; }
   .brk { display: block; flex-basis: 100%; height: 0; }
   /* row two starts at the left edge, so its first group owns no divider */
   #pExp { border-left: none; }
-  #rail, #panel { top: 108px; max-height: calc(100vh - 120px); }
-  #railToggle { top: 108px; }
-  body.rail-hidden #railToggle { top: 108px; }
+  /* nothing here re-anchors the plates any more: they are on --barh */
 
-  /* 1, continued again. THE PAINT CONTROL BROKE THE TWO-ROW BAR, and the
-     break is the failure this whole block exists to prevent rather than a
-     cosmetic one. Row two is explode, paint and the four view switches, and
-     it measured 148 + 47 + 191 = 386 px against a 375 px phone, so the bar
-     wrapped to a THIRD row inside a container fixed at 96 px: three rows of
-     32 px each, with #pView's 48 px tall buttons overflowing their own row,
-     and everything anchored below the bar still positioned for two.
+  /* 1, continued again. THE PAINT CONTROL BROKE THE TWO-ROW BAR, and it is
+     worth keeping because it is the failure --barh exists to end. Row two is
+     explode, paint and the view switches, and it measured 148 + 47 + 191 =
+     386 px against a 375 px phone, so the bar wrapped to a THIRD row inside a
+     container fixed at 96: three rows of 32, with #pView's 48 px buttons
+     overflowing their own row and everything anchored below the bar still
+     positioned for two.
 
      The 32 px explode percentage is the cheapest thing on that row, because
      the slider already reads its own value: css above fills its track to the
-     thumb precisely so the control is a gauge and not just an input. Drop
-     the printed number and take the slider to 72 px and row two measures
-     330, which clears 375 with 45 px to spare and clears it with compare
-     mode open too, since the second rung dropdown lands on row ONE beside
-     the generation control. */
+     thumb precisely so the control is a gauge and not just an input. Dropping
+     the printed number and taking the slider to 72 px is still worth doing,
+     and it is no longer load-bearing. The bar is three rows here today, four
+     when compare mode opens its second rung dropdown at 375, and both are
+     fine because nothing downstream is counting rows any more.
+
+     Cut, Size and the tour are what took row one past a phone's width with
+     compare open: 81 of brand plus 318 of generation controls is 399 against
+     375. That used to push 48 px of switches out of the bar. Now the bar
+     grows by a row and the rail, the panel, the latches and the section
+     strip all move down with it. */
   #pExp b { display: none; }
   .slider { width: 72px; }
+  /* stated after the line above, which is a bare .slider of equal
+     specificity and would otherwise take the section's travel to 72 as a
+     side effect of a rule about the explode control */
+  .cut-slide { width: 96px; }
+
+  /* The faceplate is two rows here, so everything anchored under it moves
+     down with the rail and the panel. The section strip is two rows of its
+     own at this width, 108 + 72, and the rail cannot share that space: it
+     starts at the same 108 and the strip is on top of it. So the rail slides
+     out while a section is open and its latch drops below the strip, which
+     keeps the way back visible. That is the same bargain the tour makes with
+     both side plates, made here only because the window is too narrow. */
+  body.cut #rail, body.opening #rail { transform: translateX(calc(-100% - 16px)); }
+  /* the latch drops below the section strip, which is two rows of its own at
+     this width: 24 above it, 72 of strip, 12 under it */
+  body.cut #railToggle, body.cut.rail-hidden #railToggle { top: calc(var(--barh) + 108px); }
+  /* the closures band makes the same bargain for the same reason, and it is
+     measured rather than counted: --openh is whatever the band currently
+     wraps to, which is one row at 520 px and three at 375 */
+  body.opening #railToggle, body.opening.rail-hidden #railToggle {
+    top: calc(var(--barh) + 36px + var(--openh, 40px));
+  }
+  body.cut.opening #railToggle, body.cut.opening.rail-hidden #railToggle {
+    top: calc(var(--barh) + 44px + var(--cuth) + var(--openh, 40px));
+  }
 }
 
-/* 3. Below 520 px the two plates cannot sit side by side, so the rail stops
-   above the readout instead of covering it. 531 = the card's measured 399,
-   its 12 px bottom margin, the rail's 108 px top on the two-row bar and a
-   12 px gap. */
+/* 3. Below 520 px the two plates cannot sit side by side, so they share one
+   column: bar, rail, readout, each clearing the next by 12 px.
+
+   This rule used to spend a counted constant, 435, being the card's measured
+   399 plus three 12 px gaps. Two things were wrong with it and the second is
+   the one worth keeping.
+
+   It went stale in forty minutes. 41a9594 measured the 399 at 16:47 and
+   d967c63 put the eleven-bar ladder strip inside that card at 17:07, taking
+   it to 554. The rail was then allowed to be 155 px taller than the column
+   had room for, so it lay across the readout at every width from 280 to 520,
+   including 360 and 375, and because the rail is z-index 9 against the card's
+   8 it was TAKING THE TAPS: elementFromPoint at the card's top left returned a
+   rail row. That is defect 3 of the mobile pass, recorded at the top of this
+   file, coming back through its own fix. The height is measured now, into
+   --effh by js/main.js, for the same reason --barh is.
+
+   And a corrected constant would not have been enough, which is the part a
+   re-measure alone would have missed. The readout is 554 px natural and the
+   rail wants 140, so both at natural size need about 830 px of viewport
+   before the bar. At 375x667, an iPhone SE, the budget left for the rail is
+   MINUS 19 px, so the floor below would have won and the two plates would
+   have overlapped again with a freshly correct number in the rule. The
+   readout gives way first instead: it is the taller plate, it already
+   scrolls, and a reader who wants all of it can collapse the rail. */
 @media (max-width: 520px) {
-  #rail { max-height: max(140px, calc(100vh - 531px)); }
-  body.eff-hidden #rail { max-height: calc(100vh - 120px); }
+  /* what the column has left once the bar, the readout and the three gaps
+     have taken theirs */
+  #rail { max-height: max(140px, calc(100vh - var(--barh) - var(--effh) - 36px)); }
+  body.eff-hidden #rail { max-height: calc(100vh - var(--barh) - 24px); }
+  /* 176 = the rail's 140 px floor and the same 36 px of gaps */
+  #eff { max-height: max(120px, calc(100vh - var(--barh) - 176px)); }
 }

@@ -24,17 +24,17 @@ export const SYSTEM = {
       mass: 13.5,
       specs: [
         ['Lanes', '3x 500 TOPS, independent power and DRAM'],
-        ['Voter', '2-of-3 majority, analysable logic, ASIL D'],
+        ['Voter', '2-of-3 majority, analyzable logic, ASIL D'],
         ['Power', '640 W peak, 380 W typical'],
         ['Cooling', 'One cold plate teed off the pack cold loop'],
         ['Feeds', 'Two hv-4 zonal feeds, diode-ORed'],
         ['After one fault', 'Drives on, duplex rules apply'],
       ],
-      how: 'Three identical lanes sit side by side on one liquid cold plate, each with its own SoC delivering about 500 INT8 TOPS, its own DRAM, and power arriving over two diode-ORed feeds from separate hv-4 zonal controllers, so no single supply fault darkens more than one lane. Every lane subscribes to the same frames on the sensor ring, runs the full stack, and emits a trajectory plus a health word every 50 ms. The voter is a few hundred gates of fully analysable logic, ASIL D like Gen 1\'s comparator, but it now holds three opinions instead of two, and that changes everything. Gen 1\'s dual-lane compute (11.3 kg) could detect a disagreement but never localise it: with two lanes there is no majority, so its only honest response was a minimal-risk stop. That is fail-safe. Three lanes vote the liar down two to one, take it offline, and keep driving on the surviving pair under exactly the Gen 1 duplex rule. That is fail-operational, and the difference is the 2.2 kg the third lane costs.\n\nThe cold plate tees off the pack cold loop, the glycol ring main the thermal system runs above the battery lid, and the thermal ledger is now a range item worth stating. Peak draw is 640 W; the honest number is the 380 W the stack burns continuously, which against the car\'s 17 kW motorway draw is a permanent 2 percent consumption tax that no aerodynamic trick recovers. In winter the tax refunds itself as cabin heat, exactly as Gen 1 noted; in summer it is simply the price of carrying a brain that can survive its own stroke. The side fins carry the case through a coolant pump failure long enough to stop, a behaviour carried from Gen 1 unchanged.',
-      why: 'For two generations nothing moved here because nothing here was the bottleneck: Gen 2 optimised parts in place and Gen 3 merged structures, and through both, a supervised duplex brain remained exactly right, because the human and the mechanical steering column were the real fallback layers. Gen 4\'s steer-by-wire removes the column, and the moment steering is a network message, stopping the computer stops being a safe state. Gen 1\'s compute content said the computer must be its own backup; Gen 4 finishes the sentence: it must also know which third of itself to believe.',
+      how: 'Three identical lanes sit side by side on one liquid cold plate, each with its own SoC delivering about 500 INT8 TOPS, its own DRAM, and power arriving over two diode-ORed feeds from separate hv-4 zonal controllers, so no single supply fault darkens more than one lane. Every lane subscribes to the same frames on the sensor ring, runs the full stack, and emits a trajectory plus a health word every 50 ms. The voter is a few hundred gates of fully analyzable logic, ASIL D like Gen 1\'s comparator, but it now holds three opinions instead of two, and that changes everything. Gen 1\'s dual-lane compute (11.3 kg) could detect a disagreement but never localize it: with two lanes there is no majority, so its only honest response was a minimal-risk stop. That is fail-safe. Three lanes vote the liar down two to one, take it offline, and keep driving on the surviving pair under exactly the Gen 1 duplex rule. That is fail-operational, and the difference is the 2.2 kg the third lane costs.\n\nThe cold plate tees off the pack cold loop, the glycol ring main the thermal system runs above the battery lid, and the thermal ledger is now a range item worth stating. Peak draw is 640 W; the honest number is the 380 W the stack burns continuously, which against the car\'s 17 kW highway draw is a permanent 2 percent consumption tax that no aerodynamic trick recovers. In winter the tax refunds itself as cabin heat, exactly as Gen 1 noted; in summer it is simply the price of carrying a brain that can survive its own stroke. The side fins carry the case through a coolant pump failure long enough to stop, a behavior carried from Gen 1 unchanged.',
+      why: 'For two generations nothing moved here because nothing here was the bottleneck: Gen 2 optimized parts in place and Gen 3 merged structures, and through both, a supervised duplex brain remained exactly right, because the human and the mechanical steering column were the real fallback layers. Gen 4\'s steer-by-wire removes the column, and the moment steering is a network message, stopping the computer stops being a safe state. Gen 1\'s compute content said the computer must be its own backup; Gen 4 finishes the sentence: it must also know which third of itself to believe.',
       fail: [
         'Three identical software stacks are confidently, identically wrong together; voting is powerless against a common-mode bug, so the small formally verified collision checker carried from Gen 1 still watches all three lanes and can veto any of them.',
-        'The voter itself is the one element the architecture cannot vote on, which is precisely why it is a few hundred analysable gates and not a fourth computer.',
+        'The voter itself is the one element the architecture cannot vote on, which is precisely why it is a few hundred analyzable gates and not a fourth computer.',
         'Loss of the cold loop throttles all three lanes at once; the stack sheds to a minimal sensor set and makes an early, unhurried stop rather than a late one.',
       ],
       explode: [0, -0.75, 0],
@@ -51,11 +51,11 @@ export const SYSTEM = {
         ['Range resolution', '4 cm, floor 0.15 m'],
         ['Velocity', '0.1 m/s, direct Doppler'],
       ],
-      how: 'Gen 1\'s radar suite (1.9 kg) had one modern sensor and four ordinary ones: the 4D imaging unit looked forward, and the corners measured azimuth and Doppler but no elevation. Gen 4 makes all five imaging. The front unit grows to 768 virtual channels and 300 m of reach; each corner now carries the 192-channel array that Gen 1 reserved for the nose. Elevation everywhere means the bridge-versus-stalled-truck distinction, which Gen 1 could only make straight ahead, now works across the whole 360 degree ring, and the zero-Doppler clutter problem, the manhole cover versus the stopped car, is solvable from any approach angle rather than only head-on.\n\nThe second consequence is quieter but paid for a whole part\'s deletion. A 4 GHz chirp resolves range to 4 cm with a minimum range of 0.15 m, which is the territory Gen 1\'s ultrasonic ring existed for: twelve transducers, 0.5 kg, muted above 30 km/h, owning the bumper-blind last metre because nothing else could. A corner imaging radar behind the same fascia now sees that metre at centimetre grade, in any weather, with no speed cutoff, so the parking map comes from the same sensors that drive the motorway and the ring of discs is gone.',
+      how: 'Gen 1\'s radar suite (1.9 kg) had one modern sensor and four ordinary ones: the 4D imaging unit looked forward, and the corners measured azimuth and Doppler but no elevation. Gen 4 makes all five imaging. The front unit grows to 768 virtual channels and 300 m of reach; each corner now carries the 192-channel array that Gen 1 reserved for the nose. Elevation everywhere means the bridge-versus-stalled-truck distinction, which Gen 1 could only make straight ahead, now works across the whole 360 degree ring, and the zero-Doppler clutter problem, the manhole cover versus the stopped car, is solvable from any approach angle rather than only head-on.\n\nThe second consequence is quieter but paid for a whole part\'s deletion. A 4 GHz chirp resolves range to 4 cm with a minimum range of 0.15 m, which is the territory Gen 1\'s ultrasonic ring existed for: twelve transducers, 0.5 kg, muted above 30 km/h, owning the bumper-blind last meter because nothing else could. A corner imaging radar behind the same fascia now sees that meter at centimeter grade, in any weather, with no speed cutoff, so the parking map comes from the same sensors that drive the highway and the ring of discs is gone.',
       why: 'The ledger states the consolidation argument exactly: five better radars replace five radars plus twelve ultrasonics at 2.4 kg, and Gen 1 spent the same 2.4 kg across both parts. The scale reads flat and the capability does not, which is the Gen 4 trade in miniature: the win is elevation at every corner and a parking sensor that never goes deaf, not a lighter car.',
       fail: [
-        'Mutual interference climbs with fleet penetration, and imaging radars chirp across more of the band; randomised chirp timing keeps collisions rare and brief, carried from Gen 1.',
-        'The ultrasonics\' acoustically soft obstacle returns as the radar-soft obstacle: a dry hedge or thin plastic bollard gives a weak echo, and the surround cameras arbitrate the last half metre.',
+        'Mutual interference climbs with fleet penetration, and imaging radars chirp across more of the band; randomized chirp timing keeps collisions rare and brief, carried from Gen 1.',
+        'The ultrasonics\' acoustically soft obstacle returns as the radar-soft obstacle: a dry hedge or thin plastic bollard gives a weak echo, and the surround cameras arbitrate the last half meter.',
         'Multipath ghosts now come with plausible elevation: a guardrail can still mirror a real car into an empty lane, and track-level fusion kills any ghost no camera confirms.',
       ],
       explode: [0.55, 0, 0],
@@ -72,10 +72,10 @@ export const SYSTEM = {
         ['Telephoto crop', '300 m vehicle detection'],
         ['Deleted', '50 degree main, both fender repeaters'],
       ],
-      how: 'Gen 1\'s camera constellation (1.2 kg) spent eight imagers: a wedge of three, the B-pillar pair, two fender repeaters, and a rear unit. Gen 4 keeps the geometry that earned its place and folds the rest into pixels. The wedge drops to two: a 12 MP wide whose centre crop reproduces the old 50 degree main as a software product, and a telephoto that resolves a vehicle at 300 m. The B-pillar units widen to 160 degrees and inherit the rearward flank the repeaters used to own. Five imagers do what eight did because per-camera pixels rose half again, from 8.3 to 12 MP, the flank fields widened, and cropping a sharp wide frame is cheaper, lighter, and better calibrated than pointing a third lens at the overlap.\n\nThe addition is a long-wave thermal imager in the nose face: a 640 x 512 microbolometer reading emitted heat between 8 and 14 microns. It detects a pedestrian at 200 m in zero lux, and it is structurally immune to the failure Gen 1\'s camera content listed first, low sun saturating the pixels around a traffic signal, because it does not look at light at all. Oncoming high beams, tunnel exits, and glare off wet tarmac arrive as nothing. Its limits are the mirror image: no colour, no text, no signal state, and its contrast collapses on a 37 degree summer afternoon when the road and the pedestrian read the same temperature.',
+      how: 'Gen 1\'s camera constellation (1.2 kg) spent eight imagers: a wedge of three, the B-pillar pair, two fender repeaters, and a rear unit. Gen 4 keeps the geometry that earned its place and folds the rest into pixels. The wedge drops to two: a 12 MP wide whose center crop reproduces the old 50 degree main as a software product, and a telephoto that resolves a vehicle at 300 m. The B-pillar units widen to 160 degrees and inherit the rearward flank the repeaters used to own. Five imagers do what eight did because per-camera pixels rose half again, from 8.3 to 12 MP, the flank fields widened, and cropping a sharp wide frame is cheaper, lighter, and better calibrated than pointing a third lens at the overlap.\n\nThe addition is a long-wave thermal imager in the nose face: a 640 x 512 microbolometer reading emitted heat between 8 and 14 microns. It detects a pedestrian at 200 m in zero lux, and it is structurally immune to the failure Gen 1\'s camera content listed first, low sun saturating the pixels around a traffic signal, because it does not look at light at all. Oncoming high beams, tunnel exits, and glare off wet asphalt arrive as nothing. Its limits are the mirror image: no color, no text, no signal state, and its contrast collapses on a 37 degree summer afternoon when the road and the pedestrian read the same temperature.',
       why: 'Consolidation against redundancy, stated honestly: three deleted cameras are three fewer lenses to fail, but also three fewer overlapping fields for catching a liar, and Gen 1 used that overlap deliberately. The wager is that cross-checking moves from same-modality overlap to different-modality overlap, imaging radar with elevation at every corner and lidar occupancy ahead. A second camera squinting into the same sun fails with the first; a bolometer does not, which is why the eighth camera became a thermal one instead of staying a visible one. The ledger says what that costs: 1.6 kg against Gen 1\'s 1.2, and the 0.4 kg gained is the thermal channel entire, bolometer core, germanium window, and window heater.',
       fail: [
-        'A raindrop on a flank lens now has fewer neighbouring fields to vote it down; the stack leans on corner radar corroboration and declares the sector degraded instead of guessing.',
+        'A raindrop on a flank lens now has fewer neighboring fields to vote it down; the stack leans on corner radar corroboration and declares the sector degraded instead of guessing.',
         'Thermal contrast is worst at midday in summer, exactly when visible cameras are strongest; the two failure envelopes barely overlap, which is the point, but the fusion weights must track ambient temperature honestly.',
         'Monocular range error still grows with distance squared; consolidation changed nothing about physics, and the telephoto\'s 300 m detection is a bearing with a guess attached until the front radar confirms it.',
       ],
@@ -94,11 +94,11 @@ export const SYSTEM = {
         ['Fields', '2x 120 x 25 degrees, toed out 25'],
         ['Mounting', 'Behind the front light band, inboard ends'],
       ],
-      how: 'A flash unit has no mirror: the VCSEL array illuminates the whole scene each pulse and a SPAD receiver times single photons per pixel, histogramming thousands of pulses into one range image. Every point in the frame is captured at the same instant. Gen 1\'s roof lidar (0.9 kg) painted its scene through a scanning mirror across roughly 100 ms, so a car crossing at 50 km/h smeared 1.4 m within a single frame and the tracker had to unwarp it; the flash frame is geometrically rigid, and the scanning mirror, the only moving part in the entire Gen 1 sensor suite, is gone.\n\nPlacement is the integration echo. Gen 3\'s monoform closed the body\'s front face with a light band, and Gen 4 slides one puck behind each end of that band, at x 2.33 and z ±0.30, looking through IR-clear dark segments and sharing the band\'s heater, so the sensor lives inside the body\'s one surface instead of on top of it like the Gen 1 roof pod. The wavelength moves from 1550 to 940 nm because SPAD silicon demands it, and eye safety at 940 caps emitted power well below the 1550 design, so range falls from 250 m to 140. That trade is taken knowingly: the 300 m front radar owns the far field now, and the lidar\'s job narrows to exact geometry inside 140 m, the mattress on the motorway, the fallen rider, the shape no network recognises but occupancy must still brake for.',
+      how: 'A flash unit has no mirror: the VCSEL array illuminates the whole scene each pulse and a SPAD receiver times single photons per pixel, histogramming thousands of pulses into one range image. Every point in the frame is captured at the same instant. Gen 1\'s roof lidar (0.9 kg) painted its scene through a scanning mirror across roughly 100 ms, so a car crossing at 50 km/h smeared 1.4 m within a single frame and the tracker had to unwarp it; the flash frame is geometrically rigid, and the scanning mirror, the only moving part in the entire Gen 1 sensor suite, is gone.\n\nPlacement is the integration echo. Gen 3\'s monoform closed the body\'s front face with a light band, and Gen 4 slides one puck behind each end of that band, at x 2.33 and z ±0.30, looking through IR-clear dark segments and sharing the band\'s heater, so the sensor lives inside the body\'s one surface instead of on top of it like the Gen 1 roof pod. The wavelength moves from 1550 to 940 nm because SPAD silicon demands it, and eye safety at 940 caps emitted power well below the 1550 design, so range falls from 250 m to 140. That trade is taken knowingly: the 300 m front radar owns the far field now, and the lidar\'s job narrows to exact geometry inside 140 m, the mattress on the highway, the fallen rider, the shape no network recognizes but occupancy must still brake for.',
       why: 'Two pucks replace one pod at less mass, 0.7 kg against 0.9, and buy what the single roof unit could never offer: each covers the other\'s field across a 0.6 m baseline, so one blinded window degrades the picture instead of deleting it. The roof pod also cost drag counts and a silhouette; the band windows cost the body nothing, which is the kind of accounting Gen 3 taught.',
       fail: [
         'Fog and heavy snow return first-surface echoes; the SPAD histogram takes the last return, but past a density threshold range collapses honestly and the stack knows it, carried from Gen 1.',
-        'Retroreflective signs bloom hard on a SPAD array, saturating neighbouring pixels for a frame; bloom masks are calibrated per unit.',
+        'Retroreflective signs bloom hard on a SPAD array, saturating neighboring pixels for a frame; bloom masks are calibrated per unit.',
         'Both pucks sit behind one band, so packed snow can blind the pair together; the shared heater and a blockage monitor are the mitigation, and one failure domain for two sensors is the honest cost of embedding.',
       ],
       explode: [0.5, 0.15, 0],
@@ -115,8 +115,8 @@ export const SYSTEM = {
         ['Handover budget', '10 s, own stop armed throughout'],
         ['Mounting', 'Shared header casting, 221 mm arm'],
       ],
-      how: 'A small IR camera on the header rail floods the driver\'s face with invisible 940 nm light and reads the corneal glint against the pupil centre, giving a gaze vector good to about 2 degrees, plus eyelid aperture, blink cadence, and head pose. Processing happens on the camera and only states leave it, attentive or not, drowsy or not; no video crosses the ring. It shares one cast rail with the forward camera wedge: the wedge sits on the rail\'s top face, a 221 mm arm bolts to its outboard end through a lapped splice plate, and a clevis at the far end drops the pod and tilts it 17 degrees down onto the driver\'s face. One casting, one datum, two sensors that must stay aligned to the same car. It is the one part in this module with no Gen 1 ancestor, and the reason is architectural: Gen 1 was a supervised system, the human watched the car. At conditional autonomy the car drives, and the car must watch the human.\n\nThe L3 handover problem, stated honestly: when the system reaches the edge of its domain it asks for the human back, and this camera can verify within 2 s that eyes returned to the road. It cannot verify that the model of the road returned with them. Takeover research puts genuine situational awareness seconds to tens of seconds behind gaze, so the 10 s handover budget is a courtesy, not a guarantee. The architecture therefore never stakes safety on the handover completing: the triplex compute keeps its own minimal-risk stop armed through every transfer and executes it if the driver\'s first inputs disagree with the scene.',
-      why: 'Monitoring is the least glamorous sensor on the car and the one the L3 regulations actually mandate, because every alternative amounts to pretending the human is a component with a datasheet. The gap between eyes-on and mind-on is the residual risk no camera closes, and the design treats the handover as a favour requested, never a dependency.',
+      how: 'A small IR camera on the header rail floods the driver\'s face with invisible 940 nm light and reads the corneal glint against the pupil center, giving a gaze vector good to about 2 degrees, plus eyelid aperture, blink cadence, and head pose. Processing happens on the camera and only states leave it, attentive or not, drowsy or not; no video crosses the ring. It shares one cast rail with the forward camera wedge: the wedge sits on the rail\'s top face, a 221 mm arm bolts to its outboard end through a lapped splice plate, and a clevis at the far end drops the pod and tilts it 17 degrees down onto the driver\'s face. One casting, one datum, two sensors that must stay aligned to the same car. It is the one part in this module with no Gen 1 ancestor, and the reason is architectural: Gen 1 was a supervised system, the human watched the car. At conditional autonomy the car drives, and the car must watch the human.\n\nThe L3 handover problem, stated honestly: when the system reaches the edge of its domain it asks for the human back, and this camera can verify within 2 s that eyes returned to the road. It cannot verify that the model of the road returned with them. Takeover research puts genuine situational awareness seconds to tens of seconds behind gaze, so the 10 s handover budget is a courtesy, not a guarantee. The architecture therefore never stakes safety on the handover completing: the triplex compute keeps its own minimal-risk stop armed through every transfer and executes it if the driver\'s first inputs disagree with the scene.',
+      why: 'Monitoring is the least glamorous sensor on the car and the one the L3 regulations actually mandate, because every alternative amounts to pretending the human is a component with a datasheet. The gap between eyes-on and mind-on is the residual risk no camera closes, and the design treats the handover as a favor requested, never a dependency.',
       fail: [
         'Gaze is not attention: eyes on the road with the mind elsewhere reads as fully compliant, which is exactly why the fallback is the car\'s own stop and not the handover.',
         'Direct low sun through the glass can saturate the IR image for seconds; the bandpass filter narrows the window and dropouts are flagged as monitoring lost, not as driver attentive.',
@@ -133,12 +133,12 @@ export const SYSTEM = {
         ['Antennas', 'Roof spine pair, 0.65 m baseline'],
         ['Heading', '0.3 degrees, standing or moving'],
         ['IMUs', '3x MEMS, one per compute lane'],
-        ['Dead reckoning', '0.25% of distance travelled'],
+        ['Dead reckoning', '0.25% of distance traveled'],
       ],
-      how: 'Gen 1\'s pose unit (0.2 kg) was one antenna and one IMU: excellent numbers, single points everywhere. Gen 4 doubles the sky side and triples the inertial side. Two dual-band receivers hang on two roof-spine antennas 0.65 m apart, and the carrier-phase difference across that baseline yields heading to 0.3 degrees while the car is parked, something Gen 1\'s single antenna could only observe by moving. The receivers land on opposite segments of the sensor ring, so no single cut silences both.\n\nThe three IMUs mount one per compute lane, which makes pose votable by the same 2-of-3 machinery as everything else: a gyro drifting toward tens of metres of error is outvoted before the filter has to notice. Bias estimation against GNSS, wheel odometry, and the vision stack carries over from Gen 1 unchanged, and with three bias histories to compare, dead reckoning tightens from 0.3 to 0.25 percent of distance travelled, about 2.5 m per kilometre of tunnel.',
+      how: 'Gen 1\'s pose unit (0.2 kg) was one antenna and one IMU: excellent numbers, single points everywhere. Gen 4 doubles the sky side and triples the inertial side. Two dual-band receivers hang on two roof-spine antennas 0.65 m apart, and the carrier-phase difference across that baseline yields heading to 0.3 degrees while the car is parked, something Gen 1\'s single antenna could only observe by moving. The receivers land on opposite segments of the sensor ring, so no single cut silences both.\n\nThe three IMUs mount one per compute lane, which makes pose votable by the same 2-of-3 machinery as everything else: a gyro drifting toward tens of meters of error is outvoted before the filter has to notice. Bias estimation against GNSS, wheel odometry, and the vision stack carries over from Gen 1 unchanged, and with three bias histories to compare, dead reckoning tightens from 0.3 to 0.25 percent of distance traveled, about 2.5 m per kilometer of tunnel.',
       why: 'The pose unit is still the hinge between relative perception and the absolute map, and still the only sensor an attacker can feed from 20,000 km away, so it remains a hint to be verified, never a truth to be obeyed. Redundancy sharpens that stance: a spoofer must now bend two antennas and three independent inertial histories into one consistent lie, and consistency is precisely what the voter checks.',
       fail: [
-        'Urban multipath off glass towers still gives confident fixes that are metres wrong, and both receivers can be wrong together since they share the sky; visual localisation wins every conflict, carried from Gen 1.',
+        'Urban multipath off glass towers still gives confident fixes that are meters wrong, and both receivers can be wrong together since they share the sky; visual localization wins every conflict, carried from Gen 1.',
         'Jamming takes both receivers at once because it takes the band, not the box; the response is demotion to inertial dead reckoning, not belief.',
         'With no fix, the three IMUs agree ever more precisely on a pose that is drifting; consensus is not accuracy, and the filter widens its stated uncertainty on schedule regardless.',
       ],
@@ -155,10 +155,10 @@ export const SYSTEM = {
         ['Heal time', 'Under 100 us after a cut'],
         ['Sensor power', '48 V via zonal solid-state fuses'],
       ],
-      how: 'Every sensor patches into its nearest of hv-4\'s four zonal controllers, and the controllers are joined by two 10 Gbit Ethernet rings running opposite directions around the cabin floor perimeter. Each frame is multicast both ways, so a cut anywhere leaves every node reachable the long way round, and the rings heal in under 100 microseconds, well inside one 50 ms compute tick. The same connector that carries a sensor\'s data delivers its 48 V from the controller\'s solid-state fuse, so a shorted camera is disconnected in microseconds with telemetry, not with a dimming neighbourhood.\n\nThe reason this part appears at Gen 4 specifically is arithmetic. Gen 1\'s dual-lane compute duplicated every sensor stream electrically at the deserialiser, a workable fan-out for two lanes; a third lane would have meant a third copy of every run home to the box under the rear seat. The ring inverts the pattern: each frame enters the network once and all three lanes subscribe. Wire length is set by the distance to the nearest corner instead of the distance to the computer, which is the same zonal argument hv-4 makes for power, applied to data.',
-      why: 'A star network has a centre and a centre is a single point; a ring has none, which is the topology the fail-operational argument demands of the wiring, not just the silicon. It is 0.3 kg of shared pair replacing a loom of point-to-point home runs, and it is the part that makes the exploded constellation legible as one organism rather than a bag of sensors.',
+      how: 'Every sensor patches into its nearest of hv-4\'s four zonal controllers, and the controllers are joined by two 10 Gbit Ethernet rings running opposite directions around the cabin floor perimeter. Each frame is multicast both ways, so a cut anywhere leaves every node reachable the long way round, and the rings heal in under 100 microseconds, well inside one 50 ms compute tick. The same connector that carries a sensor\'s data delivers its 48 V from the controller\'s solid-state fuse, so a shorted camera is disconnected in microseconds with telemetry, not with a dimming neighborhood.\n\nThe reason this part appears at Gen 4 specifically is arithmetic. Gen 1\'s dual-lane compute duplicated every sensor stream electrically at the deserializer, a workable fan-out for two lanes; a third lane would have meant a third copy of every run home to the box under the rear seat. The ring inverts the pattern: each frame enters the network once and all three lanes subscribe. Wire length is set by the distance to the nearest corner instead of the distance to the computer, which is the same zonal argument hv-4 makes for power, applied to data.',
+      why: 'A star network has a center and a center is a single point; a ring has none, which is the topology the fail-operational argument demands of the wiring, not just the silicon. It is 0.3 kg of shared pair replacing a loom of point-to-point home runs, and it is the part that makes the exploded constellation legible as one organism rather than a bag of sensors.',
       fail: [
-        'Both rings run the same perimeter, separated by centimetres, so a hard corner intrusion severs them together; healing reroutes the surviving arcs and only sensors on the crushed controller go dark, which is the correct outcome in a crash already under way.',
+        'Both rings run the same perimeter, separated by centimeters, so a hard corner intrusion severs them together; healing reroutes the surviving arcs and only sensors on the crushed controller go dark, which is the correct outcome in a crash already under way.',
         '10 Gbit on a single pair beside 48 V switching hardware is an EMC knife fight; error bursts under inverter transients are absorbed by forward error correction, and sustained degradation drops the link rate with the stack shedding camera resolution honestly.',
         'Both rings speak the same protocol stack, so a malformed frame that wedges one switch can wedge its twin; the zonal controllers carry independent watchdogs precisely because voting does not apply to the wire.',
       ],
@@ -238,7 +238,7 @@ function lensBarrel(r, len, seg = 12) {
   return g;
 }
 
-/* A flat annulus with its axis along +X, centred on the local origin. A
+/* A flat annulus with its axis along +X, centered on the local origin. A
    bezel and a heater trace are rings, and a solid disc in their place hides
    the aperture they exist to frame: the first lidar build put a 30 mm disc
    of dark steel over the emitter face it was supposed to surround. 160
@@ -299,7 +299,7 @@ function camUnit(wz, hy, dx, lensR = 0.008, frontX = null) {
 }
 
 /* Imaging radar facing +x. A real one is a die-cast box with a finned back
-   for the transmit chain, a moulded radome that reads as plastic rather
+   for the transmit chain, a molded radome that reads as plastic rather
    than metal, a bezel sealing the radome to the casting, two bolted ears
    and one sealed connector. frontX is the local x of the radome face and
    the caller measures it against the fascia it hides behind. */
@@ -351,7 +351,7 @@ function radarUnit(wz, hy, dx, frontX, fins = 7) {
    pair) from the nearest surface of anything, measured per instance and
    surface to surface against a 15.0 mm attachment tolerance, on gen4
    through gen9. [attachment] in tools/check-interfaces.sh reports at PART
-   granularity and all five units share the id `radars`, so the centre unit
+   granularity and all five units share the id `radars`, so the center unit
    sitting 0.41 mm off the rails passed the part and hid the other four.
 
    The landing surfaces were ray probed on all ten presets and are the same
@@ -443,7 +443,7 @@ function ringCleats(pts) {
 /* ── The header casting ──────────────────────────────────────────────────
 
    The forward camera wedge and the driver monitor are one assembly on one
-   cast rail behind the windshield header, and modelling it is the fix for
+   cast rail behind the windshield header, and modeling it is the fix for
    a real defect: tools/check-interfaces.sh reported autonomy-4/dms
    standing in open space on every preset from gen5 to gen9, 74.8 mm from
    the nearest surface in the worst of them, because the camera was placed
@@ -526,42 +526,24 @@ export function build() {
   camWedge.add(wf);
   sys.add(camWedge);
 
-  /* wide-field B-pillar cameras, both sides; repeaters are deleted */
-  for (const s of [1, -1]) {
-    const bp = lib.part('cameras', [0, 0.2, 0.5 * s]);
-    const bcam = camUnit(0.036, 0.03, 0.024, 0.009, 0.022);
-    bcam.rotation.y = -1.1 * s;
-    bcam.position.set(0.1, 1.0, 0.9 * s);
-    bp.add(bcam);
-    /* Cast foot standing off the pillar flange behind the camera. Two side
-       plates rather than one pad on the axis, because the camera's own
-       harness tail leaves the back face on that axis.
+  /* THE B-PILLAR SURROUND PODS ARE THE BODY'S NOW, and giving them up is the
+     honest end of a defect this module could not fix from inside itself.
 
-       The pads sit close in to that axis, at local z +/-0.010, and that is
-       the sloped-face lesson rather than a styling choice. The camera is
-       yawed 63 degrees, so a pad offset along the camera's own z sweeps
-       across the door instead of standing off it. At +/-0.0215 the inboard
-       pad reached |z| 0.8698 while body-4 and body-6's door skin tumbles
-       from |z| 0.8780 at y 0.985 to 0.8631 at y 1.000, so the pad's lower
-       corner went 3.87 mm through the paint on five vertices a side while
-       its top floated 19 mm off it. Pulled in to +/-0.010 and shortened to
-       20 mm, the mount's most inboard point is |z| 0.8868, measured on the
-       built mesh: 11.70 mm clear of body-4 and body-6's door and 71.5 mm
-       clear of body-7, -8 and -9's. The camera housing itself is the
-       closest thing here at 4.09 mm, and it has not moved. The harness
-       tail's flange is 2.17 mm from the nearer pad. */
-    const foot = new THREE.Group();
-    for (const fz of [1, -1]) {
-      const pad = lib.cbox(0.006, 0.020, 0.006, 0.0009, M.castAlu);
-      pad.position.set(-0.0140, 0, fz * 0.0100);
-      foot.add(pad);
-      foot.add(screw([-0.017, 0, fz * 0.0100], [-1, 0, 0], 0.0024, M.steel));
-    }
-    foot.rotation.y = -1.1 * s;
-    foot.position.set(0.1, 1.0, 0.9 * s);
-    bp.add(foot);
-    sys.add(bp);
-  }
+     They were placed at an absolute (0.100, 1.000, +-0.900). A module builds
+     ONCE and that build is shared by every preset, so one coordinate had to
+     serve five different bodies, and measured it stood 11.70 mm proud of
+     body-4 and body-6's door skin and 71.5 mm proud of body-7, -8 and -9's.
+     On the flat-flank bodies it floated clear of the panel it was bolted to,
+     which is why tools/check-interfaces.sh has listed it under [attachment]
+     since that check went per instance, and why tools/closures.sh found the
+     door driving through it the moment a panel moved.
+
+     No coordinate written here can be right for all five. The body is the
+     only module that knows where its own flank is, so the body draws the pod,
+     seated on its own halfWidth and flush with its own paint. body-11 already
+     worked this out for itself and its skin panel says so. This module keeps
+     the camera, the suite, the fusion argument and the panel; what it gives
+     up is a housing it was never in a position to place. */
 
   /* rear camera above the plate recess */
   const camRear = lib.part('cameras', [-0.5, 0.25, 0]);
@@ -961,7 +943,7 @@ export function build() {
     }
   }
 
-  /* earth stud with its ring terminal: the chassis reference for three
+  /* ground stud with its ring terminal: the chassis reference for three
      lanes that have to agree about what zero volts means */
   const stud = lib.cyl(0.0030, 0.0090, M.busbar, 8);
   stud.position.set(-0.7300, 0.4505, -0.140);
@@ -1019,7 +1001,7 @@ export function build() {
     df.add(screw([sx * 0.023, -0.0255, -0.2905], [sx, 0, 0], 0.0026, M.steel));
   }
 
-  /* the pod: moulded shell, parting line, framed aperture, lens barrel
+  /* the pod: molded shell, parting line, framed aperture, lens barrel
      with a hood, and two IR emitters that are separate optics */
   const pod = new THREE.Group();
   pod.rotation.z = 0.40;
@@ -1084,12 +1066,12 @@ export function build() {
 
   /* ── pose unit ───────────────────────────────────────────────────────
      Two roof-spine antennas, 0.65 m baseline. Each is a patch under a
-     moulded radome on a machined base flange, with the coax gland below.
+     molded radome on a machined base flange, with the coax gland below.
 
      AN OPEN DEFECT, MEASURED AND NOT FIXED, AND IT IS THE SAME ONE
      autonomy.js RECORDS FOR ITS LIDAR. These two antennas are at a single y
      and they serve four different roofs. Ray probed straight up at their
-     own stations, x 0.15 and x -0.50 on the centreline, the roof surface
+     own stations, x 0.15 and x -0.50 on the centerline, the roof surface
      over them is
 
        body-4 and body-6 canopy    y 1.4556 and 1.4202
@@ -1106,7 +1088,7 @@ export function build() {
      IT USED TO READ AS ATTACHED ON THOSE FIVE RUNGS AND THE ATTACHMENT WAS
      FALSE. interior-6's canopy liner was drawn against body-6's crown and
      ran under the same station at y 1.409, 9.16 mm below this flange, so
-     [attachment] found a neighbour. That liner was 40 mm out of position on
+     [attachment] found a neighbor. That liner was 40 mm out of position on
      every body-7 rung and the penetration wave rehung it on the lowest
      roof, where it belongs, at y 1.2576. The antenna did not move; the part
      that was holding it up was never there.
@@ -1132,7 +1114,7 @@ export function build() {
     dome.position.set(ax, 1.4183, 0);
     ant.add(dome);
     /* A cast index lug on the flange, not a patch under the radome: the
-       ceramic patch is inside an opaque moulding and modelling it buys 44
+       ceramic patch is inside an opaque molding and modeling it buys 44
        triangles of geometry nobody can ever see. */
     const lug2 = lib.cbox(0.008, 0.0035, 0.014, 0.0009, M.alu);
     lug2.position.set(ax + 0.0275, 1.4165, 0);
@@ -1270,7 +1252,7 @@ export function build() {
                         the two modules gets there first.
        ends ON the face the last control point is |z| 0.5385, which is the
                         boot's inboard end face measured off hv-4's own
-                        geometry (a 8 mm cylinder centred on |z| 0.5425).
+                        geometry (a 8 mm cylinder centered on |z| 0.5425).
                         lib.tube leaves the sweep open, so the lead stops at
                         the boot instead of passing through it and no
                         undeclared joint is invented here.
@@ -1309,7 +1291,7 @@ export function build() {
   /* Where the four junction boxes stand, and why not at the corners.
 
      The obvious station is the ring's four corners, and it is wrong. A
-     60 x 50 x 50 box centred on the ring at x +/-1.500 is submerged: swept
+     60 x 50 x 50 box centered on the ring at x +/-1.500 is submerged: swept
      against every partner in all six presets this slot appears in, the
      forward pair intersects suspension-4's air springs over a 55 x 49 x 33
      mm region, plus the drivetrain front unit on every generation, and
@@ -1324,7 +1306,7 @@ export function build() {
      along it and tested against every partner part in gen4 through gen9 at
      once. Four windows on the +z half come out clear, and these are the two
      nearest the zone they serve: x 0.632 to 0.969 forward and x -0.475 to
-     -0.727 aft. The boxes sit mid-window, and the box is centred BETWEEN
+     -0.727 aft. The boxes sit mid-window, and the box is centered BETWEEN
      the two tube axes rather than on the outer one, so both rings really do
      run through it.
 
@@ -1355,7 +1337,7 @@ export function build() {
         c.position.set(gz, gy, -0.028);
         jb.add(c);
       }
-      /* Two bolted feet under the box, and a moulded status lens. The feet
+      /* Two bolted feet under the box, and a molded status lens. The feet
          go underneath rather than out of the flanks: both rings pass
          straight through this box at y 0.400 and 0.428, and an ear at the
          box's mid height put its bolt head inside the outer ring. */

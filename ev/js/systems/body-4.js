@@ -12,13 +12,13 @@
    Preset partners named and reconciled: hv-4 (four corner zonal
    controllers, 96 eFuse channels each, 1 kHz per-circuit telemetry; the
    aero drives ride ordinary fused channels, deliberately NOT the by-wire
-   feed pair), suspension-4 (air springs, -20 to +25 mm levelling held to
+   feed pair), suspension-4 (air springs, -20 to +25 mm leveling held to
    +/-3 mm, 40 mm on all corners in ~6 s, 20 mm drop above 110 km/h),
    autonomy-4 (flash lidar behind the front light band, camera pods on the
    doors, the forward camera wedge that is also suspension-4's preview).
 
    Cd ledger: 0.145 static (Gen 3, as measured) to 0.140 as a speed-weighted
-   average, itemised per device in the skin part. Gen 5's apex shell reaches
+   average, itemized per device in the skin part. Gen 5's apex shell reaches
    0.130 with a carbon skin, a raised Kamm blade on struts, a deployable
    diffuser and a sealed twin-tunnel floor; this body deliberately has none
    of those and actuates what Gen 3 already had.
@@ -47,6 +47,104 @@ export const SYSTEM = {
   color: 0xa8cade,
   explode: [0, 1.7, 0],
   blurb: 'Gen 3 drew one surface and froze it. Gen 4 is the generation that builds the nervous system, so the surface gets one too: a Kamm flap on a three-input map, arch louvers that know where the wheels point, a shutter bank that strokes in 90 ms, and floor strakes tied to the ride height suspension-4 actually holds. Cd 0.145 static to 0.140 weighted, 356 kg, every actuator on hv-4\'s 48 V zonal bus.',
+  /* THE CLOSURES. Gen 4 is the control generation: 48 V zonal, by-wire
+     everything, a body whose shutters and louvers move under software. The
+     doors are the one thing on it that still moves the way a door has moved
+     since the 1930s, and that is worth stating rather than dressing up. An
+     e-latch on a zonal controller changes who commands the door, not what
+     the door has to sweep through to open, and the number below is unmoved
+     by every actuator on this rung.
+
+     The axis is on the paint at each leaf's own widest point, for the reason
+     body-8 measured two rungs up: an axis inside the surface sweeps the
+     leading edge forward into the fixed panel ahead of it, and a fender step
+     is an obstacle rather than a pocket.
+
+     THE TWO LIDS ARE THE SAME ARGUMENT TURNED NINETY DEGREES. A door is
+     charged for the ground beside the car and a lid is charged for the air
+     above it, and on both of them the axis is decided by the camber of the
+     panel's own cut rather than by where a hinge would be convenient. Both
+     cuts on this body are crowned, 75.0 mm across the cowl and 95.0 mm
+     across the deck, and both lids therefore hinge at the crown of their own
+     line so the leading edge is pinned. Put either axis at the outboard ends
+     instead and the crown drives 65 to 82 mm into the canopy glass, which
+     starts at x 1.0600 and ends at x -1.8700 and is the panel both of them
+     shut against. Neither lid needed a new line in the master grid: their
+     outlines are truncations, material handovers and the beltline shoulder,
+     which is why the closed car is identical to the vertex. */
+  closures: {
+    'door-front': {
+      name: 'Front door',
+      kind: 'door',
+      part: 'doors',
+      mass: 10.2,
+      seconds: 1.2,
+      seat: 'Hinge pillar at the x 0.8489 cut, axis on the skin at |z| 0.9520',
+      motion: [
+        { kind: 'swing', axis: [0, 1, 0], pivot: [0.8489, 0.420, 0.9520], deg: 67 },
+      ],
+      why: 'The e-latch is the interesting part of this door and it is not the part that costs anything. Gen 4 puts the latch on a zonal controller as a fused, telemetered channel, so the car knows the door is shut rather than inferring it from a switch, and it can refuse to open into traffic because it has the sensors to know traffic is there. None of that changes the arc. The panel is 830 mm long and swings 67 degrees, so it reaches 727 mm outside the parked car whatever is commanding it, which is the honest limit of what control can do about packaging: software can decide WHEN a door opens and cannot decide WHERE it goes.',
+      cost: [
+        'Software cannot buy space. The curbside figure here is 33 mm WORSE than Gen 3\'s and 238 mm better than Gen 1\'s, and the whole 48 V zonal architecture moves it by nothing at all.',
+        'An e-latch keeps its legally required mechanical release, exercised at every service because nobody touches it until the day it matters.',
+      ],
+    },
+    'door-rear': {
+      name: 'Rear door',
+      kind: 'door',
+      part: 'doors',
+      mass: 12.1,
+      seconds: 1.2,
+      seat: 'B-pillar hinge at the x 0.0189 cut, axis on the skin at |z| 0.9481',
+      motion: [
+        { kind: 'swing', axis: [0, 1, 0], pivot: [0.0189, 0.420, 0.9481], deg: 67 },
+      ],
+      why: 'Front-hinged off the B-pillar, the ordinary arrangement, and the longer of the two leaves at 1.030 m against the front door\'s 0.830. Arc length is the whole difference in what the two doors need beside the car, which is why the rear door is the one that gets redrawn first on the rungs above.',
+      cost: [
+        'A pillar between the two apertures is the largest obstruction to getting into the back seat, and no amount of by-wire removes it.',
+      ],
+    },
+    hood: {
+      name: 'Nose clamshell',
+      kind: 'hood',
+      part: 'skin',
+      mass: 13.2,
+      seconds: 1.6,
+      seat: 'Cowl at x 1.0600, axis carried up to the crown at y 1.0650; stopped at 60 degrees by a garage ceiling and not by the car',
+      motion: [
+        { kind: 'swing', axis: [0, 0, 1], pivot: [1.0600, 1.0650, 0], deg: 60 },
+      ],
+      why: 'THE LID WAS ALREADY DRAWN, which is why nothing moved to make it open. The nose deck was one mesh, panel([RI(0), RI(COWL)], UP), and its four boundaries are the four hardest lines on the front of this car: the nose truncation at row 0, the cowl at row 12 where the paint hands over to glass, and ring point 3 down each side, which is the beltline shoulder the crease pass already declares. A hood needed no new line here because the outline of a hood is what those four lines already were. Moving that mesh from the skin group into its own is a change of owner and nothing else, and geohash --soup is identical to the digit.\n\nTHE AXIS SITS AT THE CROWN AND THAT IS FORCED. Measured across its own cowl cut this panel cambers 75.0 mm, from y 1.0650 at the centerline to 0.9900 at ring point 3 on either side, and a cambered cut cannot hinge on one straight axis without something going through something. Put the axis where a drawing would put it, on the outboard ends at y 0.9900, and the crown of the trailing edge swings AFT: swept, the panel reaches x 1.0225 at 30 degrees, 1.0070 at 45 and 0.9950 at 60, which is 37.5, 53.0 and 65.0 mm past the cowl into the canopy glass, whose forward edge is at x 1.0600 exactly. Put it at the crown and the leading edge is pinned instead: over the whole travel the panel\'s own minimum x never leaves 1.0600. Same panel, same cut, one number moved 65 mm.\n\nSIXTY DEGREES IS A CEILING DECISION, NOT A CLEARANCE ONE, and the panel says so rather than dressing it up. Swept against the built gen4 preset this lid is clean over 33 parts all the way to 80 degrees; nothing on the car is in its way at any angle. What is in its way is a building. The highest point of the open panel is 1.3718 m at 30 degrees, 1.7085 at 45, 2.0013 at 60 and 2.1622 at 70, against a parked car 1.460 m tall. Sixty degrees clears a 2.03 m domestic garage header with 29 mm in hand and seventy does not clear it at all, so the travel stops where the building does.\n\nAND THE VOLUME IS THE STORY. The largest box that fits under this clamshell, measured cell by cell at 20 mm over the whole preset and then confirmed against every triangle of every module, is 500 by 240 by 720 mm at x 1.280 to 1.780, y 0.640 to 0.880, |z| under 0.360: 86.4 liters. That is 1.315 m of lid and 1.580 m of width over eighty-six liters, because everything below y 0.742 in this bay is already taken by suspension-4\'s air springs, hv-4\'s buffer, drivetrain-3\'s front unit and thermal\'s radiator pack, and everything above y 0.93 aft of x 1.27 is interior-4\'s dashboard and displays. The biggest panel on the car opens onto the smallest useful space on it.',
+      cost: [
+        'It spends the one currency a hood has. 541 mm of overhead above a 1.460 m car at 60 degrees, and there is no kinematic trick that avoids it: a panel hinged at the back has to stand up to get out of the way.',
+        'On the way up it goes forward before it goes over. The leading edge reaches x 2.4616 at 20 degrees, 84.1 mm past the parked nose at 2.3775, and is still 1.6 mm outside it at 40 degrees before coming back in by 45. Nothing is there on this car, but a wall is, and the number a garage owner cares about is the transient rather than the endpoint.',
+        'There is no shutline channel. The doors get a 5 mm by 4 mm groove cut into the master grid at each cut; this lid gets panel boundaries. That is honest for three of its four edges, which are a truncation and two material handovers, and thin for the fourth. Cutting a real channel is a closed-state change to a surface whose frontal area js/efficiency.js books at 2.3635 m2, so it belongs to a generation that re-cuts the grid rather than to a pass that promised to move no vertex.',
+        'Eighty-six liters. A frunk on this rung is a place for cables and a bag, and calling it storage would be the kind of claim this ladder exists not to make.',
+      ],
+    },
+    decklid: {
+      name: 'Decklid',
+      kind: 'decklid',
+      part: 'skin',
+      mass: 5.3,
+      seconds: 1.4,
+      seat: 'Front cut at x -1.8700, axis carried up to the crown at y 1.0600; the Kamm flap and autonomy-4\'s rear camera ride on the lid',
+      motion: [
+        { kind: 'swing', axis: [0, 0, 1], pivot: [-1.8700, 1.0600, 0], deg: -65 },
+      ],
+      carries: [
+        { part: 'body-4/kamm-flap', box: [-2.30, 0.90, 0, -2.15, 1.00, 0.10] },
+        { part: 'autonomy-4/cameras', box: [-2.30, 0.92, 0, -2.15, 1.00, 0.10] },
+      ],
+      why: 'Same re-slice as the hood and the same reason it cost nothing: the tail deck was already one mesh, panel([RI(DECK), RI(LAST)], UP), bounded by the deck station where the glass ends, the Kamm truncation, and ring point 3 down each side. It changed groups and not coordinates.\n\nTHE CROWN AXIS, MEASURED. This cut cambers 95.0 mm, y 1.0600 at the centerline to 0.9650 at ring point 3, and it is the worse of the two cuts on this body. On an outboard axis the crown of the leading edge swings FORWARD into the canopy: the panel reaches x -1.8225 at 30 degrees, -1.8028 at 45 and -1.7877 at 60, which is 47.5, 67.2 and 82.3 mm past its own front cut at x -1.8700, and the glass rear edge is at -1.8700 exactly. On the crown axis the panel\'s maximum x is -1.8700 at every sample of the travel. The camber decides the axis and the drawing does not get a vote.\n\nTHE LID CARRIES THE KAMM FLAP, and that is geometry rather than preference. The flap sits on this deck: hinge tube at x -2.146, four deck seats, two spindle drives on their own pedestals, two 48 V leads and an absolute encoder, all between x -2.1728 and -2.1151. Cutting a shorter lid in front of them would need a line in the grid to cut on, and there are exactly two inside this panel. The first is the flap\'s own relief channel, split row 52, x -2.1461 at the crown and -2.1481 at the panel edge; measured, the flap\'s hinge tube spans x -2.1550 to -2.1370, so it straddles that line by about 9 mm on each side and a lid cut there would be cut through the tube. The second is the charge-door row groove at split row 45, x -1.9870, which leaves a 117 mm lid. So the deck opens whole and the aero device opens with it.\n\nAND THE CHECKER WOULD HAVE LET ME GET THAT WRONG. Left behind, the flap reports as "carries body-4/kamm-flap 5.9 mm deeper" and the run still passes, because the four deck seats are already inside the deck at rest and tools/closures.js only fails on a pair that was CLEAR at rest, which is the right rule and is blind here. Measured, the deck under the flap\'s hinge travels 309 mm up and 67 mm aft at full open, so what a passing run would have drawn is an active spoiler hanging in the air 309 mm under the panel it is bolted to. autonomy-4\'s rear camera, bbox x -2.2590 to -2.2140, y 0.9475 to 0.9850, standing 18.1 mm proud of the deck at that station, is the same class and was loud instead of quiet: left behind it STRIKES the lid by 4.7 mm at 3 degrees of travel. One of the two was a failure and the other was a warning, and they are the same mistake. design/closures.md already names it, that a static model cannot tell you what a part is bolted to, and this rung found two more of them.\n\nSIXTY FIVE DEGREES IS THE LARGEST TRAVEL THAT COSTS THE WORLD NOTHING. Swept, the highest point of the open lid is 1.4416 m at 65 degrees against a parked car 1.4600 m tall, so the panel never rises above the roof it sits behind; at 70 degrees it is 1.4730 and stands 13.0 mm proud. It costs no width at any angle, because it never leaves |z| 0.6400 against a parked half-width of 0.9828.\n\nWhat it opens onto is the honest part. The largest box that fits under the aperture, at 20 mm cells and then confirmed against every triangle on the car, is 500 by 200 by 800 mm at x -2.360 to -1.860, y 0.640 to 0.840: 80.0 liters. The largest box in the tail bay as a whole is 109.1 liters at x -2.200 to -1.580, and 290 mm of that box lies FORWARD of this lid\'s own front cut, under a canopy that does not open. This is a lid over a well, not a hatch over a load bay, and the reason is the same beltline-down argument the doors lose on: Gen 4 carries Gen 3\'s glass verbatim, and a generation that will not cut its canopy cannot have a tailgate.',
+      cost: [
+        'It protrudes rearward in the MIDDLE of the travel and not at the end. The aft edge reaches x -2.4380 at 27 degrees, 61.5 mm past the parked tail at -2.3765, then comes back to 57.4 mm INSIDE it by 65. A fixed axis at the front cut cannot avoid that arc, and it is the fore-and-aft mirror of the curbside bill the doors pay: park nose-in against a wall and the trunk still wants 62 mm it does not have.',
+        'Two hv-4 eFuse channels and the encoder signal now cross a hinge. The flap\'s leads were drawn straight into the deck through a grommet, which was correct when the deck was structure; on a lid they need a service loop rated for the lid\'s cycle life, and a chafed 48 V lead in a hinge is the failure this arrangement is known for.',
+        'The flap\'s datum moved from the deck to the lid. Its root clearance is safe, because the relief channel travels with it and the 4.6 mm at the centerline is preserved to the vertex, but the blade\'s angle relative to the CAR is now referenced through two hinges and a latch instead of four bolts into a casting. A 16 degree map on a downforce device is a tighter tolerance than a trunk lid is usually asked to hold.',
+        'Eighty liters under the aperture. body-9 called its own tail a shallow well rather than a trunk and this one is shallower, and the fix is not a hinge: it is a canopy that opens, which is a generation this body deliberately is not.',
+      ],
+    },
+  },
   parts: {
     ...STRUCT_G4,
     skin: {
@@ -62,7 +160,7 @@ export const SYSTEM = {
         ['Maturity', 'Production practice; the 0.140 weighted average is a pilot line claim'],
       ],
       how: 'The surface is carried, and the carry is the point. Ten cross-sections from x +2.375 to -2.375, thirteen points a ring, the flanks and nose band and deck band sharing edges, and the near-flat roof band held out to z plus or minus 0.66 so the glass wraps the cage rails at 1.44 to 1.45 instead of dipping under them. None of that moved, because in a control generation the shape was never the bottleneck: the shape\'s inability to move was. What did move is the gauge. Superforming thins a blank wherever it stretches most, so Gen 3 entered at 1.3 mm to guarantee its minimum wall in the two deepest draws, the shoulder and the front arch. Gen 4 adds a pre-form stage, blowing the blank into a reverse die and then reversing it into the finish die, which redistributes the strain field and holds the same minimum wall from a 1.2 mm start. The arithmetic is checkable: about 13.5 m2 of outer surface, 0.1 mm thinner, at 2.70 g/cm3 is 3.6 kg; deleting Gen 3\'s deck doubler around the flap surround, now redundant because the new flap carries its own torsion box, is another 1.2 kg; nine bonded doublers and hinge hardpoints put 0.8 kg back. Net 4.0 kg, 64 down to 60.\n\nThe apertures are the honest debit. Four devices now interrupt a body whose entire argument was curvature continuity: the nose face is split around a 60 by 800 mm intake mouth Gen 3 did not draw at all, the deck trailing edge carries a hinge line, each front arch carries two louver frames, and the floor plane carries six strake pivots. The ledger bills all of it. Starting from 145.0 counts, the scheduled Kamm flap returns 1.8 on the weighted average, the steering-coordinated arch louvers 1.5, the ride-height-coordinated floor strakes 2.4; the shutter bank is a net debit of 0.6, being 1.5 counts of mouth and leakage against 0.9 counts earned back by a 90 ms stroke; and the four new hinge lines and the mouth lip cost 0.3 between them. That is 140.2, quoted as 0.140. Every one of those numbers is a time-weighted average over a usage model, not a wind-tunnel state, which is exactly what makes an active body harder to be honest about than a static one.',
-      why: 'A static body has a drag coefficient and an active body has a schedule, so 0.140 is only as good as the weighting behind it, and the ledger prints the weighting rather than the headline. The restraint matters as much as the number: Gen 5\'s apex shell reaches 0.130 with a carbon skin, a Kamm blade raised on struts, a deployable diffuser and a sealed twin-tunnel floor, and this body has none of them on purpose. Five counts bought by teaching four surfaces Gen 3 already owned to move is the control generation\'s thesis written in aluminium, and it leaves the apex work to the generation that has the materials for it.',
+      why: 'A static body has a drag coefficient and an active body has a schedule, so 0.140 is only as good as the weighting behind it, and the ledger prints the weighting rather than the headline. The restraint matters as much as the number: Gen 5\'s apex shell reaches 0.130 with a carbon skin, a Kamm blade raised on struts, a deployable diffuser and a sealed twin-tunnel floor, and this body has none of them on purpose. Five counts bought by teaching four surfaces Gen 3 already owned to move is the control generation\'s thesis written in aluminum, and it leaves the apex work to the generation that has the materials for it.',
       fail: [
         'A 1.2 mm gauge is a smaller dent budget. Gen 3 already oil-canned under hail and careless palms, and the pre-form holds minimum wall, not local stiffness, so a marginal panel got slightly more marginal.',
         'Four apertures are four water paths into bonded closed sections. Every frame is a drained, sealed cassette, and the first one whose drain silts up corrodes a doubler no visual inspection reaches.',
@@ -72,7 +170,7 @@ export const SYSTEM = {
     },
     canopy: {
       name: 'Glass canopy band',
-      tagline: 'Carried from Gen 3 without a millimetre changed, and quietly promoted into the chassis control loop.',
+      tagline: 'Carried from Gen 3 without a millimeter changed, and quietly promoted into the chassis control loop.',
       mass: 38,
       specs: [
         ['body-3 counterpart', 'canopy, 38 kg: carried, delta zero in mass and geometry'],
@@ -82,12 +180,12 @@ export const SYSTEM = {
         ['Bond', '11 m structural PU, shear-active, indexes the glass to the loft'],
         ['Maturity', 'Production practice, carried from Gen 3 unchanged'],
       ],
-      how: 'Nothing about the glass changed, and the reason it did not have to is the bond. The band\'s mould is cut from the same ten loft stations as the metal, and the outer face of the glass sits on the same mathematical surface as the paint; the skin going 0.1 mm thinner would have shifted a flange-referenced joint, but this joint is referenced to the loft through the thickness of a polyurethane bead set at fitting. A tenth of a millimetre is absorbed in the bead, which is the property the structural bond was chosen for in the first place. The laminate, the sputtered infrared stack near 20 percent total solar transmittance, the acoustic core damping the 3 kHz band, the half-millimetre step and zero curvature change at the material boundary: all carried from Gen 3 verbatim.\n\nWhat is new costs no kilograms and is not visible in the geometry. The optical-grade camera zone above the mirror now serves autonomy-4\'s consolidated camera set, and the forward wedge of that set is the same map suspension-4\'s chassis ECU reads as preview, height to a few millimetres out to 15 m, converted into valve pre-positioning per wheel. A piece of glass that used to be a structural shear panel with a clean window in it is now a load-bearing element of the ride. The consequence is a new failure path rather than a new part: film, fog or a chip in that zone thins the preview map, skyhook control falls back to its own sensors, and the pre-positioning stops. The glass gets no new spec for this; it simply inherits a customer it did not have in Gen 3.',
-      why: 'The temptation in an active generation is to touch everything, and the discipline is the opposite: the budget goes to parts that do something new, and a band that already crosses a material boundary the boundary layer cannot detect has nothing left to give. Re-tooling a mould that spans cowl to deck to chase a kilogram would put a fresh waviness spec into the one joint this whole body exists to hide, which is a real aerodynamic risk taken for an imaginary gain.',
+      how: 'Nothing about the glass changed, and the reason it did not have to is the bond. The band\'s mold is cut from the same ten loft stations as the metal, and the outer face of the glass sits on the same mathematical surface as the paint; the skin going 0.1 mm thinner would have shifted a flange-referenced joint, but this joint is referenced to the loft through the thickness of a polyurethane bead set at fitting. A tenth of a millimeter is absorbed in the bead, which is the property the structural bond was chosen for in the first place. The laminate, the sputtered infrared stack near 20 percent total solar transmittance, the acoustic core damping the 3 kHz band, the half-millimeter step and zero curvature change at the material boundary: all carried from Gen 3 verbatim.\n\nWhat is new costs no kilograms and is not visible in the geometry. The optical-grade camera zone above the mirror now serves autonomy-4\'s consolidated camera set, and the forward wedge of that set is the same map suspension-4\'s chassis ECU reads as preview, height to a few millimeters out to 15 m, converted into valve pre-positioning per wheel. A piece of glass that used to be a structural shear panel with a clean window in it is now a load-bearing element of the ride. The consequence is a new failure path rather than a new part: film, fog or a chip in that zone thins the preview map, skyhook control falls back to its own sensors, and the pre-positioning stops. The glass gets no new spec for this; it simply inherits a customer it did not have in Gen 3.',
+      why: 'The temptation in an active generation is to touch everything, and the discipline is the opposite: the budget goes to parts that do something new, and a band that already crosses a material boundary the boundary layer cannot detect has nothing left to give. Re-tooling a mold that spans cowl to deck to chase a kilogram would put a fresh waviness spec into the one joint this whole body exists to hide, which is a real aerodynamic risk taken for an imaginary gain.',
       fail: [
-        'One stone chip still condemns the band, carried from Gen 3 unimproved, and a replacement must re-index to the skin loft within half a millimetre or it becomes the step the design exists to delete.',
-        'Aluminium expands roughly twice as fast as glass, so the 11 m bond absorbs millimetres of relative motion every thermal cycle; a dry spot announces itself as a creak, then a leak.',
-        'The preview dependency is silent by nature: a filmed camera zone degrades suspension-4\'s road map without breaking anything, so the status line has to say preview is thin rather than letting a driver hunt a ride fault that is really a dirty windscreen.',
+        'One stone chip still condemns the band, carried from Gen 3 unimproved, and a replacement must re-index to the skin loft within half a millimeter or it becomes the step the design exists to delete.',
+        'Aluminum expands roughly twice as fast as glass, so the 11 m bond absorbs millimeters of relative motion every thermal cycle; a dry spot announces itself as a creak, then a leak.',
+        'The preview dependency is silent by nature: a filmed camera zone degrades suspension-4\'s road map without breaking anything, so the status line has to say preview is thin rather than letting a driver hunt a ride fault that is really a dirty windshield.',
       ],
       explode: [0, 1.05, 0],
     },
@@ -104,7 +202,7 @@ export const SYSTEM = {
         ['Backup', 'Mechanical cable release retained unchanged'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'The architecture is Gen 3\'s, kept whole: each skin is the master loft surface between two shutlines, trimmed from the same mathematics as the body around it, so a closed door restores the surface exactly, and the pass criterion is still an unbroken highlight rather than a measured gap. The delta is electrical. Gen 3\'s e-latch and capacitive strip drew from an unnamed 12 V supply; here every latch is a fused, telemetered channel on the nearest hv-4 corner zonal controller, forty centimetres of 48 V drop. A latch motor that pulled 9 A at 12 V pulls 2.3 A at 48, so the winding, the brush gear and the conductor down the drop all shrink, roughly half a kilogram per door. The 1 kHz per-circuit current telemetry then deletes a part outright: the actuation signature is the position sensor, so Gen 3\'s microswitch per latch is gone and the fleet learns what a healthy pull looks like the same way it learns a window motor.\n\nThe camera pods are carried on their 90 mm stalks, still worth about 0.008 of Cd against glass mirrors, still outboard because the rules and the spray physics both want the lens there. What moved is ownership. autonomy-4 consolidates the camera set and indexes the pod lenses into its surround model, so the imager, its signal processing board and its lens heater land on that module\'s ledger: one kilogram moved rather than vanished, and this part keeps the stalk, the housing and the alignment spec. That makes the stalk a control component. Its first bending mode is placed above the band where body ride motions live, because road vibration entering the pod has to stay inside the perception stack\'s stabilisation budget, and a stalk tuned for looks rather than for that would corrupt what the car sees at exactly the frequencies the chassis is busiest at.',
+      how: 'The architecture is Gen 3\'s, kept whole: each skin is the master loft surface between two shutlines, trimmed from the same mathematics as the body around it, so a closed door restores the surface exactly, and the pass criterion is still an unbroken highlight rather than a measured gap. The delta is electrical. Gen 3\'s e-latch and capacitive strip drew from an unnamed 12 V supply; here every latch is a fused, telemetered channel on the nearest hv-4 corner zonal controller, forty centimeters of 48 V drop. A latch motor that pulled 9 A at 12 V pulls 2.3 A at 48, so the winding, the brush gear and the conductor down the drop all shrink, roughly half a kilogram per door. The 1 kHz per-circuit current telemetry then deletes a part outright: the actuation signature is the position sensor, so Gen 3\'s microswitch per latch is gone and the fleet learns what a healthy pull looks like the same way it learns a window motor.\n\nThe camera pods are carried on their 90 mm stalks, still worth about 0.008 of Cd against glass mirrors, still outboard because the rules and the spray physics both want the lens there. What moved is ownership. autonomy-4 consolidates the camera set and indexes the pod lenses into its surround model, so the imager, its signal processing board and its lens heater land on that module\'s ledger: one kilogram moved rather than vanished, and this part keeps the stalk, the housing and the alignment spec. That makes the stalk a control component. Its first bending mode is placed above the band where body ride motions live, because road vibration entering the pod has to stay inside the perception stack\'s stabilization budget, and a stalk tuned for looks rather than for that would corrupt what the car sees at exactly the frequencies the chassis is busiest at.',
       why: 'Every kilogram taken out of a door leaves at the far end of a hinge, which is the worst place on the car to carry mass: it is the moment arm that drives hinge sag, closing effort and seal compression set, and on a monoform sag does not read as a bad gap, it reads as a broken highlight line running the length of the body. Three kilograms off the door set is worth more than three kilograms off the floor for that reason alone, and none of it came out of the structure that makes a door part of the side impact path.',
       fail: [
         'E-latches keep their legally required mechanical backup, and the hidden cable release is exercised at every service because nobody touches it until the day it matters, carried from Gen 3.',
@@ -126,7 +224,7 @@ export const SYSTEM = {
         ['Aim', 'Referenced to suspension-4\'s commanded height, cross-checked on 4 sensors'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'The lineage runs straight and the geometry is Gen 3\'s. The loft is truncated by exactly two flat faces, nose and Kamm, and each is closed by a band: matrix optics and their drivers behind one conformal window at the front, a PMMA light guide across the tail. Both live in aerodynamically dead air by construction, the front in the stagnation region where the flow has already decided to go around, the rear inside the wake where the air has already left, which is what lets them be flush and frameless. Gen 4 cuts an intake mouth into the nose face below the band, and that does not disturb the argument: the mouth sits under the stagnation line, and the band\'s window and its edge treatment are untouched.\n\nTwo things changed, neither of them weighing anything. First, autonomy-4 puts its solid-state flash lidar behind the front band\'s window, so this part now owns an optical spec across two wavebands, visible for the matrix and near-infrared for the lidar, and a thermal design that has to carry the emitter\'s dissipation alongside 84 pixels per side in a housing with almost no air to convect into. Second, aim. Gen 1 referenced lamp aim to ride height and listed a levelling fault as a glare source; suspension-4 holds height to plus or minus 3 mm at whatever setting it commands, so aim now references the commanded height and cross-checks it against the four wheel-travel sensors. If they disagree, aim freezes at the low setting, because low is the glare-safe direction and a lamp that is aiming slightly short is a range problem while a lamp aiming high is everyone else\'s problem.',
+      how: 'The lineage runs straight and the geometry is Gen 3\'s. The loft is truncated by exactly two flat faces, nose and Kamm, and each is closed by a band: matrix optics and their drivers behind one conformal window at the front, a PMMA light guide across the tail. Both live in aerodynamically dead air by construction, the front in the stagnation region where the flow has already decided to go around, the rear inside the wake where the air has already left, which is what lets them be flush and frameless. Gen 4 cuts an intake mouth into the nose face below the band, and that does not disturb the argument: the mouth sits under the stagnation line, and the band\'s window and its edge treatment are untouched.\n\nTwo things changed, neither of them weighing anything. First, autonomy-4 puts its solid-state flash lidar behind the front band\'s window, so this part now owns an optical spec across two wavebands, visible for the matrix and near-infrared for the lidar, and a thermal design that has to carry the emitter\'s dissipation alongside 84 pixels per side in a housing with almost no air to convect into. Second, aim. Gen 1 referenced lamp aim to ride height and listed a leveling fault as a glare source; suspension-4 holds height to plus or minus 3 mm at whatever setting it commands, so aim now references the commanded height and cross-checks it against the four wheel-travel sensors. If they disagree, aim freezes at the low setting, because low is the glare-safe direction and a lamp that is aiming slightly short is a range problem while a lamp aiming high is everyone else\'s problem.',
       why: 'A monoform leaves nowhere else for light to live, and a control generation leaves nowhere else for a forward lidar to live either. Any housing cut into the lofted surface would be a curvature break in exactly the air the body is shaped to keep attached, whereas the two truncation faces are flat, vertical and already outside the attached flow. Putting the lidar behind the band costs this module zero kilograms and costs the sensor zero drag, which is the definition of an integration that should happen rather than one that merely can.',
       fail: [
         'One part per face: a parking tap costs the whole band, and now it costs a lidar aperture with it, so a low-speed nose contact is a perception event as well as a lighting one.',
@@ -147,33 +245,33 @@ export const SYSTEM = {
         ['Worth', '-1.8 counts weighted against Gen 3\'s fixed 12 degrees'],
         ['Maturity', 'Production practice: multi-position deck flaps have shipped for decades'],
       ],
-      how: 'The physics carries from Gen 3 unchanged: a Kamm truncation pays base drag on the cut face every kilometre, and a flap extends the boat-tail line the quarters started, pulls the separation edge inboard and down, and shrinks the base area the pressure deficit acts on. Gen 3 bought that with one angle and a threshold. The problem with one angle is that the optimum is not one angle: the base deficit depends on speed, on yaw, and on the floor\'s exit condition, which itself depends on ride height. So the angle becomes a variable on a three-input map. Above 110 km/h, where suspension-4 has already dropped the body 20 mm and the underfloor is pulling hardest, the flap runs 16 degrees, four more than Gen 3 could hold, and the extra camber is only tenable because a faster floor exit will not let it separate. Between 60 and 110 km/h it runs intermediate angles Gen 3 had no way to express, which is where most of the 1.8 counts actually come from. In yaw it trims back, because a crosswind moves the separation line and an over-cambered flap in yaw stalls and gives the counts straight back. It is drawn here at 9 degrees, mid-map, because the whole argument of this generation is that no single position is the design position.\n\nThe drive and the failure are the rest of the part. Two 48 V spindle drives sit at the ends of one hinge tube, on separate eFuse channels on hv-4\'s two rear corner zonal controllers, 120 W peak each, 2.5 A. They are deliberately not on hv-4\'s by-wire feed pair: that pair is sized at 150 A per rocker for the 146 A of steering, brake boost, damper heads, rear-steer and compressor, and aero has no business inside a budget whose whole purpose is that a failure there costs control. An aero failure costs counts, and the wiring says so. The ladder runs: one lane dead, the survivor drives the flap flush at half rate; both dead, a return spring pulls it flush in 0.6 s. Flush is the only safe rest position, carried word for word from Gen 3, because a flap stuck at angle in town is an uncertified pedestrian geometry while a flap stuck flush merely costs six counts. Travel bought certification debt with it: the headform and legform series now runs at flush, at 16 degrees, and at the worst intermediate angle, and pinch protection is proven across a continuum rather than at two endpoints. An absolute encoder on the hinge centreline knows the angle to a tenth of a degree, the eFuse current signature is the second opinion, and a disagreement parks the flap flush without asking.',
+      how: 'The physics carries from Gen 3 unchanged: a Kamm truncation pays base drag on the cut face every kilometer, and a flap extends the boat-tail line the quarters started, pulls the separation edge inboard and down, and shrinks the base area the pressure deficit acts on. Gen 3 bought that with one angle and a threshold. The problem with one angle is that the optimum is not one angle: the base deficit depends on speed, on yaw, and on the floor\'s exit condition, which itself depends on ride height. So the angle becomes a variable on a three-input map. Above 110 km/h, where suspension-4 has already dropped the body 20 mm and the underfloor is pulling hardest, the flap runs 16 degrees, four more than Gen 3 could hold, and the extra camber is only tenable because a faster floor exit will not let it separate. Between 60 and 110 km/h it runs intermediate angles Gen 3 had no way to express, which is where most of the 1.8 counts actually come from. In yaw it trims back, because a crosswind moves the separation line and an over-cambered flap in yaw stalls and gives the counts straight back. It is drawn here at 9 degrees, mid-map, because the whole argument of this generation is that no single position is the design position.\n\nThe drive and the failure are the rest of the part. Two 48 V spindle drives sit at the ends of one hinge tube, on separate eFuse channels on hv-4\'s two rear corner zonal controllers, 120 W peak each, 2.5 A. They are deliberately not on hv-4\'s by-wire feed pair: that pair is sized at 150 A per rocker for the 146 A of steering, brake boost, damper heads, rear-steer and compressor, and aero has no business inside a budget whose whole purpose is that a failure there costs control. An aero failure costs counts, and the wiring says so. The ladder runs: one lane dead, the survivor drives the flap flush at half rate; both dead, a return spring pulls it flush in 0.6 s. Flush is the only safe rest position, carried word for word from Gen 3, because a flap stuck at angle in town is an uncertified pedestrian geometry while a flap stuck flush merely costs six counts. Travel bought certification debt with it: the headform and legform series now runs at flush, at 16 degrees, and at the worst intermediate angle, and pinch protection is proven across a continuum rather than at two endpoints. An absolute encoder on the hinge centerline knows the angle to a tenth of a degree, the eFuse current signature is the second opinion, and a disagreement parks the flap flush without asking.',
       why: 'A binary device is tuned at its endpoints and pays everywhere between them. Gen 3\'s flap earned about six counts at 130 km/h and nothing at 100, because 100 was below its threshold and twelve degrees would have been the wrong angle to hold there anyway. A map earns something at every speed the car actually drives, and a weighted average over real speeds is where a road car lives rather than where a tunnel run happens. The kilogram of extra hardware buys a second lane as well as the map, which is why the flap can still reach a legal position with half its drive dead.',
       fail: [
         'Ice in the hinge line is carried from Gen 3 and is worse here, because a continuous device has more positions to freeze in. The cold-start sweep measures breakaway torque on both lanes, and a stiff hinge parks the flap flush for the day with the range estimate quietly explaining the missing counts.',
         'A million actuations was Gen 3\'s fatigue number for a two-position flap; a mapped flap moves on every speed change and the duty count rises by roughly an order. The hinge is a dry polymer bearing sized for that, and trailing-edge lash is the wear signature the self-test is tuned to catch.',
-        'Two drives on one torsion tube can fight each other: a lane whose encoder has drifted will wind the tube against its partner. Torque disagreement above 8 Nm de-energises both lanes and lets the spring win, which is the only arbiter that cannot itself be wrong about the angle.',
+        'Two drives on one torsion tube can fight each other: a lane whose encoder has drifted will wind the tube against its partner. Torque disagreement above 8 Nm de-energizes both lanes and lets the spring win, which is the only arbiter that cannot itself be wrong about the angle.',
       ],
       explode: [-1.05, 0.45, 0],
     },
     'arch-louvers': {
       name: 'Active front arch louvers',
-      tagline: 'Gen 3 bolted fixed crescents over the arch the tyre cannot reach; Gen 4 hinges them and tells them where the wheels are pointing.',
+      tagline: 'Gen 3 bolted fixed crescents over the arch the tire cannot reach; Gen 4 hinges them and tells them where the wheels are pointing.',
       mass: 6,
       count: 4,
       specs: [
-        ['body-3 counterpart', 'spats, 5 kg: two fixed crescents per side, three static louvres'],
+        ['body-3 counterpart', 'spats, 5 kg: two fixed crescents per side, three static louvers'],
         ['Delta', 'Pivoting blades, 4 leading and 5 trailing per side, 50 deg travel; +1 kg'],
         ['Actuation', '4 x 48 V rotary, 30 W each, hv-4 front zonal eFuse channels'],
         ['Coordination', 'Steer-by-wire angle command, disc temperature model, speed'],
         ['Worth', '-1.5 counts weighted; 5.5 counts shut against Gen 3\'s fixed 4'],
         ['Maturity', 'Production practice: the mechanism is a grille shutter bank relocated'],
       ],
-      how: 'The crescent logic is Gen 3\'s and it carries intact. A steered, bumped wheel sweeps a computed solid, and roughly 40 percent of the arch opening lies outside that solid, a crescent at the leading edge and a larger one trailing, coverable by panels that hug the loft where no full front skirt could stand closer than a hand-width. Gen 3 fixed those panels and bled the trapped arch pressure through three static louvres, which is an average-case setting paid at every speed and every steering angle. Gen 4 hinges the blades: four in the leading crescent, five in the trailing, 42 mm chord, one 48 V rotary actuator per crescent, fifty degrees of travel, drawn here at thirty. Shut, the crescents seal to the loft line and the arch stops spilling into the body side, worth about 5.5 counts against an open arch where Gen 3\'s fixed panels and vents were worth 4.\n\nThe coordination is the Gen 4 verb, and it has three inputs. Steering comes first: past roughly 8 degrees of road-wheel angle the tyre begins pressurising the crescent it is turning into, and a sealed crescent under a turning wheel feeds front lift, so the bank on that side opens ahead of the tyre. The signal is suspension-4\'s steer-by-wire rack angle command rather than a measured wheel angle, which matters because a command arrives before the tyre does and a measurement arrives after. Brake temperature comes second: an alpine descent or a repeated-stop tow wants arch airflow a summer cruise never does, so a disc temperature model opens the blades when the rotors ask, and thermal wins that argument the same way it wins at the nose. Speed comes third: below about 30 km/h the blades open because the drag is not worth having and the arch wants to breathe. Position truth is free. hv-4 streams every channel\'s current at 1 kHz, so the actuation signature is the position sensor and not one blade needs an encoder of its own.',
+      how: 'The crescent logic is Gen 3\'s and it carries intact. A steered, bumped wheel sweeps a computed solid, and roughly 40 percent of the arch opening lies outside that solid, a crescent at the leading edge and a larger one trailing, coverable by panels that hug the loft where no full front skirt could stand closer than a hand-width. Gen 3 fixed those panels and bled the trapped arch pressure through three static louvers, which is an average-case setting paid at every speed and every steering angle. Gen 4 hinges the blades: four in the leading crescent, five in the trailing, 42 mm chord, one 48 V rotary actuator per crescent, fifty degrees of travel, drawn here at thirty. Shut, the crescents seal to the loft line and the arch stops spilling into the body side, worth about 5.5 counts against an open arch where Gen 3\'s fixed panels and vents were worth 4.\n\nThe coordination is the Gen 4 verb, and it has three inputs. Steering comes first: past roughly 8 degrees of road-wheel angle the tire begins pressurizing the crescent it is turning into, and a sealed crescent under a turning wheel feeds front lift, so the bank on that side opens ahead of the tire. The signal is suspension-4\'s steer-by-wire rack angle command rather than a measured wheel angle, which matters because a command arrives before the tire does and a measurement arrives after. Brake temperature comes second: an alpine descent or a repeated-stop tow wants arch airflow a summer cruise never does, so a disc temperature model opens the blades when the rotors ask, and thermal wins that argument the same way it wins at the nose. Speed comes third: below about 30 km/h the blades open because the drag is not worth having and the arch wants to breathe. Position truth is free. hv-4 streams every channel\'s current at 1 kHz, so the actuation signature is the position sensor and not one blade needs an encoder of its own.',
       why: 'An arch is an air pump whose duty varies by two orders between a summer cruise and a descent on hot discs, and whose pressure field changes every time the wheels turn. Gen 3 priced the average and then paid it everywhere, including at full lock where its fixed panels were actively working against the front axle. Thirty watts and half a kilogram per crescent buys both ends of that range, and the steering input is the part only a control generation could have written, because it needs a rack that knows its own commanded angle rather than a sensor reporting the last one.',
       fail: [
         'Grit and ice in the pivots is the chronic case; the cold-start sweep catches a stiff bank and leaves it open, which costs counts and never costs cooling or lift margin.',
-        'The blades lead the wheel into every kerb approach, carried from Gen 3\'s spats. They are frangible by design, tearing at the pivot rather than levering a frame into the tyre, and the current signature logs the exact moment it happened.',
+        'The blades lead the wheel into every curb approach, carried from Gen 3\'s spats. They are frangible by design, tearing at the pivot rather than levering a frame into the tire, and the current signature logs the exact moment it happened.',
         'Snow chains and the crescents remain mutually exclusive by geometry. The frames release in a minute per side, and the honest limit is that a driver fitting chains in the dark will learn this from the manual rather than from the car.',
       ],
       explode: [0.45, -0.05, 0.75],
@@ -190,10 +288,10 @@ export const SYSTEM = {
         ['Worth', '+0.6 counts net: +1.5 for the mouth, -0.9 for the stroke'],
         ['Maturity', 'Production practice since the 2010s; the 90 ms stroke is what is new'],
       ],
-      how: 'The accounting comes first, because this part is the one honest debit on the ledger. Gen 3 chased one unbroken surface and quietly stopped drawing the intake, but the thermal loop\'s air did not stop existing, so 0.145 was quoted for a nose with no modelled opening. Gen 4 draws the mouth: 60 by 800 mm in the nose face below the light band, ducted straight to the radiator stack in the front zone the ladder has never moved, x 2.08 to 2.26. It bills 1.5 counts for the aperture, its lip and the leakage past a shut bank, and then earns most of that back with speed rather than with area. Gen 2\'s bank took 1.5 s to full travel on a geared DC motor, and a controller that cannot trust its actuator to catch a transient must run a wide hysteresis band: open early, close late, and sit open through every margin it might conceivably need. Gen 2 measured itself open more than 15 percent of highway time. This bank full-strokes in 90 ms, so the band collapses toward the sensor noise floor and highway open time falls under 4 percent. That is the 0.9 count credit, and it is bought with milliseconds.\n\nWhat makes 90 ms possible is two direct-drive brushless heads, one per half-bank, with no geartrain to wind up: 250 W peak for the stroke and nothing at rest, which at 48 V is 5.2 A per head on an ordinary fused channel on hv-4\'s front zonal controllers, where the same torque at 12 V would want 21 A through a corner harness. Latency is the other half of the number. The position request rides the zonal bus\'s 1 Gbit control ring rather than waiting for a slot in a legacy frame budget, so thermal request to slat motion is under 5 ms end to end. What the speed does not buy is cooling: the coolant loop responds in seconds and the pack\'s thermal mass in minutes, so a fast bank is never cooler than a slow one at steady state. It simply lets the mouth stay shut right up to the moment the thermal controller genuinely needs it, and shut again the moment it does not. The negotiation itself is Gen 2\'s, carried verbatim: thermal owns the position request, aero is granted closure only when every thermal margin is green, and the spring fails the bank open, because a stuck-shut gate on a mountain climb cooks hardware while a stuck-open one costs a count. Cooling beats drag. Only the clock changed.',
+      how: 'The accounting comes first, because this part is the one honest debit on the ledger. Gen 3 chased one unbroken surface and quietly stopped drawing the intake, but the thermal loop\'s air did not stop existing, so 0.145 was quoted for a nose with no modeled opening. Gen 4 draws the mouth: 60 by 800 mm in the nose face below the light band, ducted straight to the radiator stack in the front zone the ladder has never moved, x 2.08 to 2.26. It bills 1.5 counts for the aperture, its lip and the leakage past a shut bank, and then earns most of that back with speed rather than with area. Gen 2\'s bank took 1.5 s to full travel on a geared DC motor, and a controller that cannot trust its actuator to catch a transient must run a wide hysteresis band: open early, close late, and sit open through every margin it might conceivably need. Gen 2 measured itself open more than 15 percent of highway time. This bank full-strokes in 90 ms, so the band collapses toward the sensor noise floor and highway open time falls under 4 percent. That is the 0.9 count credit, and it is bought with milliseconds.\n\nWhat makes 90 ms possible is two direct-drive brushless heads, one per half-bank, with no geartrain to wind up: 250 W peak for the stroke and nothing at rest, which at 48 V is 5.2 A per head on an ordinary fused channel on hv-4\'s front zonal controllers, where the same torque at 12 V would want 21 A through a corner harness. Latency is the other half of the number. The position request rides the zonal bus\'s 1 Gbit control ring rather than waiting for a slot in a legacy frame budget, so thermal request to slat motion is under 5 ms end to end. What the speed does not buy is cooling: the coolant loop responds in seconds and the pack\'s thermal mass in minutes, so a fast bank is never cooler than a slow one at steady state. It simply lets the mouth stay shut right up to the moment the thermal controller genuinely needs it, and shut again the moment it does not. The negotiation itself is Gen 2\'s, carried verbatim: thermal owns the position request, aero is granted closure only when every thermal margin is green, and the spring fails the bank open, because a stuck-shut gate on a mountain climb cooks hardware while a stuck-open one costs a count. Cooling beats drag. Only the clock changed.',
       why: 'A fixed intake is sized for the worst hour of the car\'s life and paid for in every other hour, and Gen 3\'s answer, drawing no intake at all, was that problem left unstated rather than solved. A metered mouth with a 90 ms stroke turns the sealed-nose claim into a position the mechanism actually holds more than nine tenths of the time, and prints the debit for the times it does not. Two kilograms is the same number Gen 2 spent, because the deleted geartrain pays for the second head: the mass did not move, the response time did.',
       fail: [
-        'Road grit and ice jam slat pivots, carried from Gen 2 unimproved. The cold-start sweep reports a stiff bank before the motorway or the charger does.',
+        'Road grit and ice jam slat pivots, carried from Gen 2 unimproved. The cold-start sweep reports a stiff bank before the highway or the charger does.',
         'Fail-open is safe but a spring is still a mechanism: a broken return leaves the bank wherever the last command put it, which is why the two heads back-drive against each other on every sweep specifically to prove the spring is still there.',
         'The slats sit at the lowest point of the nose, squarely in the stone-strike zone, and a cracked slat unbalances a direct-drive head that has no geartrain to hide the asymmetry; the current signature flags it inside one stroke, which is the only warning this bank gets.',
       ],
@@ -212,12 +310,12 @@ export const SYSTEM = {
         ['Worth', '-2.4 counts weighted; -3.2 counts at the low setting'],
         ['Maturity', 'Production practice; the height coupling is what is new'],
       ],
-      how: 'The lip is Gen 3\'s and is carried unchanged: full-width carbon, 16 mm section, shear-away fasteners, metering the floor entrance to 110 mm at nominal height so the dead-flat plane the battery paid for works as a long shallow venturi with the road. What Gen 3 could not do was tune it. Its own fail list said a ride-height fault mistunes the whole floor rather than just a plate, and it named no owner for the height. The Gen 4 preset supplies one by name: suspension-4\'s rolling-lobe air springs hold height to plus or minus 3 mm at any commanded setting across a -20 to +25 mm range, and drop the body 20 mm above 110 km/h. That converts one design gap into a schedule of gaps, 110 mm nominal and 90 mm on the motorway, and a floor whose fences were right at 110 is not right at 90: the same blades that conditioned the flow at the higher gap start shedding off their tips when the entrance accelerates harder.\n\nSo the fences move. Six blades, 24 mm deep, three per side at z plus and minus 0.30, 0.50 and 0.66, hang from the pack floor plane and rake about their own longitudinal axes through 0 to 9 degrees, driven by one 48 V rotary unit per side at 40 W through a torque tube ahead of the pack front wall. The outermost blade stops at 0.66 rather than following the pack to 0.72, because the front tyre\'s inner face is at 0.7175 on the built wheel this preset fits, so a blade following the pack to 0.72 would sit 2.5 mm inside the wheel\'s swept solid. They are drawn here at 6 degrees, the motorway setting. Flat, they are Gen 3\'s floor exactly. Raked, they turn the accelerated underfloor inboard and keep the rear run two-dimensional, so a yawed crosswind stalls one side\'s share of the plane instead of letting the whole floor let go at once. The scheduling detail is the interesting one: suspension-4\'s supply moves 40 mm on all four corners in about six seconds, so height arrives slowly and predictably, and the strakes take the same speed signal the height schedule takes and lead it rather than chasing a measurement. By the time the body has finished descending, the rake is already correct. The cross-check runs the other way: the drive current signatures and the four wheel-travel sensors must agree on which height the car believes it is at, and a disagreement springs every blade flat, because a fence pointed the wrong way at the wrong gap is worse than no fence.',
+      how: 'The lip is Gen 3\'s and is carried unchanged: full-width carbon, 16 mm section, shear-away fasteners, metering the floor entrance to 110 mm at nominal height so the dead-flat plane the battery paid for works as a long shallow venturi with the road. What Gen 3 could not do was tune it. Its own fail list said a ride-height fault mistunes the whole floor rather than just a plate, and it named no owner for the height. The Gen 4 preset supplies one by name: suspension-4\'s rolling-lobe air springs hold height to plus or minus 3 mm at any commanded setting across a -20 to +25 mm range, and drop the body 20 mm above 110 km/h. That converts one design gap into a schedule of gaps, 110 mm nominal and 90 mm on the highway, and a floor whose fences were right at 110 is not right at 90: the same blades that conditioned the flow at the higher gap start shedding off their tips when the entrance accelerates harder.\n\nSo the fences move. Six blades, 24 mm deep, three per side at z plus and minus 0.30, 0.50 and 0.66, hang from the pack floor plane and rake about their own longitudinal axes through 0 to 9 degrees, driven by one 48 V rotary unit per side at 40 W through a torque tube ahead of the pack front wall. The outermost blade stops at 0.66 rather than following the pack to 0.72, because the front tire\'s inner face is at 0.7175 on the built wheel this preset fits, so a blade following the pack to 0.72 would sit 2.5 mm inside the wheel\'s swept solid. They are drawn here at 6 degrees, the highway setting. Flat, they are Gen 3\'s floor exactly. Raked, they turn the accelerated underfloor inboard and keep the rear run two-dimensional, so a yawed crosswind stalls one side\'s share of the plane instead of letting the whole floor let go at once. The scheduling detail is the interesting one: suspension-4\'s supply moves 40 mm on all four corners in about six seconds, so height arrives slowly and predictably, and the strakes take the same speed signal the height schedule takes and lead it rather than chasing a measurement. By the time the body has finished descending, the rake is already correct. The cross-check runs the other way: the drive current signatures and the four wheel-travel sensors must agree on which height the car believes it is at, and a disagreement springs every blade flat, because a fence pointed the wrong way at the wrong gap is worse than no fence.',
       why: 'The underbody is the largest single surface on the car and the only one the battery already paid to flatten, and Gen 3 left its tuning open-loop because nothing on the ladder could close the loop. This is the clearest statement of the control generation\'s thesis anywhere on the body: no new surface, no new material, one kilogram of pivots and drives, and an aerodynamic number that finally depends on something the car commands rather than something it hopes the road allows.',
       fail: [
-        'Kerbs and ramps rake the lip first, carried unchanged from Gen 3 along with its shear-away fasteners, because the physics of car park ramps did not change between generations either.',
+        'Curbs and ramps rake the lip first, carried unchanged from Gen 3 along with its shear-away fasteners, because the physics of parking lot ramps did not change between generations either.',
         'A blade seized at rake is worse than a blade seized flat: it is a fence pointed the wrong way at the wrong gap, and it shows as a floor that pulls unevenly in yaw. Return springs are sized to overcome a dry pivot and the drives back-drive against them at every cold start to prove they still can.',
-        'Deep snow packs the floor and the venturi becomes a plough. The blades are rated for it structurally, the floor is dead aerodynamically, and the range estimate still has no vocabulary for slush, carried from Gen 3 with the same apology.',
+        'Deep snow packs the floor and the venturi becomes a plow. The blades are rated for it structurally, the floor is dead aerodynamically, and the range estimate still has no vocabulary for slush, carried from Gen 3 with the same apology.',
       ],
       explode: [0, -0.62, 0],
     },
@@ -255,7 +353,7 @@ export const SYSTEM = {
       megacasting, and 0.339 percent of the Kamm face was the rails seen the
       whole length of the car. Both faces are built from the master grid's own
       edge ring now, the nose as an annulus around the intake mouth and the
-      tail with the closeLoop end cap plus the centre disc that cap leaves
+      tail with the closeLoop end cap plus the center disc that cap leaves
       out. The sweep is run on ANY first surface rather than on chassis
       alone, because the first version of this fix passed a chassis-only test
       with a 14.32 cm2 hole still in the middle of the Kamm face: what shows
@@ -274,7 +372,7 @@ export const SYSTEM = {
       straight at y 0.952 while the deck at that station falls from a crown of
       0.9531 to 0.8668 at |z| 0.587, so the tube stood 73 mm clear of the deck
       at its ends, and the blade's underside grazed the crown at the
-      centreline and floated 113 mm above the deck at |z| 0.650. Span is
+      centerline and floated 113 mm above the deck at |z| 0.650. Span is
       0.72 m now: the deck at the hinge station is 0.393 half-wide 30 mm below
       its crown, every fitting is seated through surfaceY at its own |z|, and
       the root runs in a relief channel cut into the deck.
@@ -297,11 +395,11 @@ export const SYSTEM = {
    (battery-3, drivetrain-3, wheels-3, hv-4, suspension-4, autonomy-4,
    thermal, interior-4):
 
-   - wheels-3 front corner: static tyre |z| 0.9036, swept |z| 0.9210 under
+   - wheels-3 front corner: static tire |z| 0.9036, swept |z| 0.9210 under
      suspension-4's +-3 degrees about the axis through (1.45, 0.81), peak at
-     x 1.805 and 1.095. Tyre crown y 0.7180. The louver pivot plane's 0.956
-     used to be justified against a 0.9275 tyre face, which is 24 mm wider
-     than the tyre this preset actually fits.
+     x 1.805 and 1.095. Tire crown y 0.7180. The louver pivot plane's 0.956
+     used to be justified against a 0.9275 tire face, which is 24 mm wider
+     than the tire this preset actually fits.
    - body.js cage, carried: A-pillar foot node (0.85, 0.95, 0.72) and the
      cowl beam across x 0.85 to |z| 0.72, on 40 to 42 mm tubes; B-pillar on
      x 0.02 at all three nodes; rockers x -1.010 to +1.010, top face y 0.42,
@@ -313,7 +411,7 @@ export const SYSTEM = {
      |z| 0.8985; the whole assembly with its door drawn open reaches 0.9828.
    - thermal radiator face x 2.2050, y 0.2510 to 0.7790, |z| 0.4450, and it
      is the forwardmost thermal vertex.
-   - autonomy-4 front radar centre puck x 2.2890 to 2.3155, y 0.460 to 0.540,
+   - autonomy-4 front radar center puck x 2.2890 to 2.3155, y 0.460 to 0.540,
      |z| 0.070; lidar x 2.2841 to 2.3691, y 0.583 to 0.647, |z| 0.3396.
    - battery-3 pack underside y 0.130 out to |z| 0.780, forwardmost x 1.300.
 
@@ -334,7 +432,7 @@ export const SYSTEM = {
      it, so |z| 0.6500 at its aft corner x 2.2620. The nose there is 0.6362
      half-wide at y 0.553, which is 13.8 mm, but 0.553 is nearly the widest
      the ring gets and the beam does not stop there: at y 0.5920, the top of
-     the beam's full section, the nose is 0.6079 and 42.1 mm of aluminium
+     the beam's full section, the nose is 0.6079 and 42.1 mm of aluminum
      stands outside the paint. 264 beam vertices lie outboard of the loft at
      their own height. Left as drawn, because the metadata this module
      inherits from body.js says the beam is curved in plan to 85 percent of
@@ -372,7 +470,7 @@ const STATIONS = [
   [0.45, [[0.30, 0.91], [0.55, 0.935], [0.92, 0.94], [1.12, 0.74], [1.425, 0.66], [1.44, 0.35]], 1.445],
   /* 6  maximum section */
   [-0.35, [[0.30, 0.92], [0.55, 0.94], [0.92, 0.94], [1.16, 0.72], [1.435, 0.67], [1.448, 0.35]], 1.452],
-  /* 7  rear axle: the flank holds 0.94 outboard of a 0.9036 tyre, so the
+  /* 7  rear axle: the flank holds 0.94 outboard of a 0.9036 tire, so the
         loft is the rear skirt and there is no arch opening to close */
   [-1.45, [[0.30, 0.94], [0.55, 0.94], [0.92, 0.925], [1.02, 0.68], [1.115, 0.46], [1.153, 0.21]], 1.16],
   /* 8  deck station (DECK): glass ends, painted deck begins */
@@ -474,7 +572,7 @@ const colOfZ = (x, hz) => colOf(x, surfaceY(x, hz));
    face, y 0.6385 to 0.6605 and |z| under 0.0335, and an axial ray through it
    found its next surface at x +2.3750: the INSIDE of the nose face, the
    whole length of the car away. A chassis-only sweep cannot see this,
-   because what shows through a hole in the paint is more paint. capCentre
+   because what shows through a hole in the paint is more paint. capCenter
    closes it, at one triangle per outline point. */
 function endCap(ringPts, dx, mat) {
   const ys = ringPts.map((p) => p[1]);
@@ -484,10 +582,10 @@ function endCap(ringPts, dx, mat) {
 }
 
 /* The disc that closes the middle of that cap: the same five percent loop
-   endCap stops at, fanned to the face centre. Winding is decided from the
+   endCap stops at, fanned to the face center. Winding is decided from the
    loop's own signed area rather than assumed, so the normal faces out of the
    car at either end of it. */
-function capCentre(ringPts, dx, mat) {
+function capCenter(ringPts, dx, mat) {
   const ys = ringPts.map((p) => p[1]);
   const cy = (Math.min(...ys) + Math.max(...ys)) / 2;
   const cx = ringPts[0][0] + dx;
@@ -541,17 +639,17 @@ const glassBand = RINGS.slice(COWL, DECK + 1).map((r) =>
 
    x 0.850  the A-pillar foot node is at (0.85, 0.95, 0.72) and body.js's
             cowl beam runs the full width on x 0.85 at r 0.040, so the plane
-            is occupied from the centreline out to |z| 0.72. A door leading
+            is occupied from the centerline out to |z| 0.72. A door leading
             edge cannot sit forward of the pillar it hangs on, and the boxes
             this replaces implied 1.080: 230 mm forward of the pillar and
             20 mm forward of the cowl station where the glass starts.
-   x 0.020  all three B-pillar nodes are on x 0.02 at r 0.042, so the centre
+   x 0.020  all three B-pillar nodes are on x 0.02 at r 0.042, so the center
             cut lands inside the pillar's own 84 mm section. The boxes this
             replaces implied 0.060 and 0.080 and left a 20 mm strip of body
             belonging to neither door.
    x -1.010 the measured rear end of the rocker extrusion, 251 mm forward of
             interior-4's rear bench back at x -1.2607, which is the clearance
-            the aperture exists to give, and 77 mm forward of the rear tyre's
+            the aperture exists to give, and 77 mm forward of the rear tire's
             leading vertex at x -1.0870.
 
    Each cut runs from the rocker top to the beltline seam and no further, and
@@ -574,7 +672,7 @@ const glassBand = RINGS.slice(COWL, DECK + 1).map((r) =>
    THE FLAP RELIEF CHANNEL is a row groove in the deck on the flap's own
    hinge station, 10 mm wide and 6 mm deep, spanning the flap plus a run-out.
    It is what makes the flap read as hinged rather than laid on: measured off
-   the built blade, its root clears the deck by 4.6 mm at the centreline and
+   the built blade, its root clears the deck by 4.6 mm at the centerline and
    by 30.8 mm at the tips, and that wedge is the gap an articulating surface
    has to show. */
 
@@ -643,7 +741,7 @@ const CUT = [SHELL.grooves[0].split, SHELL.grooves[2].split, SHELL.grooves[4].sp
                     lives on the glass, which carries its own declaration.
 
    No station line is declared. The strongest is ring 5 in the upper band at
-   32 degrees, which is the windscreen header, and hardening it would put a
+   32 degrees, which is the windshield header, and hardening it would put a
    knife edge across one continuous piece of glass. Ring point 3 reaches 39
    in one band and is a panel boundary that separate meshes already break.
 
@@ -727,7 +825,7 @@ function creaseLines(mesh, grid, hardR, hardC, rows, cols) {
 
   /* one normal per (vertex, fan slot). Slots 0-1 and 3-4 meet on row line i,
      2-3 and 5-0 on column line j, and 1-2 and 4-5 are quad diagonals, which
-     are never hard: a diagonal breaking is a triangulation artefact showing
+     are never hard: a diagonal breaking is a triangulation artifact showing
      through the paint. */
   const vn = new Float64Array(R * C * 18);
   const slot = new Int32Array(6);
@@ -811,7 +909,7 @@ function gridRing(rowIdx) {
    extra column lines the door grooves have pushed into row 0.
 
    The mouth then returns 53 mm inboard to a throat at x 2.322. That number is
-   autonomy-4's: its centre radar puck's front face is at x 2.3155, so the
+   autonomy-4's: its center radar puck's front face is at x 2.3155, so the
    throat stops 6.5 mm ahead of it. Behind the throat the cavity opens on
    thermal's radiator core at x 2.2050, which spans y 0.2510 to 0.7790 and
    |z| 0.4450 and therefore covers the whole aperture: there is nothing to
@@ -832,7 +930,7 @@ function mouthAt(f) {
   s -= w;
   return [FACEX, MOUTH.y1 - Math.min(s, h), MOUTH.hz];
 }
-/* the same point on the throat rim, scaled about the mouth's own centre, so
+/* the same point on the throat rim, scaled about the mouth's own center, so
    the two loops share their corners exactly and the joint cannot open */
 const throatOf = ([, y, z]) => [
   THROAT.x,
@@ -970,7 +1068,7 @@ export function build() {
 }
 
 /* ── the invariant structure: body.js's coordinates to the digit, with every
-   box chamfered. A chamfer moves no face centre and costs 32 triangles. ── */
+   box chamfered. A chamfer moves no face center and costs 32 triangles. ── */
 function buildStructure(sys) {
   const fc = lib.part('front-casting', [0.85, -0.35, 0]);
   for (const s of [-1, 1]) {
@@ -983,7 +1081,7 @@ function buildStructure(sys) {
   /* The cross portion is a lower crossmember at the casting's front face,
      x 2.000 to 2.070, y 0.300 to 0.370, not a block filling the nose. It
      used to be one 0.31 x 0.28 x 0.68 solid spanning x 1.760 to 2.070 over
-     the full 280 mm section height, which is 0.0590 m3 of drawn aluminium,
+     the full 280 mm section height, which is 0.0590 m3 of drawn aluminum,
      159 kg at 2,700 kg/m3, against a part that declares 48 kg for the whole
      casting. The bay it filled is where every thermal variant packages its
      chiller, manifold, pumps and heat pump, so the model was drawing metal
@@ -1033,7 +1131,7 @@ function buildStructure(sys) {
                     the flank measures 0.9279, and the straight run up to
                     (0.02, 1.40, 0.620) reaches 0.8717 at y 1.079 against a
                     painted surface 0.7887 wide: 83 mm outside the door skin,
-                    exactly where the centre shutline is.
+                    exactly where the center shutline is.
        C-pillar     (-1.45, 1.00, 0.700) reaches 0.742 against 0.7290.
        roof rail    (-0.55, 1.42, 0.615) sits 21 mm above the roof crown at
                     that station, and the C-pillar's forward run carries on
@@ -1056,9 +1154,9 @@ function buildStructure(sys) {
      (-1.011, 1.212, 0.600). The residue is not the nodes, which all sit
      54.0 mm under the glass by construction: it is that lib.tube runs a
      Catmull-Rom through them and the curve bulges between unevenly spaced
-     control points. Sampled every 60th of its length the C-pillar centreline
+     control points. Sampled every 60th of its length the C-pillar centerline
      still clears the glass by 46.6 mm at its worst against a 42 mm tube, so
-     closing the last centimetre means more nodes on the run, not a different
+     closing the last centimeter means more nodes on the run, not a different
      solve.
 
      The glass band is the loft offset 8 mm in y and 1.2 percent in z, so the
@@ -1114,13 +1212,11 @@ function buildShell(sys) {
   skin.add(panel([CUT[2], RI(LAST)], FR));            /* and the charge door */
   skin.add(panel([CUT[0], CUT[2]], SILLL));           /* sill band under the cuts */
   skin.add(panel([CUT[0], CUT[2]], SILLR));
-  skin.add(panel([RI(0), RI(COWL)], UP));             /* nose deck to the cowl */
-  skin.add(panel([RI(DECK), RI(LAST)], UP));          /* tail deck, flap relief */
   const [nOut, nIn] = noseLoops();
   skin.add(lib.shell(lib.crease(lib.loft([nOut, nIn], M.paint, true), 34)));
   skin.add(lib.shell(lib.crease(lib.loft([nIn, nIn.map(throatOf)], M.paint, true), 34)));
   skin.add(lib.shell(lib.crease(endCap(gridRing(RI(LAST)), 0.004, M.paint), 34)));
-  skin.add(lib.shell(capCentre(gridRing(RI(LAST)), 0.004, M.paint)));
+  skin.add(lib.shell(capCenter(gridRing(RI(LAST)), 0.004, M.paint)));
   /* The marque on the Kamm face. Depth is set by the panel and not by taste:
      the cap is a shallow cone rather than a plane, so it is swept over the
      badge's own 90 by 38 mm footprint and the back face is set inside the
@@ -1130,6 +1226,19 @@ function buildShell(sys) {
   mark.position.set(-2.3705, 0.700, 0);
   skin.add(mark);
   sys.add(skin);
+
+  /* ── THE TWO LIDS. Same part id, so the skin stays one clickable thing and
+     the mass ledger does not move; a different group, because a closure is a
+     rigid body and the viewer transforms groups. Same panel() call, same
+     arguments, same vertices: both decks were ALREADY exactly one mesh cut on
+     grid lines, so this is a change of owner and nothing else, which is what
+     tools/geohash.sh --soup is there to prove. ── */
+  const hood = lib.hinge(lib.part('skin', [0, 0.62, 0]), 'hood');
+  hood.add(panel([RI(0), RI(COWL)], UP));             /* nose deck to the cowl */
+  sys.add(hood);
+  const lid = lib.hinge(lib.part('skin', [0, 0.62, 0]), 'decklid');
+  lid.add(panel([RI(DECK), RI(LAST)], UP));           /* tail deck, flap relief */
+  sys.add(lid);
 
   /* ── glass canopy band, lofted 8 mm proud of the same stations, with the
      roof shoulder declared and a dark reveal down each beltline edge. The
@@ -1161,18 +1270,44 @@ function buildShell(sys) {
      rather than a measured gap. Each skin carries the far wall and lip of the
      cut ahead of it and the near lip, wall and floor of the cut behind, so
      the channel between two panels is closed. ── */
-  const doors = lib.part('doors', [0.08, 0, 0.85]);
-  doors.add(panel([CUT[0], CUT[1]], DOORBAND));                          /* front door */
-  doors.add(panel([CUT[1], CUT[2]], DOORBAND));                          /* rear door */
-  for (const x of [0.120, -0.880]) {
-    doors.add(acbox(0.14, 0.024, 0.012, 0.0018, M.alu, x, 0.800,
-                    halfWidth(x, 0.800) + 0.007));
-  }
+  /* ONE GROUP PER LEAF, plus a third that does not move. Same meshes at the
+     same coordinates; what changed is which group owns them, because a
+     closure is a rigid body and cannot be a slice of a larger group. The
+     capacitive strip is a door handle and travels with its door; the camera
+     stalk and pod at x 1.020 are ahead of the front shutline on the fixed
+     A-pillar strip, so they keep the part id and carry no hinge. */
+  const leaf = (id, rows, stripX) => {
+    const g = lib.hinge(lib.part('doors', [0.08, 0, 0.85]), id);
+    g.add(panel(rows, DOORBAND));
+    g.add(acbox(0.14, 0.024, 0.012, 0.0018, M.alu, stripX, 0.800,
+                halfWidth(stripX, 0.800) + 0.007));
+    /* THE SURROUND CAMERA IS THIS BODY'S, seated on this body's own surface.
+       It used to be autonomy-4's, placed at an absolute |z| that could not be
+       right on more than one body: measured, the same coordinate stood 11.70
+       mm proud of body-4 and body-6's door skin and 71.5 mm proud of body-7,
+       -8 and -9's, so on the flat-flank bodies it floated clear of the panel
+       it was bolted to. A module builds once and is shared by five bodies, so
+       no coordinate it can write is right for all of them. The body is the
+       only module that knows where its own flank is, which is why body-11
+       already draws its own and why this one does now. Flush, 2 mm inside the
+       skin, so it is a camera rather than a thing standing in the airflow. */
+    if (id === 'door-front') {
+      const camZ = halfWidth(0.100, 1.000);
+      g.add(acbox(0.050, 0.028, 0.020, 0.004, M.sensor, 0.100, 1.000, camZ - 0.002));
+      g.add(acbox(0.090, 0.020, 0.012, 0.003, M.alu, 0.060, 1.000, camZ - 0.004));
+    }
+    return g;
+  };
+  const fixed = lib.part('doors', [0.08, 0, 0.85]);
   const zr = halfWidth(1.020, 0.960);
-  doors.add(acbox(0.014, 0.012, 0.949 - zr, 0.0018, M.plastic, 1.020, 0.960, (zr + 0.949) / 2));
-  doors.add(acbox(0.05, 0.028, 0.030, 0.004, M.sensor, 1.020, 0.960, 0.964));
-  sys.add(doors);
-  sys.add(mirrorZ(doors));
+  fixed.add(acbox(0.014, 0.012, 0.949 - zr, 0.0018, M.plastic, 1.020, 0.960, (zr + 0.949) / 2));
+  fixed.add(acbox(0.05, 0.028, 0.030, 0.004, M.sensor, 1.020, 0.960, 0.964));
+  for (const g of [leaf('door-front', [CUT[0], CUT[1]], 0.120),
+                   leaf('door-rear', [CUT[1], CUT[2]], -0.880),
+                   fixed]) {
+    sys.add(g);
+    sys.add(mirrorZ(g));
+  }
 
   /* ── active Kamm flap, drawn at 9 of 16 degrees ── */
   const flap = lib.part('kamm-flap', [-1.05, 0.45, 0]);
@@ -1227,7 +1362,7 @@ function buildShell(sys) {
       [HINGEX + 0.026, gy + 0.008, s * gz],
     ], 0.005, M.hv, false, 6));
   }
-  /* absolute encoder, on the hinge centreline as the part's own text says and
+  /* absolute encoder, on the hinge centerline as the part's own text says and
      outboard of the drive where the deck has room for it */
   flap.add(deckSeat(0.030, 0.024, 0.0035, M.sensor, 0.452, 1,
                     surfaceY(HINGEX, 0.452) + 0.026));
@@ -1241,7 +1376,7 @@ function buildShell(sys) {
     /* A CRESCENT IS A BAND THAT FOLLOWS THE ARCH, not a row of pickets on a
        common bottom line. The first pass here cut each blade to bottomY(x)
        and stopped them all at a straight y 0.335, which made the bank a
-       staircase hanging 90 mm below the tyre's widest point with a flat
+       staircase hanging 90 mm below the tire's widest point with a flat
        bottom in open air. Every blade now runs the same 150 mm from 8 mm
        under the arch lip, so the band is parallel to the opening it covers
        and its lower edge is an arc rather than a line. The arc is floored at
@@ -1285,7 +1420,7 @@ function buildShell(sys) {
        that a bolted spat does not. It follows the band, so it is rotated onto
        the arch's own slope over its run rather than left horizontal across a
        curved opening. Every inboard face here is held outboard of the swept
-       tyre: the bar and the cranks reach |z| 0.9320 against a corner that
+       tire: the bar and the cranks reach |z| 0.9320 against a corner that
        sweeps to 0.9210. */
     const mid = (x) => bot(x) + (top(x) - bot(x)) * 0.58;
     const bank = Math.atan2(mid(xb) - mid(xa), xb - xa);
@@ -1302,9 +1437,9 @@ function buildShell(sys) {
        else is bonded skin. The seat is taken from co() rather than from a
        plane through the arch lip, which is 6.6 mm above the closeout at the
        fixing's own position and would leave both heads floating. The end is chosen away from the wheel:
-       at the bank's midpoint the case sat 10 mm inside the tyre's swept
+       at the bank's midpoint the case sat 10 mm inside the tire's swept
        solid. Measured over the whole bank, the innermost vertex lying over
-       the tyre disc is at |z| 0.9320, 11.0 mm outboard of the swept face. */
+       the tire disc is at |z| 0.9320, 11.0 mm outboard of the swept face. */
     const ax = x0 < P.axleF ? xa + 0.028 : xb - 0.028, ay = mid(ax);
     const act = lib.cyl(0.015, 0.044, M.plastic, 14);
     act.position.set(ax, ay, LZ - 0.034);
@@ -1318,7 +1453,7 @@ function buildShell(sys) {
     }
     /* 48 V lead up the cassette and over the arch lip, where it stops. It
        has to go UP: routed inboard at blade height it would run at |z| 0.82
-       through the middle of wheels-3's front tyre, which the old build did
+       through the middle of wheels-3's front tire, which the old build did
        for 240 mm a side. */
     const lx = ax + (x0 < P.axleF ? -0.018 : 0.018), ly2 = bottomY(lx);
     louv.add(lib.tube([
@@ -1391,7 +1526,7 @@ function buildShell(sys) {
     tt.rotation.x = Math.PI / 2;
     tt.position.set(1.335, 0.1385, s * 0.46);
     str.add(tt);
-    /* drive coaxial with the tube, well inboard of wheels-3's front tyre,
+    /* drive coaxial with the tube, well inboard of wheels-3's front tire,
        whose inner face measures |z| 0.7175 */
     const drv = lib.cyl(0.017, 0.052, M.plastic, 14);
     drv.rotation.x = Math.PI / 2;

@@ -25,7 +25,7 @@ export const SYSTEM = {
         ['Interlock', 'HVIL loop, opens contactors in 200 ms'],
         ['Enclosure', 'Cast Al, IP6K7, shared pack seal'],
       ],
-      how: 'Two cables arrive from the pack contactors directly below and land on a pair of laminated copper busbars. Five branches leave: heavy unfused runs to the two drive inverters, protected upstream by the pack’s pyro fuse, and three fused spurs for the onboard charger, the DC-DC converter, and the thermal system’s heater and compressor. Every connector carries two extra low-voltage pins that thread a single interlock loop, the HVIL, through the entire orange network: unseat any connector half a turn and the loop breaks, the contactors open within 200 ms, and the bus is dead before a fingertip can reach a terminal.\n\nThe penthouse is also where precharge and isolation monitoring earn their keep. When the car wakes, the pack’s pilot contactor charges every capacitor hanging on this bus, both inverter DC links plus the charger and converter inputs, through a 50 Ω resistor before the mains close. And the pack’s isolation monitor is really measuring this room: it pulses the bus against the chassis and computes the leakage path. Below 500 Ω per volt it logs a warning; below 100 it opens the contactors. On a crash signal the pyro fuse fires and the inverters are commanded to discharge their links below 60 V within 2 seconds.',
+      how: 'Two cables arrive from the pack contactors directly below and land on a pair of laminated copper busbars. Five branches leave: heavy unfused runs to the two drive inverters, protected upstream by the pack’s pyro fuse, and three fused spurs for the onboard charger, the DC-DC converter, and the thermal system’s heater and compressor. Every connector carries two extra low-voltage pins that thread a single interlock loop, the HVIL, through the entire orange network: unseat any connector half a turn and the loop breaks, the contactors open within 200 ms, and the bus is dead before a fingertip can reach a terminal.\n\nThe penthouse is also where precharge and isolation monitoring earn their keep. When the car wakes, the pack’s pilot contactor charges every capacitor hanging on this bus, both inverter DC links plus the charger and converter inputs, through a 50 Ω resistor before the utility close. And the pack’s isolation monitor is really measuring this room: it pulses the bus against the chassis and computes the leakage path. Below 500 Ω per volt it logs a warning; below 100 it opens the contactors. On a crash signal the pyro fuse fires and the inverters are commanded to discharge their links below 60 V within 2 seconds.',
       why: 'Concentrating distribution in one box on the rear pack deck keeps the highest-current busbars under 400 mm long, puts every HV joint inside a single sealed, interlocked enclosure, and leaves exactly one place to look during service. The alternative, scattering junction boxes around the car, multiplies seals, interlock zones and failure points.',
       fail: [
         'A vibration-worn HVIL pin opens the loop intermittently: the car shuts down mid-drive, safely but abruptly, and the fault is maddening to trace.',
@@ -46,7 +46,7 @@ export const SYSTEM = {
         ['Output', '240 to 403 V, isolated'],
         ['Cooling', 'Cold plate on the shared coolant loop'],
       ],
-      how: 'Three 230 V phases at 16 A enter through the AC pins of the charge inlet. A totem-pole power-factor stage boosts them onto a 650 V internal link while shaping the input current to near-unity power factor, so the car looks like a clean resistive load to the grid. A CLLC resonant bridge then chops that link at 140 kHz through a planar transformer and rectifies the secondary onto the pack bus. Silicon carbide switches make the frequency possible, and the frequency makes the magnetics small: the transformer that moves 11 kW is the size of a paperback.\n\nThe box exists because a battery accepts only DC. On AC the conversion hardware must ride in the car, so it is sized by what the car can carry and cool: 11 kW. A DC fast-charge station does the same job with 400 kg of rectifier cabinets bolted to the ground, which is why the port’s DC pins bypass this box entirely and land, via the penthouse, straight on the pack bus. Same physics, different postcode for the mass. The stages also run in reverse: the car can source 3.6 kW of mains AC from its own pack to power tools or a house.',
+      how: 'Three 230 V phases at 16 A enter through the AC pins of the charge inlet. A totem-pole power-factor stage boosts them onto a 650 V internal link while shaping the input current to near-unity power factor, so the car looks like a clean resistive load to the grid. A CLLC resonant bridge then chops that link at 140 kHz through a planar transformer and rectifies the secondary onto the pack bus. Silicon carbide switches make the frequency possible, and the frequency makes the magnetics small: the transformer that moves 11 kW is the size of a paperback.\n\nThe box exists because a battery accepts only DC. On AC the conversion hardware must ride in the car, so it is sized by what the car can carry and cool: 11 kW. A DC fast-charge station does the same job with 400 kg of rectifier cabinets bolted to the ground, which is why the port’s DC pins bypass this box entirely and land, via the penthouse, straight on the pack bus. Same physics, different zip code for the mass. The stages also run in reverse: the car can source 3.6 kW of utility AC from its own pack to power tools or a house.',
       why: '11 kW is a deliberate ceiling. It refills the 95 kWh pack overnight, about nine hours flat, and it is what an ordinary European three-phase domestic supply delivers. Every kilowatt beyond that adds silicon, copper and coolant capacity that rides along on every trip to serve a rare occasion; the rare occasion is what DC stations are for.',
       fail: [
         'Grid surges kill PFC front ends; a sacrificial varistor stage absorbs lightning-adjacent transients and is replaced, not repaired.',
@@ -68,10 +68,10 @@ export const SYSTEM = {
         ['Efficiency', '94% at half load'],
       ],
       how: 'A phase-shifted full bridge chops the pack bus at 120 kHz into a planar transformer with a 25:1 step-down. The secondary rectifies through synchronous MOSFETs rather than diodes because at 180 A even 0.45 V of diode drop would burn 80 W; the MOSFET channel drops a tenth of that. The output floats the 12 V battery at 14.2 V and follows a jagged load: 40 W of sleeping electronics, a kilowatt spike when the steering rack loads up mid-corner, the brake booster precharging on top.\n\nThe transformer is also the safety boundary. The 12 V net is chassis-referenced, bolted to the body everywhere; the HV bus floats, connected to chassis nowhere. The reinforced barrier between them is tested to 2.5 kV because its failure would reference the pack to every ground strap in the car, which is why barrier integrity is watched by the same isolation monitor that guards the cables.',
-      why: 'Steering assist, brake boost, airbags, contactor coils and every computer stay on 12 V by design, so the dependency runs one way: the HV system cannot even connect itself without the LV rail energising the contactor coils, but the LV rail survives any HV fault. That asymmetry is the safety architecture in one sentence.',
+      why: 'Steering assist, brake boost, airbags, contactor coils and every computer stay on 12 V by design, so the dependency runs one way: the HV system cannot even connect itself without the LV rail energizing the contactor coils, but the LV rail survives any HV fault. That asymmetry is the safety architecture in one sentence.',
       fail: [
         'If the converter dies while driving, the car runs on the 12 V battery alone: roughly 30 minutes of steering, braking and hazards, with escalating warnings to stop.',
-        'Output capacitor ageing raises ripple, which radio and sensor supplies notice before anything else does.',
+        'Output capacitor aging raises ripple, which radio and sensor supplies notice before anything else does.',
         'An isolation-barrier fault is caught by the pack monitor, not by this box, and opens the contactors.',
       ],
       explode: [-0.55, 0.35, 0.30],
@@ -85,14 +85,14 @@ export const SYSTEM = {
         ['DC current', '500 A sustained, 630 A peak'],
         ['Handshake', 'ISO 15118 PLC over Control Pilot'],
         ['Pin sensing', 'NTC thermistor in each DC pin'],
-        ['Lock', 'Motorised, manual release in the boot'],
+        ['Lock', 'Motorized, manual release in the trunk'],
       ],
-      how: 'Nothing conducts until software agrees. Station and car negotiate over powerline comms on the Control Pilot pin: identity, contract, limits. The station then runs an insulation test on the still-dead cable, the car closes its contactors, and current ramps entirely under the car’s command: the BMS requests amps according to cell temperature and the station follows. The peak request is 630 A, which at this bus voltage buys barely 230 kW, so each DC pin carries an embedded thermistor: contact resistance rises as pins wear, resistive heat scales with the square of the current, and the car derates its request the moment pin temperature climbs.\n\nBehind the socket the two paths diverge completely. The AC pins wire to the onboard charger, which owns rectification. The DC pins are a busbar shot through the penthouse to the pack: no conversion, because the station’s rectifier already matched the pack voltage. The motorised lock is not theft protection, it is arc protection: breaking 500 A of DC would draw an arc that sustains itself across centimetres, so the connector cannot be withdrawn until current is zero and the lock releases.',
+      how: 'Nothing conducts until software agrees. Station and car negotiate over powerline comms on the Control Pilot pin: identity, contract, limits. The station then runs an insulation test on the still-dead cable, the car closes its contactors, and current ramps entirely under the car’s command: the BMS requests amps according to cell temperature and the station follows. The peak request is 630 A, which at this bus voltage buys barely 230 kW, so each DC pin carries an embedded thermistor: contact resistance rises as pins wear, resistive heat scales with the square of the current, and the car derates its request the moment pin temperature climbs.\n\nBehind the socket the two paths diverge completely. The AC pins wire to the onboard charger, which owns rectification. The DC pins are a busbar shot through the penthouse to the pack: no conversion, because the station’s rectifier already matched the pack voltage. The motorized lock is not theft protection, it is arc protection: breaking 500 A of DC would draw an arc that sustains itself across centimeters, so the connector cannot be withdrawn until current is zero and the lock releases.',
       why: 'This inlet is the argument for 800 V packs stated in copper: at twice the voltage those 630 A become 315, passively cooled station cables replace liquid-cooled ones, and the pins stop being the thermal bottleneck. This car stays at 355 V for silicon cost and charging-network maturity, and pays for that choice right here, in pin temperature.',
       fail: [
         'Worn station connectors, not the car’s pins, cause most derating: the thermistors cannot tell whose resistance is rising, only that heat is arriving.',
-        'A failed lock actuator strands the connector on the car; a manual release cable behind the boot lining exists for exactly this.',
-        'Water in the socket trips the station’s insulation test before energisation: an inconvenience by design, never a hazard.',
+        'A failed lock actuator strands the connector on the car; a manual release cable behind the trunk lining exists for exactly this.',
+        'Water in the socket trips the station’s insulation test before energization: an inconvenience by design, never a hazard.',
       ],
       explode: [-0.45, 0.55, 0.40],
     },
@@ -108,8 +108,8 @@ export const SYSTEM = {
         ['Runs', 'Front 3.1 m, rear 0.6 m, port 1.2 m'],
         ['Rating', '250 A continuous, 600 A for 30 s'],
       ],
-      how: 'Each run is effectively a coaxial cable: fine-strand copper for flex where the powertrain moves, silicone insulation that shrugs off 180 °C beside a motor, and a tinned braid shield bonded to chassis at both ends. The shield does two jobs. It contains the electromagnetic hash of inverters slewing hundreds of volts in nanoseconds, which would otherwise wipe out AM radio and whisper into every sensor line. And it guarantees that a crushed cable faults to grounded braid first, tripping the isolation monitor, rather than energising bodywork. The orange runs through the full insulation depth, so a cut cable still shows orange.\n\nThe front run sets the sizing problem: 3.1 m from the penthouse along the tunnel to the front inverter, carrying 420 A peaks when the front motor pulls its 150 kW share. At 355 V that takes 50 mm² of copper at 0.45 kg per metre. Doubling pack voltage to 710 V halves the current, quarters the resistive loss in the same conductor, and would shrink this run to 25 mm²: about 2 kg saved across the set, more in connectors, plus halved charge current at the port and better switching efficiency from SiC. That is the 800 V argument, and it is real; it is also modest on a 4.75 m car with one long run, and decisive on a bus or pickup with eight-metre runs.',
-      why: 'Routing matters as much as sizing. The front run rides the centreline of the pack lid through the tunnel, the most protected real estate in the car: above the strongest structure, inside the crash cell, far from the sills where a side impact intrudes. The rear and port runs are kept short by putting the penthouse next to both of their endpoints.',
+      how: 'Each run is effectively a coaxial cable: fine-strand copper for flex where the powertrain moves, silicone insulation that shrugs off 180 °C beside a motor, and a tinned braid shield bonded to chassis at both ends. The shield does two jobs. It contains the electromagnetic hash of inverters slewing hundreds of volts in nanoseconds, which would otherwise wipe out AM radio and whisper into every sensor line. And it guarantees that a crushed cable faults to grounded braid first, tripping the isolation monitor, rather than energizing bodywork. The orange runs through the full insulation depth, so a cut cable still shows orange.\n\nThe front run sets the sizing problem: 3.1 m from the penthouse along the tunnel to the front inverter, carrying 420 A peaks when the front motor pulls its 150 kW share. At 355 V that takes 50 mm² of copper at 0.45 kg per meter. Doubling pack voltage to 710 V halves the current, quarters the resistive loss in the same conductor, and would shrink this run to 25 mm²: about 2 kg saved across the set, more in connectors, plus halved charge current at the port and better switching efficiency from SiC. That is the 800 V argument, and it is real; it is also modest on a 4.75 m car with one long run, and decisive on a bus or pickup with eight-meter runs.',
+      why: 'Routing matters as much as sizing. The front run rides the centerline of the pack lid through the tunnel, the most protected real estate in the car: above the strongest structure, inside the crash cell, far from the sills where a side impact intrudes. The rear and port runs are kept short by putting the penthouse next to both of their endpoints.',
       fail: [
         'Chafe through to the shield is a slow isolation decline the monitor catches early; bend radii are specified at six cable diameters so flexing never works the strands.',
         'Connector fretting under vibration raises contact resistance micro-ohm by micro-ohm; terminal temperature sensors watch the trend, not the value.',
@@ -129,9 +129,9 @@ export const SYSTEM = {
         ['Management', 'Internal BMS, reports on CAN'],
       ],
       how: 'Everything that must never lose power is deliberately kept off the HV bus: brake booster, steering assist, airbag controller, door releases, hazard lights, and the contactor coils themselves. When the car sleeps, the pack contactors are open and the entire vehicle is this battery, living on a budget under 30 mA for the radio keys and the alarm. The morning wake is a bootstrap: this battery powers the computers, the computers check isolation, and only then do 12 V coils pull in the contactors that connect the big pack. High voltage cannot turn itself on.\n\nLithium iron phosphate replaces the lead-acid brick that started a century of cars. LFP sits happily at full charge, cycles thousands of times against lead’s hundreds, and holds voltage flat under load, so 33 Ah of it replaces 60 Ah of lead at a third of the mass. Its internal BMS balances the four cells and reports genuine state of health on CAN, turning the fading 12 V battery, still the single most common cause of EV roadside calls, into a scheduled service line item.',
-      why: 'A separate 12 V island looks redundant next to a 95 kWh pack until you ask what happens in the worst second of the car’s life: a crash that fires the pyro fuse. The pack is inert by design from that moment, and everything protecting the occupants afterwards, hazards, door unlocking, the emergency-call modem, runs on this box. Regulations assume it; the architecture depends on it.',
+      why: 'A separate 12 V island looks redundant next to a 95 kWh pack until you ask what happens in the worst second of the car’s life: a crash that fires the pyro fuse. The pack is inert by design from that moment, and everything protecting the occupants afterward, hazards, door unlocking, the emergency-call modem, runs on this box. Regulations assume it; the architecture depends on it.',
       fail: [
-        'Deep discharge below 9 V triggers a protective lockout that needs a service wake: the lithium equivalent of a flat battery, rarer but less self-serve.',
+        'Deep discharge below 9 V triggers a protective lockout that needs a service wake: the lithium equivalent of a dead battery, rarer but less self-serve.',
         'BMS silence on CAN is treated as imminent failure and flagged at once: an unmonitored safety battery is worse than a weak one.',
         'Sub-zero charge current is limited to protect the cells, so a deep winter drain recovers slowly.',
       ],
@@ -148,8 +148,8 @@ export const SYSTEM = {
         ['Circuits', 'About 450, against 1200 legacy'],
         ['Protection', 'Solid-state eFuses, no melt fuses'],
       ],
-      how: 'A conventional harness is point-to-point: every lamp, motor and sensor wired individually back to a central fuse box, kilometres of copper converging into trunks as thick as a wrist. It is also the one major component no robot can install: a limp, tangled thing that humans drape through the body shell by hand. The zonal answer is topological. One power spine runs the length of the sill, and four zone controllers sit within a metre of the loads they serve. A tailgate motor is wired 40 cm to the rear zone controller, not 4 m to the dashboard.\n\nEach controller distributes power through solid-state eFuses: MOSFETs with current sensing that trip in microseconds instead of the milliseconds a melting fuse needs, retry after transients, soft-start motors to kill inrush, and report every circuit’s current onto the Ethernet backbone. Data rides the same backbone, so the four controllers are physically identical parts distinguished only by firmware, and the short, stiff zone sub-harnesses are finally simple enough for automated assembly.',
-      why: 'The argument is mass and the factory in equal parts: 34 kg here against roughly 50 for the point-to-point equivalent, and hours of skilled hand labour converted into robot-compatible operations. The copper halves because wire length is now set by the distance to the nearest controller, not the distance to the dashboard.',
+      how: 'A conventional harness is point-to-point: every lamp, motor and sensor wired individually back to a central fuse box, kilometers of copper converging into trunks as thick as a wrist. It is also the one major component no robot can install: a limp, tangled thing that humans drape through the body shell by hand. The zonal answer is topological. One power spine runs the length of the sill, and four zone controllers sit within a meter of the loads they serve. A tailgate motor is wired 40 cm to the rear zone controller, not 4 m to the dashboard.\n\nEach controller distributes power through solid-state eFuses: MOSFETs with current sensing that trip in microseconds instead of the milliseconds a melting fuse needs, retry after transients, soft-start motors to kill inrush, and report every circuit’s current onto the Ethernet backbone. Data rides the same backbone, so the four controllers are physically identical parts distinguished only by firmware, and the short, stiff zone sub-harnesses are finally simple enough for automated assembly.',
+      why: 'The argument is mass and the factory in equal parts: 34 kg here against roughly 50 for the point-to-point equivalent, and hours of skilled hand labor converted into robot-compatible operations. The copper halves because wire length is now set by the distance to the nearest controller, not the distance to the dashboard.',
       fail: [
         'The spine is a single point of failure per zone, which is why it is a ring fed from both ends: one cut degrades, two cuts darken a corner of the car.',
         'Fusing is now firmware: an eFuse threshold bug would ship to every circuit at once, so the trip tables are locked, safety-certified code.',
@@ -181,13 +181,13 @@ export const SYSTEM = {
 
    and two of those, the Gen 1 inverter at 0.639 and its power modules at
    0.651, are through the reservation's own 0.56 ceiling. Three boxes
-   totalling 30 kg were drawn into that volume anyway: the penthouse alone
+   totaling 30 kg were drawn into that volume anyway: the penthouse alone
    read 120.00 mm against the Gen 1 and Gen 2 halfshafts over 396 crossing
    triangle pairs, 78.00 mm against the Gen 2 housing over 647, and 62.50
    against the Gen 1 housing over 608, and the charger and converter above it
    read 90.00 and 35.00 against the same drive units.
 
-   The shaft line and the joint centres are fixed and the drive unit is not
+   The shaft line and the joint centers are fixed and the drive unit is not
    this module's to move, so the bay was re-swept for what is actually free
    and the three boxes were rebuilt inside it. Solid probes were run against
    every partner in gen1, gen2 and gen3 at once. What survives is three
@@ -197,16 +197,16 @@ export const SYSTEM = {
               Clear on all three rungs. This is where the pack's rear deck
               ends (P.battery stops at x -1.30) and it is the only part of
               the reservation the drive unit does not reach.
-     BRIDGE   x -1.225 to -1.170 across |z| 0.190. The centre has to be cut
+     BRIDGE   x -1.225 to -1.170 across |z| 0.190. The center has to be cut
               back to -1.225 because the Gen 1 rear inverter reaches x -1.230
-              and the Gen 2 one -1.264, both on the centreline.
-     BOOT     x -1.520 to -1.190, y 0.665 to 0.760, |z| to 0.440, over the
+              and the Gen 2 one -1.264, both on the centerline.
+     TRUNK     x -1.520 to -1.190, y 0.665 to 0.760, |z| to 0.440, over the
               drive unit and under the rear bench's backrest, which comes
               down to y 0.760 at x -1.550 and no lower.
 
    So the PDU is a U in plan, straddling the front of the rear drive unit
    with a chamber on each flank and a spine across the pack's rear deck, and
-   the charger and the converter go up onto the boot shelf on rails down the
+   the charger and the converter go up onto the trunk shelf on rails down the
    flanks. That is also the arrangement the panels already described and the
    old geometry did not: "one sealed box on the pack's rear deck" with "two
    cables from the pack contactors directly below" was drawn 200 mm aft of
@@ -223,8 +223,8 @@ const PDK = 0.368;                     // deck plate underside
 const LIDTOP = 0.315;                  // highest pack vertex under this footprint,
                                        // battery/contactors on gen1; battery-2 and
                                        // battery-3 are both 0.310 here
-const phx = (PFWD + PAFT) / 2;         // -1.235, flank centre
-const bootY = 0.668;                   // charger and converter floor on the boot shelf
+const phx = (PFWD + PAFT) / 2;         // -1.235, flank center
+const bootY = 0.668;                   // charger and converter floor on the trunk shelf
 
 export function build() {
   const sys = new THREE.Group();
@@ -299,7 +299,7 @@ export function build() {
   }
   sys.add(pent);
 
-  /* onboard AC charger: finned flat box on the boot shelf, driver side,
+  /* onboard AC charger: finned flat box on the trunk shelf, driver side,
      on two rails down the penthouse's driver flank */
   const obc = lib.part('obc', [-0.55, 0.35, -0.30]);
   const obcBody = lib.box(0.330, 0.065, 0.350, M.castAlu);
@@ -368,7 +368,7 @@ export function build() {
     pin.position.set(cpx + dx, cpy - 0.024, cpz + 0.02);
     port.add(pin);
   }
-  /* body-colour door flap hinged open at the top edge */
+  /* body-color door flap hinged open at the top edge */
   const flapPivot = new THREE.Group();
   flapPivot.position.set(cpx, cpy + 0.068, cpz + 0.017);
   const flap = lib.box(0.125, 0.125, 0.006, M.paint);
@@ -442,7 +442,7 @@ export function build() {
      IT USED TO BE INSIDE THE FRONT CASTING. Sat at (1.85, 0.61) the case was
      62.50 mm inside body/front-casting over 38 crossings and 60.00 mm inside
      the crash rails over 13, on gen1, gen2 and gen3 alike, which is a
-     battery buried in structural aluminium rather than mounted to it. Probed
+     battery buried in structural aluminum rather than mounted to it. Probed
      as a solid, the frunk's free window at this z is y 0.628 to about 0.818:
      the crash rails cap it at 0.625 underneath and body-aero's nose closes
      it at 0.820 on gen2, the tightest of the three. The whole stack is 186 mm
@@ -480,7 +480,7 @@ export function build() {
      20 x 30 x 55 mm probe, the zone controller's own envelope, walked over
      x -1.70 to 2.05 by |z| 0.40 to 0.86 at y 0.40 and 0.47 in gen1, gen2 and
      gen3 at once, gives a continuous corridor at |z| 0.76 from x -1.05 to
-     1.05 and nothing at all beyond that: the tyre closes it at |x| 1.09,
+     1.05 and nothing at all beyond that: the tire closes it at |x| 1.09,
      15.7 mm deep on gen1's larger wheel, because a rocker stops at the wheel
      arch. So the spine holds |z| 0.76 between the arches and turns inboard
      to |z| 0.49 to 0.56 at each end, which is where the corridor reopens,
@@ -488,7 +488,7 @@ export function build() {
 
      Both end controllers moved. The front one was at x 1.90, inside the
      crash rails; at x 1.23 it is 450 mm from the 12 V battery it feeds and
-     530 from the radiator fans, both inside the one-metre rule the panel
+     530 from the radiator fans, both inside the one-meter rule the panel
      states. It is at |z| 0.56 rather than 0.48 because interior/pedals fills
      the 0.48 station, 18.84 mm on all three rungs. The rear one was at
      x -1.42, inside the rear damper and spring; it is at x -1.24, and at
@@ -526,7 +526,7 @@ export function build() {
     [-0.750, 0.460, -0.775],
     [-0.750, 0.520, -0.780],
   ], 0.005, M.plasticLt));
-  /* branch 4: across to the DC-DC output studs, which are on the boot shelf
+  /* branch 4: across to the DC-DC output studs, which are on the trunk shelf
      now rather than in the penthouse bay */
   har.add(lib.tube([
     [-1.240, 0.440, -0.560],

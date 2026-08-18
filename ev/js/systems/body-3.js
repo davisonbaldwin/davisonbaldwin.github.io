@@ -16,11 +16,63 @@ export const SYSTEM = {
   color: 0xaed4e8,
   explode: [0, 1.7, 0],
   blurb: 'The Gen 1 shell was panels and the Gen 2 concept was devices; Gen 3 is one surface. A single loft nose to Kamm face, glass lofted into the skin line, both faces closed by light, and the first moving exterior part. Cd 0.145, paid for in repair quantum and certification debt.',
+  closures: {
+    'door-front': {
+      name: 'Front door',
+      kind: 'door',
+      part: 'doors',
+      mass: 10.2,
+      seconds: 1.2,
+      seat: 'Hinge pillar at the x 0.8975 cut, axis on the skin at |z| 0.9363, the leaf\'s own widest point',
+      motion: [
+        { kind: 'swing', axis: [0, 1, 0], pivot: [0.8975, 0.42, 0.9363], deg: 67 },
+      ],
+      why: 'This is the first body on the ladder that is a lofted monoform rather than a set of panels, and the doors are the first place the reader can see what that costs. There is no fender break and no beltline step here, so there is no shadow for a hinge to live in: the axis stands on the paint at the leaf\'s own widest point, because an axis inside the surface sweeps the leading edge forward into the fixed panel ahead of it. body-8 tested exactly that assumption two rungs up, on a body that still had an 83 mm fairing step, and put its door 36.5 mm into the fairing. What the monoform buys in drag it starts paying for in hardware here.\n\nThe curbside figure is the one to read against Gen 1. 719.9 mm against 965.3 is not a better hinge, it is a shorter door on a narrower aperture: this cabin is 88 mm shorter between the cuts than the sedan\'s and the arc is shorter with it. A swing door\'s reach is its own length times the sine of its angle, and the only ways to shorten it are a shorter door or a different mechanism. Gen 5 takes the second one.',
+      cost: [
+        'It still cannot open in a parking stall. 2.50 m around a 2.00 m car leaves 250 mm a side and this door wants 720, so it reaches the line at 22 of its 67 degrees, which is the width of a person turned sideways.',
+        'The hinge hardware stands outboard of the paint while the door is moving, which is a wind noise path and a place for a bollard to find the door face rather than its edge.',
+      ],
+    },
+    'door-rear': {
+      name: 'Rear door',
+      kind: 'door',
+      part: 'doors',
+      mass: 12.1,
+      seconds: 1.2,
+      seat: 'B-pillar hinge at the x 0.0725 cut, axis on the skin at |z| 0.9362',
+      motion: [
+        { kind: 'swing', axis: [0, 1, 0], pivot: [0.0725, 0.42, 0.9362], deg: 67 },
+      ],
+      why: 'Front-hinged off the B-pillar, which is available because the front door\'s trailing edge covers the pillar and gives this leaf something to hinge from. It is the longer of the two, so it needs the most room: 924.5 mm against the front door\'s 694.6, and the difference is entirely arc length. That asymmetry is worth noticing because it is invisible on a spec sheet and obvious in a parking space, and it is the reason the rear door is the one that gets redrawn first on the rungs above: body-9 hinges the equivalent leaf at its OTHER end and opens one aperture with no door edge in the middle of it.',
+      cost: [
+        'A pillar between the two apertures is the single largest obstruction to getting into the back seat, and it is what a coach pair deletes.',
+        'It carries body-3/pillars 4.5 mm deeper into itself at full travel than it does shut. That is the standing cross-module list moving rather than a new fault, and the checker reports it as carried rather than as a strike.',
+      ],
+    },
+    decklid: {
+      name: 'Decklid',
+      kind: 'decklid',
+      part: 'skin',
+      mass: 3.9,
+      seconds: 1.3,
+      seat: 'Front cut at the glass root, x -1.8700, axis carried up to the deck crown at y 1.0600',
+      motion: [
+        { kind: 'swing', axis: [0, 0, 1], pivot: [-1.8700, 1.0600, 0], deg: -75 },
+      ],
+      why: 'This panel was drawn from the start and simply did not open, which is the complaint that started this work. The deck between the glass and the Kamm flap has been its own mesh since the body was built, and all four of its edges are joints that already exist: the glass bond ahead of it, the flap\'s 5 by 4 mm channel behind it, and the ring 3 and ring 9 panel edges of the two quarters either side. Those side edges are where the tail is split because the surface is flat there and not because the station table has a point: measured across the ring 9 line, the section turns 0.2 degrees at the glass root and 4.0 at mid strip, against 11.1 to 26.4 across the same ring line over the nose. So the lid is a regrouping with nothing left to cut. The panel moves into its own group and the closed car is identical to the vertex.\n\nTHE AXIS IS AT THE CROWN, AND THAT IS MEASURED RATHER THAN STYLED. The front cut cambers 95.0 mm across its own width, from y 1.0600 on the centerline down to 0.9650 at |z| 0.6400. Put the axis at the outboard ends, where a drawing would put it, and the crown of the leading edge sweeps forward under the glass: swept, the panel enters body-3/canopy at 50 degrees and is 17.5 mm into it at 60. Put the axis at the crown and the leading edge is pinned instead, and the same sweep is clean through 90 degrees against every part in reach. body-9 found the same thing at the top of the ladder on a cut with 220.9 mm of camber; 95 mm is enough to decide the hinge on its own.\n\nSEVENTY FIVE DEGREES IS A CHOICE AND NOT A LIMIT, which is worth saying plainly because on this ladder the interesting closures are the ones something else stops. Nothing on this car stops this one. Lateral, overhead, fore and aft excursion past the parked car all measure 0.0 mm, because the lid\'s own diagonal from the hinge is 373.1 mm against a hinge line 403.5 mm below the roof rails, so the panel cannot reach the height of the car at any angle, and its rearmost point over the whole travel is x -2.2430, 136.0 mm inside the tail, its highest y 1.3338, 129.7 mm below the roof. It is the only closure on this rung that asks the world for nothing at all, against a front door that wants 719.9 mm of curbside and gets 250 in a stall. What sets the number is what can be lifted out: at 75 degrees the trailing edge stands 449 mm above the aperture\'s aft lip at its outboard tips, against a well that is 438 mm deep at its deepest, deck crown y 1.0600 down to the rear casting deck at 0.6225. Past that the panel is leaning back over its own opening and buys nothing.',
+      cost: [
+        'The aperture is 316 mm long and 1.28 m wide over a well 239 to 438 mm deep. That is a golf bag, not a wagon, and the volume ahead of the cut is worse: from this line to the rear axle at x -1.450 the roof is the glass band, and the band is one piece on one 11 m structural bond, which is the claim this generation is named for. There is no hatch on this car and there cannot be one.',
+        'The lid\'s trailing edge lands on the member that carries the Kamm flap\'s hinge line, so a panel with a latch tolerance and a device that has to hold 12 degrees share one structure across a 5 mm gap. Every closing cycle is a cycle on the flap\'s own datum, and the flap is the part this generation calls its first moving exterior panel.',
+        'Booked at 3.9 kg, which is the skin\'s own 9.3 kg per square meter over the lid\'s 0.4203 m2 and nothing else. The inner panel, the hinge arms and the strut are still to be paid, and on a lid this shallow they are most of what it ends up weighing.',
+        'The leading corners sit 95 mm below the hinge line, so they dip as the panel rises: at full travel the lowest point of the lid is y 1.0354, at the front corners rather than over the hole. The opening is clear; the corner beside your wrist is not.',
+      ],
+    },
+  },
   parts: {
     ...STRUCT_META,
     skin: {
       name: 'Monoform skin',
-      tagline: 'Bonnet, fenders, quarters, deck, and both fascias: eight Gen 1 panels, one lofted surface.',
+      tagline: 'Hood, fenders, quarters, deck, and both fascias: eight Gen 1 panels, one lofted surface.',
       mass: 64,
       specs: [
         ['Construction', 'Superformed AA5083, 1.3 mm, bonded to the cage'],
@@ -28,13 +80,14 @@ export const SYSTEM = {
         ['Replaces', '8 Gen 1 panels and every shutline between them'],
         ['Continuity', 'G2 curvature along the length; no joint crosses the flow'],
         ['Rear arches', 'Skirted by the loft itself; Gen 2 needed bolt-on panels'],
+        ['Openings', 'Four door cuts and the decklid; the nose carries no cut'],
         ['Repair unit', 'The whole side, blended; no panel boundary to hide in'],
       ],
-      how: 'The skin is not an assembly, it is a surface: ten cross-sections define one loft from the nose to the Kamm face, and the metal is made to follow it. Superforming is what makes that possible. A 1.3 mm AA5083 sheet is heated to 500 degrees C and blown by gas pressure into a female die over several minutes, an aerospace process that produces in one cycle the compound curvature cold stamping would need a dozen panels and their tolerance stacks to approximate. Gen 1 built this surface from a bonnet, fenders, quarters, a deck panel, and two fascias; the Gen 2 aero concept kept the panel count and spent its budget on flushness, holding every joint to a fraction of a millimetre so the boundary layer would forgive the seams. Gen 3 stops apologising for the joints and deletes them.\n\nThe aerodynamic value is continuity, and the grade of continuity matters. Matching panel edges buys tangency; a loft buys G2, matched curvature, and the boundary layer feels the difference because pressure gradient follows curvature. Every place the Gen 1 shell changed part, bonnet to fender, fender to door, quarter to fascia, the curvature stepped and the flow paid a fraction of a count; summed over a body, curvature continuity is drag money. The rear arch is the clearest case. Gen 2 proved a skirt was worth 0.010 for the pair and paid with cam latches, panel gaps, and a flushness tolerance; here the loft simply continues over the wheel, and the skirt is not a part, it is a region of the surface. Cd 0.145 is the sum of such deletions.',
-      why: 'The bill is honest and large. The skin is the entire visible body, so the repair quantum is the entire visible body: a trolley scrape that cost Gen 1 four fender bolts, and Gen 2 a blended quarter, costs the monoform a repaint blended along a highlight line that runs 4.75 m without a break. The insurance group tables price exactly this, and the actuarial review sat inside the design loop here just as it did for the battery-3 floor. Integration always sends this invoice; the monoform simply sends it for the whole car at once.',
+      how: 'The skin is not an assembly, it is a surface: ten cross-sections define one loft from the nose to the Kamm face, and the metal is made to follow it. Superforming is what makes that possible. A 1.3 mm AA5083 sheet is heated to 500 degrees C and blown by gas pressure into a female die over several minutes, an aerospace process that produces in one cycle the compound curvature cold stamping would need a dozen panels and their tolerance stacks to approximate. Gen 1 built this surface from a hood, fenders, quarters, a deck panel, and two fascias; the Gen 2 aero concept kept the panel count and spent its budget on flushness, holding every joint to a fraction of a millimeter so the boundary layer would forgive the seams. Gen 3 stops apologizing for the joints and deletes them.\n\nThe aerodynamic value is continuity, and the grade of continuity matters. Matching panel edges buys tangency; a loft buys G2, matched curvature, and the boundary layer feels the difference because pressure gradient follows curvature. Every place the Gen 1 shell changed part, hood to fender, fender to door, quarter to fascia, the curvature stepped and the flow paid a fraction of a count; summed over a body, curvature continuity is drag money. The rear arch is the clearest case. Gen 2 proved a skirt was worth 0.010 for the pair and paid with cam latches, panel gaps, and a flushness tolerance; here the loft simply continues over the wheel, and the skirt is not a part, it is a region of the surface. Cd 0.145 is the sum of such deletions.',
+      why: 'The bill is honest and large. The skin is the entire visible body, so the repair quantum is the entire visible body: a shopping cart scrape that cost Gen 1 four fender bolts, and Gen 2 a blended quarter, costs the monoform a repaint blended along a highlight line that runs 4.75 m without a break. The insurance group tables price exactly this, and the actuarial review sat inside the design loop here just as it did for the battery-3 floor. Integration always sends this invoice; the monoform simply sends it for the whole car at once.\n\nIt sends a second one at the nose, and it is the reason this car has a trunk and no frunk. Gen 1 opened a hood; this surface has no cut there to open, because all seven grooves in the master loft run across the car and not along it. Putting one in costs either a shading break with no channel under it, on a line where the section turns up to 18.4 degrees, or the body\'s first column grooves, which re-resolve the whole grid and move 352 of its 10,062 triangles. What Gen 3 does open is the deck between the glass and the Kamm flap, and it opens because every edge that lid needs was already a joint.',
       fail: [
         'Superformed spans this large oil-can under hail and careless palms, and paintless dent repair needs backside tool access that the bonded closed sections mostly deny.',
-        'A rear arch kerb strike that Gen 2 answered with a twenty-second skirt swap is now structural skin repair: a cut-in section and a multi-day blend, and the premium table already says so.',
+        'A rear arch curb strike that Gen 2 answered with a twenty-second skirt swap is now structural skin repair: a cut-in section and a multi-day blend, and the premium table already says so.',
         'Superforming holds minutes-long cycle times against the seconds of a stamping press; the skin is the slowest part in the plant, and the build rate of the whole car is hostage to one forming cell.',
       ],
       explode: [0, 0.62, 0],
@@ -51,11 +104,11 @@ export const SYSTEM = {
         ['Bond', '11 m structural PU, shear-active'],
         ['Camera zone', 'Optical-grade tolerance above the mirror'],
       ],
-      how: 'The Gen 2 teardrop canopy proved the one-piece idea: 42 kg of cell-cast glass from cowl to tail, three facets, one bond, and attached flow over the whole upper body. Gen 3 keeps the proof and integrates it differently. The glass is a band, tumblehome to crown, and its mould is cut from the same ten loft stations as the metal below it, so the outer face of the glass lies on the same mathematical surface as the paint. The material changes; the section does not. Each ply is sagged over a precision mould at 620 degrees C, laminated over an acoustic PVB core, and finished with a sputtered silver stack that holds total solar transmittance near 20 percent under a crown that is mostly sky.\n\nAerodynamically the band completes the argument the skin started: the one remaining joint that runs across the flow, glass edge to metal, is a step and not a curvature break, because both surfaces are cut from the same ten stations, so the section never changes shape where the material does and the boundary layer meets a joint with no pressure-gradient signature. The bond is structural and doubles as the datum: the PU bead thickness is the adjustment that indexes the glass to the loft at fitting, the same trick Gen 1 used for its windscreen, stretched over eleven metres. Acoustically the laminate does what it has since Gen 1, damping the 3 kHz band where wind rush lives, which matters more than ever under this much glass.',
-      why: 'Glass goes where eyes need it and superformed aluminium goes where they do not. Gen 2 ran glass all the way down the fastback because its facets could not turn the corner into metal cleanly; the shared loft can, so the band ends where sight lines end and the deck returns to metal, which is 4 kg saved and, more usefully, a surface the Kamm flap can actually mount to.',
+      how: 'The Gen 2 teardrop canopy proved the one-piece idea: 42 kg of cell-cast glass from cowl to tail, three facets, one bond, and attached flow over the whole upper body. Gen 3 keeps the proof and integrates it differently. The glass is a band, tumblehome to crown, and its mold is cut from the same ten loft stations as the metal below it, so the outer face of the glass lies on the same mathematical surface as the paint. The material changes; the section does not. Each ply is sagged over a precision mold at 620 degrees C, laminated over an acoustic PVB core, and finished with a sputtered silver stack that holds total solar transmittance near 20 percent under a crown that is mostly sky.\n\nAerodynamically the band completes the argument the skin started: the one remaining joint that runs across the flow, glass edge to metal, is a step and not a curvature break, because both surfaces are cut from the same ten stations, so the section never changes shape where the material does and the boundary layer meets a joint with no pressure-gradient signature. The bond is structural and doubles as the datum: the PU bead thickness is the adjustment that indexes the glass to the loft at fitting, the same trick Gen 1 used for its windshield, stretched over eleven meters. Acoustically the laminate does what it has since Gen 1, damping the 3 kHz band where wind rush lives, which matters more than ever under this much glass.',
+      why: 'Glass goes where eyes need it and superformed aluminum goes where they do not. Gen 2 ran glass all the way down the fastback because its facets could not turn the corner into metal cleanly; the shared loft can, so the band ends where sight lines end and the deck returns to metal, which is 4 kg saved and, more usefully, a surface the Kamm flap can actually mount to.',
       fail: [
         'One stone chip condemns the band, carried from Gen 2 unimproved, and the replacement must re-index to the skin loft or the joint becomes the step this design exists to delete.',
-        'Aluminium expands roughly twice as fast as glass; the 11 m bond absorbs millimetres of relative motion every thermal cycle, and a dry spot in the bead announces itself as a creak, then a leak.',
+        'Aluminum expands roughly twice as fast as glass; the 11 m bond absorbs millimeters of relative motion every thermal cycle, and a dry spot in the bead announces itself as a creak, then a leak.',
         'The screen region lies at 70 degrees, past Gen 2\'s 63: the optical path is longer, night-time double imaging is the honest limit, and no chip repair may touch the camera zone.',
       ],
       explode: [0, 1.05, 0],
@@ -74,7 +127,7 @@ export const SYSTEM = {
         ['Mass', '41 kg for four (Gen 2: 46, Gen 1: 82)'],
       ],
       how: 'The monoform deleted every joint on the body side except these four, which means the door cuts now carry the entire tolerance argument alone. Each skin is not a styled panel that happens to fit, it is the master loft surface between two shutlines, trimmed from the same mathematics as the skin around it, so a closed door restores the surface exactly. The hinges adjust in three axes against the casting datum, the same end-of-line camera gauge discipline Gen 1 introduced, but the pass criterion tightened from flush panels to an unbroken highlight: a light line swept down the car must cross all four doors without a visible kink.\n\nThe hardware is carried, and the carry is deliberate. The capacitive strip and e-latch came in with the Gen 2 aero concept and arrive here with a generation of fleet history behind them; the camera pods on their 90 mm stalks likewise, still worth about 0.008 of Cd against glass mirrors, still mounted on stalks because the rules and the spray physics both want the lens outboard. What changed is mass and frame: the frameless glass and bonded construction shed another 5 kg against Gen 2, and the twin EPDM seal system now seals against a lofted aperture rather than a flat flange, which is a die-cut problem solved once rather than a fitting problem solved per car.',
-      why: 'Doors are where the monoform admits people exist. A moving panel through a G2 surface is a hard promise: the air cares about step, not gap, so the design spends its tolerance budget on flushness and lets the gap width be what the seals need. Four cuts, each returning to the surface within a quarter millimetre, is the price of a body that is otherwise one part.',
+      why: 'Doors are where the monoform admits people exist. A moving panel through a G2 surface is a hard promise: the air cares about step, not gap, so the design spends its tolerance budget on flushness and lets the gap width be what the seals need. Four cuts, each returning to the surface within a quarter millimeter, is the price of a body that is otherwise one part.',
       fail: [
         'E-latches keep their legally required mechanical backup; the hidden cable release is exercised at every service because nobody touches it until the day it matters.',
         'Hinge sag no longer reads as a bad gap, it reads as a broken highlight line running the length of the car; the fix is adjustment, but the symptom is the whole body looking wrong.',
@@ -94,7 +147,7 @@ export const SYSTEM = {
         ['Format', 'Windows set 1.5 mm into the two flat faces, on a 20 mm reveal'],
         ['Aim', 'Referenced to ride height'],
       ],
-      how: 'The lineage runs straight. Gen 1 hung two 84-pixel matrix headlamps in the nose and drew one full-width tail bar; Gen 2 fused the headlamps into a single blade on its sealed face. Gen 3 finishes the thought: the loft is truncated by exactly two flat faces, nose and Kamm, and each face is closed by a light band. The matrix optics, the light guide, and their drivers sit behind one conformal window per face, so no lamp housing carves a trench through the skin. The pixels still blank oncoming traffic out of the high beam through the same 50 ms camera loop, and the rear guide still reaches full brake output in under 10 ms, roughly seven metres of warning at motorway speed, numbers Gen 1 set and nothing since has needed to move.\n\nBoth bands live in aerodynamically dead air by construction. The front face sits at the stagnation region where the flow has already decided to go around, and the Kamm face sits inside the wake where, as the Gen 2 tail content put it, the air has already left. That placement is what lets the bands be flush and frameless: they are lighting a face the flow never touches, so their windows owe nothing to the loft except its edge line.',
+      how: 'The lineage runs straight. Gen 1 hung two 84-pixel matrix headlamps in the nose and drew one full-width tail bar; Gen 2 fused the headlamps into a single blade on its sealed face. Gen 3 finishes the thought: the loft is truncated by exactly two flat faces, nose and Kamm, and each face is closed by a light band. The matrix optics, the light guide, and their drivers sit behind one conformal window per face, so no lamp housing carves a trench through the skin. The pixels still blank oncoming traffic out of the high beam through the same 50 ms camera loop, and the rear guide still reaches full brake output in under 10 ms, roughly seven meters of warning at highway speed, numbers Gen 1 set and nothing since has needed to move.\n\nBoth bands live in aerodynamically dead air by construction. The front face sits at the stagnation region where the flow has already decided to go around, and the Kamm face sits inside the wake where, as the Gen 2 tail content put it, the air has already left. That placement is what lets the bands be flush and frameless: they are lighting a face the flow never touches, so their windows owe nothing to the loft except its edge line.',
       why: 'A monoform leaves nowhere else for light to live. Any housing cut into the lofted surface would be a curvature break in exactly the air the whole body is shaped to keep attached, while the two truncation faces are flat, vertical, and already outside the attached flow. The lamps went to the only two places that cost nothing.',
       fail: [
         'One part per face: a parking tap costs the whole band, the Gen 2 blade warning doubled to both ends of the car.',
@@ -109,17 +162,17 @@ export const SYSTEM = {
       mass: 6,
       specs: [
         ['Chord x span', '190 mm hinge to tail, 0.20 m on the deck, 1.17 m span'],
-        ['Travel', '0 to 12 degrees; modelled deployed'],
+        ['Travel', '0 to 12 degrees; modeled deployed'],
         ['Effect', 'Base area -8%, ~6 counts at 130 km/h'],
         ['Actuator', 'One brushless worm drive, spring return to flush'],
         ['Endurance', '10^6 cycles, iced-hinge rated'],
         ['Certification', 'Pedestrian and pinch tested in every position'],
       ],
-      how: 'Gen 2 truncated the ideal teardrop and named the price: base drag on the cut face, paid every kilometre. The flap buys some of the phantom tail back, but only during the hours it earns. Above roughly 80 km/h the worm drive rotates the deck trailing edge down 12 degrees, extending the boat-tail line the quarters started, pulling the separation edge inboard and down, and shrinking the base area about 8 percent: worth around 6 counts at motorway speed, which is range you can measure. Below that speed it lies flush in the deck, restoring the approach angle, the pedestrian geometry, and the clean parked silhouette. It is modelled here in the deployed position because that is the position in which it justifies its mass.\n\nTwo generations of EV·01 bodies kept every exterior surface static, and even Gen 2 hid its one mechanism, the shutter bank, behind the intake opening; the flap is the first moving piece of the surface itself, and its certification bill shows why that record stood. A surface that moves is a new impact geometry in every position it can hold, so certification runs the pedestrian headform and legform series at flush, at 12 degrees, and at the worst mid-travel angle, plus pinch protection for fingers, gravel bombardment, and icing. Endurance is its own bill: a flap that cycles on every on-ramp sees a million actuations in a vehicle life, so the hinge line is a dry polymer bearing with no service interval, and the actuator runs a self-test sweep at every cold start, the same habit as Gen 2\'s shutter bank, reporting a stiff hinge before the motorway does.',
+      how: 'Gen 2 truncated the ideal teardrop and named the price: base drag on the cut face, paid every kilometer. The flap buys some of the phantom tail back, but only during the hours it earns. Above roughly 80 km/h the worm drive rotates the deck trailing edge down 12 degrees, extending the boat-tail line the quarters started, pulling the separation edge inboard and down, and shrinking the base area about 8 percent: worth around 6 counts at highway speed, which is range you can measure. Below that speed it lies flush in the deck, restoring the approach angle, the pedestrian geometry, and the clean parked silhouette. It is modeled here in the deployed position because that is the position in which it justifies its mass.\n\nTwo generations of EV·01 bodies kept every exterior surface static, and even Gen 2 hid its one mechanism, the shutter bank, behind the intake opening; the flap is the first moving piece of the surface itself, and its certification bill shows why that record stood. A surface that moves is a new impact geometry in every position it can hold, so certification runs the pedestrian headform and legform series at flush, at 12 degrees, and at the worst mid-travel angle, plus pinch protection for fingers, gravel bombardment, and icing. Endurance is its own bill: a flap that cycles on every on-ramp sees a million actuations in a vehicle life, so the hinge line is a dry polymer bearing with no service interval, and the actuator runs a self-test sweep at every cold start, the same habit as Gen 2\'s shutter bank, reporting a stiff hinge before the highway does.',
       why: 'The failure position is the design argument in one detail. The return spring pulls the flap flush, never deployed, because a flap stuck at 12 degrees in town is an uncertified pedestrian geometry, while a flap stuck flush merely costs six counts. Gen 2 encoded cooling beats drag in its shutter spring; the flap encodes law beats drag. Same grammar, new clause.',
       fail: [
         'Ice can lock the hinge line solid; the cold-start sweep detects the torque spike, leaves the flap flush for the day, and the range estimate quietly explains the missing counts.',
-        'The hinge is the fatigue villain: a million small reversals through a polymer bearing, and wear shows first as a millimetre of trailing-edge lash the self-test is tuned to catch.',
+        'The hinge is the fatigue villain: a million small reversals through a polymer bearing, and wear shows first as a millimeter of trailing-edge lash the self-test is tuned to catch.',
         'Certification debt freezes the design: any change to the hinge, edge radius, or actuator re-triggers the full pedestrian series, so the flap will outlive facelifts that redraw everything around it.',
       ],
       explode: [-1.0, 0.45, 0],
@@ -131,17 +184,17 @@ export const SYSTEM = {
       count: 2,
       specs: [
         ['Coverage', '0.026 m2 a side: 12% of the arch, three quarters of the reachable-free area'],
-        ['Vents', '3 louvres bleeding arch pressure aft'],
+        ['Vents', '3 louvers bleeding arch pressure aft'],
         ['Clearance', '8.7 mm to the full-lock, full-bump swept solid'],
         ['Worth', '~4 counts the pair (rear skirting: ~10, now in the loft)'],
         ['Removal', 'Two bolts each; chains require it'],
       ],
-      how: 'The Gen 2 skirt content laid out the physics: a rotating wheel in an open arch is an air pump with no purpose, and covering it is worth counts. It also gave the honest reason the front stayed open, a steered wheel sweeps more than 60 degrees and leans with the suspension, so a full front skirt must stand a hand-width off the body. Gen 3 attacks the loophole in that argument: the tyre cannot reach the whole opening. The swept envelope of the wheel through full lock plus full bump is a computed solid, swept here against the built tyre, rim and cover through plus and minus 40 degrees of steer and 60 mm of bump, and 16 percent of the arch area above the rocker line lies outside it: a crescent at the leading edge and a slightly smaller one trailing. The spats take three quarters of that, 0.026 square metres a side, standing 8.7 mm clear of the swept solid at the closest point and lying on the loft line the way no full skirt could.\n\nThe louvres are the second half of the trick. Partially sealing an arch traps the pumping air the opening used to spill, and trapped pressure pushes the spat outward and feeds lift; the three louvres in the trailing spat bleed that pressure aft as a thin sheet along the body side, in the same spirit as the Gen 2 air curtains but powered by the arch itself. The pair is worth about 4 counts. Full rear skirting, now a region of the monoform loft rather than a panel, is worth about 10. The front spats are the difference between a car that skirts what is easy and one that skirts what is possible.',
+      how: 'The Gen 2 skirt content laid out the physics: a rotating wheel in an open arch is an air pump with no purpose, and covering it is worth counts. It also gave the honest reason the front stayed open, a steered wheel sweeps more than 60 degrees and leans with the suspension, so a full front skirt must stand a hand-width off the body. Gen 3 attacks the loophole in that argument: the tire cannot reach the whole opening. The swept envelope of the wheel through full lock plus full bump is a computed solid, swept here against the built tire, rim and cover through plus and minus 40 degrees of steer and 60 mm of bump, and 16 percent of the arch area above the rocker line lies outside it: a crescent at the leading edge and a slightly smaller one trailing. The spats take three quarters of that, 0.026 square meters a side, standing 8.7 mm clear of the swept solid at the closest point and lying on the loft line the way no full skirt could.\n\nThe louvers are the second half of the trick. Partially sealing an arch traps the pumping air the opening used to spill, and trapped pressure pushes the spat outward and feeds lift; the three louvers in the trailing spat bleed that pressure aft as a thin sheet along the body side, in the same spirit as the Gen 2 air curtains but powered by the arch itself. The pair is worth about 4 counts. Full rear skirting, now a region of the monoform loft rather than a panel, is worth about 10. The front spats are the difference between a car that skirts what is easy and one that skirts what is possible.',
       why: 'Partial is the honest optimum, not a compromise. The full front skirt fails on geometry, the open arch leaves counts on the table, and the crescents in between are free: fixed panels, no mechanism, no clearance risk, bolted so a chain fit or a deep-snow winter can delete them in a minute per side.',
       fail: [
-        'The spats lead the wheel into every kerb approach; they are sized as sacrificial and the two-bolt mounting is the repair strategy.',
-        'Packed snow bridges the 8.7 mm clearance gap and the tyre will grind it; the noise is alarming and harmless, and the louvres double as the melt drain.',
-        'Everywhere the steered wheel needs the volume the arch stays an open arch, and that is most of it: sighted horizontally at hub height the opening still reads straight through the car. Closing it needs a panel over the tyre, which is the thing full lock deletes.',
+        'The spats lead the wheel into every curb approach; they are sized as sacrificial and the two-bolt mounting is the repair strategy.',
+        'Packed snow bridges the 8.7 mm clearance gap and the tire will grind it; the noise is alarming and harmless, and the louvers double as the melt drain.',
+        'Everywhere the steered wheel needs the volume the arch stays an open arch, and that is most of it: sighted horizontally at hub height the opening still reads straight through the car. Closing it needs a panel over the tire, which is the thing full lock deletes.',
         'Snow chains and the spats are mutually exclusive by geometry; the manual says remove, and roadside reality says someone will not.',
       ],
       explode: [0.4, -0.05, 0.75],
@@ -157,12 +210,12 @@ export const SYSTEM = {
         ['Underfloor', 'Feeds the sealed battery-3 floor plane'],
         ['Mounting', 'Shear-away fasteners, carried from Gen 2'],
       ],
-      how: 'Gen 2\'s splitter worked by blockage: force the stagnation region above a protruding plate, let high pressure push down on the lip, and admit only slow flow underneath. It bought zero front lift for a 60 mm overhang and a small bluff-face drag tax. The venturi lip inverts the method. Instead of blocking the underfloor, it meters it: the lip drops the intake gap to 110 mm, and the floor behind it, dead flat from nose to diffuser thanks to the battery-3 cell-to-body plane, forms a long shallow venturi with the road. Metered mass flow through a converging gap accelerates, static pressure falls along the whole floor length, and the front axle is held down by distributed suction rather than by a plate\'s local push.\n\nThe distinction matters at the drag ledger. The splitter\'s downforce came with a bluff frontal edge; the lip\'s comes from the underside of a body already there, so the same zero-lift target arrives with roughly two fewer counts spent. The dependency also moves: a venturi is tuned by its gap, so the lip\'s numbers assume the suspension holds its speed-dependent ride height, and the aero map degrades gracefully but measurably when it cannot. The lip section is carbon because the load case is a car-park ramp, not the air.',
+      how: 'Gen 2\'s splitter worked by blockage: force the stagnation region above a protruding plate, let high pressure push down on the lip, and admit only slow flow underneath. It bought zero front lift for a 60 mm overhang and a small bluff-face drag tax. The venturi lip inverts the method. Instead of blocking the underfloor, it meters it: the lip drops the intake gap to 110 mm, and the floor behind it, dead flat from nose to diffuser thanks to the battery-3 cell-to-body plane, forms a long shallow venturi with the road. Metered mass flow through a converging gap accelerates, static pressure falls along the whole floor length, and the front axle is held down by distributed suction rather than by a plate\'s local push.\n\nThe distinction matters at the drag ledger. The splitter\'s downforce came with a bluff frontal edge; the lip\'s comes from the underside of a body already there, so the same zero-lift target arrives with roughly two fewer counts spent. The dependency also moves: a venturi is tuned by its gap, so the lip\'s numbers assume the suspension holds its speed-dependent ride height, and the aero map degrades gracefully but measurably when it cannot. The lip section is carbon because the load case is a parking-garage ramp, not the air.',
       why: 'Steering feel at speed is a pressure distribution, as the Gen 2 splitter content argued, and the monoform gets to make that pressure with geometry it already owns. A flat structural floor was the battery\'s gift to the body; finishing its leading edge with 4 kg of carbon is the cheapest downforce purchase left on the car.',
       fail: [
-        'Kerbs and ramps rake the lip first; the shear-away fasteners cost a bracket, not the nose, carried unchanged from Gen 2 because the physics of car parks is also carried unchanged.',
+        'Curbs and ramps rake the lip first; the shear-away fasteners cost a bracket, not the nose, carried unchanged from Gen 2 because the physics of parking lots is also carried unchanged.',
         'A ride-height fault mistunes the whole floor, not just a plate: front lift returns quietly at speed, so the aero controller cross-checks height sensors and widens the stability margins when they disagree.',
-        'Deep snow packs the gap and the venturi becomes a plough; the lip is rated for it structurally, but the range estimate cannot explain slush.',
+        'Deep snow packs the gap and the venturi becomes a plow; the lip is rated for it structurally, but the range estimate cannot explain slush.',
       ],
       explode: [1.05, -0.35, 0],
     },
@@ -231,7 +284,7 @@ const STATIONS = [
   [0.45, [[0.30, 0.91], [0.55, 0.935], [0.92, 0.94], [1.12, 0.74], [1.425, 0.66], [1.44, 0.35]], 1.445],
   /* 6  maximum section */
   [-0.35, [[0.30, 0.92], [0.55, 0.94], [0.92, 0.94], [1.16, 0.72], [1.435, 0.67], [1.448, 0.35]], 1.452],
-  /* 7  rear axle: the flank holds 0.94 outboard of a tyre face at 0.9025, so
+  /* 7  rear axle: the flank holds 0.94 outboard of a tire face at 0.9025, so
         the loft itself is the rear skirt and there is no bolt-on panel */
   [-1.45, [[0.30, 0.94], [0.55, 0.94], [0.92, 0.925], [1.02, 0.68], [1.115, 0.46], [1.153, 0.21]], 1.16],
   /* 8  deck station (DECK): the glass ends and painted metal returns */
@@ -322,7 +375,7 @@ function acbox(w, h, d, c, mat, x, y, z, rz = 0, rx = 0, ry = 0) {
 
    x 0.900 is the front door's leading edge, and the two pieces of body.js
    structure it has to clear were both measured off the built mesh rather than
-   off the tube's nominal centreline. The A-pillar runs from (0.85, 0.95, 0.72)
+   off the tube's nominal centerline. The A-pillar runs from (0.85, 0.95, 0.72)
    up and aft on a 42 mm radius, and because the axis leans 43 degrees off X
    its forward cap reaches only x 0.8781, not the 0.892 a perpendicular tube
    would give: the cut clears it by 21.9 mm. The nearer part is the cowl beam,
@@ -334,9 +387,9 @@ function acbox(w, h, d, c, mat, x, y, z, rz = 0, rx = 0, ry = 0) {
    x 0.075 is the B-pillar joint. That pillar is a 42 mm tube on x 0.02, so it
    spans -0.022 to 0.062 and the cut sits 13 mm behind it.
 
-   x -1.000 is the rear door's trailing edge. wheels-3's rear tyre reaches
+   x -1.000 is the rear door's trailing edge. wheels-3's rear tire reaches
    x -1.087 as built and the rocker extrusion ends at -1.010, so the cut is
-   87 mm ahead of the tyre and 10 mm ahead of the sill's own end.
+   87 mm ahead of the tire and 10 mm ahead of the sill's own end.
 
    Every cut runs from the lower body line to the beltline seam and no
    further, and BOTH ENDS OF THAT SPAN ARE PANEL EDGES rather than comfortable
@@ -586,7 +639,7 @@ const shrink = (r, o, k, x) => r.map(([, y, z]) => [x, o[0] + (y - o[0]) * k, o[
 
    THE FASCIA IS BODYWORK AND GOES TO THE SKIN, not to the lamp. It is painted
    AA5083 like the rest of the shell, the skin's own tagline claims both
-   fascias, and the two annuli are 0.19 and 0.48 square metres, which is most
+   fascias, and the two annuli are 0.19 and 0.48 square meters, which is most
    of what a camera sees of either end of the car. Booked to `lightbands` they
    would click through as the 4 kg lamp pair and fly forward with it on the
    staged explode while the surface they are part of rose with the body. The
@@ -619,7 +672,7 @@ function lightFace(part, skinPart, rowIdx, dir, poly, mid, emitter) {
   part.add(lib.shell(lib.loft(two(win, shrink(win, mid, 0, x - dir * 0.0015)), M.glass, true)));
 }
 
-/* The marque: a chevron extruded 4 mm with a bevelled rim, on the one flat
+/* The marque: a chevron extruded 4 mm with a beveled rim, on the one flat
    panel that can carry it without interrupting a surface the flow is attached
    to. A decal has no edge for a softbox to find. */
 const CHEVRON = [
@@ -628,29 +681,29 @@ const CHEVRON = [
 ];
 
 /* ── The front arch and what the wheel can never reach ──────────────────
-   The swept solid is measured off wheels-3's BUILT tyre, rim and cover,
-   rotated about the vertical through the wheel centre over plus and minus 40
+   The swept solid is measured off wheels-3's BUILT tire, rim and cover,
+   rotated about the vertical through the wheel center over plus and minus 40
    degrees and lifted plus and minus 60 mm, which is all the bump a 0.363 m
-   tyre has inside a 0.430 m arch. Two things fall out of it and neither is
+   tire has inside a 0.430 m arch. Two things fall out of it and neither is
    the obvious one.
 
    The wheel's extent in X does not simply shrink with steer: the tread
    contribution falls as cos and the shoulder contribution grows as sin, and
    they peak together at 14.3 degrees. The swept solid reaches x 1.0832 aft
-   and 1.8168 forward, not the static tyre's 1.087 and 1.813, and those are
+   and 1.8168 forward, not the static tire's 1.087 and 1.813, and those are
    the two numbers a fixed panel has to clear.
 
    The wheel's extent in Z grows enormously: at full lock the leading tread
    corner sweeps to |z| 1.109 against a body 0.900 half-wide at the arch. That
    is Gen 2's own argument for leaving the front open, and it is why no part
-   of this spat may lie over the tyre. The crescents fore and aft of the swept
+   of this spat may lie over the tire. The crescents fore and aft of the swept
    solid are the only places a fixed panel can be flush with the skin, and
    there it is exactly flush.
 
    SPATZ and SPATF are the two limits, each 8 mm clear of the swept solid IN X.
-   That margin is not the clearance: the panel and the swept tyre are both
+   That margin is not the clearance: the panel and the swept tire are both
    curved, so the shortest line between them is not axial. Swept at half a
-   degree of steer and 10 mm of bump against the built tyre, rim, cover, disc
+   degree of steer and 10 mm of bump against the built tire, rim, cover, disc
    and caliper, the nearest approach is 8.7 mm, at the leading crescent's aft
    corner (1.8248, 0.4200, 0.8278) with the wheel at 12 degrees and full bump.
    That number, not the 8 mm axial margin, is what the spec row carries. */
@@ -704,7 +757,7 @@ export function build() {
 function buildShell(sys) {
   /* ── monoform skin ─────────────────────────────────────────────────────
      THE NOSE IS ONE PANEL, from the bottom edge on one flank, over the crown,
-     to the bottom edge on the other. It used to be a flank loft and a bonnet
+     to the bottom edge on the other. It used to be a flank loft and a hood
      loft meeting at ring 3, and two meshes always break: swept as face
      dihedrals that seam turns 10.5 to 26.2 degrees around the nose, so the
      old build ran a hard crease straight down the one surface a monoform
@@ -712,17 +765,77 @@ function buildShell(sys) {
      station 8 for the same reason read the other way: there the ring seam
      turns 2.4 to 7.7 degrees while the station line turns 14.7 to 26.7. Put
      the mesh boundary where the surface is flat, not where the table has a
-     point. ── */
+     point. Measured again for the closures pass on the built mesh, that ring
+     3 line turns 11.1 to 26.4 degrees over the nose, which is the same
+     finding to a rounding.
+
+     AND THEREFORE THERE IS NO HOOD, which is a measurement rather than an
+     omission. Every groove cut into the master grid is a ROW groove: three
+     shutlines pushed twice each, left and right of the beltline, plus the
+     flap hinge line. There is no column-axis cut anywhere on this car, so
+     there is no line for a lid's two side shutlines to run on, and the nose
+     panel below is one 1056-triangle sheet from the bottom edge on one flank
+     over the crown to the bottom edge on the other. Three ways to get a lid
+     into it, and all three are worse than not having one.
+
+     CUT AT RING 4 AND RING 8. Both are grid columns already, so the triangle
+     soup would survive it exactly. The surface would not: two meshes always
+     break, and across those two lines the section turns 6.8 to 18.4 degrees
+     with no channel under either of them. Every other cut on this car is a
+     5 by 4 mm channel with two lit walls and a dark floor; this one would be
+     a shading break with nothing in it, running down the surface the monoform
+     exists to make continuous, which is the seam the paragraph above already
+     deleted once.
+
+     GIVE THOSE SEAMS REAL CHANNELS, and the grid stops being the same grid.
+     Built with the two column grooves a frunk lid needs, this module goes
+     from 10,062 triangles to 10,694 and 352 of the as-built triangles do not
+     survive, 3.5 percent of the soup. That is a redraw of the whole skin to
+     hang one lid on, and every resolved column index in this file moves with
+     it.
+
+     OPEN THE WHOLE NOSE AS A CLAMSHELL. This is the honest candidate and it
+     needs no new geometry at all, because the cowl ring at x 1.0600 is
+     already a panel boundary: the nose panel ends there, both fixed fender
+     strips start there and the glass roots there. Swept, it fails, and it
+     fails on the wheel arch. A clamshell carries the front arches, and this
+     arch wraps INSIDE the tire it covers: the nearest the nose panel's own
+     vertices come to wheels-3's front tire is 16.0 mm, at (1.1900, 0.6190,
+     0.9000) against a tire whose outer face is at |z| 0.9025. A hinge about
+     Z moves that lip in its own plane and it wipes the tire shoulder. On the
+     cowl crown, which is the only axis on that cut that does not drive the
+     ring straight back into the fixed body, the panel is 3.0 mm through
+     wheels-3/tires at 5 degrees, 7.4 mm at 30, and does not come clear again
+     until 50. A lid that opens 4 degrees is not a lid, and the bill it would
+     have run up on the way is 537.8 mm of overhead and 149.7 mm of fore
+     clearance, against a decklid that costs 0.0 mm in every direction.
+
+     So Gen 3 opens its trunk and keeps its nose shut, and that is the
+     monoform's invoice rather than an oversight: the part's own tagline
+     counts a hood among the eight Gen 1 panels this surface replaced, and the
+     hood went with the shutlines. A rung that wants a frunk buys the column
+     grooves first, and pays for them in the whole skin. ── */
   const skin = lib.part('skin', [0, 0.62, 0]);
-  skin.add(panel([0, RI(COWL)], [0, CI(12)]));            /* nose, bonnet, fenders */
+  skin.add(panel([0, RI(COWL)], [0, CI(12)]));            /* nose, hood, fenders */
   skin.add(panel([RI(COWL), CUT[0]], FL));                /* fixed fender, hinge strip */
   skin.add(panel([RI(COWL), CUT[0]], FR));
   skin.add(panel([CUT[0], CUT[2]], SILLL));               /* sill under the cuts */
   skin.add(panel([CUT[0], CUT[2]], SILLR));
   skin.add(panel([CUT[2], RI(LAST)], FL));                /* rear quarters to the tail */
   skin.add(panel([CUT[2], RI(LAST)], FR));
-  skin.add(panel([RI(DECK), FCUT], UP));                  /* deck ahead of the flap */
   sys.add(skin);
+
+  /* ── the decklid ───────────────────────────────────────────────────────
+     THE DECK AHEAD OF THE FLAP IS THE LID, and moving it costs nothing at
+     all: it is the same panel() call this line has always made, in its own
+     group. Every edge it has is already a joint. The glass bond is ahead of
+     it, the flap's channel is behind it, and its two side edges are the ring
+     3 and ring 9 lines the tail is split on. The part id stays `skin`, so the
+     car is still one clickable shell with one panel, which is the same
+     arrangement the four doors use. ── */
+  const lid = lib.hinge(lib.part('skin', [0, 0.62, 0]), 'decklid');
+  lid.add(panel([RI(DECK), FCUT], UP));
+  sys.add(lid);
 
   /* ── glass canopy band, lofted 8 mm proud of the same stations and 1.2
      percent wider so the two surfaces never fight for the same pixel, and now
@@ -770,7 +883,7 @@ function buildShell(sys) {
   /* the marque, and the only one on the car: a nose carrying a full-width
      matrix has nowhere honest to put a second. The Kamm face is planar, so
      4 mm of extrusion stands 4 mm proud of it everywhere, which is the whole
-     reason the neighbouring body needed 4.4 mm on a cone. It rides with the
+     reason the neighboring body needed 4.4 mm on a cone. It rides with the
      painted fascia it is bonded to, not with the lamp above it. */
   const mark = lib.badge(CHEVRON, 0.004, M.alu);
   mark.rotation.y = -Math.PI / 2;
@@ -784,7 +897,7 @@ function buildShell(sys) {
      leading edge therefore stays exactly on the deck it came from and the
      trailing edge falls away, which is what the mechanism does.
 
-     The panel it replaces was a 1.30 m slab at a constant y 0.945 centred on
+     The panel it replaces was a 1.30 m slab at a constant y 0.945 centered on
      x -2.27. The deck crown at that station is 0.9174, and at the slab's own
      tips the surface is at 0.790, so the flap floated between 28 and 155 mm
      above the body it was supposed to be part of, and its two hinge blocks
@@ -829,7 +942,7 @@ function buildShell(sys) {
      the flank's own closing tangent below it, so each panel reads as the
      bodywork continuing down into the arch and stopping where the wheel needs
      the room. The pair they replace were flat plates at |z| 0.934, 32 mm
-     proud of a flank 0.902 wide and directly over a tyre whose outer face is
+     proud of a flank 0.902 wide and directly over a tire whose outer face is
      at 0.9025: a bolt-on look, and a clearance that only survives while the
      wheel never turns.
 
@@ -837,17 +950,17 @@ function buildShell(sys) {
      the rocker and the loft's own rear skirt read as one lower body line the
      length of the car. ── */
   const spat = lib.part('spats', [0.4, -0.05, 0.75]);
-  const VENT = 0.062;                     /* the louvre bank owns the last 62 mm */
+  const VENT = 0.062;                     /* the louver bank owns the last 62 mm */
   spat.add(crescent(archEnd(-1), SPATZ - VENT, 7));
   spat.add(crescent(SPATF, archEnd(1), 6));
-  /* Three louvres in the 62 mm the trailing crescent gives up at its forward
+  /* Three louvers in the 62 mm the trailing crescent gives up at its forward
      end, which is directly behind the wheel and the one place on this arch
      where an outlet works. The bank stands in a real opening between the panel
      and the swept solid, so it bleeds into the arch rather than onto a closed
      pocket, and it is CARRIED by the sill rail below rather than hanging in
      the opening. Rebuilt without the rail and swept vertex by vertex, not one
      of the three blades had a single vertex inside any other solid: the two
-     forward ones sat 8.1 mm from their neighbour and nothing else, and the
+     forward ones sat 8.1 mm from their neighbor and nothing else, and the
      aftmost came within 2.0 mm of the rocker, which belongs to another module.
      That is the floating-part defect this project keeps catching.
 
@@ -856,7 +969,7 @@ function buildShell(sys) {
      is not: three of them cover 53 mm of a 62 mm opening, and swept with
      horizontal rays across the car through the arch band, 41 of 198 came out
      the other side. That is a hole you can see daylight through, and the old
-     flat plate over the tyre had none. At 0.75 rad the same blade projects
+     flat plate over the tire had none. At 0.75 rad the same blade projects
      25.0 mm, and three on a 23.5 mm pitch overlap by 1.5 mm each and reach
      from inside the panel's own aft end to the swept limit. */
   const LVA = 0.75, LVP = 0.0235;
@@ -902,7 +1015,7 @@ function buildShell(sys) {
 
   /* ── venturi floor lip ─────────────────────────────────────────────────
      The lip's LOWER face is the number the whole part is tuned on, so it is
-     set from lib.plate's own convention rather than from the plate's centre:
+     set from lib.plate's own convention rather than from the plate's center:
      the helper puts its slab between y + t/2 and y + 3t/2, so a 16 mm section
      at y 0.102 runs 0.110 to 0.126 and the ground gap is the published
      110 mm. Placed at 0.112 it was 120. ── */
@@ -933,20 +1046,48 @@ function buildShell(sys) {
      front of it and the near lip, wall and floor of the cut behind it, so the
      channel between two panels is closed: two lit walls and a dark floor
      instead of a painted line. ── */
-  const doors = lib.part('doors', [0.08, 0, 0.85]);
-  doors.add(panel([CUT[0], CUT[1]], DOORR));
-  doors.add(panel([CUT[1], CUT[2]], DOORR));
-  /* capacitive strips, 100 mm ahead of each door's own trailing cut and
-     seated on the surface instead of 14 mm outside it */
-  for (const x of [0.175, -0.900]) {
-    doors.add(acbox(0.140, 0.024, 0.012, 0.004, M.alu, x, 0.800,
-      halfWidth(x, 0.800) + 0.005));
+  const leaf = (id, rows, stripX) => {
+    const g = lib.hinge(lib.part('doors', [0.08, 0, 0.85]), id);
+    g.add(panel(rows, DOORR));
+    /* capacitive strip, 100 mm ahead of this door's own trailing cut and
+       seated on the surface instead of 14 mm outside it. It is a door
+       handle, so it travels with the door. */
+    g.add(acbox(0.140, 0.024, 0.012, 0.004, M.alu, stripX, 0.800,
+      halfWidth(stripX, 0.800) + 0.005));
+    /* THE SURROUND CAMERA IS THIS BODY'S, seated on this body's own surface.
+       It used to be autonomy-4's, placed at an absolute |z| that could not be
+       right on more than one body: measured, the same coordinate stood 11.70
+       mm proud of body-4 and body-6's door skin and 71.5 mm proud of body-7,
+       -8 and -9's, so on the flat-flank bodies it floated clear of the panel
+       it was bolted to. A module builds once and is shared by five bodies, so
+       no coordinate it can write is right for all of them. The body is the
+       only module that knows where its own flank is, which is why body-11
+       already draws its own and why this one does now. Flush, 2 mm inside the
+       skin, so it is a camera rather than a thing standing in the airflow. */
+    if (id === 'door-front') {
+      const camZ = halfWidth(0.100, 1.000);
+      g.add(acbox(0.050, 0.028, 0.020, 0.004, M.sensor, 0.100, 1.000, camZ - 0.002));
+      g.add(acbox(0.090, 0.020, 0.012, 0.003, M.alu, 0.060, 1.000, camZ - 0.004));
+    }
+    return g;
+  };
+  for (const d of [leaf('door-front', [CUT[0], CUT[1]], 0.175),
+                   leaf('door-rear', [CUT[1], CUT[2]], -0.900)]) {
+    sys.add(d);
+    sys.add(mirrorZ(d));
   }
   /* camera pods on 90 mm stalks, on the fixed fender where a mirror belongs,
-     with the stalk root taken off the flank it grows out of */
+     with the stalk root taken off the flank it grows out of. They keep the
+     `doors` part id, because a camera pod is what this part is half named
+     for and one panel should describe both, but they are NOT tagged with a
+     closure: the pod root is at x 1.020 and the front shutline is at 0.8975,
+     so the pod stands on the fixed fender ahead of the cut. Left in the
+     door group it would have ridden out into the road every time the door
+     opened. */
+  const pods = lib.part('doors', [0.08, 0, 0.85]);
   const PX = 1.020, PY = 0.960, PZ = halfWidth(PX, PY);
-  doors.add(acbox(0.016, 0.014, 0.090, 0.003, M.plastic, PX, PY, PZ + 0.043));
-  doors.add(acbox(0.052, 0.030, 0.030, 0.006, M.sensor, PX, PY, PZ + 0.101));
-  sys.add(doors);
-  sys.add(mirrorZ(doors));
+  pods.add(acbox(0.016, 0.014, 0.090, 0.003, M.plastic, PX, PY, PZ + 0.043));
+  pods.add(acbox(0.052, 0.030, 0.030, 0.006, M.sensor, PX, PY, PZ + 0.101));
+  sys.add(pods);
+  sys.add(mirrorZ(pods));
 }

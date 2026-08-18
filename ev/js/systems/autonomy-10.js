@@ -4,7 +4,7 @@
    keeps the property and stops paying for it three times over.
 
    The observation the whole module rests on: triplication buys fault
-   LOCALISATION, and localisation does not require three full-rate copies of
+   LOCALIZATION, and localization does not require three full-rate copies of
    the same answer. It requires three opinions good enough to disagree inside
    a bounded time. So lane A runs the full stack at full rate, lane B runs a
    diverse distilled stack at a reduced rate, and lane C sits in retention and
@@ -95,7 +95,7 @@ const LANE_GEN4 = {
   sramNoc: 13.0,
   lpddr: 12.0,
   cpuSafety: 16.0,
-  frontEnd: 11.6,      // deserialisers 4.6, ISP and radar/lidar preprocess 7.0
+  frontEnd: 11.6,      // deserializers 4.6, ISP and radar/lidar preprocess 7.0
   /* silicon 116.6, point-of-load at 92 percent, so 10.1 W of conversion */
   total: 126.7,
 };
@@ -113,7 +113,7 @@ const LANE = {
 
 /* Duty split over the mixed cycle the efficiency model uses. This is the
    least evidenced input in the module and the panel says so: it is a
-   judgement about scene statistics, not a measurement. */
+   judgment about scene statistics, not a measurement. */
 const DUTY = { cruise: 0.58, elevated: 0.30, dense: 0.12 };
 
 export const SYSTEM = {
@@ -129,21 +129,21 @@ export const SYSTEM = {
       mass: 12.5,
       specs: [
         ['Lanes', '3x 500 TOPS, one primary, one checker, one reserve'],
-        ['Voter', '2-of-3 majority, analysable logic, ASIL D'],
+        ['Voter', '2-of-3 majority, analyzable logic, ASIL D'],
         ['Power', '640 W peak held, 192 W typical'],
         ['Against Gen 4', '380 W typical, so 188 W cut and 52 W missed'],
         ['Diversity', 'Two independently written stacks, not three copies'],
         ['Fault to isolation', '100 ms at Gen 4, 250 ms worst case here'],
       ],
-      how: 'Three lanes sit on one cold plate exactly as Gen 4 built them, each an independent 500 TOPS SoC with its own DRAM and its own pair of diode-ORed 48 V feeds. What changed is the job. Lane A runs the primary stack at the full 20 Hz tick. Lane B runs a SEPARATELY WRITTEN stack, distilled and quantised down to a working set that lives in its own on-die SRAM, at 10 Hz on a quarter of the input pixel and point rate. Lane C is in retention: clocks gated, SRAM held, DRAM in self-refresh, wake to full rate in 60 ms. In cruise the car is a duplex with a third opinion 60 ms away; the instant A and B disagree, or the scene crosses an escalation trigger, C comes up and the vote is a genuine 2-of-3. Escalation is not rare and it is not free: measured over the mixed cycle this module assumes 58 percent cruise, 30 percent elevated with both checkers awake at reduced rate, and 12 percent dense with all three lanes at full rate.\n\nTHE LEDGER, and every watt in it has a named mechanism. Gen 4 spends 126.7 W a lane at the 48 V input, which apportions as 52.0 W of NPU array dynamic, 12.0 of SoC leakage and always-on domains, 13.0 of on-die SRAM and network-on-chip traffic, 12.0 of LPDDR5X PHY and DRAM, 16.0 of CPU and safety cluster, 11.6 of sensor front end, and 10.1 of point-of-load conversion loss at 92 percent. Note what that table is: it is calibrated to the published 380 W rather than derived independently of it, so it says where the watts are and not that there are 380 of them. Against it, a reduced-rate checker is 45 W (NPU dynamic to 8.0, because an eighth of the op rate at 0.60 V instead of 0.75 leaves 4.2 W of arithmetic and 3.8 W of fetch and sequencer overhead that does not scale; leakage to 9.0; SRAM and NoC to 5.0; LPDDR to 3.0 because the distilled working set is resident on die; CPU and safety to 11.0, since the safety monitor and the voter interface run at full rate on every lane by design; front end to 5.0, deserialisers up and the ISP at a quarter rate). A lane in retention is 17 W, and the reason it is not near zero is leakage at an automotive junction temperature. A full-rate lane with foveated ingest is 96 W in a structured scene, 108 in a mixed one and 113 in a dense one, where the ROI is chosen from radar occupancy and the previous frame\'s motion energy and the periphery runs at quarter resolution. Applied in that order: **lane B to a reduced-rate checker, 72 W. Lane C to retention in cruise, 88 W. Foveated ingest on whichever lanes are at full rate, 28 W. Total 188 W of a 240 W target, and the module misses by 52 W.**\n\nTWO MECHANISMS WERE EXAMINED AND BOOK NOTHING, which is the honest half of the ledger. Resident weights in a large on-die SRAM is the obvious way to attack the 12 W of LPDDR, and it does not survive arithmetic: a 1 Gbit macro is about 100 mm2 at this node and leaks roughly 5 to 15 W at an automotive junction temperature, against the 12 W of DRAM interface it displaces. It is a wash, and a wash is booked at ZERO rather than rounded toward the target. Sharing one deserialisation stage across three lanes would save about 10 W of the 34.8 W the three front ends spend on identical streams, and it is declined for a different reason: it moves a trusted boundary, because a corrupted shared front end lies to all three lanes at once, and 10 W is not the price of the one property this slot exists to hold.\n\nWHAT THE MODULE BOOKS, and it is smaller than the brief asked for. See the COMPUTE_BASIS derivation at the top of this file. The Gen 1 duplex continuous draw is 267 W, not the 335 that js/efficiency.js\'s additive 45 W implies, so the auxDelta this module has earned is 192 minus 267, or **-75 W**, and the car\'s auxiliary reads 439 W rather than the 319 design/gen10.md expected. On the Gen 9 configuration with nothing else changed that is 110.656 Wh/mi and 1,717.0 miles against 1,673.9, a step of **+43.1** where the design doc priced +87.7. Half the shortfall is the 52 W of compute the ledger could not find and half is the 68 W the model never booked in the first place.\n\nCheck the entry the way design/gen10.md hard point 1 asks. auxDelta stacks on the SLOT BASELINE, which is hv-4\'s 820 W, and replacing autonomy-4 also removes its additive +45: 820 minus 306 for thermal-9 minus 75 is **439 W**, which reads as 45 W of thermal plus 192 of compute plus 202 of other low voltage. Writing the obvious 192 minus 380, or -188, would give 326 W and hand this rung 113 W it did not earn. One convention to a sentence, because this is the paragraph that exists to stop a booking error and quoting the other one inside it is the drift it is guarding against: against the Gen 9 partners every other number here is priced on, those 113 W are **42.0 miles**, 1,759.0 against 1,717.0. Priced instead on the full Gen 10 preset with wheels-10\'s Crr in, the same slip is 44.0 miles and reads **1,802.0** against 1,757.9, so the one mistake this check exists to prevent is also the one that would make the generation look like it cleared 1,800. And note which way the remaining uncertainty cuts: if the Gen 1 duplex really is 335 W the same architecture books -143 and the rung reads 1,742.1 miles, and if it is the 253 W the constant-lane-typical route gives it books -61 and reads 1,712.0. The 267 is the larger of the two derived figures and therefore the more flattering of them, which is stated here rather than left for a reader to notice.',
-      why: 'The Gen 4 argument was that a duplex can detect a fault but cannot localise it, so a car with no steering column needs a third opinion. That is still right. What Gen 4 did not ask is how much of a third opinion, and how often. A liar is caught by disagreement, and disagreement needs the other two lanes to be RIGHT, not to be fast: a checker running at half the tick rate on a quarter of the pixels still produces a trajectory that a diverging primary cannot match, because the divergence that matters is metres of path, not centimetres of perception noise. Buying that with 45 W instead of 127 is the same safety property at a third of the price, and the price is paid in latency rather than in coverage, which is a trade you can bound and publish.\n\nThe part of this that is a capability GAIN rather than a saving is the diversity. Gen 1 and Gen 4 both list a common-mode software fault first among their failure modes, because three identical stacks are confidently and identically wrong together and voting is powerless against it. Once lane B is not trying to keep up with lane A it no longer has to be lane A, and a separately written, separately trained checker is the first thing on this ladder that can actually disagree with a bug. It also means the 2-of-3 vote is no longer a vote among clones, which is what the analysable-voter argument always quietly assumed it was not.',
+      how: 'Three lanes sit on one cold plate exactly as Gen 4 built them, each an independent 500 TOPS SoC with its own DRAM and its own pair of diode-ORed 48 V feeds. What changed is the job. Lane A runs the primary stack at the full 20 Hz tick. Lane B runs a SEPARATELY WRITTEN stack, distilled and quantized down to a working set that lives in its own on-die SRAM, at 10 Hz on a quarter of the input pixel and point rate. Lane C is in retention: clocks gated, SRAM held, DRAM in self-refresh, wake to full rate in 60 ms. In cruise the car is a duplex with a third opinion 60 ms away; the instant A and B disagree, or the scene crosses an escalation trigger, C comes up and the vote is a genuine 2-of-3. Escalation is not rare and it is not free: measured over the mixed cycle this module assumes 58 percent cruise, 30 percent elevated with both checkers awake at reduced rate, and 12 percent dense with all three lanes at full rate.\n\nTHE LEDGER, and every watt in it has a named mechanism. Gen 4 spends 126.7 W a lane at the 48 V input, which apportions as 52.0 W of NPU array dynamic, 12.0 of SoC leakage and always-on domains, 13.0 of on-die SRAM and network-on-chip traffic, 12.0 of LPDDR5X PHY and DRAM, 16.0 of CPU and safety cluster, 11.6 of sensor front end, and 10.1 of point-of-load conversion loss at 92 percent. Note what that table is: it is calibrated to the published 380 W rather than derived independently of it, so it says where the watts are and not that there are 380 of them. Against it, a reduced-rate checker is 45 W (NPU dynamic to 8.0, because an eighth of the op rate at 0.60 V instead of 0.75 leaves 4.2 W of arithmetic and 3.8 W of fetch and sequencer overhead that does not scale; leakage to 9.0; SRAM and NoC to 5.0; LPDDR to 3.0 because the distilled working set is resident on die; CPU and safety to 11.0, since the safety monitor and the voter interface run at full rate on every lane by design; front end to 5.0, deserializers up and the ISP at a quarter rate). A lane in retention is 17 W, and the reason it is not near zero is leakage at an automotive junction temperature. A full-rate lane with foveated ingest is 96 W in a structured scene, 108 in a mixed one and 113 in a dense one, where the ROI is chosen from radar occupancy and the previous frame\'s motion energy and the periphery runs at quarter resolution. Applied in that order: **lane B to a reduced-rate checker, 72 W. Lane C to retention in cruise, 88 W. Foveated ingest on whichever lanes are at full rate, 28 W. Total 188 W of a 240 W target, and the module misses by 52 W.**\n\nTWO MECHANISMS WERE EXAMINED AND BOOK NOTHING, which is the honest half of the ledger. Resident weights in a large on-die SRAM is the obvious way to attack the 12 W of LPDDR, and it does not survive arithmetic: a 1 Gbit macro is about 100 mm2 at this node and leaks roughly 5 to 15 W at an automotive junction temperature, against the 12 W of DRAM interface it displaces. It is a wash, and a wash is booked at ZERO rather than rounded toward the target. Sharing one deserialization stage across three lanes would save about 10 W of the 34.8 W the three front ends spend on identical streams, and it is declined for a different reason: it moves a trusted boundary, because a corrupted shared front end lies to all three lanes at once, and 10 W is not the price of the one property this slot exists to hold.\n\nWHAT THE MODULE BOOKS, and it is smaller than the brief asked for. See the COMPUTE_BASIS derivation at the top of this file. The Gen 1 duplex continuous draw is 267 W, not the 335 that js/efficiency.js\'s additive 45 W implies, so the auxDelta this module has earned is 192 minus 267, or **-75 W**, and the car\'s auxiliary reads 439 W rather than the 319 design/gen10.md expected. On the Gen 9 configuration with nothing else changed that is 110.656 Wh/mi and 1,717.0 miles against 1,673.9, a step of **+43.1** where the design doc priced +87.7. Half the shortfall is the 52 W of compute the ledger could not find and half is the 68 W the model never booked in the first place.\n\nCheck the entry the way design/gen10.md hard point 1 asks. auxDelta stacks on the SLOT BASELINE, which is hv-4\'s 820 W, and replacing autonomy-4 also removes its additive +45: 820 minus 306 for thermal-9 minus 75 is **439 W**, which reads as 45 W of thermal plus 192 of compute plus 202 of other low voltage. Writing the obvious 192 minus 380, or -188, would give 326 W and hand this rung 113 W it did not earn. One convention to a sentence, because this is the paragraph that exists to stop a booking error and quoting the other one inside it is the drift it is guarding against: against the Gen 9 partners every other number here is priced on, those 113 W are **42.0 miles**, 1,759.0 against 1,717.0. Priced instead on the full Gen 10 preset with wheels-10\'s Crr in, the same slip is 44.0 miles and reads **1,802.0** against 1,757.9, so the one mistake this check exists to prevent is also the one that would make the generation look like it cleared 1,800. And note which way the remaining uncertainty cuts: if the Gen 1 duplex really is 335 W the same architecture books -143 and the rung reads 1,742.1 miles, and if it is the 253 W the constant-lane-typical route gives it books -61 and reads 1,712.0. The 267 is the larger of the two derived figures and therefore the more flattering of them, which is stated here rather than left for a reader to notice.',
+      why: 'The Gen 4 argument was that a duplex can detect a fault but cannot localize it, so a car with no steering column needs a third opinion. That is still right. What Gen 4 did not ask is how much of a third opinion, and how often. A liar is caught by disagreement, and disagreement needs the other two lanes to be RIGHT, not to be fast: a checker running at half the tick rate on a quarter of the pixels still produces a trajectory that a diverging primary cannot match, because the divergence that matters is meters of path, not centimeters of perception noise. Buying that with 45 W instead of 127 is the same safety property at a third of the price, and the price is paid in latency rather than in coverage, which is a trade you can bound and publish.\n\nThe part of this that is a capability GAIN rather than a saving is the diversity. Gen 1 and Gen 4 both list a common-mode software fault first among their failure modes, because three identical stacks are confidently and identically wrong together and voting is powerless against it. Once lane B is not trying to keep up with lane A it no longer has to be lane A, and a separately written, separately trained checker is the first thing on this ladder that can actually disagree with a bug. It also means the 2-of-3 vote is no longer a vote among clones, which is what the analyzable-voter argument always quietly assumed it was not.',
       fail: [
         'Fault to isolation grows from 100 ms to 250 ms worst case: two consecutive disagreeing checker ticks at 10 Hz plus one tick of alignment. The bound that makes that survivable is a rate limit on the primary\'s commanded trajectory during the window, so a liar held for 250 ms at 3 m/s2 of lateral authority moves the car 94 mm off line, which is a lane-keeping excursion and not a departure. If the rate limiter is defeated the whole argument goes with it.',
-        'The reduced checker is blind to a class and the class is nameable: at a quarter of the pixel rate its reliable classification range for a 0.4 m obstacle falls from about 90 m to about 45 m, and at 10 Hz it sees a 30 m/s closing target 3 m later than the primary at every tick. Inside 45 m a small unfamiliar object is corroborated by the formally verified collision checker, which runs on all three lanes and brakes for occupied space without recognising it, and not by a second perception opinion.',
-        'Promotion is not instant. When the primary is voted out, the surviving checker restores full clock, reloads the primary weight set from its own LPDDR and re-establishes on the next tick, about 60 ms in which the car runs on a distilled stack plus the collision checker. That is enough to hold lane and decelerate and it is not enough to execute a new manoeuvre, which is exactly the window this module has bought its watts in.',
-        'The duty split is the softest number here. 58 / 30 / 12 is a judgement about scene statistics on a mixed cycle, not a measurement. Moved with ONE convention over both ends, cruise and elevated held in their 58 to 30 ratio while the dense fraction is what changes, the published 192 W is 185.0 at a 0.08 dense fraction and 198.4 at 0.16. An earlier draft of this row read 185 and 199, which are the two ends of two DIFFERENT reallocation rules: 199 is what comes out if cruise alone absorbs the change, and that rule gives 184.5 at the other end. The architecture does not change with either; the booked auxDelta does, and priced through the shipped model those two points are 1,719.6 and 1,714.7 miles against the booked 1,717.0, so +2.5 and -2.3 and about five miles across the whole span rather than five either way.',
+        'The reduced checker is blind to a class and the class is nameable: at a quarter of the pixel rate its reliable classification range for a 0.4 m obstacle falls from about 90 m to about 45 m, and at 10 Hz it sees a 30 m/s closing target 3 m later than the primary at every tick. Inside 45 m a small unfamiliar object is corroborated by the formally verified collision checker, which runs on all three lanes and brakes for occupied space without recognizing it, and not by a second perception opinion.',
+        'Promotion is not instant. When the primary is voted out, the surviving checker restores full clock, reloads the primary weight set from its own LPDDR and re-establishes on the next tick, about 60 ms in which the car runs on a distilled stack plus the collision checker. That is enough to hold lane and decelerate and it is not enough to execute a new maneuver, which is exactly the window this module has bought its watts in.',
+        'The duty split is the softest number here. 58 / 30 / 12 is a judgment about scene statistics on a mixed cycle, not a measurement. Moved with ONE convention over both ends, cruise and elevated held in their 58 to 30 ratio while the dense fraction is what changes, the published 192 W is 185.0 at a 0.08 dense fraction and 198.4 at 0.16. An earlier draft of this row read 185 and 199, which are the two ends of two DIFFERENT reallocation rules: 199 is what comes out if cruise alone absorbs the change, and that rule gives 184.5 at the other end. The architecture does not change with either; the booked auxDelta does, and priced through the shipped model those two points are 1,719.6 and 1,714.7 miles against the booked 1,717.0, so +2.5 and -2.3 and about five miles across the whole span rather than five either way.',
         'ONE INTERPENETRATION SURVIVES THIS GENERATION AND IT IS THIS PART\'S, so the module is 1 undeclared cross-module pair rather than 0. The coolant stubs on the cold plate cross thermal-9/glycol-loop over 24 triangle pairs to 2.29 mm at (-0.778, 0.414, 0.055), identical in count, depth and location to Gen 4\'s, against a Gen 4 total of 25 pairs and 5,823 crossing triangle pairs. It is the hose-over-spigot fit on the plane x -0.795, which thermal-6, -7 and -9 all name as where they land their glycol loop and which this file names as where its spigot ends stay, so it is the one pair on the car both halves of wrote down. Closing it from this side either opens a gap in a coolant joint or edits a module this generation does not open, and neither is worth a clean number.',
-        'Loss of the cold loop still throttles all three lanes at once. The shed state is now one reduced-rate lane plus the collision checker rather than a full lane, which is why the flank fin banks are half the height Gen 4 needed and where the module\'s kilogram comes from: 2 banks of 13 fins 34 mm tall become 2 of 9 at 17, which is 6.63e-4 m3 of aluminium against 2.30e-4, or 1.17 kg, plus 0.05 kg off the end caps, less 0.2 kg of hold-up capacitors for the reserve lane. The cold plate itself does NOT shrink, because a cold plate is sized by the peak and the peak is held at 640 W. It is also why the stack\'s unhurried stop is now made on a checker rather than on a primary.',
+        'Loss of the cold loop still throttles all three lanes at once. The shed state is now one reduced-rate lane plus the collision checker rather than a full lane, which is why the flank fin banks are half the height Gen 4 needed and where the module\'s kilogram comes from: 2 banks of 13 fins 34 mm tall become 2 of 9 at 17, which is 6.63e-4 m3 of aluminum against 2.30e-4, or 1.17 kg, plus 0.05 kg off the end caps, less 0.2 kg of hold-up capacitors for the reserve lane. The cold plate itself does NOT shrink, because a cold plate is sized by the peak and the peak is held at 640 W. It is also why the stack\'s unhurried stop is now made on a checker rather than on a primary.',
       ],
       explode: [0, -0.75, 0],
     },
@@ -159,10 +159,10 @@ export const SYSTEM = {
         ['Range resolution', '4 cm, floor 0.15 m'],
         ['Duty', 'Full rate in every lane state, 42 W total'],
       ],
-      how: 'Nothing in the sensing argument moves this generation. Five imaging radars, elevation at every corner, a 4 GHz chirp that resolves range to 4 cm and owns the last 150 mm that Gen 1 spent twelve ultrasonic transducers on. What moves is where two pairs of them are bolted. Swept against body-9, Gen 4\'s front corner units at (2.20, 0.50, 0.55) are inside the crash rail: 172 triangle pairs cross to 28.66 mm of plane-straddle depth and the two surfaces read 0.02 mm apart, which is what a separation reads when the surfaces are through each other rather than beside each other. The rear pair is 152 pairs and 26.00 mm inside the rear casting. Both are drawn inside the structure they are supposed to hide behind. Measured on the built body, the pockets that are actually empty are centred on (2.16, 0.44, 0.58) and (-2.15, 0.50, 0.66), so the front pair drops 60 mm and comes 30 mm outboard and the rear pair goes 110 mm outboard, which is where a corner radar wants to be anyway. One method over both rungs, true surface separation: the front corner unit goes from 0.02 mm and 28.7 mm inside the crash rail to 38.59 mm clear of it, and the rear pair from 0.03 mm and 26.0 mm inside the rear casting to 37.66 mm clear. The one radar figure that did not improve is the FRONT unit, and the feature that owns it is worth naming exactly rather than approximately: it is the HARNESS CONNECTOR on the back face, whose boot has sat 0.41 mm off the crash rail since Gen 4 at (2.268, 0.503, 0.057) and still does. The fin bank behind the same unit reads 1.00 mm on the same sweep, so a sentence that hangs the module\'s tightest figure on the fin bank names the wrong feature by 0.6 mm. Both are carried, not created, and the 0.41 is the tightest thing in this module.\n\nThe radars are the largest single item in the sensor draw at 42 W of the 79 and that draw is worth stating even though no rung of this ladder books it. Bottom up: 18 W for the 768-channel front cascade, 24 W for four 192-channel corners, 8 W for five 12 MP imagers, 4.5 W for the thermal core and its window heater, 20 W for two flash lidars, 1.5 W for the driver monitor and 3 W for two receivers and three IMUs. About 79 W, none of it inside the 380 W compute figure and none of it inside the 559 W the model carries, because the auxiliary term was never decomposed far enough to have a place for it.',
+      how: 'Nothing in the sensing argument moves this generation. Five imaging radars, elevation at every corner, a 4 GHz chirp that resolves range to 4 cm and owns the last 150 mm that Gen 1 spent twelve ultrasonic transducers on. What moves is where two pairs of them are bolted. Swept against body-9, Gen 4\'s front corner units at (2.20, 0.50, 0.55) are inside the crash rail: 172 triangle pairs cross to 28.66 mm of plane-straddle depth and the two surfaces read 0.02 mm apart, which is what a separation reads when the surfaces are through each other rather than beside each other. The rear pair is 152 pairs and 26.00 mm inside the rear casting. Both are drawn inside the structure they are supposed to hide behind. Measured on the built body, the pockets that are actually empty are centered on (2.16, 0.44, 0.58) and (-2.15, 0.50, 0.66), so the front pair drops 60 mm and comes 30 mm outboard and the rear pair goes 110 mm outboard, which is where a corner radar wants to be anyway. One method over both rungs, true surface separation: the front corner unit goes from 0.02 mm and 28.7 mm inside the crash rail to 38.59 mm clear of it, and the rear pair from 0.03 mm and 26.0 mm inside the rear casting to 37.66 mm clear. The one radar figure that did not improve is the FRONT unit, and the feature that owns it is worth naming exactly rather than approximately: it is the HARNESS CONNECTOR on the back face, whose boot has sat 0.41 mm off the crash rail since Gen 4 at (2.268, 0.503, 0.057) and still does. The fin bank behind the same unit reads 1.00 mm on the same sweep, so a sentence that hangs the module\'s tightest figure on the fin bank names the wrong feature by 0.6 mm. Both are carried, not created, and the 0.41 is the tightest thing in this module.\n\nThe radars are the largest single item in the sensor draw at 42 W of the 79 and that draw is worth stating even though no rung of this ladder books it. Bottom up: 18 W for the 768-channel front cascade, 24 W for four 192-channel corners, 8 W for five 12 MP imagers, 4.5 W for the thermal core and its window heater, 20 W for two flash lidars, 1.5 W for the driver monitor and 3 W for two receivers and three IMUs. About 79 W, none of it inside the 380 W compute figure and none of it inside the 559 W the model carries, because the auxiliary term was never decomposed far enough to have a place for it.',
       why: 'The radar case is unchanged and it is still the strongest sensing argument on the car: it is the only modality that measures closing speed rather than computing it, and it does not care about weather or light. What Gen 10 adds is that the corner units are now the FULL-RATE half of the asymmetric architecture. Radar frames are cheap to produce and cheap to consume, so both checkers ingest them at full rate even in cruise while camera pixels are the thing being rationed, and that is why the periphery of a foveated frame still has a sensor watching it.',
       fail: [
-        'Mutual interference climbs with fleet penetration and imaging radars chirp across more of the band; randomised chirp timing keeps collisions rare and brief, carried from Gen 1.',
+        'Mutual interference climbs with fleet penetration and imaging radars chirp across more of the band; randomized chirp timing keeps collisions rare and brief, carried from Gen 1.',
         'The radar-soft obstacle is now load bearing rather than incidental. A dry hedge or a thin plastic bollard gives a weak echo, and in the foveated periphery it is also being watched at a quarter of the camera resolution, so the two weaknesses line up. The escalation trigger includes any low-confidence periphery track for exactly this reason.',
         'Multipath ghosts come with plausible elevation: a guardrail can mirror a real car into an empty lane, and track-level fusion kills any ghost no camera confirms.',
       ],
@@ -180,11 +180,11 @@ export const SYSTEM = {
         ['Primary ingest', 'Foveated: full rate on the ROI, quarter elsewhere'],
         ['Checker ingest', 'Quarter rate, whole field'],
       ],
-      how: 'The imagers are Gen 4\'s and the argument for them is Gen 4\'s: a 12 MP wide whose centre crop reproduces an old 50 degree main in software, a telephoto that resolves a vehicle at 300 m, B-pillar units at 160 degrees that inherited the deleted fender repeaters, a rear camera, and a long-wave thermal imager in the nose that detects a pedestrian at 200 m in zero lux and is structurally immune to low sun. What is new is the read-out contract. The primary lane ingests a foveated frame: full resolution over a region of interest chosen from radar occupancy, the previous tick\'s motion energy and the map, and quarter resolution everywhere else. That is 0.3625 of the pixel rate, which is 23.2 W of NPU backbone and 5.0 W of ISP a lane, and it is the third mechanism in the compute ledger.\n\nThe geometry changed in two places, both because a sweep against body-9 said so. The shared header casting carrying the forward wedge and the driver monitor is 20 mm lower, HDR.pos going from autonomy-4.js\'s y 1.310 to 1.290: at Gen 4 the wedge reaches y 1.3283 through a canopy whose surface at that station measures y 1.3220, so it stood 6 mm outside the glass it is supposed to look through. On the new origin the wedge tops out at y 1.3083, the same 20 mm down, and the nearest canopy surface is 7.74 mm away, measured SURFACE to SURFACE on the built meshes rather than vertex to triangle. The thermal imager came back 6 mm for the same reason: its germanium window was 1.6 mm through the nose skin, and the same sweep now reads 3.30 mm of clear air.',
+      how: 'The imagers are Gen 4\'s and the argument for them is Gen 4\'s: a 12 MP wide whose center crop reproduces an old 50 degree main in software, a telephoto that resolves a vehicle at 300 m, B-pillar units at 160 degrees that inherited the deleted fender repeaters, a rear camera, and a long-wave thermal imager in the nose that detects a pedestrian at 200 m in zero lux and is structurally immune to low sun. What is new is the read-out contract. The primary lane ingests a foveated frame: full resolution over a region of interest chosen from radar occupancy, the previous tick\'s motion energy and the map, and quarter resolution everywhere else. That is 0.3625 of the pixel rate, which is 23.2 W of NPU backbone and 5.0 W of ISP a lane, and it is the third mechanism in the compute ledger.\n\nThe geometry changed in two places, both because a sweep against body-9 said so. The shared header casting carrying the forward wedge and the driver monitor is 20 mm lower, HDR.pos going from autonomy-4.js\'s y 1.310 to 1.290: at Gen 4 the wedge reaches y 1.3283 through a canopy whose surface at that station measures y 1.3220, so it stood 6 mm outside the glass it is supposed to look through. On the new origin the wedge tops out at y 1.3083, the same 20 mm down, and the nearest canopy surface is 7.74 mm away, measured SURFACE to SURFACE on the built meshes rather than vertex to triangle. The thermal imager came back 6 mm for the same reason: its germanium window was 1.6 mm through the nose skin, and the same sweep now reads 3.30 mm of clear air.',
       why: 'Consolidation against redundancy was Gen 4\'s trade and Gen 10 sharpens the second half of it. Three deleted cameras are three fewer overlapping fields for catching a liar, and the answer was cross-modality overlap. Foveation looks like it walks that back, because the periphery is now read at a quarter of the pixels. It does not, and the reason is which sensor owns which job: the periphery is covered by imaging radar at full rate and by lidar occupancy inside 140 m, and the fovea is the only place where READING is required, which is the one thing no other modality can do. Spending the pixel budget where the text and the light state are, and the photon budget where the geometry is, is the same argument Gen 1 made for keeping cameras at all.',
       fail: [
         'A radar-soft object in the foveated periphery is detected one tick later and at roughly half the range it would have been at full resolution. That is a real capability cost of the compute cut and it is the reason the escalation trigger is generous rather than tight.',
-        'A raindrop on a flank lens now has fewer neighbouring fields to vote it down; the stack leans on corner radar corroboration and declares the sector degraded instead of guessing.',
+        'A raindrop on a flank lens now has fewer neighboring fields to vote it down; the stack leans on corner radar corroboration and declares the sector degraded instead of guessing.',
         'Thermal contrast is worst at midday in summer, exactly when visible cameras are strongest; the two failure envelopes barely overlap, which is the point, but the fusion weights must track ambient temperature honestly.',
       ],
       explode: [0.2, 0.4, 0],
@@ -206,7 +206,7 @@ export const SYSTEM = {
       why: 'Two pucks replace one roof pod at less mass and buy overlapping fields across a 0.6 m baseline, so one blinded window degrades the picture instead of deleting it. Gen 10 adds a second reason to keep them: an architecture that rations camera pixels needs one modality that measures geometry directly and cheaply, or the rationing quietly becomes a coverage cut. Lidar occupancy is that modality, and its cost is in photons rather than in TOPS.',
       fail: [
         'Fog and heavy snow return first-surface echoes; the SPAD histogram takes the last return, but past a density threshold range collapses honestly and the stack knows it.',
-        'Retroreflective signs bloom hard on a SPAD array, saturating neighbouring pixels for a frame; bloom masks are calibrated per unit.',
+        'Retroreflective signs bloom hard on a SPAD array, saturating neighboring pixels for a frame; bloom masks are calibrated per unit.',
         'Both pucks sit behind one band, so packed snow can blind the pair together; the shared heater and a blockage monitor are the mitigation, and one failure domain for two sensors is the honest cost of embedding.',
       ],
       explode: [0.5, 0.15, 0],
@@ -223,8 +223,8 @@ export const SYSTEM = {
         ['Handover budget', '10 s, own stop armed throughout'],
         ['Mounting', 'Shared header casting, 221 mm arm'],
       ],
-      how: 'A small IR camera on the shared header rail floods the driver\'s face with invisible 940 nm light and reads the corneal glint against the pupil centre, giving a gaze vector good to about 2 degrees plus eyelid aperture, blink cadence and head pose. Processing happens on the camera and only states leave it; no video crosses the ring. It shares one cast rail with the forward camera wedge, and that rail dropped 20 mm this generation to get the wedge out of body-9\'s canopy, so the pod moved down with it. Swept off the built mesh the pod now sits at (0.4127, 1.2375, -0.3020) with its optical axis 17.2 degrees below horizontal, unchanged, because a translation does not rotate anything.\n\nThe reason this sensor is exempt from every duty argument in this module is worth stating plainly. Escalation triggers are computed from the scene, and a handover request is the one event where the scene is not the thing that changed. So the driver monitor runs at 60 fps in every lane state including cruise, its states are voted like any other input, and a monitoring dropout is itself an escalation trigger that wakes lane C.',
-      why: 'Monitoring is the least glamorous sensor on the car and the one the L3 regulations actually mandate, because every alternative amounts to pretending the human is a component with a datasheet. The gap between eyes-on and mind-on is the residual risk no camera closes, and the design treats the handover as a favour requested, never a dependency. Gen 10 makes that structural: the minimal-risk stop stays armed on the primary through every transfer, and now on a checker as well.',
+      how: 'A small IR camera on the shared header rail floods the driver\'s face with invisible 940 nm light and reads the corneal glint against the pupil center, giving a gaze vector good to about 2 degrees plus eyelid aperture, blink cadence and head pose. Processing happens on the camera and only states leave it; no video crosses the ring. It shares one cast rail with the forward camera wedge, and that rail dropped 20 mm this generation to get the wedge out of body-9\'s canopy, so the pod moved down with it. Swept off the built mesh the pod now sits at (0.4127, 1.2375, -0.3020) with its optical axis 17.2 degrees below horizontal, unchanged, because a translation does not rotate anything.\n\nThe reason this sensor is exempt from every duty argument in this module is worth stating plainly. Escalation triggers are computed from the scene, and a handover request is the one event where the scene is not the thing that changed. So the driver monitor runs at 60 fps in every lane state including cruise, its states are voted like any other input, and a monitoring dropout is itself an escalation trigger that wakes lane C.',
+      why: 'Monitoring is the least glamorous sensor on the car and the one the L3 regulations actually mandate, because every alternative amounts to pretending the human is a component with a datasheet. The gap between eyes-on and mind-on is the residual risk no camera closes, and the design treats the handover as a favor requested, never a dependency. Gen 10 makes that structural: the minimal-risk stop stays armed on the primary through every transfer, and now on a checker as well.',
       fail: [
         'Gaze is not attention: eyes on the road with the mind elsewhere reads as fully compliant, which is exactly why the fallback is the car\'s own stop and not the handover.',
         'Direct low sun through the glass can saturate the IR image for seconds; the bandpass filter narrows the window and dropouts are flagged as monitoring lost, not as driver attentive.',
@@ -241,12 +241,12 @@ export const SYSTEM = {
         ['Antennas', 'Roof pair, 0.650 m baseline, 10.4 mm proud'],
         ['Heading', '0.3 degrees, standing or moving'],
         ['IMUs', '3x MEMS, one per compute lane'],
-        ['Dead reckoning', '0.25% of distance travelled'],
+        ['Dead reckoning', '0.25% of distance traveled'],
       ],
-      how: 'Two dual-band receivers hang on two antennas 0.650 m apart, and the carrier-phase difference across that baseline yields heading to 0.3 degrees while the car is parked. Three MEMS IMUs mount one per compute lane, which makes pose votable by the same machinery as everything else. The pose filter is the one consumer that does NOT change with lane state: a lane in retention keeps its IMU powered and integrating, because a gyro bias history is worth nothing if it has a 60 ms hole in it every time the car enters a motorway.\n\nTwo placement defects closed, both measured rather than argued. design/area-rezero.md logs Gen 4\'s antennas reaching y 1.429 through a roof that closes at 1.368, 61 mm of hardware standing in open air and 0.003 m2 of shadow that is not charged as drag. Ray-swept straight down onto body-9\'s built canopy, the roof surface is y 1.3624 at x 0.25 and y 1.3676 at x -0.40, and both stations sit on the flat between the crown and the windscreen break rather than on the steep aft fall where a flat 50 mm foot buries its far edge. Each foot is seated on the highest canopy point under its own footprint, so the bond pad measures 1.20 mm at its thinnest, surface to surface, and the radomes reach y 1.3728 and y 1.3780, standing 10.4 mm proud of the glass they are bonded to against Gen 4\'s 61 mm of open air. The coax leaves each foot horizontally and runs INBOARD along the canopy to a bonded grommet rather than piercing it, so nothing here penetrates the body; the direction is measured rather than chosen, because interior-6\'s canopy liner sweeps down through roof-height hardware between x -0.56 and -0.64 and a run aft crossed it over 48 triangle pairs. And the three IMUs moved off the plate at x -0.740 onto the lane boards at x -0.545: Gen 4 put them where interior-6\'s rear bench has a centreline pan that the swept surface passes straight through, 3.2 mm over 40 triangle pairs, and the same sweep now reads 31.90 mm.',
+      how: 'Two dual-band receivers hang on two antennas 0.650 m apart, and the carrier-phase difference across that baseline yields heading to 0.3 degrees while the car is parked. Three MEMS IMUs mount one per compute lane, which makes pose votable by the same machinery as everything else. The pose filter is the one consumer that does NOT change with lane state: a lane in retention keeps its IMU powered and integrating, because a gyro bias history is worth nothing if it has a 60 ms hole in it every time the car enters a highway.\n\nTwo placement defects closed, both measured rather than argued. design/area-rezero.md logs Gen 4\'s antennas reaching y 1.429 through a roof that closes at 1.368, 61 mm of hardware standing in open air and 0.003 m2 of shadow that is not charged as drag. Ray-swept straight down onto body-9\'s built canopy, the roof surface is y 1.3624 at x 0.25 and y 1.3676 at x -0.40, and both stations sit on the flat between the crown and the windshield break rather than on the steep aft fall where a flat 50 mm foot buries its far edge. Each foot is seated on the highest canopy point under its own footprint, so the bond pad measures 1.20 mm at its thinnest, surface to surface, and the radomes reach y 1.3728 and y 1.3780, standing 10.4 mm proud of the glass they are bonded to against Gen 4\'s 61 mm of open air. The coax leaves each foot horizontally and runs INBOARD along the canopy to a bonded grommet rather than piercing it, so nothing here penetrates the body; the direction is measured rather than chosen, because interior-6\'s canopy liner sweeps down through roof-height hardware between x -0.56 and -0.64 and a run aft crossed it over 48 triangle pairs. And the three IMUs moved off the plate at x -0.740 onto the lane boards at x -0.545: Gen 4 put them where interior-6\'s rear bench has a centerline pan that the swept surface passes straight through, 3.2 mm over 40 triangle pairs, and the same sweep now reads 31.90 mm.',
       why: 'The pose unit is still the hinge between relative perception and the absolute map, and still the only sensor an attacker can feed from 20,000 km away, so it remains a hint to be verified and never a truth to be obeyed. Redundancy sharpens that stance: a spoofer must bend two antennas and three independent inertial histories into one consistent lie, and consistency is precisely what the voter checks. Keeping the reserve lane\'s IMU awake while the rest of that lane sleeps is the same argument in miniature, that the cheap continuous thing is what makes the expensive intermittent thing trustworthy when it wakes.',
       fail: [
-        'Urban multipath off glass towers still gives confident fixes that are metres wrong, and both receivers can be wrong together since they share the sky; visual localisation wins every conflict.',
+        'Urban multipath off glass towers still gives confident fixes that are meters wrong, and both receivers can be wrong together since they share the sky; visual localization wins every conflict.',
         'Jamming takes both receivers at once because it takes the band, not the box; the response is demotion to inertial dead reckoning, not belief.',
         'With no fix, the three IMUs agree ever more precisely on a pose that is drifting; consensus is not accuracy, and the filter widens its stated uncertainty on schedule regardless.',
       ],
@@ -263,8 +263,8 @@ export const SYSTEM = {
         ['Heal time', 'Under 100 us after a cut'],
         ['Plan', 'x +/-1.16, |z| 0.470 and 0.482, y 0.388 to 0.445'],
       ],
-      how: 'Every sensor patches into its nearest of hv-4\'s four zonal controllers, and the controllers are joined by two 10 Gbit rings running opposite directions around the cabin floor. Each frame is multicast both ways, so a cut anywhere leaves every node reachable the long way round, and the rings heal in under 100 microseconds, well inside one 50 ms compute tick. The same connector that carries a sensor\'s data delivers its 48 V from the controller\'s solid-state fuse.\n\nTHE ROUTE IS THE WHOLE POINT OF THIS PART THIS GENERATION. HANDOFF.md ranks autonomy-4/ring as the part that crosses more module boundaries than anything else on the ladder, 18 modules and 54.21 mm deep, and on the Gen 9 preset it interpenetrates five other modules over 18 part pairs while putting 18 vertices inside the rear annulus that belongs to the drivetrain alone. Both numbers came from the same cause: a run its own panel described as the cabin floor perimeter was drawn at x +/-1.92 and |z| 0.66, which is 470 mm past the axles and out among the fairings, castings, knuckles, discs and hub bearings. The cabin floor is between the axles. Re-swept against every part of all eight partners rather than against a box drawn round a guess, the corridor that is actually empty is |z| 0.470 to 0.482 at y 0.388, lifting to y 0.445 across the rear where hv-4\'s rear motor cable crosses the centreline. The loops now run x -1.16 to +1.16 on that line, and against the same eight partners measured with the same predicate the count is **0 penetrating part pairs and 0 annulus vertices**. Four gland nodes carry the loops out to hv-4\'s zonal controllers. They stand off rather than land, and the reason is measured: the controller\'s inboard wall is chamfered, running |z| 0.5385 at y 0.380 to 0.5920 at y 0.430, so a flat face pressed against it would float at the bottom or bury itself at the top. The node sits 5.13 mm off it with four drops bridging the gap. The tightest thing anywhere on the route is **3.45 mm to hv-4\'s front HV run at (1.116, 0.397, 0.423)**, where the loops\' forward corner radius turns inboard past the zonal controller, and the next three are 5.13 mm to hv-4/zonal, 6.12 to hv-4/buffer and 9.51 to wheels-9/master-unit. Every one of those is true surface separation, triangle to triangle, over the whole route against every part of all eight partners. An earlier draft of this panel published 3.53 mm to interior-6\'s rear bench pan; that pan measures **9.85 mm** on this sweep, so the earlier figure named the wrong partner AND the wrong distance, which is what a clearance measured inside a box drawn around a guess does. The number quoted is the one from the sweep that covers the route.',
-      why: 'A star network has a centre and a centre is a single point; a ring has none, which is the topology the fail-operational argument demands of the wiring and not just of the silicon. The re-route is not a tidying pass, it is that argument taken seriously: a data ring whose two loops are threaded through the rear suspension, the rear motor and both front brake assemblies has no failure independence at all, whatever the topology diagram says. Bringing it inside the cabin floor is what makes the counter-rotating claim mean something.',
+      how: 'Every sensor patches into its nearest of hv-4\'s four zonal controllers, and the controllers are joined by two 10 Gbit rings running opposite directions around the cabin floor. Each frame is multicast both ways, so a cut anywhere leaves every node reachable the long way round, and the rings heal in under 100 microseconds, well inside one 50 ms compute tick. The same connector that carries a sensor\'s data delivers its 48 V from the controller\'s solid-state fuse.\n\nTHE ROUTE IS THE WHOLE POINT OF THIS PART THIS GENERATION. HANDOFF.md ranks autonomy-4/ring as the part that crosses more module boundaries than anything else on the ladder, 18 modules and 54.21 mm deep, and on the Gen 9 preset it interpenetrates five other modules over 18 part pairs while putting 18 vertices inside the rear annulus that belongs to the drivetrain alone. Both numbers came from the same cause: a run its own panel described as the cabin floor perimeter was drawn at x +/-1.92 and |z| 0.66, which is 470 mm past the axles and out among the fairings, castings, knuckles, discs and hub bearings. The cabin floor is between the axles. Re-swept against every part of all eight partners rather than against a box drawn round a guess, the corridor that is actually empty is |z| 0.470 to 0.482 at y 0.388, lifting to y 0.445 across the rear where hv-4\'s rear motor cable crosses the centerline. The loops now run x -1.16 to +1.16 on that line, and against the same eight partners measured with the same predicate the count is **0 penetrating part pairs and 0 annulus vertices**. Four gland nodes carry the loops out to hv-4\'s zonal controllers. They stand off rather than land, and the reason is measured: the controller\'s inboard wall is chamfered, running |z| 0.5385 at y 0.380 to 0.5920 at y 0.430, so a flat face pressed against it would float at the bottom or bury itself at the top. The node sits 5.13 mm off it with four drops bridging the gap. The tightest thing anywhere on the route is **3.45 mm to hv-4\'s front HV run at (1.116, 0.397, 0.423)**, where the loops\' forward corner radius turns inboard past the zonal controller, and the next three are 5.13 mm to hv-4/zonal, 6.12 to hv-4/buffer and 9.51 to wheels-9/master-unit. Every one of those is true surface separation, triangle to triangle, over the whole route against every part of all eight partners. An earlier draft of this panel published 3.53 mm to interior-6\'s rear bench pan; that pan measures **9.85 mm** on this sweep, so the earlier figure named the wrong partner AND the wrong distance, which is what a clearance measured inside a box drawn around a guess does. The number quoted is the one from the sweep that covers the route.',
+      why: 'A star network has a center and a center is a single point; a ring has none, which is the topology the fail-operational argument demands of the wiring and not just of the silicon. The re-route is not a tidying pass, it is that argument taken seriously: a data ring whose two loops are threaded through the rear suspension, the rear motor and both front brake assemblies has no failure independence at all, whatever the topology diagram says. Bringing it inside the cabin floor is what makes the counter-rotating claim mean something.',
       fail: [
         'Both rings still run the same perimeter, 12 mm apart, so a hard corner intrusion severs them together and healing only reroutes the surviving arcs. The corridor measures 3.45 mm of true surface separation at its tightest point, to hv-4\'s front HV run, and there is no second corridor at this height on this car, so genuinely separated routing is a body-and-interior decision and not a cable one. It is not claimed here.',
         '10 Gbit on a single pair beside 48 V switching hardware is an EMC knife fight; error bursts under inverter transients are absorbed by forward error correction, and sustained degradation drops the link rate with the stack shedding camera resolution honestly.',
@@ -295,7 +295,7 @@ export const SYSTEM = {
    so every authored feature is still its own mesh, is 748 meshes and 33,464
    triangles. Every triangle centroid is a sample point, lifted 10 microns off
    its own face, and 42 directions over a Fibonacci sphere leave each of them
-   and run one metre against every other mesh in the module. EVERY MESH HAS AN
+   and run one meter against every other mesh in the module. EVERY MESH HAS AN
    ESCAPING RAY. Nothing here is sealed inside anything else.
 
    THE SAMPLING IS THE WHOLE TEST AND IT IS NOT FREE, which is why it is every
@@ -364,8 +364,8 @@ function bezel(t, h, d, rim, c, mat) {
    the front element itself.
 
    Two material choices here are draw-call decisions and they are stated
-   rather than buried. The retaining ring is the barrel's own black anodised
-   alloy rather than bright aluminium, which is what a real one is and which
+   rather than buried. The retaining ring is the barrel's own black anodized
+   alloy rather than bright aluminum, which is what a real one is and which
    also keeps it inside the barrel's merge bucket. And `elMat` exists because
    an IR optic is NOT clear: a 940 nm emitter or a bandpass-filtered IR
    imager reads black to the eye, so those elements pass M.sensor and merge,
@@ -382,7 +382,7 @@ function lensBarrel(r, len, seg = 12, elMat = M.glass) {
   return g;
 }
 
-/* A flat annulus with its axis along +X, centred on the local origin. A
+/* A flat annulus with its axis along +X, centered on the local origin. A
    bezel and a heater trace are rings, and a solid disc in their place hides
    the aperture they exist to frame. 160 triangles at 20 segments. */
 function annulus(rIn, rOut, t, mat, seg = 20) {
@@ -434,7 +434,7 @@ function camUnit(wz, hy, dx, lensR = 0.008, frontX = null) {
 }
 
 /* Imaging radar facing +x: die-cast box, finned back for the transmit chain,
-   a moulded radome, a sealing bezel, two bolted ears and one sealed tail. */
+   a molded radome, a sealing bezel, two bolted ears and one sealed tail. */
 function radarUnit(wz, hy, dx, frontX, fins = 7) {
   const g = new THREE.Group();
   const backX = frontX - 0.007 - dx;
@@ -485,7 +485,7 @@ function radarUnit(wz, hy, dx, frontX, fins = 7) {
    Three things bound it: interior-6's rear bench pan inboard of |z| 0.49 over
    x -0.85 to -0.50, interior-6's front seat rails around x 0.22, and
    thermal-9's recovery core aft of x 1.00. The rear cross-car run lifts to
-   y 0.445 because hv-4's rear motor cable crosses the centreline at y 0.302
+   y 0.445 because hv-4's rear motor cable crosses the centerline at y 0.302
    to 0.446 in x -1.30 to -1.10.
 
    Both loops clear the annulus by construction rather than by luck: the band
@@ -598,10 +598,10 @@ function headerFrame() {
    1.3622 at 0.275, and 1.3678 at x -0.425 and 1.3674 at -0.375, so each
    50 mm foot is seated on 1.3626 and 1.3678 respectively. The two stations
    are 0.650 m apart, which is the baseline the panel publishes, and both sit
-   on the flat between the crown at x -0.45 and the windscreen break at
+   on the flat between the crown at x -0.45 and the windshield break at
    x 0.30 rather than on the steep aft fall. */
 const ROOF_SEAT = [
-  /* x, seat y, coax direction in x, roof rise per metre along that run */
+  /* x, seat y, coax direction in x, roof rise per meter along that run */
   [0.25, 1.3638, -1, 0.008],
   [-0.40, 1.3690, +1, -0.008],
 ];
@@ -654,36 +654,14 @@ export function build() {
   camWedge.add(wf);
   sys.add(camWedge);
 
-  /* wide-field B-pillar cameras, both sides; repeaters are deleted */
-  for (const s of [1, -1]) {
-    const bp = lib.part('cameras', [0, 0.2, 0.5 * s]);
-    const bcam = camUnit(0.036, 0.03, 0.024, 0.009, 0.022);
-    bcam.rotation.y = -1.1 * s;
-    bcam.position.set(0.1, 1.0, 0.9 * s);
-    bp.add(bcam);
-    /* Cast foot standing off the pillar flange behind the camera. Two side
-       plates rather than one pad on the axis, because the camera's own
-       harness tail leaves the back face on that axis, and the pads sit close
-       in at local z +/-0.010 because the camera is yawed 63 degrees and a pad
-       offset along its own z sweeps across the door instead of standing off
-       it. Measured on the built mesh the mount's most inboard point is
-       |z| 0.8868, 71.49 mm of true surface separation from body-9's door
-       skin. Say which object that is, because it is not the whole assembly:
-       the camera's own harness tail boot swings further inboard than the
-       mount it stands beside, to |z| 0.8736 and 62.59 mm, and that is the
-       figure the corner is actually held to. Both off one sweep. */
-    const foot = new THREE.Group();
-    for (const fz of [1, -1]) {
-      const pad = lib.cbox(0.006, 0.020, 0.006, 0.0009, M.castAlu);
-      pad.position.set(-0.0140, 0, fz * 0.0100);
-      foot.add(pad);
-      foot.add(screw([-0.017, 0, fz * 0.0100], [-1, 0, 0], 0.0024, M.steel));
-    }
-    foot.rotation.y = -1.1 * s;
-    foot.position.set(0.1, 1.0, 0.9 * s);
-    bp.add(foot);
-    sys.add(bp);
-  }
+  /* THE B-PILLAR SURROUND POD IS THE BODY'S NOW. A module builds once and
+     that build is shared by every preset it appears in, so an absolute
+     |z| 0.900 had to serve every body this suite rides, and measured it stood
+     proud of some door skins and floated clear of others. The body is the
+     only module that knows where its own flank is. It draws the pod, seated
+     on its own halfWidth and flush with its own paint; this module keeps the
+     camera, the suite and the argument. See body-11, which worked this out
+     for itself first. */
 
   /* rear camera above the plate recess */
   const camRear = lib.part('cameras', [-0.5, 0.25, 0]);
@@ -748,7 +726,7 @@ export function build() {
      beside those, 6.0 mm behind body-4's intake mouth and 14.0 mm behind the
      imager, do NOT carry: body-4 is not in this preset, and this module's own
      thermal imager came back 6 mm, so its casing now starts at x 2.324 and
-     the radome sits 8.0 mm behind it. The neighbour that actually binds this
+     the radome sits 8.0 mm behind it. The neighbor that actually binds this
      unit on body-9 is the crash rail, 0.41 mm off the connector boot.
 
      The four corner units are in ONE part group a side rather than four
@@ -861,7 +839,7 @@ export function build() {
      of it comes back as the reserve lane's hold-up capacitor bank.
 
      The three lanes are now built to be told apart, because that is the
-     whole architecture: lane A carries a tall vapour-chamber lid, four DRAM
+     whole architecture: lane A carries a tall vapor-chamber lid, four DRAM
      packages and a six-phase power stage; lane B carries a low lid, two DRAM
      packages, a three-phase stage and its own separate program store, which
      is the diverse stack; lane C carries a low lid, two DRAM, a two-phase
@@ -870,7 +848,7 @@ export function build() {
 
      Measured envelope: y 0.3895 to 0.4661. Do not quote a clearance to
      interior-6/rear-bench from the coordinate alone: the bench has a
-     centreline pan whose surface passes through (-0.740, 0.455, 0), which is
+     centerline pan whose surface passes through (-0.740, 0.455, 0), which is
      why the pose IMUs moved forward onto the lane boards at x -0.545, where
      the same sweep reads 31.90 mm. The two coolant spigot ends stay on
      x -0.795, which is the plane thermal-6, -7 and -9 all land their glycol
@@ -1083,7 +1061,7 @@ export function build() {
     }
   }
 
-  /* earth stud with its ring terminal: the chassis reference for three lanes
+  /* ground stud with its ring terminal: the chassis reference for three lanes
      that have to agree about what zero volts means */
   const stud = lib.cyl(0.0030, 0.0090, M.busbar, 8);
   stud.position.set(-0.7300, 0.4505, -0.140);
@@ -1134,7 +1112,7 @@ export function build() {
     df.add(screw([sx * 0.023, -0.0255, -0.2905], [sx, 0, 0], 0.0026, M.steel));
   }
 
-  /* the pod: moulded shell, parting line, framed aperture, lens barrel with
+  /* the pod: molded shell, parting line, framed aperture, lens barrel with
      a hood, and two IR emitters that are separate optics */
   const pod = new THREE.Group();
   pod.rotation.z = 0.40;
@@ -1221,7 +1199,7 @@ export function build() {
     dome.position.set(ax, seatY + 0.0030, 0);
     ant.add(dome);
     /* cast index lug on the foot, not a patch under the radome: the ceramic
-       patch is inside an opaque moulding and modelling it buys 44 triangles
+       patch is inside an opaque molding and modeling it buys 44 triangles
        of geometry nobody can ever see */
     const lug2 = lib.cbox(0.008, 0.0030, 0.014, 0.0008, M.alu);
     lug2.position.set(ax + 0.0275, seatY + 0.0015, 0);
@@ -1249,7 +1227,7 @@ export function build() {
 
   /* Three IMUs, one per compute lane, and now actually ON the lane they
      belong to. Gen 4 stood them on the plate at x -0.740, which is where
-     interior-6's rear bench has a centreline pan whose surface passes
+     interior-6's rear bench has a centerline pan whose surface passes
      through (-0.740, 0.455, 0), so the blocks were 3.2 mm inside it over 40
      triangle pairs. Each one now sits on its own board at x -0.545, in the
      clear span between the SoC lid at -0.579 and the first DRAM package at
@@ -1325,7 +1303,7 @@ export function build() {
         c.position.set(gx, gy, -0.0245);
         jb.add(c);
       }
-      /* two bolted feet under the box and a moulded status lens on top */
+      /* two bolted feet under the box and a molded status lens on top */
       for (const s of [1, -1]) {
         const foot = lib.cbox(0.012, 0.0035, 0.026, 0.0009, M.plasticLt);
         foot.position.set(s * 0.036, -0.0248, 0);

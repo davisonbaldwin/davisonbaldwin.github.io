@@ -4,7 +4,7 @@
    motor annulus), the rear cover grows heat-extraction vanes and becomes
    the motor's cooling fan, the rear drum shrinks to a park-and-rescue
    device living inside the motor ring bore, and the front corner carries
-   Gen 2 unchanged: tyres, carbon-hybrid front wheels, discs, calipers,
+   Gen 2 unchanged: tires, carbon-hybrid front wheels, discs, calipers,
    and the dry brake-by-wire unit.
 
    BINDING interface contract with drivetrain-3 (design/gen3.md):
@@ -35,7 +35,7 @@ export const SYSTEM = {
   blurb: 'Gen 1 built honest corners. Gen 2 cut their losses. Gen 3 dissolves them: the rear rim carries the motor rotor, the spinning cover is the motor’s cooling fan, and rear friction shrinks to a drum inside the ring. 90 kg against Gen 2’s 96, and a rear wheel that is now a drivetrain component.',
   parts: {
     tires: {
-      name: 'Tyres',
+      name: 'Tires',
       tagline: 'Gen 2’s casing carried unchanged, with a new job title: the motor’s first suspension.',
       mass: 33,
       count: 4,
@@ -47,12 +47,12 @@ export const SYSTEM = {
         ['Lateral limit', '~0.85 g, ESC-managed, unchanged'],
         ['Supply', 'Second source qualified in year two'],
       ],
-      how: 'The casing is Gen 2’s, untouched: 185/50 R21 at 3.4 bar, the contact patch spent long and narrow so braking keeps its length while rolling loss and frontal area give up their width. Nothing upstream of the tyre changed in Gen 3, so the tyre does not change either; installed Crr stays at 5.2 kg/t and the lateral limit stays near 0.85 g with stability control covering the margin. What did change is the economics of the size. Gen 2 shipped a one-supplier special and called it the i3 lesson. Two generations of volume later there is a second source, and the spare-availability failure mode Gen 2 disclosed is half retired.\n\nWhat changed underneath is the load case. Each rear corner now hangs about 28 kg of motor hardware on the unsprung side of its springs, a net gain of roughly 11 kg over Gen 2 once the deleted drum, spider, and halfshaft are counted, and the tyre is the first spring in that unsprung stack. A casing this stiff at 3.4 bar passes sharp inputs almost straight through, which Gen 2 paid for in ride and Gen 3 pays for twice, because on the far side of the rear wheel now sits a rotor holding a 1.0 mm air gap against its stator. The sidewall is, literally, the motor’s first suspension: its vertical rate sets how much of every pothole reaches the magnet ring, and the drivetrain-3 damper tune is built around that number. The 92 mm sidewall was chosen by Gen 2 for rolling loss; Gen 3 inherits it as an air-gap protection spec.',
-      why: 'Carrying a part is a decision, not an omission. The Gen 2 tyre was designed against the duty cycle this car actually lives, and the in-wheel rear axle raises the value of everything the casing already was: stiff, predictable, and consistent unit to unit, because a tyre that varies is now a motor mount that varies.',
+      how: 'The casing is Gen 2’s, untouched: 185/50 R21 at 3.4 bar, the contact patch spent long and narrow so braking keeps its length while rolling loss and frontal area give up their width. Nothing upstream of the tire changed in Gen 3, so the tire does not change either; installed Crr stays at 5.2 kg/t and the lateral limit stays near 0.85 g with stability control covering the margin. What did change is the economics of the size. Gen 2 shipped a one-supplier special and called it the i3 lesson. Two generations of volume later there is a second source, and the spare-availability failure mode Gen 2 disclosed is half retired.\n\nWhat changed underneath is the load case. Each rear corner now hangs about 28 kg of motor hardware on the unsprung side of its springs, a net gain of roughly 11 kg over Gen 2 once the deleted drum, spider, and halfshaft are counted, and the tire is the first spring in that unsprung stack. A casing this stiff at 3.4 bar passes sharp inputs almost straight through, which Gen 2 paid for in ride and Gen 3 pays for twice, because on the far side of the rear wheel now sits a rotor holding a 1.0 mm air gap against its stator. The sidewall is, literally, the motor’s first suspension: its vertical rate sets how much of every pothole reaches the magnet ring, and the drivetrain-3 damper tune is built around that number. The 92 mm sidewall was chosen by Gen 2 for rolling loss; Gen 3 inherits it as an air-gap protection spec.',
+      why: 'Carrying a part is a decision, not an omission. The Gen 2 tire was designed against the duty cycle this car actually lives, and the in-wheel rear axle raises the value of everything the casing already was: stiff, predictable, and consistent unit to unit, because a tire that varies is now a motor mount that varies.',
       fail: [
         'The ride bill compounds: Gen 2’s stiff casing plus Gen 3’s unsprung mass means expansion joints report with even more honesty, and the damper hydraulics answer only some of it.',
         'A rear deflation is a drivetrain event: the corner detects pressure loss and ramps torque out within a wheel revolution, because a flat lets the rim strike road through the casing, and the rim carries the rotor.',
-        'Per-wheel torque vectoring works the rear shoulders harder than any Gen 2 duty; tyre rotation moves from suggestion to schedule.',
+        'Per-wheel torque vectoring works the rear shoulders harder than any Gen 2 duty; tire rotation moves from suggestion to schedule.',
       ],
       explode: [0, 0, 0.85],
     },
@@ -68,7 +68,7 @@ export const SYSTEM = {
         ['Mass per wheel', '7.8 kg'],
         ['Field history', 'One full generation of bond-line fleet data'],
       ],
-      how: 'The construction is Gen 2’s argument executed and left alone: carbon does hoop tension and bending in the barrel, forged aluminium takes bolt clamp, bearing loads, and kerb strikes at the spider, and a glass ply keeps the carbon and the aluminium from becoming a battery in winter salt. The front corner above it kept the Gen 2 axial-flux drive unit, the second consecutive carry-over on that axle, and drivetrain-3 says why. So the wheel has no new job, no new loads, and no reason to be new.\n\nThe carry-over is also the risk ledger balancing itself. Gen 2 shipped this wheel with an open fatigue question on the bond line at 300,000 km, answered by belt-and-braces design and inspection intervals. A generation of fleet data has since walked that curve without a new failure mode surfacing, which is worth more than any redesign: the same part with more history is a better part. Meanwhile the tooling amortizes across a second generation, which is how a wheel that cost triple the forging premium in Gen 2 quietly becomes ordinary money in Gen 3.',
+      how: 'The construction is Gen 2’s argument executed and left alone: carbon does hoop tension and bending in the barrel, forged aluminum takes bolt clamp, bearing loads, and curb strikes at the spider, and a glass ply keeps the carbon and the aluminum from becoming a battery in winter salt. The front corner above it kept the Gen 2 axial-flux drive unit, the second consecutive carry-over on that axle, and drivetrain-3 says why. So the wheel has no new job, no new loads, and no reason to be new.\n\nThe carry-over is also the risk ledger balancing itself. Gen 2 shipped this wheel with an open fatigue question on the bond line at 300,000 km, answered by belt-and-suspenders design and inspection intervals. A generation of fleet data has since walked that curve without a new failure mode surfacing, which is worth more than any redesign: the same part with more history is a better part. Meanwhile the tooling amortizes across a second generation, which is how a wheel that cost triple the forging premium in Gen 2 quietly becomes ordinary money in Gen 3.',
       why: 'Gen 3 spends its entire risk budget at the rear axle, where the wheel became a motor part. An integration generation that also churned its proven parts would be a generation that learns nothing; the front wheel is carried precisely so the rear wheel can be radical.',
       fail: [
         'The bond line’s 300,000 km question is better bounded, not closed; adhesive fatigue data only ever accumulates, it never concludes.',
@@ -88,14 +88,14 @@ export const SYSTEM = {
         ['Motor annulus', 'r 0.155 to 0.235 m left void for the wheel motor'],
         ['Mass per wheel', '7.0 kg, lighter than the front despite being structural'],
         ['Runout at flange', '0.15 mm total, a bearing tolerance on a wheel'],
-        ['Kerb strike', 'SAE J175 13 degree; the sleeve yields before the air gap closes'],
+        ['Curb strike', 'SAE J175 13 degree; the sleeve yields before the air gap closes'],
       ],
-      how: 'Gen 2’s rear wheel was a barrel, a spider, and a hub joint. This wheel deletes the spider. The barrel extends inboard as a forged sleeve that wraps the motor annulus with 15 mm of radial clearance and ends in a machined flange face 0.72 m from centreline, where drivetrain-3’s rotor ring bolts on with twelve titanium fasteners. That flange is the wheel’s only connection to the car: torque runs rotor ring to flange to barrel to bead, and the Gen 2 chain of shaft, spline, hub face, and spider is gone. Deleting the spider is why the structural wheel is the lighter wheel, 7.0 kg against the front’s 7.8, while carrying loads the front never sees.\n\nThe bill is tolerance. A wheel used to be balanced to a few grams and trued to half a millimetre; this one carries a rotor running an air gap of well under a millimetre from its stator, so flange runout is held to 0.15 mm, the barrel is measured and serialized like a bearing race, and wheel balance becomes a motor smoothness spec, because an imbalance here is a rotating magnetic load the vectoring controller must fight at wheel frequency. The forged sleeve also manages the materials problem: CFRP and the steel-backed magnet ring grow differently with temperature, and the aluminium between them is sized to keep the bolted joint loaded across the whole thermal range.',
-      why: 'Gen 2’s rear corner held two structures doing one job: the wheel’s spider carried the rim to the hub, and the motor housing carried the rotor to the same hub, bolted centimetres apart. Merging them deletes about 0.8 kg per corner, shortens the torque path to almost nothing, and is a large part of why in-wheel drive finally pays. The cost is written on every service procedure: this wheel is a drivetrain component that happens to hold a tyre. The insurance file says it plainer: a kerbed Gen 2 rim was a wheel claim, priced like a wheel; the same kerb here writes off a serialized rotor carrier and books an air-gap inspection, and the premium carries the difference.',
+      how: 'Gen 2’s rear wheel was a barrel, a spider, and a hub joint. This wheel deletes the spider. The barrel extends inboard as a forged sleeve that wraps the motor annulus with 15 mm of radial clearance and ends in a machined flange face 0.72 m from centerline, where drivetrain-3’s rotor ring bolts on with twelve titanium fasteners. That flange is the wheel’s only connection to the car: torque runs rotor ring to flange to barrel to bead, and the Gen 2 chain of shaft, spline, hub face, and spider is gone. Deleting the spider is why the structural wheel is the lighter wheel, 7.0 kg against the front’s 7.8, while carrying loads the front never sees.\n\nThe bill is tolerance. A wheel used to be balanced to a few grams and trued to half a millimeter; this one carries a rotor running an air gap of well under a millimeter from its stator, so flange runout is held to 0.15 mm, the barrel is measured and serialized like a bearing race, and wheel balance becomes a motor smoothness spec, because an imbalance here is a rotating magnetic load the vectoring controller must fight at wheel frequency. The forged sleeve also manages the materials problem: CFRP and the steel-backed magnet ring grow differently with temperature, and the aluminum between them is sized to keep the bolted joint loaded across the whole thermal range.',
+      why: 'Gen 2’s rear corner held two structures doing one job: the wheel’s spider carried the rim to the hub, and the motor housing carried the rotor to the same hub, bolted centimeters apart. Merging them deletes about 0.8 kg per corner, shortens the torque path to almost nothing, and is a large part of why in-wheel drive finally pays. The cost is written on every service procedure: this wheel is a drivetrain component that happens to hold a tire. The insurance file says it plainer: a curbed Gen 2 rim was a wheel claim, priced like a wheel; the same curb here writes off a serialized rotor carrier and books an air-gap inspection, and the premium carries the difference.',
       fail: [
-        'A kerb strike is now a drivetrain event: a bent flange closes an air gap, so any impact triggers runout measurement and ultrasound before the corner drives again, and scrap is the common verdict. Carbon still does not bend and confess.',
-        'The flange bolts live under torque-vectoring reversals that a Gen 2 wheel bolt never saw; they are the fatigue item of the corner, torque-checked at every tyre change.',
-        'Tyre shops need the interlock: the rim comes off over a magnet ring that pulls on every steel tool near it, corner de-energized and drum applied. The procedure is printed, and the first shop to skip it will demonstrate why.',
+        'A curb strike is now a drivetrain event: a bent flange closes an air gap, so any impact triggers runout measurement and ultrasound before the corner drives again, and scrap is the common verdict. Carbon still does not bend and confess.',
+        'The flange bolts live under torque-vectoring reversals that a Gen 2 wheel bolt never saw; they are the fatigue item of the corner, torque-checked at every tire change.',
+        'Tire shops need the interlock: the rim comes off over a magnet ring that pulls on every steel tool near it, corner de-energized and drum applied. The procedure is printed, and the first shop to skip it will demonstrate why.',
       ],
       explode: [0, 0, 0.85],
     },
@@ -105,16 +105,16 @@ export const SYSTEM = {
       mass: 4,
       count: 4,
       specs: [
-        ['Rear', 'CFRP skin, twelve bonded aluminium vanes, 1.3 kg each'],
+        ['Rear', 'CFRP skin, twelve bonded aluminum vanes, 1.3 kg each'],
         ['Front', 'Gen 2 flush cover carried, 0.7 kg each'],
-        ['Rear airflow', 'Hub inlet to rim exit, ~110 m3/h at motorway speed'],
+        ['Rear airflow', 'Hub inlet to rim exit, ~110 m3/h at highway speed'],
         ['Cooling duty', '~450 W continuous per motor ring'],
         ['Drag', 'Cd -0.010 against an open wheel; Gen 2 flush was -0.012'],
       ],
-      how: 'Gen 1 identified the open wheel as a centrifugal pump and spent two generations sealing it. Gen 3 needs a pump again, because a motor now lives in the wheel, so it reopens exactly as much pumping as the motor needs and not a litre more. The rear cover takes air in at a hub inlet, flings it outward through twelve backward-swept aluminium vanes bonded to the inner skin, sweeps it across the drum and the motor sleeve, and exhausts it through the slot between cover rim and barrel edge. There is no fan motor, no bearing, no controller: the cover already spins at wheel speed, and wheel speed is when the motor makes heat.\n\nThe honest ledger: pumping air is drag by definition, the exact drag Gen 1 eliminated. The vaned face gives back 0.002 of the Gen 2 cover’s 0.012 Cd credit, roughly 80 W at 110 km/h, under 1 Wh/km, purchased so about 450 W of continuous heat per corner can leave a sealed corner. The stator’s liquid loop, which drivetrain-3 owns, does the heavy lifting; the cover handles the rotor and drum share the liquid cannot reach. The front covers are Gen 2’s flush discs carried unchanged, because there is no front motor and therefore no reason to spend the drag.',
+      how: 'Gen 1 identified the open wheel as a centrifugal pump and spent two generations sealing it. Gen 3 needs a pump again, because a motor now lives in the wheel, so it reopens exactly as much pumping as the motor needs and not a liter more. The rear cover takes air in at a hub inlet, flings it outward through twelve backward-swept aluminum vanes bonded to the inner skin, sweeps it across the drum and the motor sleeve, and exhausts it through the slot between cover rim and barrel edge. There is no fan motor, no bearing, no controller: the cover already spins at wheel speed, and wheel speed is when the motor makes heat.\n\nThe honest ledger: pumping air is drag by definition, the exact drag Gen 1 eliminated. The vaned face gives back 0.002 of the Gen 2 cover’s 0.012 Cd credit, roughly 80 W at 110 km/h, under 1 Wh/km, purchased so about 450 W of continuous heat per corner can leave a sealed corner. The stator’s liquid loop, which drivetrain-3 owns, does the heavy lifting; the cover handles the rotor and drum share the liquid cannot reach. The front covers are Gen 2’s flush discs carried unchanged, because there is no front motor and therefore no reason to spend the drag.',
       why: 'A dedicated cooling fan would be a part, a mass, a bearing, and a failure mode. The cover was already there, already spinning, already at the right speed at the right time. Making the part that sealed the wheel also cool the motor is the most Gen 3 sentence in this system: one part, two functions, the bill itemized in Cd.',
       fail: [
-        'A removed or kerb-cracked rear cover is no longer a 2% range story, it is a powertrain derate: the thermal model assumes the fan exists, notices when it does not, and caps the motor accordingly.',
+        'A removed or curb-cracked rear cover is no longer a 2% range story, it is a powertrain derate: the thermal model assumes the fan exists, notices when it does not, and caps the motor accordingly.',
         'Vanes foul with brake dust and winter grime, and pumping capacity decays invisibly until a mountain climb finds it. The service answer is a wash interval, and the honest prediction is that nobody follows it.',
         'Fan speed equals wheel speed, so the low-speed hill crawl that heats the motor most gets the least air; that regime leans entirely on the stator liquid loop, which drivetrain-3 discloses in its own ledger.',
       ],
@@ -153,10 +153,10 @@ export const SYSTEM = {
         ['Residual drag', '<0.5 Nm, and only two corners exist to drag'],
         ['Scope', 'The last hydraulic actuator remaining on the vehicle'],
       ],
-      how: 'The hardware is Gen 2’s: one forging machined into a fixed monobloc so hard-stop fluid volume becomes clamp force instead of bridge flex, rollback seals pulling the pads 0.1 mm clear on release, the body mounted at 9 o’clock behind the axle, out of the steering arc. Nothing in the Gen 3 front corner asked it to change, so it did not.\n\nIts context changed around it. The entire hydraulic system of the car now exists to serve these eight pistons: one pressure block, two lines, two calipers, and not a millilitre of fluid anywhere else. That concentration cuts both ways. Bleeding, seal service, and fluid life now touch exactly one subsystem at two corners, the cheapest hydraulic maintenance bill this platform has ever carried; and every certification argument about the dead-vehicle stop runs through this single component pair, which is why its design margin stayed Gen 2 sized while everything aft of it shrank.',
+      how: 'The hardware is Gen 2’s: one forging machined into a fixed monobloc so hard-stop fluid volume becomes clamp force instead of bridge flex, rollback seals pulling the pads 0.1 mm clear on release, the body mounted at 9 o’clock behind the axle, out of the steering arc. Nothing in the Gen 3 front corner asked it to change, so it did not.\n\nIts context changed around it. The entire hydraulic system of the car now exists to serve these eight pistons: one pressure block, two lines, two calipers, and not a milliliter of fluid anywhere else. That concentration cuts both ways. Bleeding, seal service, and fluid life now touch exactly one subsystem at two corners, the cheapest hydraulic maintenance bill this platform has ever carried; and every certification argument about the dead-vehicle stop runs through this single component pair, which is why its design margin stayed Gen 2 sized while everything aft of it shrank.',
       why: 'The last friction actuator that must deliver 36 kN after months of silence earns premium execution for the reason Gen 2 gave: it is the actuator for the only stop that matters. Being the last of its kind on the car only sharpens the argument.',
       fail: [
-        'Pads age by time and glazing rather than wear; the service interval is set by chemistry, not kilometres.',
+        'Pads age by time and glazing rather than wear; the service interval is set by chemistry, not kilometers.',
         'Fixed calipers still tolerate little runout, and a neglected juddering ring knocks pads back with no rear hydraulic reserve behind the mistake, same as Gen 2, with even less behind it.',
         'Two calipers means two single points: the case leans on the dual-circuit block and honest inspection, and inspection is the part owners skip.',
       ],
@@ -164,7 +164,7 @@ export const SYSTEM = {
     },
     drums: {
       name: 'Park-and-rescue drums',
-      tagline: 'The legal floor of friction braking, living inside the motor: park, hold, and the last metre of a dead car.',
+      tagline: 'The legal floor of friction braking, living inside the motor: park, hold, and the last meter of a dead car.',
       mass: 3,
       count: 2,
       specs: [
@@ -174,11 +174,11 @@ export const SYSTEM = {
         ['Mass', '1.5 kg per corner; Gen 2’s sealed drum was 4.5'],
         ['Housing', 'None of its own: shares the motor ring’s sealed volume'],
       ],
-      how: 'Gen 2’s drum was a service brake that also parked: it covered the low-speed blend handover where its motors got ragged near zero. The in-wheel rears delete that duty, because a direct-drive wheel motor holds clean torque to a standstill, no lash, no handover. What remains for rear friction is statute and worst case: hold the car on a grade, catch the last metre if commanded, and stop a car whose high-voltage system is entirely dead. That duty is measured in single-digit kilojoules, and 250 x 30 mm of drum answers it with margin.\n\nIntegration is where the other three kilograms went. The Gen 2 drum carried its own sealed aluminium housing; this one borrows its enclosure from the motor. The drum surface hangs on a drive ring off the rim flange, the shoes and gearmotor mount to the upright behind the stator, and the same seal that keeps road spray out of the windings keeps it out of the shoes. There is no separate drum housing anywhere in the corner: the friction brake lives in the motor’s bore like a tenant, and pays its rent in shoe dust that a trap liner has to collect.',
+      how: 'Gen 2’s drum was a service brake that also parked: it covered the low-speed blend handover where its motors got ragged near zero. The in-wheel rears delete that duty, because a direct-drive wheel motor holds clean torque to a standstill, no lash, no handover. What remains for rear friction is statute and worst case: hold the car on a grade, catch the last meter if commanded, and stop a car whose high-voltage system is entirely dead. That duty is measured in single-digit kilojoules, and 250 x 30 mm of drum answers it with margin.\n\nIntegration is where the other three kilograms went. The Gen 2 drum carried its own sealed aluminum housing; this one borrows its enclosure from the motor. The drum surface hangs on a drive ring off the rim flange, the shoes and gearmotor mount to the upright behind the stator, and the same seal that keeps road spray out of the windings keeps it out of the shoes. There is no separate drum housing anywhere in the corner: the friction brake lives in the motor’s bore like a tenant, and pays its rent in shoe dust that a trap liner has to collect.',
       why: 'The temptation was zero. Regen plus per-wheel motors can cover every braking scenario that involves a live vehicle, and deleting the drum would save three kilograms and a supplier. It stays because the law requires a car with every electron gone to hold and to stop, and the law is right. Gen 2 said the rear friction brake had become a parking device; Gen 3 finishes the sentence and sizes it as one. But it must not vanish.',
       fail: [
         'It is a rescue actuator, not a brake: two full applies from 20 km/h and it needs minutes to cool. Above walking pace it fades fast, by design and by disclosure.',
-        'It is the least inspectable friction device this platform has fitted: inside the motor, inside the wheel. Shoe condition is inferred from gearmotor current signatures, and the self-adjusting spindle that could jam in Gen 2 can still jam here, now behind more hardware.',
+        'It is the least inspectable friction device this platform has installed: inside the motor, inside the wheel. Shoe condition is inferred from gearmotor current signatures, and the self-adjusting spindle that could jam in Gen 2 can still jam here, now behind more hardware.',
         'Sharing the motor’s sealed volume means sharing its cleanliness spec: a worn shoe sheds into a space that also contains an air gap, and the dust trap liner is a service item with a real interval.',
       ],
       explode: [0, 0, 0.85],
@@ -199,7 +199,7 @@ export const SYSTEM = {
       fail: [
         'The arbitration line is the new single point: a disagreement between braking and vectoring is settled by a two-millisecond priority rule that has to be right every time, and it is tested more than any other line of code on the car.',
         'The independence case now includes another supplier’s inverter firmware; the longest lead-time item in Gen 2 got longer.',
-        'The 0.4 g fallback leans on motors that live at the wheels, in the crash zone; the drums underwrite the last metres, at walking pace, and the certification file says so in exactly those words.',
+        'The 0.4 g fallback leans on motors that live at the wheels, in the crash zone; the drums underwrite the last meters, at walking pace, and the certification file says so in exactly those words.',
       ],
       explode: [0.5, 0.35, 0],
     },
@@ -207,7 +207,7 @@ export const SYSTEM = {
 };
 
 /* ── Geometry ──
-   Corner-local frame matches both predecessors: origin at the wheel centre,
+   Corner-local frame matches both predecessors: origin at the wheel center,
    z along the axle, s = sign(world z) so +s is outboard. Front corners keep
    the Gen 2 staggered explode ladder; rear-corner part groups explode at
    [0, 0, s * 0.85] per the drivetrain-3 contract, so the rear corner
@@ -438,7 +438,7 @@ function drumBackPart(x, z) {
 }
 
 /* Front fixed calipers at 9 o'clock, behind the axle, clear of the
-   steering arc, riding above the axle centreline so the lower edge clears
+   steering arc, riding above the axle centerline so the lower edge clears
    the battery envelope top. Carried from Gen 2. Never rotates. */
 function caliperPart(x, z) {
   const s = Math.sign(z);
@@ -569,7 +569,7 @@ export function build() {
     const front = x > 0;
     const s = Math.sign(z);
 
-    /* Everything that rotates with the wheel, centred on its own origin. */
+    /* Everything that rotates with the wheel, centered on its own origin. */
     const spinGroup = new THREE.Group();
     spinGroup.position.set(x, P.wheelY, z);
     lib.spin(spinGroup, 'z', 30);

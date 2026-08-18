@@ -3,8 +3,9 @@
 import { assemble, buildVariant, SYSTEM_DEFS, VARIANTS, GENERATIONS } from './registry.js';
 import { createViewer } from './viewer.js';
 import { computeBudget, LOSS_NOTES } from './efficiency.js';
-import { compare, slotBaseName } from './compare.js';
+import { compare, slotBaseName, rung, moduleLabel } from './compare.js';
 import { energyFor } from './energy.js';
+import { STOPS, VIEWS, dwellMs } from './tour.js';
 
 const $ = (s) => document.querySelector(s);
 const el = (t, cls, html) => {
@@ -19,18 +20,30 @@ const el = (t, cls, html) => {
 const { root, systems, index, mass } = assemble();
 const byKey = Object.fromEntries(index.map((r) => [r.key, r]));
 
-const viewer = createViewer($('#gl'), (key) => (key ? openPanel(key) : closePanel()));
+/* A CLICK ON THE CAR TAKES THE WHEEL. This callback is the user's own pick and
+   nothing else: viewer.js calls it from pick() only, so the tour's own
+   viewer.select(null) between stops does not come through here. Autoplay used
+   to keep its timer through it, so a reader who stopped the tour to look at
+   the part it had just pointed at got yanked to the next stop mid-sentence,
+   and the tour's camera flight fought the panel they had just opened. Every
+   other manual gesture pauses; this is the one people actually make. */
+const viewer = createViewer($('#gl'), (key) => {
+  stopTourPlay();
+  return key ? openPanel(key) : closePanel();
+});
 viewer.addVehicle(root, Object.fromEntries(
-  Object.entries(systems).map(([id, rec]) => [id, { group: rec.group, dir: rec.def.explode }])
+  /* def travels with the group because the viewer reads SYSTEM.closures off
+     it: a lib.hinge tag says which geometry moves and the def says how */
+  Object.entries(systems).map(([id, rec]) => [id, { group: rec.group, dir: rec.def.explode, def: rec.def }])
 ));
 
 /* ── The palette, which was already here and was doing almost nothing ──
    Every module declares SYSTEM.color and the tree holds nine slot hues.
    Three lines in this file read them, all three to draw a thin bar beside a
    name. Handing the map to the viewer is what lets a selected part glow in
-   ITS system's colour instead of one global amber, and hexOf below is the
+   ITS system's color instead of one global amber, and hexOf below is the
    same value on the CSS side, so the bar in the rail, the tab on the panel,
-   the name under the pointer and the light on the car are one colour and
+   the name under the pointer and the light on the car are one color and
    not four coincidences.
    Keyed by system id and sent once, so a variant built lazily on a switch
    an hour from now is already keyed: the map does not care whether the
@@ -40,7 +53,7 @@ const hexOf = (def) => '#' + def.color.toString(16).padStart(6, '0');
 
 /* THE ACCENT FOLLOWS WHAT YOU ARE LOOKING AT. --sel falls back to the amber
    in css/style.css, so with nothing selected the interface is exactly as
-   monochrome as it was; the colour arrives when a system does and leaves
+   monochrome as it was; the color arrives when a system does and leaves
    with it. That is the whole restraint: a pop where the attention already
    is, not a painted dashboard. */
 const docEl = document.documentElement;
@@ -66,6 +79,15 @@ const VARIANT_CHOICE = Object.fromEntries(VARIANTS.map((v) => [v.slot, v.options
 /* the numbered ladder, excluding any side studies; buildRail reads this */
 const LADDER = GENERATIONS.filter((g) => g.id !== 'value');
 
+/* The readout's ladder strip, declared HERE and not beside the two functions
+   that own it, three hundred lines down. refreshStats runs at module scope to
+   fill the card, refreshStats calls refreshLadder, and refreshLadder reads
+   this: `let` is not hoisted, so leaving the declaration where it read best
+   threw "Cannot access ladBars before initialization" and the app booted to a
+   blank page. That is the third time this file has been bitten by exactly
+   this; see the notes on cmpOn and panelStep. */
+let ladBars = [];
+
 /* Search state, declared HERE and not down with the search code that owns it.
    refreshStats() runs at module scope to fill the readout and now quotes
    scale() in the stats strip's title, and `let` is not hoisted the way
@@ -90,9 +112,30 @@ const inactiveSys = () =>
   new Set(VARIANTS.flatMap((v) => v.options.filter((o) => o.sys !== VARIANT_CHOICE[v.slot]).map((o) => o.sys)));
 for (const id of inactiveSys()) viewer.setSystemVisible(id, false);
 
+/* THE RAIL KEEPS ONE ORDER FOR EVERY RUNG, and until this it did not.
+
+   SYSTEM_DEFS is in the order js/registry.js imports its modules, which is
+   roughly the order they were WRITTEN, so the rail was sorted by the history
+   of the project rather than by the car. Gen 1 through Gen 10 all happened to
+   read body, battery, drivetrain, thermal, hv, suspension, wheels, autonomy,
+   interior, because those modules were added early and in that order. Gen 11
+   read drivetrain, suspension, autonomy, interior, body, battery, wheels, hv,
+   thermal, because its seven new modules were appended to the bottom of the
+   import list and the two it carries were not.
+
+   So stepping onto the flagship rung reshuffled all nine rows and renumbered
+   them, and a reader who had learned that 01 is the body and 07 is the wheels
+   had to learn it again. The order is now the SLOT order every other surface
+   already uses: js/compare.js's SLOTS, the compare panel's nine rows, the
+   generation presets themselves. A rung changes what is in a row, never where
+   the row is. */
+const SLOT_IX = {};
+VARIANTS.forEach((v, i) => { for (const o of v.options) SLOT_IX[o.sys] = i; });
+
 const activeDefs = () => {
   const hide = inactiveSys();
-  return SYSTEM_DEFS.filter((d) => !hide.has(d.id));
+  return SYSTEM_DEFS.filter((d) => !hide.has(d.id))
+    .sort((a, b) => (SLOT_IX[a.id] ?? 99) - (SLOT_IX[b.id] ?? 99));
 };
 
 /* Applying a generation changes up to nine slots at once. Rebuilding the
@@ -101,7 +144,7 @@ const activeDefs = () => {
    are wanted, and it also made the number tweens start from the eighth
    intermediate configuration instead of the rung the user came from, so a
    Gen 1 to Gen 9 step animated 23 miles of a 1,258 mile change. Coalescing
-   is not an optimisation here, it is what makes the animation true. */
+   is not an optimization here, it is what makes the animation true. */
 let batching = 0, railDirty = false, statsDirty = false;
 function flushUI() {
   if (railDirty) { railDirty = false; renderRail(); }
@@ -111,8 +154,19 @@ function flushUI() {
      Gen 5 car left the faceplate reading "Gen 5" with both stepper arrows
      enabled, and pressing the forward arrow then jumped the whole car to
      Gen 1 because LADDER.findIndex returned -1 and LADDER[-1 + 1] is Gen 1.
-     Measured: 2,908 lb to 3,684 lb on one click of a button labelled next. */
+     Measured: 2,908 lb to 3,684 lb on one click of a button labeled next. */
   refreshGenCtl();
+  /* A section is a plane at a station on THIS car, so a car that changed
+     underneath it has moved the ends of the slider. Gen 1 is 4.86 m long and
+     Gen 11 is narrower than either of them by 0.5 m, so a cut left at a Gen 1
+     station can land outside a Gen 11 that no longer reaches it. */
+  if (cutOn) refreshCutRange();
+  /* a different car is a different set of measurements */
+  if (dimsOn) refreshDims();
+  /* and a different car opens differently: Gen 1's four doors on vertical
+     hinges are not Gen 11's two, and the band names whatever this body
+     actually declares */
+  if (openOn) drawOpen();
 }
 function batch(fn) {
   batching++;
@@ -121,6 +175,15 @@ function batch(fn) {
 }
 
 function setVariant(slot, sysId) {
+  /* Both arguments checked against the registry, because this is on
+     window.__ev and a script is what calls it with a name that does not
+     exist. An unknown sysId reached buildVariant, which read `.parts` off an
+     undefined definition and threw halfway through the swap: the old system
+     had already been hidden on the line above, so the car was left with a
+     hole in it and the slot pointing at a module that was never built. Bail
+     before anything is mutated rather than after. */
+  if (!Object.hasOwn(VARIANT_CHOICE, slot)) return;
+  if (!VARIANTS.some((v) => v.slot === slot && v.options.some((o) => o.sys === sysId))) return;
   if (VARIANT_CHOICE[slot] === sysId) return;
   const old = VARIANT_CHOICE[slot];
   VARIANT_CHOICE[slot] = sysId;
@@ -128,7 +191,7 @@ function setVariant(slot, sysId) {
   /* variants build lazily on first switch */
   if (!viewer.hasSystem(sysId)) {
     const built = buildVariant(sysId);
-    if (built) viewer.addSystem(built.def.id, built.group, built.def.explode);
+    if (built) viewer.addSystem(built.def.id, built.group, built.def.explode, built.def);
   }
   viewer.setSystemVisible(sysId, true);
   const sel = viewer.getSelected();
@@ -240,12 +303,27 @@ function refreshStats() {
       effRows.set(label, { row, fill, num });
     }
   }
+  let openLossNow = null;
   for (const [label, v] of budget.rows) {
     const r = effRows.get(label);
     r.fill.style.width = ((v / max) * 100).toFixed(1) + '%';
     tweenNum(r.num, v * U().per, (x) => x.toFixed(0));
     r.row.onclick = () => openLossPanel(label, v);
+    if (lossOpen === label) openLossNow = v;
   }
+  /* A LOSS PANEL HAS TO FOLLOW THE CAR IT DESCRIBES, and nothing was moving
+     it. applyGeneration only closes the panel when something was SELECTED,
+     and a loss panel is opened with no selection at all, so stepping the
+     generation under an open "Rolling" left a chip reading "this build" over
+     the previous rung's figure and a lever line pricing a car that was gone.
+     setVariant only closes on the selected part's own module and
+     refreshCompare only rebuilds a comparison, so nothing else reached it
+     either. This is the one place that already knows every term's CURRENT
+     value, so it is the place to re-render from: it covers the generation,
+     a single slot swap and the mi/km toggle at once, because all three come
+     through here. Re-rendered after the loop rather than inside it, so the
+     rebuild cannot re-enter the draw it is standing in. */
+  if (openLossNow != null) openLossPanel(lossOpen, openLossNow, true);
   /* print the end of the shared bar scale, so a short bar is a measurement
      against the whole ladder rather than a decoration */
   $('#effScale').textContent = (BAR_SCALE * U().per).toFixed(0);
@@ -261,7 +339,7 @@ function refreshStats() {
      expression serves both unit systems and the toggle needs nothing new.
      Measured over the ladder: 4.38, 5.73, 6.30, 6.52, 7.19, 7.66, 8.20,
      8.46, 8.81, 9.05, 10.22, which is the Wh/mi guard in tools/ladder.js
-     read forwards. That guard is NOT touched: it asserts Wh/mi falls rung
+     read forward. That guard is NOT touched: it asserts Wh/mi falls rung
      over rung and it is correct. This is presentation. */
   const whPer = budget.total * U().per;
   tweenNum($('#effRate'), 1000 / whPer, (v) => v.toFixed(2));
@@ -270,6 +348,7 @@ function refreshStats() {
   tweenNum($('#effRange'), budget.rangeKm * U().dist, (v) => Math.round(v).toLocaleString());
   $('#effRangeU').textContent = U().d;
   $('#effKwh').textContent = budget.kwh;
+  refreshLadder();
   refreshEnergy();
 }
 
@@ -285,7 +364,7 @@ function refreshStats() {
    comparison shows is the ladder: Gen 1 charges at 11 kW off an on-board AC
    charger and takes 8.6 hours to fill a pack that lasts 9.6 hours, so it
    spends nearly as long plugged in as moving. Gen 11 takes 36 minutes to
-   fill a pack that lasts 44.7 hours. Normalising the two rates would have
+   fill a pack that lasts 44.7 hours. Normalizing the two rates would have
    hidden exactly that, so they share one scale and the scale is printed.
 
    THE SCALE IS 1 SECOND TO 10 MINUTES, and it was 30 until Davis asked how
@@ -332,11 +411,27 @@ function stepEnergy(dt) {
 function drawEnergy() {
   if (!energy) return;
   const full = soc >= 1;
-  const mode = driveOn ? 'driving' : full ? 'holding' : energy.chargeKw ? 'charging' : 'parked';
+  /* EMPTY IS A STATE, the same way "holding" is. soc clamps at 0, so a car
+     driven to the bottom sat there reading "driving" with a bar at zero
+     forever: the one moment the simulation has an answer for was the one it
+     did not name, and the readout looked stalled rather than finished. Ahead
+     of the driveOn test, because at zero the car is not driving any more. */
+  const empty = driveOn && soc <= 0;
+  const mode = empty ? 'empty'
+    : driveOn ? 'driving' : full ? 'holding' : energy.chargeKw ? 'charging' : 'parked';
   $('#ergMode').textContent = mode;
   $('#ergMode').dataset.mode = mode;
   $('#ergFill').style.width = (soc * 100).toFixed(2) + '%';
   document.body.classList.toggle('driving', driveOn);
+  /* The charging color went on the body next to `driving` rather than staying
+     a sibling selector, because the sibling selector could never match:
+     #ergMode is inside .e-head and #ergFill is inside .e-soc, so the two are
+     cousins and `#ergMode[data-mode="charging"] ~ .e-soc` had no pair to
+     match anywhere in the document. Charging therefore drew in exactly the
+     same gray as driving, and the one state the pad animation exists to
+     announce was the one the bar did not show. */
+  document.body.classList.toggle('erg-charging', mode === 'charging');
+  document.body.classList.toggle('erg-empty', empty);
 
   const kwh = soc * energy.packKwh;
   $('#ergState').innerHTML = `${Math.round(soc * 100)}<em>%</em>  ` +
@@ -410,9 +505,20 @@ function setUnits(k) {
 
 /* Explain a waterfall row in the same panel parts use, so the efficiency
    card teaches instead of just reporting. */
-function openLossPanel(label, whKm) {
+/* which loss term is on screen, so the draw above can keep it current. null
+   whenever the panel is showing anything else, which is every other writer
+   of panelIsCompare below. */
+let lossOpen = null;
+
+/* `refresh` is the redraw above keeping an open panel current, as against a
+   reader opening one. The difference is only the scroll: arriving at a panel
+   starts at its top, the way openPanel's own note argues, but a generation
+   step under a panel somebody is already reading halfway down must not yank
+   them back to the top of it. */
+function openLossPanel(label, whKm, refresh = false) {
   const note = LOSS_NOTES[label];
   if (!note) return;
+  lossOpen = label;
   /* a loss term belongs to no system: aero is the body and the wheels and
      the mass all at once, so the accent goes back to the neutral amber
      rather than borrowing whichever system happened to be open before */
@@ -432,6 +538,16 @@ function openLossPanel(label, whKm) {
 
   p.append(el('h5', null, 'What it is'), el('div', null, para(note.how)));
   p.append(el('h5', null, 'What moves it'), el('div', null, para(note.moves)));
+  const lever = leverLine(label);
+  if (lever) p.append(lever);
+
+  /* the three lines every other panel ends on, and this one did not: it kept
+     the previous panel's scroll offset, so opening "Rolling" from the middle
+     of a long part panel landed in the middle of the loss panel, and it had no
+     section strip at all while every other panel in the app has one. */
+  sectionNav(p);
+  if (!refresh) p.scrollTop = 0;
+  spySections();
 
   $('#panel').classList.add('on');
   for (const b of Object.values(itemBtns)) b.classList.remove('on');
@@ -616,7 +732,7 @@ function renderResults() {
     }
     if (!live.has(rec.sys)) {
       /* a part from a rung that is not on screen is not hidden from the
-         results, it is labelled, and choosing it swaps that slot */
+         results, it is labeled, and choosing it swaps that slot */
       b.append(el('em', null, `not on this car · ${def.name}`));
     }
     b.onclick = () => gotoPart(rec, def);
@@ -671,7 +787,7 @@ function buildRail() {
   activeDefs().forEach((def, i) => {
     const head = el('button', 'r-sys');
     head.dataset.slot = slotKeyOf(def);
-    /* the colour goes on the ROW, not on the bead, so the open state can
+    /* the color goes on the ROW, not on the bead, so the open state can
        grow the same 3 px tab to full height without a second inline write */
     head.style.setProperty('--sys', hexOf(def));
     if (keepOpen.has(head.dataset.slot)) head.classList.add('open');
@@ -730,7 +846,7 @@ function buildRail() {
         const here = LADDER.find((g) => g.id === active && g.choices[slot] === cur);
         return (here || LADDER.find((g) => g.choices[slot] === cur) || {}).id;
       };
-      row.append(makeDropdown(
+      const slotDD = makeDropdown(
         opts, selected,
         (genId) => {
           const g = LADDER.find((x) => x.id === genId);
@@ -740,9 +856,19 @@ function buildRail() {
              visible frame; show the same busy state a cold rung gets */
           if (viewer.hasSystem(sys)) setVariant(slot, sys);
           else withBusy(() => setVariant(slot, sys));
+          /* the reader has found it; the invitation has done its job */
+          learnedMix();
         },
         'dd-slot'
-      ));
+      );
+      /* NAME THE ACTION. This control had no title at all, and its label reads
+         "Gen 1 · reference", which is a STATUS. Styled as a control, sitting in
+         a row of headings, saying only where the module came from: nothing
+         about it says it can be changed, which is why the whole feature had to
+         be stumbled into. The tooltip says the verb. */
+      slotDD.title = `Take ${slotName(def).toLowerCase()} from any rung. ` +
+                     'Mixing rungs builds a custom car.';
+      row.append(slotDD);
       const intro = introOf(def.id);
       const curG = LADDER.find((g) => g.id === currentGenId());
       if (intro && curG && intro.id !== curG.id) {
@@ -871,7 +997,7 @@ function applyGeneration(id) {
    paints it, and only then does the build run. The setTimeout is not a
    race with the frames, it is the floor under them: rAF does not fire at
    all in a background tab, and a click that lands just before the user
-   switches away must still be honoured when they come back.
+   switches away must still be honored when they come back.
 
    What is deliberately NOT here is a speculative idle prebuild of the next
    rung. It was written and then removed: this environment reports the page
@@ -938,7 +1064,60 @@ const goGeneration = (id) => {
 Object.assign(window.__ev, { applyGeneration, setVariant, GENERATIONS, VARIANTS,
                              search: (q) => runSearch(q), scale });
 
-let genDD = null, genPrev = null, genNext = null, cmpBtn = null, cmpDD = null;
+/* ── THE LADDER IN THE READOUT ──────────────────────────────────────────
+
+   Eleven bars under the range figure, one per rung, height by range, the rung
+   on screen lit. It exists because the readout could show you 1,942 miles and
+   had no way to say that it started at 416 and that this is the top of an
+   eleven-rung climb, which is the entire argument the project makes.
+
+   IT IS ALSO THE CONTROL. Every bar is a button that goes to that rung, so
+   the ladder is navigable from the card where its number lives, which is the
+   difference between a picture of the ladder and the ladder.
+
+   Bars rather than a line, and CSS rather than SVG: eleven rungs read as
+   eleven things, and a flex row of divs is crisp at any card width without a
+   viewBox to distort. Built once, because the figures are a property of the
+   ladder and not of the car on screen; only the lit bar and the two endpoint
+   labels change, and the labels change only when the unit does. */
+function buildLadder() {
+  const host = $('#effLadder');
+  if (!host || ladBars.length) return;
+  const figs = LADDER.map((g) => ({ id: g.id, label: g.label, ...(rung(g.id) || {}) }));
+  const max = Math.max(...figs.map((f) => f.miles || 0)) || 1;
+  ladBars = figs.map((f) => {
+    const b = el('button', 'lad');
+    /* a floor of 8 percent so Gen 1 is a bar and not a line: the ladder
+       climbs 416 to 1,942, which is a 4.7 to 1 range on a 34 px strip */
+    b.style.setProperty('--h', (8 + 92 * ((f.miles || 0) / max)).toFixed(1) + '%');
+    b.dataset.gen = f.id;
+    b.onclick = () => goGeneration(f.id);
+    host.append(b);
+    return { el: b, ...f };
+  });
+  refreshLadder();
+}
+
+/* the lit bar follows the car, and the titles carry the figure in whatever
+   unit is selected, which is why this runs from refreshStats as well */
+function refreshLadder() {
+  if (!ladBars.length) return;
+  const cur = currentGenId();
+  for (const b of ladBars) {
+    b.el.classList.toggle('on', b.id === cur);
+    b.el.title = `${b.label} · ${rounded(asDist(b.miles))} ${U().d}`;
+    b.el.setAttribute('aria-label', b.el.title);
+  }
+  const lo = ladBars[0], hi = ladBars[ladBars.length - 1];
+  $('#ladLo').textContent = rounded(asDist(lo.miles));
+  $('#ladHi').textContent = `${rounded(asDist(hi.miles))} ${U().d}`;
+}
+
+let genDD = null, genPrev = null, genNext = null, cmpBtn = null, cmpDD = null, tourBtn = null;
+let genBack = null;
+/* the last rung the car actually stood on, so a custom mix has somewhere to go
+   back TO by name rather than to a hardcoded Gen 1 */
+let lastRungId = 'gen1';
 /* Declared HERE and not down with the rest of compare mode, because
    refreshGenCtl runs during the generation control's own setup and reads
    both of them, and the compare block sits below that. `let` is not hoisted
@@ -948,13 +1127,41 @@ let genDD = null, genPrev = null, genNext = null, cmpBtn = null, cmpDD = null;
    fine. Same failure shape the unit-key guard above exists to prevent. */
 let cmpOn = false;
 let cmpAgainst = null;
+/* The tour's two state values live here rather than down with the rest of the
+   tour, because refreshGenCtl below reads them and refreshGenCtl runs during
+   module evaluation. Declared at the bottom they sat in a `let`'s temporal
+   dead zone at that moment and the whole file stopped executing on a
+   ReferenceError, which takes the app down to the boot screen. */
+let tourOn = false;
+let tourAt = 0;
 function refreshGenCtl() {
+  refreshLadder();
   genDD?.refresh();
   cmpDD?.refresh();
   const cur = currentGenId();
   const i = LADDER.findIndex((g) => g.id === cur);
+  if (i >= 0) lastRungId = cur;          // somewhere to come back to
   if (genPrev) genPrev.disabled = i <= 0;
   if (genNext) genNext.disabled = i < 0 || i >= LADDER.length - 1;
+  /* A DISABLED CONTROL THAT SAYS NOTHING IS A FAULT REPORT. Both steppers go
+     dead the moment the car stops being a rung, which is correct, and until now
+     they went dead with an empty title, so the interface's answer to "why can I
+     not press this" was silence. Say it, and offer the door out beside them. */
+  const backTo = LADDER.find((g) => g.id === lastRungId);
+  if (i < 0) {
+    const why = 'This car is a mix of rungs, so there is no next or previous one';
+    if (genPrev) genPrev.title = why;
+    if (genNext) genNext.title = why;
+    if (genBack && backTo) {
+      genBack.hidden = false;
+      genBack.textContent = backTo.label;
+      genBack.title = `Put every system back on ${backTo.label}`;
+    }
+  } else {
+    if (genPrev) genPrev.title = 'The rung below this one';
+    if (genNext) genNext.title = 'The rung above this one';
+    if (genBack) genBack.hidden = true;
+  }
   /* A custom mix is not a rung, so there is nothing on the ladder to compare
      it with. The stepper already disables itself for exactly this reason and
      this follows it rather than inventing a second answer: comparing a mix
@@ -964,6 +1171,28 @@ function refreshGenCtl() {
     if (i < 0 && cmpOn) setCompare(false);
   }
   if (cmpOn) refreshCompare();
+  /* THE TOUR'S GHOST BELONGS TO THE TOUR'S RUNG, and the stepper sits in the
+     same #pGen group as the tour button and is never disabled while the tour
+     runs. tourGo ghosts the slots its stop changed, by module id, and those
+     ids are the ids of THAT rung: step the generation underneath and every id
+     in the focus set names a module that is no longer on the car, so every
+     visible module tests as outside the focus. The whole car went to 7 percent
+     and nothing on it could be clicked, with the tour bar still reading like
+     everything was fine. Compare had this covered one line up and the tour
+     had no branch at all.
+
+     Dropped rather than re-derived. Re-deriving would silently rewrite the
+     stop's argument against a rung the stop is not about; the reader has
+     driven away from the comparison, so the honest thing is to stop drawing
+     it and hand the car back solid. The tour bar, its prose and its stop
+     stay, and stepping back to the stop's own rung restores the ghost.
+
+     Ordering is safe: the tour's own applyGeneration at tourGo runs BEFORE it
+     sets the focus, and at that moment the current rung is already the stop's,
+     so this leaves a normal tour step alone. */
+  if (tourOn && STOPS[tourAt] && currentGenId() !== STOPS[tourAt].gen) {
+    viewer.setFocusSystems(null);
+  }
 }
 
 if (GENERATIONS.length) {
@@ -989,6 +1218,18 @@ if (GENERATIONS.length) {
   ];
   genDD = makeDropdown(genOpts, currentGenId, goGeneration, 'dd-gen');
 
+  /* THE WAY BACK OUT OF A CUSTOM CAR. Mixing rungs is the one thing here that
+     leaves the ladder, and until now leaving it was a one-way door as far as
+     the faceplate was concerned: the label read "Custom", both steppers went
+     disabled with NO title on them, compare went disabled, and nothing on
+     screen said what had happened or how to undo it. The rung was still in the
+     dropdown, so the way back existed; it was just never offered. This is the
+     offer, and it names the rung so it is a promise rather than a reset button:
+     "Gen 5" tells you where you land. */
+  genBack = el('button', 'gen-step gen-back', '');
+  genBack.onclick = () => goGeneration(lastRungId);
+  genBack.hidden = true;
+
   /* The compare control sits in the generation group because it asks a
      generation question. It is a toggle and not a mode screen: the car, the
      rail and every other control keep working while it is on. */
@@ -1001,7 +1242,15 @@ if (GENERATIONS.length) {
     (id) => { cmpAgainst = id; openComparePanel(); },
     'dd-gen dd-cmp');
 
-  wrap.append(genPrev, genDD, genNext, cmpBtn, cmpDD);
+  /* The tour sits with the generation controls because it walks the ladder,
+     and beside `vs` because the two are the same question asked at different
+     lengths: one rung against another, or all eleven in order with the reason
+     each one happened. */
+  tourBtn = el('button', 'gen-step tour', 'tour');
+  tourBtn.title = 'Walk the ladder, Gen 1 to Gen 11, with the argument for each rung';
+  tourBtn.onclick = () => setTour(!tourOn);
+
+  wrap.append(genPrev, genDD, genBack, genNext, cmpBtn, cmpDD, tourBtn);
   $('#pGen').append(el('small', null, 'generation'), wrap);
   refreshGenCtl();
 }
@@ -1046,6 +1295,9 @@ function cmpPair() {
 function setCompare(on) {
   cmpOn = on;
   document.body.classList.toggle('cmp', on);
+  /* the second rung dropdown joins or leaves the faceplate's first row, and
+     on a narrow window that changes how many rows the bar has */
+  syncBarH();
   cmpBtn.classList.toggle('on', on);
   cmpBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
   if (on) {
@@ -1091,24 +1343,650 @@ function applyCompareGhost() {
    not interrupted: the ghosting follows the ladder, the panel stays where
    the user put it. */
 let panelIsCompare = false;
+/* How to walk to the next part of the module being read, or null when the
+   panel is not a part. Set by openPanel, cleared by everything else that
+   owns the panel, and read by the arrow keys. Declared up here with the
+   other panel state and not beside the key binding that reads it, because
+   openPanel is above that and `let` is not hoisted; the note on cmpOn
+   records what that costs. */
+let panelStep = null;
 function refreshCompare() {
   applyCompareGhost();
   if (cmpOn && panelIsCompare) openComparePanel();
 }
 
+/* ── DIMENSIONS ─────────────────────────────────────────────────────────
+
+   design/app-brief.md section 3 asks for visible measurements in 3D. This is
+   that, and the rule it lives by is the one the whole project lives by:
+   NOTHING HERE IS DECLARED. Every figure is measured off the geometry that
+   is on screen at that instant, through viewer.vehicleBox and
+   viewer.partBoxes, so a dimension cannot disagree with the car it is drawn
+   on. There is no table of vehicle dimensions anywhere in this app and there
+   is deliberately not going to be one.
+
+   The tires are the anchor for the wheelbase and both tracks, and they can
+   be: every one of the eight wheel modules on the ladder, Gen 1 through Gen
+   11, names its tire part `tires`, and each of the four is its own instance
+   in the part group. Four boxes give two axle stations and two track widths.
+   A single union box would only ever have given an overall width.
+
+   DRAWN AS AN OVERLAY, NOT AS GEOMETRY. Lines in the scene would be meshes,
+   and js/viewer.js draws the scene twice a frame for the floor reflection,
+   so every dimension would cost two draw calls and would need excluding from
+   the mirrored pass by hand. An SVG on top costs nothing per frame but the
+   projection of a handful of points, stays hairline-crisp at any zoom, and
+   is what a drawing looks like anyway: a dimension is not part of the car.
+   The price is that dimension lines do not hide behind bodywork, which is
+   also true of every dimension on every engineering drawing ever made. */
+
+let dimsOn = false;
+let dimEl = null;
+let dimSet = [];        // the world-space dimensions currently being drawn
+let dimSelKey = null;   // the part the current set describes, or null for the car
+let dimNodes = [];      // one node bundle per dimension, reused across frames
+const SVGNS = 'http://www.w3.org/2000/svg';
+
+const svg = (t, attrs) => {
+  const n = document.createElementNS(SVGNS, t);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  return n;
+};
+
+/* One unit for the whole set, chosen by its largest member: a part 0.6 m
+   long beside two figures in millimeters reads as three different kinds of
+   thing. The model's own spec rows do the same. */
+function dimUnit(dims) {
+  const big = dims.reduce((m, d) => Math.max(m, d.v), 0);
+  return big < 0.5
+    ? { k: 1000, u: 'mm', d: 0 }
+    : { k: 1, u: 'm', d: 3 };
+}
+
+/* THE VEHICLE, measured. Seven figures, and they are the seven a packaging
+   argument is made in: the three overall extents, the wheelbase, both
+   tracks, and what is left under the car.
+
+   Both tracks and not one, because the ladder turns on the difference. Gen 7
+   narrows the REAR track to |z| 0.74 so the boat tail can close and leaves
+   the front where it was; Gen 9 brings the front in to match. Two figures
+   make that visible and one figure hides it. */
+function vehicleDims() {
+  /* THE PARKED BOX, not the live one, and only for the overall envelope. How
+     wide a car is is a property of the car and not of whether somebody left a
+     door ajar: with a front door open on Gen 1 the live box reads 3.93 m
+     across, which is a true measurement of the wrong thing. parkedBox is the
+     last box measured with every closure shut, which is the figure that goes
+     on a certificate. Ground clearance below reads the live box on purpose,
+     because nothing that opens on this car reaches under it. */
+  const box = viewer.parkedBox() || viewer.vehicleBox();
+  if (!box) return [];
+  const tires = viewer.partBoxes(VARIANT_CHOICE.wheels + '/tires');
+  const mid = (b, k) => (b.min[k] + b.max[k]) / 2;
+  const front = tires.filter((b) => mid(b, 'x') > 0);
+  const rear = tires.filter((b) => mid(b, 'x') <= 0);
+  const meanX = (list) => list.reduce((s, b) => s + mid(b, 'x'), 0) / (list.length || 1);
+  const track = (list) => (list.length < 2 ? 0
+    : Math.abs(Math.max(...list.map((b) => mid(b, 'z'))) - Math.min(...list.map((b) => mid(b, 'z')))));
+
+  const xf = meanX(front), xr = meanX(rear);
+  const tf = track(front), tr = track(rear);
+  /* the lowest point of the car that is NOT a wheel, which is what ground
+     clearance means and why the wheels system is the one thing left out */
+  const under = viewer.vehicleBox(VARIANT_CHOICE.wheels);
+  const clear = under ? Math.max(0, under.min.y) : 0;
+  /* WHERE EACH LINE STANDS IS THE HALF OF THIS THAT IS NOT ARITHMETIC.
+
+     Every label is drawn at the midpoint of its own line, so two dimensions
+     that share a plane and a direction put their labels on top of each
+     other. The first version had length, wheelbase and ground clearance all
+     on the floor on the near side within 0.2 m of each other, and all three
+     labels landed in the same hundred pixels.
+
+     So the seven are spread across four planes: the two long ones stand off
+     the near flank at 0.60 and 0.30, far enough apart to separate on screen
+     at any sane zoom; width stands ahead of the nose; height stands off the
+     rear corner rather than on the centerline, where it crossed the body;
+     and the clearance goes on the FAR side, where nothing else is. Only the
+     two tracks are drawn on the car, and they have to be: a track is
+     measured between wheel centers and that is where the wheels are. */
+  const zo = box.max.z;
+  const out = [
+    /* the two long dimensions carry their labels at different points ALONG
+       themselves, 0.62 and 0.28, because standing them 0.30 m apart in the
+       world is worth about ten pixels from a three-quarter camera and their
+       two-line labels are taller than that. Moving a label along its own
+       line separates them whatever the view is doing. */
+    { name: 'length', v: box.max.x - box.min.x, t: 0.62,
+      a: [box.min.x, 0, zo + 0.60], b: [box.max.x, 0, zo + 0.60] },
+    { name: 'width', v: box.max.z - box.min.z,
+      a: [box.max.x + 0.35, 0, box.min.z], b: [box.max.x + 0.35, 0, box.max.z] },
+    { name: 'height', v: box.max.y - box.min.y,
+      a: [box.min.x - 0.35, box.min.y, zo], b: [box.min.x - 0.35, box.max.y, zo] },
+  ];
+  if (front.length && rear.length) {
+    out.push({ name: 'wheelbase', v: xf - xr, t: 0.28,
+               a: [xr, 0, zo + 0.30], b: [xf, 0, zo + 0.30] });
+  }
+  if (tf) out.push({ name: 'front track', v: tf, a: [xf, 0, -tf / 2], b: [xf, 0, tf / 2] });
+  if (tr) out.push({ name: 'rear track', v: tr, a: [xr, 0, -tr / 2], b: [xr, 0, tr / 2] });
+  if (clear > 0.001) {
+    out.push({ name: 'ground clearance', v: clear,
+               a: [0, 0, -zo - 0.30], b: [0, clear, -zo - 0.30] });
+  }
+  return out;
+}
+
+/* ONE INSTANCE OF THE PART, not the union of them. A wheel module's tires
+   are four objects 1.6 m apart and their union is a track width, which is
+   not a tire. Four brake discs measure one disc, and the label says `each`
+   so the figure cannot be mistaken for a total. */
+function partDims(key) {
+  const boxes = viewer.partBoxes(key);
+  if (!boxes.length) return [];
+  const box = boxes.reduce((m, b) => {
+    const vol = (x) => (x.max.x - x.min.x) * (x.max.y - x.min.y) * (x.max.z - x.min.z);
+    return vol(b) > vol(m) ? b : m;
+  }, boxes[0]);
+  const n = boxes.length > 1 ? ' each' : '';
+  const { min, max } = box;
+  return [
+    { name: 'length' + n, v: max.x - min.x, a: [min.x, min.y, min.z], b: [max.x, min.y, min.z] },
+    { name: 'width' + n, v: max.z - min.z, a: [max.x, min.y, min.z], b: [max.x, min.y, max.z] },
+    { name: 'height' + n, v: max.y - min.y, a: [max.x, min.y, max.z], b: [max.x, max.y, max.z] },
+  ].filter((d) => d.v > 0.0005);
+}
+
+function buildDims() {
+  if (dimEl) return dimEl;
+  dimEl = svg('svg', { id: 'dims' });
+  document.body.append(dimEl);
+  return dimEl;
+}
+
+/* Rebuild the node bundles. Called when WHAT is being measured changes, not
+   when the camera moves: a camera move only reprojects points that already
+   have nodes, which is drawDims below and is the thing that runs per frame. */
+function refreshDims() {
+  if (!dimsOn) return;
+  const sel = viewer.getSelected();
+  dimSelKey = sel;
+  dimSet = sel ? partDims(sel) : vehicleDims();
+  const u = dimUnit(dimSet);
+  buildDims();
+  dimEl.innerHTML = '';
+  dimNodes = dimSet.map((d) => {
+    const g = svg('g', { class: 'dim' });
+    const line = svg('line', {});
+    const t1 = svg('line', { class: 'dim-t' });
+    const t2 = svg('line', { class: 'dim-t' });
+    const val = svg('text', { class: 'dim-v' });
+    const name = svg('text', { class: 'dim-n' });
+    val.textContent = (d.v * u.k).toFixed(u.d) + ' ' + u.u;
+    name.textContent = d.name;
+    g.append(line, t1, t2, name, val);
+    dimEl.append(g);
+    return { g, line, t1, t2, val, name };
+  });
+  drawDims();
+}
+
+/* Per frame, and it is deliberately the cheapest thing that can be: two
+   projections and eight attribute writes per dimension, no layout reads. */
+function drawDims() {
+  if (!dimsOn) return;
+  /* WHAT is being measured is checked here rather than wired into every
+     path that can change it. A part is selected from the rail, from the
+     canvas, from a cross-reference inside a panel, from search, from the
+     compare rows and from the tour, and every one of those would have had to
+     remember to say so. One string comparison a frame buys all of them. */
+  const sel = viewer.getSelected();
+  if (sel !== dimSelKey) { dimSelKey = sel; refreshDims(); return; }
+  if (!dimNodes.length) return;
+  for (let i = 0; i < dimNodes.length; i++) {
+    const d = dimSet[i], n = dimNodes[i];
+    const a = viewer.project(d.a[0], d.a[1], d.a[2]);
+    const b = viewer.project(d.b[0], d.b[1], d.b[2]);
+    if (a.behind || b.behind) { n.g.style.display = 'none'; continue; }
+    n.g.style.display = '';
+    n.line.setAttribute('x1', a.x); n.line.setAttribute('y1', a.y);
+    n.line.setAttribute('x2', b.x); n.line.setAttribute('y2', b.y);
+    /* ticks across the ends, in SCREEN space, so a dimension seen almost
+       edge-on still ends in something a reader can see */
+    let dx = b.x - a.x, dy = b.y - a.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const px = (-dy / len) * 5, py = (dx / len) * 5;
+    n.t1.setAttribute('x1', a.x - px); n.t1.setAttribute('y1', a.y - py);
+    n.t1.setAttribute('x2', a.x + px); n.t1.setAttribute('y2', a.y + py);
+    n.t2.setAttribute('x1', b.x - px); n.t2.setAttribute('y1', b.y - py);
+    n.t2.setAttribute('x2', b.x + px); n.t2.setAttribute('y2', b.y + py);
+    /* the label sits off the line on the side away from the car, which for
+       every dimension here is the side the line is already standing off on */
+    /* A SHORT DIMENSION PUTS ITS LABEL PAST THE END OF ITSELF. A tire is
+       0.710 by 0.135 by 0.710, so its width edge is about 25 px on screen at
+       the distance select() frames a part from, and a label centered on that
+       edge sits inside the two labels either side of it. Past 60 px the
+       label goes where a drawing puts it, on the middle of the line. */
+    const t = d.t == null ? 0.5 : d.t;
+    let mx, my;
+    if (len < 60) {
+      mx = b.x + (dx / len) * 26 + px * 1.4;
+      my = b.y + (dy / len) * 26 + py * 1.4;
+    } else {
+      mx = a.x + dx * t + px * 2.2;
+      my = a.y + dy * t + py * 2.2;
+    }
+    n.val.setAttribute('x', mx); n.val.setAttribute('y', my);
+    n.name.setAttribute('x', mx); n.name.setAttribute('y', my - 12);
+  }
+}
+
+/* THE SIZE CONTROL IS GONE, at Davis's request on 2026-08-17: "remove the size
+   feature button we don't need it". The BUTTON is what was removed, not the
+   measurement: setDims still works and window.__ev.dims still drives it, which
+   is what a verification pass uses to assert the figures rather than reading
+   them off an image, and viewer.parkedBox is the same machinery the closures
+   card measures against. Nothing in the app reaches this any more, so if it is
+   still unreachable next time somebody reads this file, delete the lot:
+   buildDims, refreshDims, vehicleDims, partDims and the #dims styles. */
+function setDims(on) {
+  dimsOn = on;
+  buildDims();
+  document.body.classList.toggle('dims', on);
+  if (on) refreshDims(); else { dimEl.innerHTML = ''; dimNodes = []; dimSet = []; }
+}
+
+/* ── The guided tour ────────────────────────────────────────────────────
+
+   Thirteen stops that walk the ladder end to end, driving the real controls:
+   the generation the car wears, the camera, and the same slot ghosting
+   compare mode uses. Nothing here is a second copy of anything. The rail, the
+   readout and the pack all follow, because the tour changes the app's state
+   rather than drawing a picture of it.
+
+   THE PROSE IS IN js/tour.js AND THE NUMBERS ARE NOT. Every figure a stop
+   prints is a token resolved here, at the moment the stop is shown, against
+   the same js/compare.js the compare panel reads. A tour with 223 miles typed
+   into it would be the fourth home for the ladder's figures and the first to
+   go stale, which is exactly how design/app-brief.md's census went wrong.
+
+   IT DOES NOT TURN COMPARE MODE ON. It borrows the ghosting and leaves the
+   panel alone, because the panel is where the tour's own text lives and two
+   things cannot own one surface. The last control on the bar hands over to
+   the full comparison for anyone who wants the nine slots and the waterfall,
+   and that is a deliberate exit rather than a duplicate view. */
+
+/* tourOn and tourAt are declared up beside cmpOn, not here: refreshGenCtl
+   consults both and it runs during module evaluation, which is ahead of this
+   point and inside a `let`'s dead zone. */
+let tourPlay = false;
+let tourTimer = null;
+let tourEl = null;
+let tourWasPanel = false;
+let tourWasXray = false;
+let tourWasCut = false;
+let tourWasExplode = 0;   // the slider's own 0 to 100, restored on the way out
+/* bumped by every tourGo; a deferred cold-rung build checks it before it
+   touches anything. See the note there. */
+let tourSeq = 0;
+
+/* The figures a stop can print. Computed on arrival rather than cached: the
+   unit toggle is live, so a tour left open while someone presses km has to
+   re-render, and re-rendering has to be the same call. */
+function tourFacts(stop) {
+  const c = stop.against ? compare(stop.against, stop.gen) : null;
+  const self = compare(stop.gen, stop.gen);   // a rung against itself: its own totals
+  const b = (c || self).b;
+  const num = (s) => `<u class="t-n">${s}</u>`;
+  const topTerm = c && c.terms.reduce((m, t) => (Math.abs(t.d) > Math.abs(m.d) ? t : m), c.terms[0]);
+  return {
+    c, b,
+    range:  num(`${rounded(asDist(b.miles))} ${U().d}`),
+    rate:   num(`${asRate(b.whMi).toFixed(2)} ${U().d}/kWh`),
+    mass:   num(`${rounded(asMass(b.mass))} ${massU()}`),
+    dRange: c ? num(`${signed(asDist(c.totals.dMiles), 0)} ${U().d}`) : '',
+    dRate:  c ? num(`${signed(asRate(c.b.whMi) - asRate(c.a.whMi), 2)} ${U().d}/kWh`) : '',
+    dMass:  c ? num(`${signed(asMass(c.totals.dMass), 0)} ${massU()}`) : '',
+    dArea:  c ? num(`${signed(c.totals.dArea, 4)} m2`) : '',
+    /* the term the rung actually moved, which is the sentence every retro in
+       design/ is about and the one figure a reader cannot get anywhere else */
+    topTerm: topTerm ? num(`${topTerm.label.toLowerCase()} ${signed(asWh(topTerm.d), 1)} Wh/${U().d}`) : '',
+    slots:  c ? num(`${c.changedCount} of ${c.slots.length} slots`) : '',
+  };
+}
+
+const tourFill = (text, f) => text.replace(/\{(\w+)\}/g, (m, k) => (k in f ? f[k] : m));
+
+function buildTour() {
+  if (tourEl) return tourEl;
+  tourEl = el('section', null);
+  tourEl.id = 'tour';
+  tourEl.innerHTML =
+    '<div class="t-head">' +
+      '<b class="t-theme"></b><span class="t-title"></span>' +
+      '<div class="t-marks"></div>' +
+      '<button class="t-x" aria-label="Leave the tour">×</button>' +
+    '</div>' +
+    '<div class="t-body"><div class="t-text"></div><div class="t-figs"></div></div>' +
+    '<div class="t-foot">' +
+      '<button class="t-step t-prev">‹</button>' +
+      '<button class="t-play" title="Play the tour"><i></i></button>' +
+      '<button class="t-step t-next">›</button>' +
+      '<span class="t-count"></span>' +
+      '<button class="t-read"></button>' +
+      '<button class="t-vs">full comparison</button>' +
+      '<span class="t-cite"></span>' +
+    '</div>';
+  document.body.append(tourEl);
+
+  tourEl.querySelector('.t-x').onclick = () => setTour(false);
+  tourEl.querySelector('.t-prev').onclick = () => tourGo(tourAt - 1, true);
+  tourEl.querySelector('.t-next').onclick = () => tourGo(tourAt + 1, true);
+  tourEl.querySelector('.t-play').onclick = () => setTourPlay(!tourPlay);
+  /* Hand over to compare mode ON THIS PAIR, which is the whole reason the
+     tour can afford to be brief: the nine slots, the waterfall and the
+     residual are one control away and they are the real thing rather than a
+     summary of it. Leaving the tour is correct here. The panel is where the
+     comparison lives and the tour is sitting on the other half of the screen
+     talking about the same two rungs. */
+  tourEl.querySelector('.t-vs').onclick = () => {
+    const s = STOPS[tourAt];
+    setTour(false);
+    if (!s.against) return;
+    /* The pair is named by the STOP, not inferred from whatever the car
+       happens to be wearing. cmpPair() reads the live generation, and the
+       generation a stop asks for arrives through withBusy on a cold rung, so
+       a hand-over that only set cmpAgainst could pair Gen 9 against a car
+       that had not finished becoming Gen 10 yet. Applying the rung again is
+       free when it is already on: setVariant returns early per slot. */
+    const run = () => { applyGeneration(s.gen); cmpAgainst = s.against; setCompare(true); };
+    isCold(s.gen) ? withBusy(run) : run();
+  };
+  return tourEl;
+}
+
+/* Marks, not dots: one per stop, the current one lit, and clicking any of
+   them jumps. A tour with no way back to stop four is a video. */
+function buildTourMarks() {
+  const wrap = tourEl.querySelector('.t-marks');
+  wrap.innerHTML = '';
+  STOPS.forEach((s, i) => {
+    const b = el('button', 't-mark');
+    b.title = `${s.theme}: ${s.title}`;
+    b.onclick = () => tourGo(i, true);
+    wrap.append(b);
+  });
+}
+
+function renderTour() {
+  const s = STOPS[tourAt];
+  const f = tourFacts(s);
+  const q = (sel) => tourEl.querySelector(sel);
+
+  q('.t-theme').textContent = s.theme;
+  q('.t-title').textContent = s.title;
+  q('.t-count').textContent = `${tourAt + 1} / ${STOPS.length}`;
+  q('.t-cite').textContent = s.cite;
+
+  const text = q('.t-text');
+  text.innerHTML = '';
+  for (const p of s.paras) text.append(el('p', null, tourFill(p, f)));
+
+  /* THE FIGURE COLUMN IS THE CAR IN FRONT OF YOU, not the stop's argument.
+     Three quantities, always the same three, so a reader tracking the ladder
+     watches one place rather than hunting a different layout per stop. The
+     opening stop has no predecessor and shows the size of the model instead,
+     which is the only thing on the tour that is about the app rather than
+     about the car. */
+  const figs = q('.t-figs');
+  figs.innerHTML = '';
+  const fig = (label, value, delta) => {
+    const d = el('div', 't-fig');
+    d.append(el('small', null, label), el('b', null, value));
+    if (delta) d.append(el('i', null, delta));
+    figs.append(d);
+  };
+  if (s.id === 'open') {
+    const sc = scale();
+    fig('rungs', String(sc.rungs), 'on the ladder');
+    fig('modules', String(sc.systems), `${sc.parts} clickable parts`);
+    fig('written', sc.words.toLocaleString(), 'words of engineering');
+  } else {
+    const c = f.c;
+    fig(`range · ${U().d}`, rounded(asDist(f.b.miles)),
+        c ? signed(asDist(c.totals.dMiles), 0) : null);
+    fig(`efficiency · ${U().d}/kWh`, asRate(f.b.whMi).toFixed(2),
+        c ? signed(asRate(c.b.whMi) - asRate(c.a.whMi), 2) : null);
+    fig(`mass · ${massU()}`, rounded(asMass(f.b.mass)),
+        c ? signed(asMass(c.totals.dMass), 0) : null);
+  }
+
+  const read = q('.t-read');
+  const def = s.read ? DEFS[s.read] : null;
+  read.style.display = def ? '' : 'none';
+  if (def) {
+    read.textContent = 'read ' + def.name.toLowerCase();
+    read.style.setProperty('--sys', hexOf(def));
+    read.onclick = () => { stopTourPlay(); gotoSystem(def.id); };
+  }
+  q('.t-vs').style.display = s.against ? '' : 'none';
+
+  [...tourEl.querySelectorAll('.t-mark')].forEach((b, i) => {
+    b.classList.toggle('on', i === tourAt);
+    b.classList.toggle('seen', i < tourAt);
+  });
+  q('.t-prev').disabled = tourAt === 0;
+  q('.t-next').disabled = tourAt === STOPS.length - 1;
+}
+
+/* THE CAR IS FRAMED IN THE SPACE THE TEXT LEAVES, not in the window.
+
+   The stops aim at a point on the car, which is what a camera station in
+   js/tour.js means, and lookAt puts that point in the middle of the WINDOW.
+   The bottom of the window is a plate of text between 200 and 270 px tall
+   depending on the stop, so a car centered in the window sits a sixth of the
+   frame too low and the tour reads as if the plate is covering it.
+
+   The correction is one pan of the aim point, computed rather than dialed
+   in: the viewer's lens is 34 degrees vertical, so the scene is
+   2 * distance * tan(17 degrees) tall at the aim point, and lowering the aim
+   by that height times half the plate's share of the window centers the car
+   in what is left. It is recomputed per stop because the plate is not one
+   height, and it lowers the AIM and not the camera: the low stations already
+   sit 0.55 m off the floor and dropping those under it would put the camera
+   through a floor that reflects. */
+function tourAim(v) {
+  const bar = tourEl ? tourEl.getBoundingClientRect().height + 12 : 0;
+  const h = window.innerHeight;
+  /* Both measurements can come back zero or nonsense, and viewer.js's resize
+     already guards the same way for the same reason: this page is driven by
+     an automation pane that reports the window as 0 by 0, and a 0-width
+     layout gives the plate a 2,149 px height. An aim point computed from
+     that would fly the camera into the floor. No measurement, no correction:
+     the stop's authored aim is the honest fallback. */
+  if (!(h > 0) || !(bar > 0) || bar > h) return v.tgt;
+  const dist = Math.hypot(v.pos[0] - v.tgt[0], v.pos[1] - v.tgt[1], v.pos[2] - v.tgt[2]);
+  const worldH = 2 * dist * Math.tan((34 * Math.PI / 180) / 2);
+  return [v.tgt[0], v.tgt[1] - worldH * (bar / h) * 0.5, v.tgt[2]];
+}
+
+/* Going to a stop is four state changes in a fixed order, and the order is
+   the whole of it:
+
+   1. the generation, because applyGeneration flies the camera home when a
+      part was selected and would yank a camera this function is about to
+      place;
+   2. the ghost, which is compare mode's own answer to "which slots differ"
+      read straight out of js/compare.js;
+   3. the camera, authored per stop in js/tour.js;
+   4. the text.
+
+   A cold rung blocks the main thread for up to 3.4 s while seven modules
+   build, so the whole sequence goes through withBusy exactly as the stepper
+   does. Without that the tour looks frozen at Gen 11 and the busy sweep,
+   which exists for this, never appears. */
+function tourGo(i, manual = false) {
+  /* The pause comes FIRST, before the bounds check, because a manual gesture
+     is a manual gesture whether or not it lands on a stop. Ordered the other
+     way, a right arrow on the last stop and a left arrow on the first one
+     returned here and left autoplay running, so the one input that reads as
+     "I am driving this now" was the one input that did not take the wheel,
+     and the timer moved the reader on a second later. Every other manual step
+     paused; these two were an accident of the early return. */
+  if (manual) stopTourPlay();
+  if (i < 0 || i >= STOPS.length) return;
+  tourAt = i;
+  const s = STOPS[i];
+  /* A COLD RUNG DEFERS THIS WHOLE BLOCK, so by the time it runs the tour may
+     be somewhere else or gone. Leaving the tour during a Gen 5 build left
+     the deferred half to land afterward: it ghosted the car for a
+     comparison, turned x-ray on and wrote a stop into a bar that was no
+     longer on screen, and the user was looking at a faded car with nothing
+     saying why. The stamp is the same guard applyGeneration's own cold path
+     needed and did not have to invent, because withBusy runs whatever it is
+     handed; the decision about whether it is still wanted belongs here. */
+  const seq = ++tourSeq;
+  const run = () => {
+    if (!tourOn || seq !== tourSeq) return;
+    if (currentGenId() !== s.gen) applyGeneration(s.gen);
+    if (viewer.getSelected()) { closePanel(); viewer.select(null); }
+    const c = s.against ? compare(s.against, s.gen) : null;
+    viewer.setFocusSystems(c ? c.slots.filter((x) => x.changed).map((x) => VARIANT_CHOICE[x.slot]) : null);
+    /* the shell is a changed slot on every stop that asks for x-ray, so the
+       ghosting leaves it solid over the thing the stop is about */
+    setXray(!!s.xray);
+    /* the text goes in BEFORE the camera, because the camera is aimed off the
+       height of the plate the text is sitting in and that height is the text */
+    renderTour();
+    const v = VIEWS[s.view] || VIEWS.home;
+    viewer.view(v.pos, tourAim(v), 1200);
+    if (tourPlay) armTourTimer();
+  };
+  isCold(s.gen) ? withBusy(run) : run();
+}
+
+/* ── Autoplay ───────────────────────────────────────────────────────────
+   setTimeout and not rAF, deliberately: this environment reports the page as
+   hidden at every instant and rAF does not fire at all in a hidden tab, so a
+   frame-driven timer would leave the tour parked on stop one forever in
+   exactly the case where nobody is watching it to notice.
+
+   The dwell is per stop, from its own word count, because the stops are not
+   the same length and a flat interval would either rush Gen 11 or leave Gen 1
+   sitting there. See dwellMs in js/tour.js. */
+function armTourTimer() {
+  clearTimeout(tourTimer);
+  tourTimer = setTimeout(() => {
+    if (!tourOn || !tourPlay) return;
+    if (tourAt >= STOPS.length - 1) { setTourPlay(false); return; }
+    tourGo(tourAt + 1);
+  }, dwellMs(STOPS[tourAt]));
+}
+function stopTourPlay() { if (tourPlay) setTourPlay(false); }
+function setTourPlay(on) {
+  tourPlay = on;
+  clearTimeout(tourTimer);
+  tourEl.classList.toggle('playing', on);
+  tourEl.querySelector('.t-play').title = on ? 'Pause' : 'Play the tour';
+  if (on) armTourTimer();
+}
+
+function setTour(on, at = 0) {
+  if (on === tourOn) { if (on) tourGo(at, true); return; }
+  tourOn = on;
+  buildTour();
+  document.body.classList.toggle('tour', on);
+  if (on) {
+    buildTourMarks();
+    /* compare mode and the tour are two answers to the same question and
+       both of them ghost the car, so the tour takes the surface rather than
+       arguing with it over the panel */
+    tourWasPanel = $('#panel').classList.contains('on');
+    tourWasXray = xrayIsOn();
+    /* THE TURNTABLE STOPS FOR THE TOUR. Every station in js/tour.js is an
+       argument about a viewpoint, and the two frontal-area stops are the
+       silhouette itself; seven idle seconds into reading one of them the
+       turntable has quietly turned the evidence away. It is suppressed the
+       way a selected part suppresses it, in the viewer and not through the
+       switch, so the user's own preference is neither read as consent nor
+       written over: the button keeps saying what it has always said and the
+       setting comes back the moment the tour closes. */
+    viewer.setAutoRotate(false);
+    /* A section left on would cut every one of the thirteen authored frames,
+       including the two that ARE a silhouette. Same contract as the x-ray
+       switch: taken for the duration, handed back on the way out. */
+    tourWasCut = cutOn;
+    if (cutOn) setCutOn(false);
+    /* AND THE EXPLODE, on the same contract as the section and the x-ray. All
+       thirteen stations are authored against an assembled car; a slider left
+       at 60 percent scattered every one of them and the stop's own text went
+       on describing parts that were no longer where it said. It was the one
+       of the three taken for granted, presumably because nothing in the tour
+       sets it, but the reader can have set it before pressing TOUR. Handed
+       back on the way out with the rest. */
+    tourWasExplode = +$('#exp').value;
+    if (tourWasExplode) { $('#exp').value = 0; viewer.setExplode(0); setExplodeVal(0); }
+    if (cmpOn) setCompare(false);
+    if (tourWasPanel) { closePanel(); viewer.select(null); }
+    tourGo(at, true);
+  } else {
+    setTourPlay(false);
+    /* Compare has to go the same way the ghost does. The last control on the
+       tour bar hands over to the full comparison, so compare can be ON when
+       the tour closes, and clearing the focus set below takes the GHOST it
+       was drawing with it. That left compare switched on, its panel open and
+       its dropdown armed, over a car with nothing faded: the interface
+       claimed a comparison it was no longer drawing. setCompare(false) before
+       the clear, so the two states leave together. */
+    if (cmpOn) setCompare(false);
+    viewer.setFocusSystems(null);
+    setXray(tourWasXray);
+    if (tourWasCut) setCutOn(true);
+    if (tourWasExplode) {
+      $('#exp').value = tourWasExplode;
+      viewer.setExplode(tourWasExplode / 100);
+      setExplodeVal(tourWasExplode);
+    }
+    viewer.setAutoRotate(spinOn);
+    /* the car is left wearing whatever rung the tour finished on, which is
+       the point of having walked it; only the ghosting and the camera go */
+    viewer.view(VIEWS.home.pos, VIEWS.home.tgt, 900);
+  }
+  tourBtn?.classList.toggle('on', on);
+  tourBtn?.setAttribute('aria-pressed', on ? 'true' : 'false');
+}
+
+/* ARROWS WALK WHATEVER IS OPEN: the tour if it is running, otherwise the
+   parts of the module being read. Both are the same gesture, next and
+   previous through an ordered thing, and the tour takes precedence because
+   it is the larger context.
+
+   Guarded on the search field and the dropdowns, which own the arrow keys
+   while they are focused: the rail's search box is one Tab away from
+   everything and a left arrow inside it must move a cursor. */
+addEventListener('keydown', (e) => {
+  if (openMenu) return;
+  if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+  const t = e.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+  const d = e.key === 'ArrowRight' ? 1 : -1;
+  if (tourOn) { e.preventDefault(); tourGo(tourAt + d, true); }
+  else if (panelStep && $('#panel').classList.contains('on')) { e.preventDefault(); panelStep(d); }
+});
+
 /* ── Paint ─────────────────────────────────────────────────────────────
    Eleven generations and every one of them has been the same dark teal,
-   because common.js has exactly one body colour, M.paint at 0x2a5666, and
+   because common.js has exactly one body color, M.paint at 0x2a5666, and
    every body module reaches for it.
 
-   The colour cannot be changed where it is defined: js/common.js is off
+   The color cannot be changed where it is defined: js/common.js is off
    limits to app work, and editing M.paint would repaint the charge-port
    flap, the reference car and the value study all at once with no way back.
    So the respray happens in the viewer, on the per-part material clones it
-   already makes, selected by base colour. See viewer.js setPaint.
+   already makes, selected by base color. See viewer.js setPaint.
 
    These are finishes, not decoration: the shell material runs metalness
-   0.88 under a full clearcoat, so a saturated colour tints its own
+   0.88 under a full clearcoat, so a saturated color tints its own
    reflections and the studio softboxes rake across it. Nine of them,
    ordered neutral, cool, warm, with the teal kept in the middle of the list
    and named for what it is, because eleven rungs of renders and every
@@ -1118,17 +1996,19 @@ const PAINTS = [
   { id: 'graphite', label: 'Graphite',         hex: 0x1a1e23, group: 'Neutral' },
   { id: 'gunmetal', label: 'Gunmetal',         hex: 0x3f454c, group: 'Neutral' },
   /* SOLID, not metallic. See the note on paintMetal in js/viewer.js: at
-     M.paint's 0.88 a light colour is a mirror in a dark room and reads dark.
+     M.paint's 0.88 a light color is a mirror in a dark room and reads dark.
      These three are the finishes that are solids in the real world, so they
      say so and everything else keeps common.js's own value untouched. */
-  { id: 'nardo',    label: 'Nardo grey',       hex: 0x8d9196, group: 'Neutral', metal: 0.25 },
+  { id: 'nardo',    label: 'Nardo gray',       hex: 0x8d9196, group: 'Neutral', metal: 0.25 },
   { id: 'silver',   label: 'Silver',           hex: 0xb4bcc3, group: 'Neutral' },
   { id: 'alpine',   label: 'Alpine white',     hex: 0xdde1e4, group: 'Neutral', metal: 0.25 },
   { id: 'slate',    label: 'Slate',            hex: 0x596270, group: 'Neutral' },
   /* COOL */
   { id: 'teal',     label: 'Reference teal',   hex: 0x2a5666, group: 'Cool',
     note: 'the finish every rung has worn since Gen 1' },
-  { id: 'petrol',   label: 'Petrol',           hex: 0x123f4a, group: 'Cool' },
+  /* the ID stays `petrol` because it is what a stored preference holds; only
+     the LABEL is user-facing, and petrol is the British word for gasoline */
+  { id: 'petrol',   label: 'Deep teal',        hex: 0x123f4a, group: 'Cool' },
   { id: 'cobalt',   label: 'Cobalt',           hex: 0x1e4f9e, group: 'Cool' },
   { id: 'ice',      label: 'Ice blue',         hex: 0x6f9fd0, group: 'Cool' },
   { id: 'iris',     label: 'Iris',             hex: 0x5b4a92, group: 'Cool' },
@@ -1143,32 +2023,32 @@ const PAINTS = [
   { id: 'signal',   label: 'Signal red',       hex: 0xc0281e, group: 'Warm', metal: 0.30 },
   { id: 'oxblood',  label: 'Oxblood',          hex: 0x8a2230, group: 'Warm' },
 ];
-/* THE CAR ARRIVES IN A FINISH, not in a base colour. Alpine white under a
+/* THE CAR ARRIVES IN A FINISH, not in a base color. Alpine white under a
    brass pearl at 80 percent: white reads as white face-on and goes warm gold
    down the flanks and around every crease, which is the whole argument for
-   modelling paint as two coats rather than one, made by the car before
+   modeling paint as two coats rather than one, made by the car before
    anybody opens the control. Davis's pick. */
 const PAINT_DEFAULT = 'alpine';
 const PEARL_DEFAULT = 'brass';
 const PEARL_AMT_DEFAULT = 0.8;
 const paintById = (id) => PAINTS.find((p) => p.id === id) || null;
-/* per-part overrides are stored as a colour rather than an id, so the finish
-   type is recovered from the colour; every paint in the table is distinct */
+/* per-part overrides are stored as a color rather than an id, so the finish
+   type is recovered from the color; every paint in the table is distinct */
 const paintByHex = (hex) => PAINTS.find((p) => p.hex === hex) || null;
 
-/* ── SOLID OR METALLIC, on any colour ───────────────────────────────────
-   The palette declares which finish each colour normally is, because a solid
+/* ── SOLID OR METALLIC, on any color ───────────────────────────────────
+   The palette declares which finish each color normally is, because a solid
    white and a metallic silver are different products. But that is a default
-   and not a law: a colour can be ordered either way in the real world, and
+   and not a law: a color can be ordered either way in the real world, and
    asking the model for a metallic white or a solid cobalt is a reasonable
    thing to want. So the declared type is the starting point and this is an
-   explicit override that sticks across colour changes.
+   explicit override that sticks across color changes.
 
    `metallic` resolves to null rather than to 0.88, so it means "whatever
    common.js gave this material" and cannot drift from it. */
 const SOLID_METAL = 0.25;
 /* METALLIC BY DEFAULT, which is Davis's call and is also the finish every
-   render in design/ was taken in. `auto` would follow each colour's declared
+   render in design/ was taken in. `auto` would follow each color's declared
    type and put the shipped Alpine white default on 0.25, which reads white;
    metallic keeps whatever common.js gave the material and gives the bronze
    that white under a brass pearl actually makes on an 0.88 surface. The
@@ -1203,16 +2083,30 @@ try { paintId = localStorage.getItem('ev-paint') || PAINT_DEFAULT; } catch {}
 if (!PAINTS.some((p) => p.id === paintId)) paintId = PAINT_DEFAULT;
 
 /* Per-panel overrides, so the car can be two-tone. Keyed by "sys/part", which
-   means a colour put on body-11's shoulder does not follow you to Gen 9,
-   because that is a different part. Stored, like the body colour, because a
+   means a color put on body-11's shoulder does not follow you to Gen 9,
+   because that is a different part. Stored, like the body color, because a
    finish you chose is a preference and not a session. */
 let partPaints = {};
 try { partPaints = JSON.parse(localStorage.getItem('ev-paint-parts') || '{}'); } catch {}
 /* the same reason the unit restore is guarded: a stored value that is not a
-   colour reaches setHex and the car comes back black with no way out */
+   color reaches setHex and the car comes back black with no way out */
 if (!partPaints || typeof partPaints !== 'object' || Array.isArray(partPaints)) partPaints = {};
 for (const [k, v] of Object.entries(partPaints)) {
-  if (typeof v !== 'number' || !(v >= 0 && v <= 0xffffff)) delete partPaints[k];
+  /* INTEGER, not just a number in range. `typeof v === 'number'` with a
+     bounds check let 123.456 through, and Color.setHex floors its argument,
+     so a fractional value landed on a near-black color: exactly the black car
+     the guard above was written to prevent, reached by the one input it did
+     not reject. Number.isInteger also rejects NaN and Infinity, which the
+     comparison chain let through as false only by accident of NaN comparing
+     false to everything. */
+  if (!Number.isInteger(v) || v < 0 || v > 0xffffff) { delete partPaints[k]; continue; }
+  /* and a key has to name a part that still exists. A stored override for a
+     part that has since been renamed or removed can never be reached by any
+     control, but it is replayed into the viewer on every load and counted by
+     partPaintCount, so the faceplate read "1 panel in its own color" over a
+     car with no such panel, permanently. hasOwn rather than a truthiness
+     test, because byKey['__proto__'] is Object.prototype and passes one. */
+  if (!Object.hasOwn(byKey, k)) delete partPaints[k];
 }
 const savePartPaints = () => {
   try { localStorage.setItem('ev-paint-parts', JSON.stringify(partPaints)); } catch {}
@@ -1224,7 +2118,7 @@ const swatchOf = (hex) => '#' + hex.toString(16).padStart(6, '0');
    state than the first needs.
 
    SOLID IS STORED AS "none" AND NOT AS A MISSING KEY. The default pearl is a
-   real colour now, so "no key" and "the user chose solid" stopped meaning the
+   real color now, so "no key" and "the user chose solid" stopped meaning the
    same thing: removing the key on solid would hand brass straight back on the
    next load and there would be no way to keep a solid car. An absent key is a
    first visit; the string "none" is a decision. */
@@ -1252,8 +2146,8 @@ function refreshPaintBtn() {
   const article = (w) => ('aeiou'.includes(w[0].toLowerCase()) ? 'an' : 'a');
   paintBtn.title = (base ? base.label : 'Paint') +
     (pearl ? ` with ${article(pearl.label)} ${pearl.label.toLowerCase()} pearl` : ', solid') +
-    (n === 0 ? '' : n === 1 ? ' · 1 panel in its own colour'
-                            : ` · ${n} panels in their own colours`);
+    (n === 0 ? '' : n === 1 ? ' · 1 panel in its own color'
+                            : ` · ${n} panels in their own colors`);
 }
 
 function setPaint(id) {
@@ -1305,7 +2199,7 @@ function buildFinishMenu() {
     return wrap;
   };
 
-  /* base coat, grouped the way the palette is organised */
+  /* base coat, grouped the way the palette is organized */
   menu.append(el('div', 'fin-h', 'Base coat'));
   let last = null;
   for (const g of ['Neutral', 'Cool', 'Warm']) {
@@ -1324,7 +2218,7 @@ function buildFinishMenu() {
   };
   for (const r of menu.querySelectorAll('.sw-grid')) r.classList.add('fin-base');
 
-  /* solid or metallic, on whatever colour is chosen */
+  /* solid or metallic, on whatever color is chosen */
   const finRow = el('div', 'fin-seg');
   const segs = {};
   for (const mode of ['solid', 'metallic']) {
@@ -1344,7 +2238,7 @@ function buildFinishMenu() {
 
   menu.append(el('div', 'fin-h', 'Pearl coat'));
   menu.append(el('p', 'fin-note',
-    'A second colour in the mid coat. It tints the panel face-on and takes ' +
+    'A second color in the mid coat. It tints the panel face-on and takes ' +
     'over at a glancing angle, so the car changes as it turns.'));
   const pearlItems = [{ id: null, label: 'Solid, no pearl', hex: null },
                       ...PAINTS.map((p) => ({ id: p.id, label: p.label, hex: p.hex }))];
@@ -1370,7 +2264,7 @@ function buildFinishMenu() {
   menu.append(amtRow);
   syncAmt();
 
-  /* ── PANELS IN THEIR OWN COLOUR ─────────────────────────────────────
+  /* ── PANELS IN THEIR OWN COLOR ─────────────────────────────────────
      A gap in the first version of this: painting a panel is easy, the
      override persists across sessions, and there was NO way to see which
      panels carried one or to put them back. The faceplate button counted
@@ -1380,7 +2274,7 @@ function buildFinishMenu() {
      rather than the count, because the count was never the question. */
   const keys = Object.keys(partPaints);
   if (keys.length) {
-    menu.append(el('div', 'fin-h', 'Panels in their own colour'));
+    menu.append(el('div', 'fin-h', 'Panels in their own color'));
     const list = el('div', 'fin-over');
     for (const k of keys) {
       const def = DEFS[k.split('/')[0]];
@@ -1390,7 +2284,7 @@ function buildFinishMenu() {
       row.style.setProperty('--sw', swatchOf(partPaints[k]));
       row.innerHTML = `<em class="sw"></em><b>${esc(meta ? meta.name : k)}</b>` +
                       `<span>${esc(pt ? pt.label : 'custom')}</span><u>clear</u>`;
-      row.title = 'Put ' + (meta ? meta.name : k) + ' back on the body colour';
+      row.title = 'Put ' + (meta ? meta.name : k) + ' back on the body color';
       row.onclick = () => {
         delete partPaints[k];
         viewer.setPartPaint(k, null);
@@ -1402,7 +2296,7 @@ function buildFinishMenu() {
       list.append(row);
     }
     menu.append(list);
-    const all = el('button', 'fin-reset', 'Put every panel back on the body colour');
+    const all = el('button', 'fin-reset', 'Put every panel back on the body color');
     all.onclick = () => {
       for (const k of Object.keys(partPaints)) { delete partPaints[k]; viewer.setPartPaint(k, null); }
       savePartPaints();
@@ -1436,22 +2330,329 @@ function buildFinishMenu() {
   setPaint(paintId);
   setPearl(pearlId, pearlAmt);
   /* restore the overrides AFTER the coats, so a panel that carries one is not
-     briefly repainted to the body colour and back. setPartPaint records the
+     briefly repainted to the body color and back. setPartPaint records the
      override whether or not that system is built yet, and indexSystem reads
-     it back when a variant builds, so a stored colour survives a generation
+     it back when a variant builds, so a stored color survives a generation
      the session has never visited. */
   for (const [k, v] of Object.entries(partPaints)) viewer.setPartPaint(k, v, metalOf(paintByHex(v)));
   refreshPaintBtn();
 }
 
 /* ── Finish, offered on the parts that actually wear paint ───────────────
-   Not on the faceplate. The faceplate control is the CAR's colour and there
+   Not on the faceplate. The faceplate control is the CAR's color and there
    is no room on it for a second scope, and more to the point the question
-   "what colour is this panel" belongs where the panel is already open. A
-   part that is not sprayed in body colour is never offered a swatch row it
-   could not honour: viewer.isPainted answers off the material set, so glass,
+   "what color is this panel" belongs where the panel is already open. A
+   part that is not sprayed in body color is never offered a swatch row it
+   could not honor: viewer.isPainted answers off the material set, so glass,
    carbon, alu, cast and rubber say no on their own without a list here. */
-function finishRow(key) {
+/* ── WHAT A TERM IS WORTH ───────────────────────────────────────────────
+
+   The app could say what a rung MOVED, in the waterfall, and never what a
+   term is WORTH, which is the question every one of the 328,613 words was
+   actually settled on. design/retro-gen8.md concludes that 1,800 miles needs
+   several levers at once rather than one clever generation; that sentence is
+   an exchange rate, and a reader had none.
+
+   So each loss panel prints one line: take this car, move ONE input by a
+   stated step, and report the miles. It is the shipped budget called twice.
+   Nothing here is a slider: the moment a reader can drag Cd to 0.09 the app
+   is showing figures for a car nobody built, which is the thing
+   design/app-brief.md rules out. Fixed steps, stated beside their answer.
+
+   IT IS NOT ON THE READOUT CARD, deliberately. That card already carries a
+   headline, a consumption line, the ladder strip, five waterfall rows, a
+   shared scale, the pack gauge and a stats strip. This goes in the panel a
+   reader deliberately opened about that exact term.
+
+   MASS MOVES TWO TERMS AT ONCE and the line says so where it appears: the
+   figure is the whole car's response to 100 kg, not that row's share of it,
+   which is the same honesty js/compare.js practices about its residual. */
+/* Each lever names its DIRECTION, because "100 kg is worth +13 mi" does not
+   say which way the hundred kilograms went. Every one of them is a removal:
+   this is a ladder that gets better, and the question a reader is asking is
+   what the next kilogram out would buy. */
+const LEVERS = {
+  Rolling: [
+    { label: '100 kg out', mass: -100 },
+    { label: '1 kg/t less rolling resistance', over: { crrDelta: -0.001 } },
+  ],
+  'Stop-go': [{ label: '100 kg out', mass: -100 }],
+  Aero: [{ label: '0.1 m2 off the frontal area', over: { areaDelta: -0.1 } }],
+  Auxiliary: [{ label: '100 W less auxiliary draw', over: { auxDelta: -100 } }],
+  'Battery losses': [{ label: 'one point less round-trip loss', over: { battDelta: -0.01 } }],
+};
+
+function leverLine(label) {
+  const levers = LEVERS[label];
+  if (!levers) return null;
+  const ids = activeDefs().map((d) => d.id);
+  const mass = activeDefs().reduce((a, d) =>
+    a + Object.values(d.parts).reduce((b, x) => b + (x.mass || 0), 0), 0);
+  const base = computeBudget(ids, mass);
+  const baseMi = base.rangeKm * MI_PER_KM;
+
+  const rows = [];
+  for (const lv of levers) {
+    /* the override is expressed as a DELTA on the model's own value, because
+       the absolute numbers belong to the modules and this must not restate
+       them: read the base budget's own inputs, move one, ask again */
+    let over = null;
+    if (lv.over) {
+      const cur = base.inputs;
+      over = {};
+      if ('crrDelta' in lv.over) over.crr = cur.crr + lv.over.crrDelta;
+      if ('areaDelta' in lv.over) over.area = cur.area + lv.over.areaDelta;
+      if ('auxDelta' in lv.over) over.auxW = Math.max(120, cur.auxW + lv.over.auxDelta);
+      if ('battDelta' in lv.over) over.battLoss = cur.battLoss + lv.over.battDelta;
+    }
+    const alt = computeBudget(ids, mass + (lv.mass || 0), over);
+    const d = alt.rangeKm * MI_PER_KM - baseMi;
+    if (Math.abs(d) < 0.05) continue;
+    rows.push([lv.label, `${signed(asDist(d), 0)} ${U().d}`]);
+  }
+  if (!rows.length) return null;
+
+  const wrap = el('div', 'lever');
+  wrap.append(el('b', null, 'What it is worth on this car'));
+  for (const [k, v] of rows) {
+    const line = el('div', 'lever-row');
+    line.append(el('span', null, k), el('u', null, v));
+    wrap.append(line);
+  }
+  wrap.append(el('small', null, label === 'Rolling' || label === 'Stop-go'
+    ? 'Mass moves rolling and stop-go together, so the figure is the whole car\'s response rather than this row\'s share. Estimate, at the cycle mean.'
+    : 'Estimate, at the cycle mean, with everything else on this car held.'));
+  return wrap;
+}
+
+/* ── THE PART ON THE LADDER ─────────────────────────────────────────────
+
+   Eleven ticks under the mass chip: one per rung, filled on every rung whose
+   module draws a part with this id, and the rung on screen marked. Pressing a
+   tick swaps that rung's module into this slot and opens the same part there.
+
+   IT IS A NEW AXIS, not a second view of one the app already had. Compare
+   mode compares whole cars; the rail says "carried from Gen N" about a
+   MODULE; nothing anywhere said whether the part you are reading is new or is
+   the ninth drawing of a thing that has been on the car since Gen 1. The
+   doors run 82, 46, 41, 38, 38, 34, 34, 34, 34, 34, 22 kg across eleven
+   rungs, and that line is the whole ladder told through one part.
+
+   MATCHED BY PART ID, and the caption says so, because that is the honest
+   limit: a part renamed between two modules reads as absent on the earlier
+   rung rather than as continuous. 103 of the 170 part ids in the tree appear
+   in more than one module of their own slot, so most parts have a line to
+   draw; the ones that do not are drawn as a single tick, which is itself the
+   fact that they are new.
+
+   No new data. GENERATIONS gives each rung's module for the slot, and the
+   module's own parts table gives the declared mass. */
+function lineageStrip(def, pid) {
+  const slotDef = slotOf(def.id);
+  if (!slotDef) return el('span');
+  const row = LADDER.map((g) => {
+    const sys = g.choices[slotDef.slot];
+    const part = DEFS[sys] && DEFS[sys].parts[pid];
+    return { gen: g, sys, part };
+  });
+  const on = row.filter((r) => r.part);
+  if (on.length < 2) return el('span');        // one tick is not a lineage
+
+  const wrap = el('div', 'lin');
+  const strip = el('div', 'lin-ticks');
+  /* MARKED BY MODULE, not by rung. Pressing a tick swaps that rung's module
+     into this one slot and leaves the rest of the car alone, which is what
+     every other jump in this app does and is the precise answer to "show me
+     this part as Gen 3 drew it". The car is then a custom mix and no single
+     rung is current, so marking by rung would leave the strip with nothing
+     lit and the reader with no place. Marking by module lights every rung
+     that uses the module now in the slot, which is also the truer statement:
+     body-9 is the door on both Gen 9 and Gen 10. */
+  const inSlot = VARIANT_CHOICE[slotDef.slot];
+  for (const r of row) {
+    /* `r.part &&` matters, and Davis found it by asking what the bars mean.
+       Lighting a rung on the module alone paints a rung where THIS PART DOES
+       NOT EXIST in the full system accent, identical to the rung you are
+       standing on, while its tooltip reads "not on this rung" and it cannot be
+       pressed. body-aero/skin was the clean case: Gen 1 runs the `body`
+       module, which is the module in the slot, but `body` draws no `skin`, so
+       Gen 1 came up bright blue and dead. 225 of the 419 parts with a lineage
+       had at least one, which is 54 percent of them. The accent means "here,
+       now, and you can read it"; absence gets the empty tick it always had. */
+    const t = el('button', 'lin-t' + (r.part ? ' has' : '') +
+                           (r.part && r.sys === inSlot ? ' on' : ''));
+    /* the module's short label only when it says something the rung label
+       does not: the Gen 1 body variant is called "Gen 1", and "Gen 1 · Gen 1"
+       is a tooltip that has learned nothing */
+    const ml = r.part ? moduleLabel(slotDef.slot, r.sys) : null;
+    t.title = r.part
+      ? `${r.gen.label}${ml && ml !== r.gen.label ? ' · ' + ml : ''} · ${r.part.mass || 0} kg`
+      : `${r.gen.label} · not on this rung`;
+    t.setAttribute('aria-label', t.title);
+    if (r.part) {
+      t.onclick = () => {
+        const k = r.sys + '/' + pid;
+        const go = () => { setVariant(slotDef.slot, r.sys); viewer.select(k); openPanel(k); };
+        viewer.hasSystem(r.sys) ? go() : withBusy(go);
+      };
+    } else {
+      t.disabled = true;
+    }
+    strip.append(t);
+  }
+  wrap.append(strip);
+
+  /* the line in words, because eleven ticks say WHERE and the masses say
+     WHAT IT COST, which is the half worth reading */
+  const first = on[0], last = on[on.length - 1];
+  const m0 = first.part.mass || 0, m1 = last.part.mass || 0;
+  const span = on.length === LADDER.length
+    ? `On every rung`
+    : `On ${on.length} of ${LADDER.length} rungs, from ${first.gen.label}`;
+  /* EVERY RUNG, not the two ends. This compared first against last, so a part
+     that put mass on and took it back off again read as "N kg throughout",
+     which is a claim about the whole line made from two samples of it. The
+     same blind spot hides an excursion PAST both ends: 10 to 20 to 12 printed
+     "10 to 12 kg" and lost the 20 entirely. Both are the shape of fault this
+     project keeps finding, an aggregate standing in for the thing itself, so
+     the line now says which of the four cases it is. */
+  const masses = on.map((r) => r.part.mass || 0);
+  const lo = Math.min(...masses), hi = Math.max(...masses);
+  let mass = '';
+  if (m0) {
+    if (lo === hi) mass = `, ${m0} kg throughout`;
+    else if (m0 === m1) mass = `, ${m0} kg at both ends, ${lo} to ${hi} in between`;
+    else if (lo === Math.min(m0, m1) && hi === Math.max(m0, m1)) mass = `, ${m0} to ${m1} kg`;
+    else mass = `, ${m0} to ${m1} kg, and ${lo} to ${hi} across the line`;
+  }
+  wrap.append(el('div', 'lin-foot', `${span}${mass}`));
+  /* the honest limit, where a reader can reach it and where it costs no line:
+     the match is by part id, so a renamed part reads as absent rather than as
+     continuous */
+  strip.title = 'Rungs that draw this part id. Press one to read it there.';
+  return wrap;
+}
+
+/* ── THE PANEL OPENS ON THE ENGINEERING ─────────────────────────────────
+
+   It did not. Every one of the 455 part panels appended a 21 swatch color
+   grid ABOVE the specification, so the first 424 px of a part at 1440 by 900
+   was chrome, the whole opening screen of every part on a phone was a control
+   nobody came for, and the reading strip announced FINISH as the first
+   section of an engineering document.
+
+   The control does not go away, it goes where it belongs: a chip beside the
+   mass, filled with the color the part is wearing, opening the same swatch
+   row in a popover on the same plate every other menu in this app uses. It is
+   one press from every panel instead of 94 px above every panel, and the
+   section strip now lists only what the document actually contains.
+
+   The buried-part warning moves with it, because that warning is about what a
+   color will do and belongs where the color is chosen. */
+function finishChip(key) {
+  const painted = viewer.isPainted(key);
+  if (!painted && !viewer.isTintable(key)) return null;
+  const chip = el('button', 'chip chip-fin');
+  chip.type = 'button';
+  chip.innerHTML = `<small>${painted ? 'finish' : 'color'}</small><i class="chip-sw"></i>`;
+  const dot = chip.querySelector('.chip-sw');
+  const paint = () => {
+    const hex = viewer.partColor(key);
+    dot.style.setProperty('--sw', hex == null ? 'transparent' : swatchOf(hex));
+    const own = viewer.getPartPaint(key);
+    chip.title = own == null
+      ? (painted ? 'Body color. Press to give this panel its own.' : 'As built. Press to change this part\'s color.')
+      : `${(paintByHex(own) || {}).label || 'Custom'}. Press to change it.`;
+  };
+  paint();
+  chip.onclick = () => {
+    if (openMenu && menuBtn === chip) { closeMenu(true); return; }
+    closeMenu();
+    const menu = el('div', 'dd-menu fin-pop');
+    menu.append(finishRow(key, paint));
+    if (!painted) {
+      menu.append(el('div', 'sw-note',
+        'The material is unchanged: only its color moves, so the part keeps the way it takes light.'));
+    }
+    const buried = hiddenNote(key);
+    if (buried.className) menu.append(buried);
+    mountMenu(chip, menu);
+  };
+  return chip;
+}
+
+/* A MASS WITH NOTHING TO MEASURE IT AGAINST IS A NUMBER. This is the same sum
+   the readout already prints as curb mass, cut two ways: what this part is of
+   its own module, and what it is of the whole car in front of you. */
+function massShare(def, m) {
+  if (!m.mass) return null;
+  const sysMass = Object.values(def.parts).reduce((a, x) => a + (x.mass || 0), 0);
+  const carMass = activeDefs().reduce((a, d) =>
+    a + Object.values(d.parts).reduce((b, x) => b + (x.mass || 0), 0), 0);
+  if (!sysMass || !carMass) return null;
+  const pc = (v) => (v >= 10 ? v.toFixed(0) : v.toFixed(1));
+  return el('div', 'p-share',
+    `${pc((m.mass / sysMass) * 100)}% of ${esc(slotName(def).toLowerCase())} · ` +
+    `${pc((m.mass / carMass) * 100)}% of the car`);
+}
+
+/* A COLOR YOU CANNOT SEE IS INDISTINGUISHABLE FROM A CONTROL THAT DOES
+   NOTHING, and this app had one. Davis reported that the Gen 11 wheels do not
+   change color. They do: on that rung the full-face covers close over the
+   whole corner, and a sweep of 3,225 pixels across the front corner returns
+   only `tires` and `covers`, so the forged wheels, the discs, the calipers and
+   the park brake are unreachable by any ray from outside the car. The swatch
+   worked and the car never showed it.
+
+   So the panel says so, in the moment, measured from where the camera is
+   standing rather than from a list of which parts are usually buried. It also
+   names what is over the part and offers the one control that gets it back,
+   because a note that only reports a problem is half a fix. */
+function hiddenNote(key) {
+  const vis = viewer.partVisibility(key);
+  if (!vis.known || vis.visible) return el('span');
+  const wrap = el('div', 'sw-hidden');
+  const blocker = vis.blockedBy && byKey[vis.blockedBy];
+  const name = blocker ? blocker.meta.name : null;
+  /* THE PART IS THE SUBJECT OF THE SENTENCE, and it was not. This read
+     "Behind Aero wheel covers on this car: a color set here shows while the
+     part is selected, and no view from outside can see it", and Davis, who
+     wrote the model it is describing, could not tell what it meant. Four
+     things were wrong at once, and they compound:
+
+       - it OPENED ON THE BLOCKER, in bold, so the eye lands on "Aero wheel
+         covers" and the note reads as though it is about the covers rather
+         than about the part whose panel is open;
+       - the part is never named, only called "the part", so the reader has to
+         work out which of the two things in the sentence it means;
+       - it leads with the consolation and buries the point, so the fact that
+         the color will not be visible arrives last;
+       - "no view from outside can see it" leaves "it" ambiguous between the
+         color and the part, and a view does not see anything.
+
+     Now: the fact, then what it costs you. The old note avoided a verb after
+     the blocker's name because a part title can be singular or plural, and
+     "Full-face covers cover this part" and "Gen 11 skin cover this part" were
+     both wrong at once. Making the part the subject dissolves that: the verb
+     agrees with "This part" and the blocker is only ever the object of a
+     preposition, so it can be any number at all. */
+  wrap.append(el('span', null, name
+    ? `This part is hidden behind <b>${esc(name)}</b>. A color set here will not show ` +
+      'from outside the car, only with the part selected or in x-ray.'
+    : 'This part is enclosed inside the car. A color set here will not show from outside, ' +
+      'only with the part selected or in x-ray.'));
+  const btn = el('button', 'sw-xray', xrayIsOn() ? 'x-ray is on' : 'turn on x-ray');
+  btn.onclick = () => {
+    setXray(true);
+    btn.textContent = 'x-ray is on';
+    btn.disabled = true;
+  };
+  btn.disabled = xrayIsOn();
+  wrap.append(btn);
+  return wrap;
+}
+
+function finishRow(key, onPick) {
   const row = el('div', 'sw-row');
   const pick = (hex) => {
     if (hex == null) delete partPaints[key];
@@ -1463,6 +2664,7 @@ function finishRow(key) {
        the scroll position of whatever the user was reading */
     for (const b of row.children) b.classList.remove('on');
     row.querySelector(`[data-hex="${hex == null ? 'body' : hex}"]`)?.classList.add('on');
+    onPick?.();
   };
   const cur = viewer.getPartPaint(key);
   const add = (label, hex) => {
@@ -1474,7 +2676,9 @@ function finishRow(key) {
     b.onclick = () => pick(hex);
     row.append(b);
   };
-  add('Match the body', null);
+  /* the empty well is "no override", which reads as "match the body" on a
+     panel that follows the respray and as "as built" on anything else */
+  add(viewer.isPainted(key) ? 'Match the body' : 'As built', null);
   for (const p of PAINTS) add(p.label, p.hex);
   return row;
 }
@@ -1502,6 +2706,7 @@ function openPanel(key) {
   const color = hexOf(def);
   setSel(def);
   panelIsCompare = false;
+  lossOpen = null;
   const p = $('#panelIn');
   p.innerHTML = '';
 
@@ -1509,8 +2714,8 @@ function openPanel(key) {
      walks the system's parts in place, so browsing a system does not mean
      closing the panel and re-selecting it for every part. */
   const nav = el('div', 'p-nav');
-  /* the system colour keys the 3D model, so it stays, but as a 3 px index
-     tab rather than a whole line of coloured type */
+  /* the system color keys the 3D model, so it stays, but as a 3 px index
+     tab rather than a whole line of colored type */
   const back = el('button', 'p-back');
   /* names the rail row you go back to, not the variant, so the label is
      short enough to set whole and the way back is unambiguous */
@@ -1522,12 +2727,16 @@ function openPanel(key) {
 
   const ids = Object.keys(def.parts);
   const idx = ids.indexOf(rec.part);
+  panelStep = null;
   if (ids.length > 1 && idx >= 0) {
     const go = (d) => {
       const k = def.id + '/' + ids[idx + d];
+      if (!k || !ids[idx + d]) return;
       viewer.select(k);
       openPanel(k);
     };
+    /* the same walk the arrow keys take; see the note where they are bound */
+    panelStep = go;
     const steps = el('div', 'p-steps');
     const prev = el('button', null, '‹');
     const next = el('button', null, '›');
@@ -1545,9 +2754,26 @@ function openPanel(key) {
   const chips = el('div', 'chips');
   if (m.mass) chips.append(el('span', 'chip', `<small>mass</small>${m.mass} kg`));
   if (m.count) chips.append(el('span', 'chip', `<small>qty</small>${m.count}`));
+  /* the color control is a CHIP here, beside the mass, not a swatch grid at
+     the top of the document. See finishChip. */
+  const fin = finishChip(key);
+  if (fin) chips.append(fin);
   p.append(chips);
+  /* what share of its own system and of the whole car this part is: a mass
+     with nothing to measure it against is a number, and this is the first
+     time the panel says how much of the car you are looking at */
+  const shareLine = massShare(def, m);
+  if (shareLine) p.append(shareLine);
+  p.append(lineageStrip(def, rec.part));
 
-  if (viewer.isPainted(key)) { p.append(el('h5', null, 'Finish'), finishRow(key)); }
+  /* EVERY PART CAN CARRY A COLOR NOW, and the heading says which kind.
+     A body panel gets FINISH: the override goes through the paint machinery,
+     under the same clearcoat and pearl as the car, and clearing it puts the
+     panel back on the body color. Anything else gets COLOR: its own
+     materials keep their roughness, metalness and sheen and only the hue
+     moves, so a tinted tire still reads as rubber. Davis asked for the
+     wheels and the covers, which are the second kind. */
+
   if (m.specs?.length) { p.append(el('h5', null, 'Specification'), specTable(m.specs)); }
   if (m.how) { p.append(el('h5', null, 'How it works'), el('div', null, para(m.how))); }
   if (m.why) { p.append(el('h5', null, 'Why this design'), el('div', null, para(m.why))); }
@@ -1559,6 +2785,15 @@ function openPanel(key) {
     for (const f of m.fail) ul.append(el('li', null, linkify(f)));
     p.append(ul);
   }
+
+  sectionNav(p);
+  /* A panel is a place, and arriving at one starts at its top. Stepping from
+     part seven to part eight of a module used to land wherever the last
+     panel had been scrolled to, which on a long one is the middle of a
+     failure mode. The paint picker is careful NOT to rebuild the panel for
+     exactly this reason, so every call that reaches here is a navigation. */
+  p.scrollTop = 0;
+  spySections();
 
   $('#panel').classList.add('on');
   for (const [k, b] of Object.entries(itemBtns)) b.classList.toggle('on', k === key);
@@ -1604,9 +2839,9 @@ function linkify(text) {
   return esc(String(text)).replace(XREF, (id) => {
     const def = DEFS[id];
     if (!def) return id;
-    /* the link carries its TARGET's colour, so where it goes is readable
+    /* the link carries its TARGET's color, so where it goes is readable
        before it is clicked, and it stays neutral until hovered so a dense
-       paragraph does not turn into nine colours of underline */
+       paragraph does not turn into nine colors of underline */
     return `<a class="xref" data-sys="${id}" style="--sys:${hexOf(def)}" ` +
            `title="${esc(def.name)}">${id}</a>`;
   });
@@ -1664,6 +2899,8 @@ function openComparePanel() {
   if (viewer.getSelected()) viewer.select(null);
   for (const b of Object.values(itemBtns)) b.classList.remove('on');
   panelIsCompare = true;
+  lossOpen = null;
+  panelStep = null;
   applyCompareGhost();
   setSel(null);
 
@@ -1798,6 +3035,10 @@ function openComparePanel() {
       `coupling between the slots rather than an error in either number.`)));
   }
 
+  sectionNav(p);
+  p.scrollTop = 0;
+  spySections();
+
   $('#panel').classList.add('on');
 }
 
@@ -1806,6 +3047,8 @@ function openSystemPanel(def) {
   const color = hexOf(def);
   setSel(def);
   panelIsCompare = false;
+  lossOpen = null;
+  panelStep = null;
   const p = $('#panelIn');
   p.innerHTML = '';
 
@@ -1837,7 +3080,7 @@ function openSystemPanel(def) {
 
   /* ── WHO NAMES THIS MODULE ────────────────────────────────────────────
      The forward links let you follow a reference out. This is the same web
-     read backwards, and it is the more surprising direction: hv-4 is named
+     read backward, and it is the more surprising direction: hv-4 is named
      in the writing of 239 parts, which is a fact about how central that
      module is that nothing in the app could previously say.
      It hands off to the search rather than growing its own list, because
@@ -1870,14 +3113,98 @@ function openSystemPanel(def) {
     p.append(row);
   });
 
+  sectionNav(p);
+  p.scrollTop = 0;
+  spySections();
+
   $('#panel').classList.add('on');
   for (const b of Object.values(itemBtns)) b.classList.remove('on');
 }
 
+/* ── Section marks and the reading column ───────────────────────────────
+
+   A part panel is between 583 words and 4,820 of them, and until this the
+   only way to know what was in one was to scroll it. The strip lists the
+   sections a panel actually has, sticks to the top of the scroll once the
+   title has passed, and marks the one being read.
+
+   ONE LISTENER FOR THE LIFE OF THE PAGE, not one per panel. openPanel
+   replaces the contents of #panelIn on every selection, so a listener added
+   during a build would have to be taken off during the next one, and the
+   scroll container is the same element throughout anyway. The heading list
+   is what changes, so that is what is swapped. */
+const SECT_SHORT = {
+  'Specification': 'spec',
+  'How it works': 'how',
+  'Why this design': 'why',
+  'Failure modes and limits': 'limits',
+  'What it bought': 'bought',
+  'Where the energy went': 'energy',
+  'Reading the slot figures': 'reading',
+  /* the closure card has two headings starting with "What", so the first
+     word rule gives it two marks reading the same thing */
+  'What it costs in space': 'space',
+  'How it opens': 'opens',
+  'What it costs': 'costs',
+};
+let panelHeads = [];
+let panelMarks = [];
+
+function sectionNav(p) {
+  panelHeads = [...p.querySelectorAll('h5')];
+  panelMarks = [];
+  /* one heading is not a structure, and a strip that says "spec" over a
+     panel whose whole content is the spec is furniture */
+  if (panelHeads.length < 2) return;
+  const strip = el('div', 'p-sects');
+  panelHeads.forEach((h, i) => {
+    /* one word, and not the first one when the first one is a count: the
+       compare panel's slot heading is "9 slots", whose first word is 9 */
+    const words = h.textContent.split(' ');
+    const label = SECT_SHORT[h.textContent] ||
+      (/^\d+$/.test(words[0]) ? words[1] : words[0]).toLowerCase();
+    const b = el('button', null, label);
+    b.title = h.textContent;
+    b.onclick = () => {
+      /* 44 px above the heading: the strip is 36 and the gap is what stops
+         the heading sitting under its own mark */
+      $('#panelIn').scrollTo({ top: h.offsetTop - 44, behavior: 'smooth' });
+    };
+    strip.append(b);
+    panelMarks.push(b);
+  });
+  panelHeads[0].parentNode.insertBefore(strip, panelHeads[0]);
+}
+
+function spySections() {
+  if (!panelMarks.length) return;
+  const st = $('#panelIn').scrollTop + 56;
+  let at = 0;
+  for (let i = 0; i < panelHeads.length; i++) if (panelHeads[i].offsetTop <= st) at = i;
+  for (let i = 0; i < panelMarks.length; i++) panelMarks[i].classList.toggle('on', i === at);
+}
+$('#panelIn').addEventListener('scroll', spySections, { passive: true });
+
+/* Sticky across visits, like the rail and the readout, because it is a
+   reading preference rather than a state of the model. */
+function setReadWide(on) {
+  document.body.classList.toggle('read-wide', on);
+  $('#panelWide').setAttribute('aria-pressed', on ? 'true' : 'false');
+  $('#panelWide').title = on ? 'Narrow the reading column' : 'Widen the reading column';
+  try { localStorage.setItem('ev-read-wide', on ? '1' : '0'); } catch {}
+  /* the headings moved, so the marks are reading stale offsets */
+  spySections();
+}
+$('#panelWide').onclick = () =>
+  setReadWide(!document.body.classList.contains('read-wide'));
+try { if (localStorage.getItem('ev-read-wide') === '1') setReadWide(true); } catch {}
+
 function closePanel() {
   $('#panel').classList.remove('on');
+  panelStep = null;
   setSel(null);
   panelIsCompare = false;
+  lossOpen = null;
   for (const b of Object.values(itemBtns)) b.classList.remove('on');
 }
 
@@ -1898,7 +3225,16 @@ let spinOn = true;
 try { spinOn = localStorage.getItem('ev-autorotate') !== '0'; } catch {}
 function setSpin(on) {
   spinOn = on;
-  viewer.setAutoRotate(on);
+  /* The tour holds the turntable for its duration, and setTour says why: the
+     two frontal-area stops ARE the silhouette, and seven idle seconds of
+     turntable turns the evidence away while it is being read. That
+     suppression went through the viewer rather than through this switch
+     precisely so the preference survives, but this function then wrote
+     straight past it: pressing the button mid-tour started the car spinning
+     off the authored station. The preference is still recorded and still
+     saved below; it is applied when the tour hands the car back, at the
+     setAutoRotate(spinOn) in setTour. */
+  if (!tourOn) viewer.setAutoRotate(on);
   $('#btnSpin').classList.toggle('on', on);
   $('#btnSpin').title = on ? 'Auto-rotate when idle (on)' : 'Auto-rotate when idle (off)';
   try { localStorage.setItem('ev-autorotate', on ? '1' : '0'); } catch {}
@@ -1935,7 +3271,10 @@ try { if (localStorage.getItem('ev-eff-hidden') === '1') setEffHidden(true); } c
 
 /* the slider's track fills to the thumb, so the control reads its own value
    at a glance the way a gauge does */
-const expSlider = $('.slider');
+/* scoped to its own group: the section plate below carries a second slider
+   built from the same class, and this used to be a bare $('.slider') that
+   worked only because document order happened to put the faceplate first */
+const expSlider = $('#pExp .slider');
 function setExplodeVal(v) {
   expSlider.style.setProperty('--v', v + '%');
   $('#expVal').textContent = v + '%';
@@ -1945,7 +3284,307 @@ $('#exp').oninput = (e) => {
   setExplodeVal(e.target.value);
 };
 setExplodeVal($('#exp').value);
-$('#btnXray').onclick = (e) => viewer.setXray(e.currentTarget.classList.toggle('on'));
+/* One way in and out of x-ray, because the tour drives it too and a second
+   caller reaching straight past the button would leave the switch lit for a
+   shell that is solid, or dark for one that is not. */
+function setXray(on) {
+  $('#btnXray').classList.toggle('on', on);
+  viewer.setXray(on);
+}
+const xrayIsOn = () => $('#btnXray').classList.contains('on');
+$('#btnXray').onclick = () => setXray(!xrayIsOn());
+
+/* ── The section ────────────────────────────────────────────────────────
+
+   X-ray fades the shell and shows you a ghost of what is behind it. A
+   SECTION cuts the car on a plane and shows you the real thing: where the
+   pack floor sits under the seat, how deep the tunnel is, what the tandem
+   cabin actually did to the package. design/app-brief.md section 3 asks for
+   cutaway and section views, and this is that.
+
+   THE PLANE IS IN THE CAR'S OWN METERS, which is the difference between a
+   toy and an instrument. The slider does not run 0 to 100 percent of a
+   bounding box: it runs the real extent of the vehicle on that axis, the
+   readout prints the station in meters, and 0 on the long axis is the
+   centerline every module in js/systems already measures itself against.
+
+   THE NEAR HALF GOES FIRST. Picking an axis chooses the side to remove from
+   where the camera is standing, because a cut whose closed face is toward
+   you is indistinguishable from no cut at all, and that first impression is
+   the whole feature. Orbiting past the plane afterward does NOT re-flip it:
+   a view that reorganizes itself while it is being dragged is worse than one
+   that needs a button, and the button is right there. */
+
+const CUT_AXES = [
+  { id: 'long',  label: 'along',  axis: 'z',
+    note: 'the centerline section: cabin, tunnel and pack floor in one cut' },
+  { id: 'cross', label: 'across', axis: 'x',
+    note: 'a station through the car, the way a body engineer draws it' },
+  { id: 'plan',  label: 'plan',   axis: 'y',
+    note: 'a horizontal cut: the pack, the floor and what sits on them' },
+];
+const AXIS_OF = Object.fromEntries(CUT_AXES.map((a) => [a.id, a.axis]));
+/* what the number beside the slider is a measurement OF */
+const CUT_READS = {
+  long:  'from centerline',
+  cross: 'along the car',
+  plan:  'above the floor',
+};
+
+let cutOn = false;
+let cutAxis = 'long';
+let cutAt = 0;
+let cutFlip = false;
+let cutEl = null;
+let cutInit = false;
+let cutRange = { min: -1, max: 1 };
+
+function cutBounds(axis) {
+  const box = viewer.vehicleBox();
+  if (!box) return { min: -1, max: 1 };
+  const k = AXIS_OF[axis];
+  /* a hair inside the extremes, because a plane exactly on the last vertex
+     of the car either clips everything or nothing and both ends of the
+     slider would then be dead travel */
+  return { min: box.min[k] + 0.01, max: box.max[k] - 0.01 };
+}
+
+function buildCut() {
+  if (cutEl) return cutEl;
+  cutEl = el('div', null);
+  cutEl.id = 'cut';
+  /* the outer element is a BAND across the free space and the inner one is
+     the plate; see the note in css/style.css on why the plate is not simply
+     centered on the window */
+  cutEl.innerHTML =
+    '<div class="cut-in">' +
+      '<small>section</small>' +
+      '<div class="cut-ax"></div>' +
+      '<span class="slider cut-slide"><input id="cutPos" type="range" min="0" max="1" step="0.005"></span>' +
+      '<b class="cut-val"></b>' +
+      '<button class="cut-flip" title="Keep the other half">flip</button>' +
+      '<button class="cut-x" aria-label="Stop sectioning">×</button>' +
+    '</div>';
+  document.body.append(cutEl);
+  /* the strip's height into --cuth, so the readout can start below it rather
+     than under it on a short window; see the note beside syncCutH */
+  syncCutH();
+  new ResizeObserver(syncCutH).observe(cutEl);
+
+  const ax = cutEl.querySelector('.cut-ax');
+  for (const a of CUT_AXES) {
+    const b = el('button', 'cut-axb', a.label);
+    b.title = a.note;
+    b.onclick = () => setCutAxis(a.id);
+    b.dataset.ax = a.id;
+    ax.append(b);
+  }
+  cutEl.querySelector('#cutPos').oninput = (e) => {
+    const t = +e.target.value;
+    cutAt = cutRange.min + t * (cutRange.max - cutRange.min);
+    applyCut();
+  };
+  cutEl.querySelector('.cut-flip').onclick = () => { cutFlip = !cutFlip; applyCut(); };
+  cutEl.querySelector('.cut-x').onclick = () => setCutOn(false);
+  return cutEl;
+}
+
+function applyCut() {
+  viewer.setCut(cutOn ? { axis: cutAxis, at: cutAt, flip: cutFlip } : null);
+  if (!cutEl) return;
+  const span = cutRange.max - cutRange.min || 1;
+  const t = Math.max(0, Math.min(1, (cutAt - cutRange.min) / span));
+  const slide = cutEl.querySelector('.cut-slide');
+  slide.style.setProperty('--v', (t * 100).toFixed(1) + '%');
+  cutEl.querySelector('#cutPos').value = String(t);
+  cutEl.querySelector('.cut-val').innerHTML =
+    `${cutAt.toFixed(3)}<i>m</i><span>${CUT_READS[cutAxis]}</span>`;
+  for (const b of cutEl.querySelectorAll('.cut-axb')) {
+    b.classList.toggle('on', b.dataset.ax === cutAxis);
+  }
+}
+
+/* The car changed under the plane: keep the axis and the half, re-measure
+   the travel, and hold the station where it is unless it now falls off the
+   end of the car. */
+function refreshCutRange() {
+  cutRange = cutBounds(cutAxis);
+  cutAt = Math.max(cutRange.min, Math.min(cutRange.max, cutAt));
+  applyCut();
+}
+
+/* Which half to keep, decided from where the camera is: the half the viewer
+   is standing in is the half that goes. */
+function cutFlipForCamera(axis, at) {
+  const p = viewer.cameraPos();
+  return p[AXIS_OF[axis]] < at;
+}
+
+function setCutAxis(id) {
+  cutAxis = id;
+  cutRange = cutBounds(id);
+  /* the centerline is the interesting place to start on the long axis and
+     the middle of the travel is the interesting place on the other two */
+  cutAt = id === 'long' ? 0 : (cutRange.min + cutRange.max) / 2;
+  cutFlip = cutFlipForCamera(id, cutAt);
+  applyCut();
+}
+
+function setCutOn(on) {
+  cutOn = on;
+  buildCut();
+  document.body.classList.toggle('cut', on);
+  $('#btnCut').classList.toggle('on', on);
+  $('#btnCut').setAttribute('aria-pressed', on ? 'true' : 'false');
+  /* The plane is chosen ONCE and then remembered. Deriving the axis defaults
+     on every activation threw away the station and the half a reader had
+     just set whenever anything took the section away and gave it back, and
+     the tour does exactly that. Only the first opening has nothing to
+     remember; after that the car may have changed underneath it, which is
+     what re-measuring the travel is for. */
+  if (!on) applyCut();
+  else if (cutInit) refreshCutRange();
+  else { cutInit = true; setCutAxis(cutAxis); }
+}
+$('#btnCut').onclick = () => setCutOn(!cutOn);
+
+/* ── OPEN: the closures, and what they cost in space ───────────────────
+
+   The band is the section strip's twin because it is the same kind of
+   control: a mode with a small number of choices and one measurement beside
+   them. What it adds over a row of toggles is the line on the right, which
+   is the whole reason the feature exists. A door is the one part of a car
+   whose cost is paid by the ground next to it, and nothing in this app could
+   say how much until the sweep existed.
+
+   Every figure in here is measured off the geometry on screen through
+   viewer.closureMetrics. Nothing is declared, so nothing can go stale
+   against a body that changed underneath it. */
+
+let openOn = false;
+let openEl = null;
+let openFocus = null;   // the closure whose numbers the band is showing
+
+const STALL_M = 2.50;
+
+function buildOpen() {
+  if (openEl) return openEl;
+  openEl = el('div', null);
+  openEl.id = 'open';
+  openEl.innerHTML =
+    '<div class="open-in">' +
+      '<small>open</small>' +
+      '<div class="open-list"></div>' +
+      '<button class="open-all" title="Open every panel at once">all</button>' +
+      '<button class="open-x" aria-label="Close the panels and leave">×</button>' +
+    '</div>';
+  document.body.append(openEl);
+  syncOpenH();
+  new ResizeObserver(syncOpenH).observe(openEl);
+  openEl.querySelector('.open-all').onclick = () => {
+    const list = viewer.closureList();
+    const anyShut = list.some((c) => !c.open);
+    viewer.setAllClosures(anyShut);
+    drawOpen();
+  };
+  openEl.querySelector('.open-x').onclick = () => setOpenOn(false);
+  return openEl;
+}
+
+/* One sentence about what this closure needs from the world around it. The
+   lateral figure is what a parking stall has to give it; the overhead one is
+   what a garage ceiling has to. A closure reports whichever it actually
+   spends, because a hood that needs no width and 412 mm of height and a door
+   that needs 965 mm of width and no height are the same measurement asked in
+   two directions. */
+function closureRead(key) {
+  const m = viewer.closureMetrics(key);
+  if (!m) return '';
+  const mm = (v) => Math.round(v * 1000) + ' mm';
+  const spec = closureSpec(key);
+  const full = spec ? Math.round(spec.motion.reduce((a, s) => (s.kind === 'slide' ? a : a + s.deg), 0)) : 0;
+  const bits = [];
+  /* 1 mm, not 5. At 5 the zero case could be a panel standing half a
+     centimeter outside the car, and the sentence it prints claims the
+     opposite in so many words, so the claim has to be worth its threshold. */
+  if (m.lateral > 0.001) bits.push(mm(m.lateral) + ' of curbside');
+  if (m.overhead > 0.001) bits.push(mm(m.overhead) + ' overhead');
+  if (m.fore > 0.001) bits.push(mm(m.fore) + ' ahead');
+  if (m.aft > 0.001) bits.push(mm(m.aft) + ' behind');
+  /* SAY THE FACT, NOT THE ABSENCE. This used to read "nothing outside the
+     parked car", which is what the measurement returns and not what it
+     means: a reader has to work out that the four numbers are excursions
+     and that all four being zero is a property worth having. Gen 3's
+     decklid swings 75 degrees and every point of it stays inside the
+     outline the shut car already occupies, which is a real packaging
+     result and the one line in this readout that is good news. */
+  if (!bits.length) bits.push('opens inside the car\'s own outline');
+  /* the stall line is only interesting for something that swings sideways: a
+     hood is not competing with the car parked next to this one */
+  if (m.lateral > 0.005) {
+    bits.push(m.bayFrac === null
+      ? 'opens fully in a 2.5 m stall'
+      : (spec ? Math.round(travelDegAt(spec, m.bayFrac)) + ' of ' + full + ' deg' : 'stops')
+        + ' in a 2.5 m stall');
+  }
+  return bits.join(' · ');
+}
+
+function closureSpec(key) {
+  const rec = viewer.closureList().find((c) => c.key === key);
+  return rec ? rec.spec : null;
+}
+
+
+/* Degrees swung at travel t, so the stall figure reads as an angle a person
+   can picture rather than a percentage of an animation. */
+function travelDegAt(spec, t) {
+  let deg = 0;
+  for (const st of spec.motion) {
+    if (st.kind === 'slide') continue;
+    const a = st.at ? st.at[0] : 0, b = st.at ? st.at[1] : 1;
+    const s = b <= a ? (t >= b ? 1 : 0) : Math.max(0, Math.min(1, (t - a) / (b - a)));
+    deg += st.deg * s;
+  }
+  return deg;
+}
+
+function drawOpen() {
+  if (!openEl) return;
+  const list = viewer.closureList();
+  const box = openEl.querySelector('.open-list');
+  box.innerHTML = '';
+  for (const c of list) {
+    const b = el('button', 'open-b', esc(c.spec.name));
+    b.classList.toggle('on', c.open);
+    b.dataset.key = c.key;
+    b.title = c.spec.seat || '';
+    b.setAttribute('aria-pressed', c.open ? 'true' : 'false');
+    b.onclick = () => {
+      viewer.setClosure(c.key, !c.open);
+      openFocus = c.key;
+      drawOpen();
+    };
+    box.append(b);
+  }
+  if (!openFocus || !list.some((c) => c.key === openFocus)) {
+    openFocus = list.length ? list[0].key : null;
+  }
+  openEl.querySelector('.open-all').textContent =
+    list.length && list.every((c) => c.open) ? 'shut' : 'all';
+}
+
+function setOpenOn(on) {
+  openOn = on;
+  buildOpen();
+  document.body.classList.toggle('opening', on);
+  $('#btnOpen').classList.toggle('on', on);
+  $('#btnOpen').setAttribute('aria-pressed', on ? 'true' : 'false');
+  if (on) drawOpen();
+  else viewer.setAllClosures(false);
+}
+$('#btnOpen').onclick = () => setOpenOn(!openOn);
+
 /* Drive is no longer only an animation: it is what spends the pack. */
 $('#btnDrive').onclick = (e) => {
   driveOn = e.currentTarget.classList.toggle('on');
@@ -1961,6 +3600,9 @@ $('#btnHome').onclick = () => { closePanel(); viewer.flyHome(); };
 addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return;
   if (openMenu) { closeMenu(true); return; }
+  /* the closures band is a layer above the panel: escaping out of a card you
+     opened from the band should leave the band standing */
+  if (openOn && !$('#panel').classList.contains('on')) { setOpenOn(false); return; }
   if ($('#panel').classList.contains('on')) {
     /* the reading state is one layer, and compare mode is part of it: see
        the note on #panelClose */
@@ -1969,6 +3611,10 @@ addEventListener('keydown', (e) => {
     viewer.select(null);
     return;
   }
+  /* the tour is a layer above the selection and below the panel: reading a
+     module from a stop and pressing escape goes back to the stop, not out of
+     the tour, because the stop is what sent you there */
+  if (tourOn) { setTour(false); return; }
   if (viewer.getSelected()) viewer.select(null);
 });
 
@@ -2050,9 +3696,9 @@ function makeDropdown(getOptions, getValue, onPick, cls = '') {
   btn.setAttribute('aria-haspopup', 'listbox');
   btn.setAttribute('aria-expanded', 'false');
   /* An option may carry a swatch, and the button then wears the current
-     one. That is what lets the paint control BE the colour it sets rather
+     one. That is what lets the paint control BE the color it sets rather
      than a word for it, which is the only way it fits the faceplate without
-     spending 90 px on the name of a colour the user can see. */
+     spending 90 px on the name of a color the user can see. */
   const refresh = () => {
     const v = getValue();
     const o = getOptions().find((x) => x.value === v);
@@ -2119,11 +3765,11 @@ function makeDropdown(getOptions, getValue, onPick, cls = '') {
 
 /* ── Hover tag ── */
 
-/* The tag used to be placed at the projected CENTRE of the part's bounding
+/* The tag used to be placed at the projected CENTER of the part's bounding
    box. Measured over every hoverable pixel of a frame, that put the name an
    average of 106 px from the pointer at the home view and 270 px away once
    the camera is in close on a part, worst case 792 px, more than half the
-   window: a part like the tyres or a cable run has its centroid nowhere
+   window: a part like the tires or a cable run has its centroid nowhere
    near the piece of it you are touching, and the label could sit over a
    DIFFERENT part that was not highlighted. The name of the thing under the
    pointer belongs at the pointer. labelFor stays as the fallback for the
@@ -2150,6 +3796,9 @@ gl.addEventListener('pointerleave', () => { hasPtr = false; });
 let tagKey = null, tagW = 0, tagH = 0;
 function tagLoop() {
   requestAnimationFrame(tagLoop);
+  /* dimensions ride this loop rather than starting a second one: they need
+     exactly what it needs, a projection against the camera as it is now */
+  drawDims();
   const h = viewer.hovered();
   if (h && byKey[h]) {
     const pos = hasPtr ? { x: ptrX, y: ptrY } : viewer.labelFor(h);
@@ -2159,7 +3808,7 @@ function tagLoop() {
         const def = SYSTEM_DEFS.find((d) => d.id === byKey[h].sys);
         /* names the system, as the rail does; the variant is in the panel */
         tag.innerHTML = `<small>${slotName(def)}</small>${byKey[h].meta.name}`;
-        /* the same colour the part under the pointer is glowing in, so the
+        /* the same color the part under the pointer is glowing in, so the
            label and the highlight are read as one thing. Set with the text
            and not per frame: it only changes when the part does. */
         tag.style.setProperty('--sys', hexOf(def));
@@ -2180,6 +3829,12 @@ function tagLoop() {
   tagKey = null;
   tag.classList.remove('on');
 }
+/* Built here and not where it is declared: refreshLadder formats in the
+   reader's chosen unit, and asDist, rounded and U are consts further down
+   this file. Everything above guards on ladBars being empty for exactly the
+   window between those two points. */
+buildLadder();
+
 tagLoop();
 
 /* ── The energy clock ───────────────────────────────────────────────────
@@ -2203,7 +3858,62 @@ requestAnimationFrame(ergLoop);
 Object.assign(window.__ev, {
   stepEnergy,
   energy: () => energy,
+  /* The closures on the hook for the same reason the tour is: a verification
+     pass has to open a panel, step the clock and read back what the sweep
+     measured, and doing that through the band is a click on a control that an
+     automation pane cannot always see. `closures()` with no argument reports;
+     with a key it toggles and returns the same report. */
+  closures: (key, open) => {
+    if (!openOn) setOpenOn(true);
+    if (key != null) { viewer.setClosure(key, open == null ? true : !!open); drawOpen(); }
+    return viewer.closureList().map((c) => {
+      const m = viewer.closureMetrics(c.key);
+      return {
+        key: c.key, name: c.spec.name, kind: c.spec.kind, open: c.open, at: c.at,
+        lateral: m ? +(m.lateral * 1000).toFixed(1) : null,
+        overhead: m ? +(m.overhead * 1000).toFixed(1) : null,
+        stallDeg: m && m.bayFrac !== null ? +travelDegAt(c.spec, m.bayFrac).toFixed(1) : null,
+        read: closureRead(c.key),
+      };
+    });
+  },
   soc: (v) => { if (v != null) { soc = Math.max(0, Math.min(1, v)); drawEnergy(); } return soc; },
+  /* The tour on the hook for the same reason applyGeneration is: a
+     verification pass walks all thirteen stops and screenshots them, and
+     doing that through the UI is thirteen clicks that a script cannot make
+     land on a moving camera. tourAt is read back so a check can assert where
+     it ended up rather than trusting that the click worked. */
+  tour: (i) => { if (i == null) setTour(!tourOn); else setTour(true, i); return { on: tourOn, at: tourAt, stops: STOPS.length }; },
+  /* Dimensions are drawn from main.js's animation loop, and an automation
+     pane does not run one: rAF never fires there, so a check that turns them
+     on sees seven empty nodes and a screenshot of nothing. This redraws on
+     demand and reports what it measured, which is also the honest way to
+     assert the figures rather than reading them off an image. */
+  /* select AND open, which is what a click does. viewer.select on its own
+     only moves the 3D selection: the panel is opened by the viewer's own
+     click callback, so a script that used select() got a framed part and an
+     empty panel, and every check of panel behavior had to be done by hand. */
+  /* Guarded, because this is a HOOK and its callers are scripts rather than
+     the interface. `!!byKey[key]` was the only check and it ran last, after
+     both calls had already been made with whatever arrived: a number or an
+     object threw inside viewer.select on key.split, and '__proto__' or
+     'constructor' sailed past every truthiness test in the chain, because
+     byKey['__proto__'] is Object.prototype, and ended up ghosting the whole
+     car to 7 percent behind a panel built from the prototype. hasOwn is the
+     test that distinguishes a part from an inherited property. */
+  openPart: (key) => {
+    if (typeof key !== 'string' || !Object.hasOwn(byKey, key)) return false;
+    viewer.select(key);
+    openPanel(key);
+    return true;
+  },
+  dims: (on) => {
+    if (on != null) setDims(!!on);
+    refreshDims();
+    return { on: dimsOn, of: dimSelKey || 'vehicle',
+             set: dimSet.map((d) => [d.name, +d.v.toFixed(4)]) };
+  },
+  tourState: () => ({ on: tourOn, at: tourAt, playing: tourPlay, stop: STOPS[tourAt] }),
 });
 
 /* ── Boot ──────────────────────────────────────────────────────────────
@@ -2212,6 +3922,119 @@ Object.assign(window.__ev, {
    it is ahead of this one in the queue and has rendered by the time the
    second callback runs. */
 let lifted = false;
+/* ── THE FACEPLATE MEASURES ITSELF ─────────────────────────────────────
+   Everything anchored under the bar is positioned off --barh in
+   css/style.css, and this is what writes it.
+
+   It used to be arithmetic in the stylesheet: a bar fixed at 96 px below
+   580, and a literal 108 in the rail, the panel, both latches and the
+   section strip. That is correct only for as long as the controls wrap into
+   the number of rows somebody counted by hand, and this app has now broken
+   that twice: once when the paint control made row two overflow into a third
+   row inside a fixed 96 px box, and once when Cut, Size and the tour took
+   row one to 399 px against a 375 px phone with compare mode open.
+
+   A ResizeObserver instead of a resize listener, because the bar's height
+   changes without the window's doing so: opening compare adds a dropdown to
+   the row, and a wrap is a layout event rather than a viewport one. */
+const setBarH = (h) => docEl.style.setProperty('--barh', Math.round(h) + 'px');
+/* A ResizeObserver delivers at the end of a frame, which is right for a
+   window resize and one frame late for a control that rewraps the bar under
+   a click. setCompare calls this directly for that reason: the second rung
+   dropdown is what takes row one past a phone's width, and the rail must not
+   spend a frame overlapping the row it just pushed out. Declared as a
+   function rather than a const because setCompare is above it. */
+/* clientHeight and not getBoundingClientRect: it excludes the bar's 1 px
+   bottom hairline, which keeps --barh at exactly the 48 and 96 the old
+   hand-written rules used, so this refactor moves nothing on screen today
+   and only changes what happens when the bar wraps to a row nobody
+   predicted. The observer reads contentRect for the same reason. */
+function syncBarH() { setBarH($('#topbar').clientHeight); }
+{
+  const bar = $('#topbar');
+  syncBarH();
+  new ResizeObserver((es) => {
+    for (const e of es) setBarH(e.contentRect.height);
+  }).observe(bar);
+}
+
+/* ── And --effh, for exactly the reason --barh exists ───────────────────
+   Below 520 px the rail and the readout share one column, so the rail's
+   height is a function of the readout's. That used to be the literal 435
+   in css/style.css: the card measured 399 plus three 12 px gaps. It went
+   stale the same day it was written. 41a9594 derived it from a 399 px
+   card at 16:47 and d967c63 put the eleven-bar ladder strip INSIDE that
+   card at 17:07, taking it to 554, so the rail was allowed to be 155 px
+   taller than the space that exists and lay on top of the readout at every
+   width from 280 to 520. It was not merely covering it either: the rail is
+   z-index 9 against the card's 8, so elementFromPoint at the card's top
+   left returned a rail row and the waterfall was taking the taps, which is
+   the same defect the mobile pass recorded at style.css:2185 and fixed
+   once already.
+
+   A measured property instead of a counted one, so the next thing added to
+   the readout cannot reintroduce this. Same shape as --barh above and the
+   same reasoning as the note there: correct only for as long as somebody
+   recounts by hand is not correct.
+
+   No feedback loop: --effh feeds the RAIL's max-height and nothing the
+   readout's own height depends on. The readout is capped in the stylesheet
+   against --barh and a constant, never against --effh. */
+/* and --cuth, the section strip, for the same reason again: it wraps to one
+   row or two according to width, so its height is a measurement rather than a
+   number. The readout is anchored under the bar and so is the strip, so on a
+   short window between 521 and 640 px the strip landed on the top of the
+   card, over the stats and the budget heading. */
+/* Called from buildCut rather than set up here, because the strip is built
+   lazily on the first section and does not exist at this point. css/style.css
+   carries a 0px default for the same reason: an unset custom property makes
+   the whole calc() that reads it invalid, which silently drops the rule. */
+function syncCutH() {
+  const c = document.getElementById('cut');
+  if (c) docEl.style.setProperty('--cuth', Math.round(c.getBoundingClientRect().height) + 'px');
+}
+/* the same for the closures band, which wraps to two rows on a phone for the
+   same reason the section strip does, and which the readout card has to start
+   below rather than under */
+function syncOpenH() {
+  const c = document.getElementById('open');
+  if (c) docEl.style.setProperty('--openh', Math.round(c.getBoundingClientRect().height) + 'px');
+}
+
+const setEffH = (h) => docEl.style.setProperty('--effh', Math.round(h) + 'px');
+{
+  const eff = $('#eff');
+  setEffH(eff.getBoundingClientRect().height);
+  /* getBoundingClientRect, not clientHeight: the readout carries a 1 px
+     border and the gap that has to clear is the border box, not the
+     content box. A hidden readout reports 0 and the rail correctly takes
+     the whole column, which is what body.eff-hidden and #panel.on already
+     want. */
+  new ResizeObserver(() => setEffH(eff.getBoundingClientRect().height)).observe(eff);
+}
+
+/* ── The hint line goes away for good when it is dismissed ─────────────
+   It is instruction, not instrument: once a reader knows that dragging
+   orbits, it is a line of type across the bottom of the car forever. The
+   choice is remembered, and index.html reads the same key in its inline
+   boot script so a dismissed hint never flashes on the next load. */
+/* THE INVITATION GOES AWAY WHEN IT IS TAKEN, which is the difference between a
+   note and a nag. Swapping any slot is proof the reader has found the feature,
+   so the line retires itself on the first swap and never comes back; the x is
+   there for somebody who reads it and is not interested. Same key shape and
+   same guarded read as ev-hint-hidden. */
+function learnedMix() {
+  if (document.body.classList.contains('mix-learned')) return;
+  document.body.classList.add('mix-learned');
+  try { localStorage.setItem('ev-mix-learned', '1'); } catch {}
+}
+$('#mixHintX').onclick = learnedMix;
+
+$('#hintX').onclick = () => {
+  document.body.classList.add('no-hint');
+  try { localStorage.setItem('ev-hint-hidden', '1'); } catch {}
+};
+
 const liftBoot = () => {
   if (lifted) return;
   lifted = true;

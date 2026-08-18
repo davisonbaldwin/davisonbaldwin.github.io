@@ -15,8 +15,8 @@ export const SYSTEM = {
   blurb: 'Four corner assemblies and a brake-by-wire actuator. Regen takes the everyday stops; cast iron waits for the ones it cannot.',
   parts: {
     tires: {
-      name: 'Tyres',
-      tagline: 'Four contact patches the size of postcards, each carrying half a tonne and every newton the motors make.',
+      name: 'Tires',
+      tagline: 'Four contact patches the size of postcards, each carrying 500 kg and every newton the motors make.',
       mass: 42,
       count: 4,
       specs: [
@@ -27,11 +27,11 @@ export const SYSTEM = {
         ['Cavity noise', 'PU foam liner, -3 dB at 80 km/h'],
         ['Cold pressure', '2.9 bar'],
       ],
-      how: 'An EV asks more of a tyre than the car it replaced: roughly 300 kg of extra mass from the pack, and full motor torque available from zero speed, delivered in under 100 ms. The XL casing carries 875 kg per tyre at rating. The compound problem is that rolling resistance and grip both come from hysteresis, energy lost as the rubber flexes. High-silica compounds partially decouple the two: the silica-polymer network stays compliant at the kilohertz frequencies of road micro-texture, which is where grip is generated, while staying stiff at the tens-of-hertz frequency of carcass flex, which is where rolling loss lives.\n\nAt 100 km/h a Crr of 6.5 kg/t on a 2.1 t car is about 134 N of drag, roughly a third of total road load; one label class worse would cost about 5% of highway consumption. Noise is the other EV-specific spec: with no engine masking, the 200 Hz air resonance inside the tyre cavity becomes the loudest sound in the cabin, so a polyurethane foam ring glued inside the tread damps the air column, worth about 3 dB.',
-      why: 'The tyre is the only part that sits in both the range budget and the safety budget. The classic trade is rolling resistance, wet grip, wear, noise: pick three. This design picks range and refinement, and buys back wear with software, because motors can shape torque per millisecond in a way no engine ever could.',
+      how: 'An EV asks more of a tire than the car it replaced: roughly 300 kg of extra mass from the pack, and full motor torque available from zero speed, delivered in under 100 ms. The XL casing carries 875 kg per tire at rating. The compound problem is that rolling resistance and grip both come from hysteresis, energy lost as the rubber flexes. High-silica compounds partially decouple the two: the silica-polymer network stays compliant at the kilohertz frequencies of road micro-texture, which is where grip is generated, while staying stiff at the tens-of-hertz frequency of carcass flex, which is where rolling loss lives.\n\nAt 100 km/h a Crr of 6.5 kg/t on a 2.1 t car is about 134 N of drag, roughly a third of total road load; one label class worse would cost about 5% of highway consumption. Noise is the other EV-specific spec: with no engine masking, the 200 Hz air resonance inside the tire cavity becomes the loudest sound in the cabin, so a polyurethane foam ring glued inside the tread damps the air column, worth about 3 dB.',
+      why: 'The tire is the only part that sits in both the range budget and the safety budget. The classic trade is rolling resistance, wet grip, wear, noise: pick three. This design picks range and refinement, and buys back wear with software, because motors can shape torque per millisecond in a way no engine ever could.',
       fail: [
-        'Instant torque wears an EV tyre 20 to 30% faster than the same tyre on an ICE car; torque shaping narrows the gap but does not close it.',
-        'Low-hysteresis compounds give up some cold and wet grip; the honest winter answer is a second set of tyres, not a drive-mode setting.',
+        'Instant torque wears an EV tire 20 to 30% faster than the same tire on an ICE car; torque shaping narrows the gap but does not close it.',
+        'Low-hysteresis compounds give up some cold and wet grip; the honest winter answer is a second set of tires, not a drive-mode setting.',
         'The foam liner complicates plug repairs and defeats most sealant kits.',
       ],
       explode: [0, 0, 0.85],
@@ -45,13 +45,13 @@ export const SYSTEM = {
         ['Size', '19 x 8.5J, offset ET35'],
         ['Process', 'Forged 6061-T6, flow-formed barrel'],
         ['Mass per wheel', '9.8 kg (cast equivalent ~12.5 kg)'],
-        ['Kerb impact', '13 degree strike, SAE J175'],
+        ['Curb impact', '13 degree strike, SAE J175'],
         ['Fatigue', 'Biaxial rig, 300,000 km equivalent'],
       ],
-      how: 'Forging presses a billet at around 8,000 tonnes, aligning the grain along the spokes; yield strength lands near 320 MPa against roughly 180 MPa for cast alloy, so spoke sections can be thinner at equal stiffness. The barrel is then flow-formed: spun against rollers that thin and work-harden the wall to about 3.2 mm. Together the two processes take about 2.7 kg out of each wheel against a cast equivalent.\n\nThat mass is worth more than its face value. Each corner carries about 35 kg the springs do not support: wheel, tyre, disc, hub, and a share of the caliper. The less of it there is, the less force it takes the damper to hold the tyre against a broken road surface, so contact patch load varies less and both grip and ride improve. Rim mass also counts about 1.5 times on acceleration, because it must be accelerated linearly and spun up at the same time: removing 2.7 kg at the rim reads like removing 4 kg from the body.',
+      how: 'Forging presses a billet at around 8,000 tons, aligning the grain along the spokes; yield strength lands near 320 MPa against roughly 180 MPa for cast alloy, so spoke sections can be thinner at equal stiffness. The barrel is then flow-formed: spun against rollers that thin and work-harden the wall to about 3.2 mm. Together the two processes take about 2.7 kg out of each wheel against a cast equivalent.\n\nThat mass is worth more than its face value. Each corner carries about 35 kg the springs do not support: wheel, tire, disc, hub, and a share of the caliper. The less of it there is, the less force it takes the damper to hold the tire against a broken road surface, so contact patch load varies less and both grip and ride improve. Rim mass also counts about 1.5 times on acceleration, because it must be accelerated linearly and spun up at the same time: removing 2.7 kg at the rim reads like removing 4 kg from the body.',
       why: 'A kilogram removed here improves ride, grip, range, and acceleration at once. Almost nowhere else does one kilogram appear in four budgets simultaneously, which is why the forging premium on wheels beats spending the same money on body lightweighting.',
       fail: [
-        'A forged rim bends before it cracks under kerb strike; cast alloy does the reverse, and the crack is the failure you actually fear.',
+        'A forged rim bends before it cracks under curb strike; cast alloy does the reverse, and the crack is the failure you actually fear.',
         'Galvanic corrosion at the bead seat from winter salt causes slow air loss years before anything is visibly wrong.',
         'A biaxial fatigue life assumes the wheel is never straightened after a pothole; repaired rims restart the clock unknown.',
       ],
@@ -64,7 +64,7 @@ export const SYSTEM = {
       count: 4,
       specs: [
         ['Material', 'PC/ABS, 0.7 kg per cover'],
-        ['Drag', 'Cd -0.008 with covers fitted'],
+        ['Drag', 'Cd -0.008 with covers installed'],
         ['Range effect', '~2% at highway speed'],
         ['Attachment', 'Five spring clips in the spoke windows'],
         ['Service', 'Tool-free removal at the rim lip'],
@@ -72,8 +72,8 @@ export const SYSTEM = {
       how: 'Wheels and their wells generate roughly a quarter of the whole car’s drag, and an open spoked wheel is a centrifugal pump: it draws air through itself and churns it into the wheel well. The cover closes the outboard face so flow passes along the body side instead of being pumped. The measured benefit is about 0.008 of Cd, roughly 320 W at 110 km/h across the four wheels, which is close to 2% of consumption.\n\nA clipped plastic disc, rather than a solid-face wheel, keeps the expensive forged part universal and the aero part cheap and sacrificial. The remaining leak paths through the clip windows still pass some cooling air over the discs, which is acceptable only because friction braking is occasional; a car that used its discs every stop could not run a face this closed.',
       why: 'The same 2% of range bought with cells costs about 2 kWh, ten-plus kilograms and a few hundred dollars per car. Bought with plastic it costs 2.8 kg and almost nothing, making the cover the cheapest range on the vehicle, aesthetics permitting.',
       fail: [
-        'Owners remove them for looks; the quoted range assumes they are fitted, an honest asterisk on the spec sheet.',
-        'Clips fatigue with repeated removal, and a cover leaving at motorway speed is a projectile.',
+        'Owners remove them for looks; the quoted range assumes they are installed, an honest asterisk on the spec sheet.',
+        'Clips fatigue with repeated removal, and a cover leaving at highway speed is a projectile.',
         'They throttle brake cooling airflow, a bet on regen staying available that the disc sizing has to underwrite.',
       ],
       explode: [0, 0, 1.45],
@@ -86,12 +86,12 @@ export const SYSTEM = {
       specs: [
         ['Front', '380 x 30 mm, internally vented'],
         ['Rear', '330 x 28 mm, internally vented'],
-        ['Friction ring', 'High-carbon grey cast iron'],
-        ['Hat', 'Forged aluminium, floating pins'],
+        ['Friction ring', 'High-carbon gray cast iron'],
+        ['Hat', 'Forged aluminum, floating pins'],
         ['Duty share', '<10% of braking energy'],
         ['Single-stop energy', '~2 MJ from 160 km/h'],
       ],
-      how: 'The motors can return about 0.25 g of deceleration to the pack, roughly 145 kW at motorway speed, and in normal driving that covers over 90% of all braking energy; a one-pedal driver may not touch the friction brakes for weeks. Iron takes over whenever demand exceeds what the battery will accept: a hard stop, a cold or full pack, or an ABS event. A single stop from 160 km/h dumps about 2 MJ into the four discs in under five seconds, an average of nearly 500 kW; no battery could swallow it. Internal vanes pump air centrifugally through the ring to shed the heat between applications.\n\nEach disc is two-piece: a cast iron friction ring on a forged aluminium hat, saving about 1.5 kg per corner over monolithic iron. The ring floats on drive pins, so when a hard stop takes it towards 600 °C it grows radially on the pins instead of coning against a rigid centre, which keeps the pad face flat and the pedal consistent.',
+      how: 'The motors can return about 0.25 g of deceleration to the pack, roughly 145 kW at highway speed, and in normal driving that covers over 90% of all braking energy; a one-pedal driver may not touch the friction brakes for weeks. Iron takes over whenever demand exceeds what the battery will accept: a hard stop, a cold or full pack, or an ABS event. A single stop from 160 km/h dumps about 2 MJ into the four discs in under five seconds, an average of nearly 500 kW; no battery could swallow it. Internal vanes pump air centrifugally through the ring to shed the heat between applications.\n\nEach disc is two-piece: a cast iron friction ring on a forged aluminum hat, saving about 1.5 kg per corner over monolithic iron. The ring floats on drive pins, so when a hard stop takes it toward 600 °C it grows radially on the pins instead of coning against a rigid center, which keeps the pad face flat and the pedal consistent.',
       why: 'Regen deletes the average duty but not the worst case, and brakes are sized by the worst case: a repeated-fade alpine descent with a full pack, where regen has nowhere to put the energy. Add per-wheel ABS modulation, which axle-level motor torque cannot do, and the legal requirement to stop with the HV system dead, and the iron stays.',
       fail: [
         'Corrosion, not wear, is how EV discs die: a ring used 10% of the time rusts, so the software schedules light wipe applies to clean it.',
@@ -112,11 +112,11 @@ export const SYSTEM = {
         ['Pads', 'Low-copper NAO, friction ~0.38'],
         ['Residual drag', '<0.5 Nm per corner'],
       ],
-      how: 'Residual drag is the spec that matters in an EV: pads resting on the discs at just 1 Nm per corner burn about 350 W across the car at motorway speed, near 2% of consumption. Square-section rollback seals deform as the piston extends and spring it back about 0.1 mm on release, pulling the pads clear. The front monobloc body is machined from one forging for stiffness, so in a hard stop the fluid volume goes into clamp force rather than flexing the bridge, and the pedal stays short.\n\nThe fronts hang at the 9 o’clock position, behind the axle, clearing the steering arc and keeping corner mass low; the rears sit at 3 o’clock, ahead of the axle, packaging around the suspension links. Each rear caliper carries a motor-on-caliper electric park brake: a small gearmotor drives the piston through roughly a 150:1 reduction for parking, hill hold, and a slow-speed emergency fallback if the hydraulic path is lost.',
+      how: 'Residual drag is the spec that matters in an EV: pads resting on the discs at just 1 Nm per corner burn about 350 W across the car at highway speed, near 2% of consumption. Square-section rollback seals deform as the piston extends and spring it back about 0.1 mm on release, pulling the pads clear. The front monobloc body is machined from one forging for stiffness, so in a hard stop the fluid volume goes into clamp force rather than flexing the bridge, and the pedal stays short.\n\nThe fronts hang at the 9 o’clock position, behind the axle, clearing the steering arc and keeping corner mass low; the rears sit at 3 o’clock, ahead of the axle, packaging around the suspension links. Each rear caliper carries a motor-on-caliper electric park brake: a small gearmotor drives the piston through roughly a 150:1 reduction for parking, hill hold, and a slow-speed emergency fallback if the hydraulic path is lost.',
       why: 'An ICE performance caliper is designed around heat capacity. This one is designed around indifference: months of doing nothing, then full authority 150 ms later. Low-copper NAO pads hold a stable friction coefficient cold, damp, and lightly rusted, which is exactly the state EV pads live in.',
       fail: [
         'Rear slide pins seize from disuse long before pads wear out; the classic EV brake service is lubrication, not replacement.',
-        'The piston rollback that saves range also lengthens the first millimetres of apply; the actuator masks it with a pressure pre-fill.',
+        'The piston rollback that saves range also lengthens the first millimeters of apply; the actuator masks it with a pressure pre-fill.',
         'A failed EPB gearmotor is flagged and the corner released mechanically at service; the system never lets it drag.',
       ],
       explode: [-0.3, 0, 0.2],
@@ -138,7 +138,7 @@ export const SYSTEM = {
       fail: [
         'Push-through is a last resort, not a mode: 0.4 g with a long, dead pedal, sized to meet the legal minimum and nothing more.',
         'A simulator fault changes pedal feel but not braking; feel and function are engineered to fail separately.',
-        'Blend calibration errors surface as a surge in the last metre of a stop, the hardest regime in braking to tune.',
+        'Blend calibration errors surface as a surge in the last meter of a stop, the hardest regime in braking to tune.',
       ],
       explode: [0.5, 0.35, 0],
     },
@@ -146,7 +146,7 @@ export const SYSTEM = {
 };
 
 /* ── Geometry ──
-   Corner-local frame: origin at the wheel centre, z along the axle,
+   Corner-local frame: origin at the wheel center, z along the axle,
    s = sign(world z) so +s is outboard. Tire, rim, cover, and disc live in
    a spun group; calipers and the actuator sit in static groups. */
 
@@ -223,7 +223,7 @@ function discPart(s, front) {
 
 /* Static caliper at each corner: 9 o'clock (rear of axle) on the fronts to
    clear the steering arc, 3 o'clock (ahead) on the rears. The body rides
-   0.04 above the axle centreline so its lower edge clears the battery
+   0.04 above the axle centerline so its lower edge clears the battery
    envelope top (y 0.31) where the pack side rail runs out to x = +/-1.30. */
 function caliperPart(x, z, front) {
   const s = Math.sign(z);
@@ -318,7 +318,7 @@ export function build() {
     const front = x > 0;
     const s = Math.sign(z);
 
-    /* Everything that rotates with the wheel, centred on its own origin. */
+    /* Everything that rotates with the wheel, centered on its own origin. */
     const spinGroup = new THREE.Group();
     spinGroup.position.set(x, P.wheelY, z);
     lib.spin(spinGroup, 'z', 30);

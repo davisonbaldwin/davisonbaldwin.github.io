@@ -9,8 +9,8 @@
    every carried part says so on its own panel.
 
    WHAT WHEELS-9 HANDED OVER, DERIVED FROM ITS BUILT MESH RATHER THAN ITS
-   PROSE. Front wheel centres move |z| 0.81 to 0.74. Sweeping every vertex of
-   its built front tyre, wheel, cover and disc about the vertical axis
+   PROSE. Front wheel centers move |z| 0.81 to 0.74. Sweeping every vertex of
+   its built front tire, wheel, cover and disc about the vertical axis
    through (1.45, 0.74) reproduces its published table exactly: 0.8190 static
    at the cover lip, 0.8926 at 14 degrees, 0.9032 at 16, 0.9097 at 17.25. The
    peak sits at hub height y 0.355, 306 mm fore and aft of the axle, and it
@@ -38,7 +38,7 @@
      term                              body-8     body-9      delta
      loft silhouette above y 0.28      1.8205     1.7482    -0.0722
      sub-loft projection below y 0.28  0.1919     0.1919     0.0000
-     tyre columns                      0.1260     0.0868    -0.0392
+     tire columns                      0.1260     0.0868    -0.0392
      protrusions past the silhouette   0.0362     0.0322    -0.0041
      ----------------------------------------------------------------
                                                             -0.1155
@@ -46,13 +46,13 @@
 
    Three of those terms land on the audit's own arithmetic: the silhouette
    integrator returns body-8's published 1.8221 to within 1.6 square
-   centimetres, the tyre columns are the published 0.1260 and 0.0868 to four
+   centimeters, the tire columns are the published 0.1260 and 0.0868 to four
    decimals, and the sub-loft term of 0.1919 is precisely the audit's 0.173
    of splitter and valance plus the 0.0189 of floor plates, strakes and
    deployed diffuser it lists separately. The fourth does not: the audit's
    implied protrusion residual is 0.0186 where this integrator counts 0.0362,
    because it also picks up the 8 mm and 3 mm offsets the glass band and the
-   door skins are lofted at. Those are modelling offsets on carried parts,
+   door skins are lofted at. Those are modeling offsets on carried parts,
    identical on both bodies, so the disagreement does not propagate. What is
    used is the delta, and the delta is one method over both. A is therefore
    the audit's own 2.157 moved by -0.1155: 2.0415 m2.
@@ -83,7 +83,7 @@
    Stations 0 to 2 own no height band of the silhouette at all, so their
    width returns exactly zero. Narrowing them steepens the one plan angle
    this generation improved: the fairing leading flare falls from 48.4 to
-   36.5 degrees on the pod change alone, and every millimetre off station 2
+   36.5 degrees on the pod change alone, and every millimeter off station 2
    puts it back. And the bumper beam's outboard corner already stands 14.9 mm
    outside the nose loft at (2.27, 0.50, +-0.65), carried since body.js, so
    pulling the nose in deepens an existing foul instead of fixing it. What
@@ -92,7 +92,7 @@
 
    Cd. This module claims ONE count and names the mechanism. body-8's fairing
    closed from 1.006 half-width at x 1.070 to the cabin's 0.923 at x 0.850,
-   a 20.7 degree compression in plan on a body whose audit penalised the tail
+   a 20.7 degree compression in plan on a body whose audit penalized the tail
    flank for running 16.5 to 18.3. That shoulder is gone: the same measurement
    on this body is 0.5 degrees. Priced at the audit's own implied base
    coefficient of 0.030 applied to the blister's trailing cross-section of
@@ -103,21 +103,21 @@
 
    A DEFECT FOUND IN A CARRIED PART. body-8's front fairing lower closeout is
    a 100 mm flange at y 0.282 to 0.302 running from |z| 0.8945 to 0.9945, and
-   its own steered front tyre reaches it at 3.1 degrees of lock and is 48.6 mm
+   its own steered front tire reaches it at 3.1 degrees of lock and is 48.6 mm
    through it at the commanded 14. It was invisible because nobody swept the
    front pod's own hardware against the wheel it encloses; body-8 swept the
    REAR lip that way and got it right. This body redraws the front lip on the
    same principle, with its inboard edge following a measured sweep table.
    The same sweep run over THIS pod's own hardware clears the lip, the skin
    and the louver bank and does NOT clear the sealed inboard wall, which is
-   still an offset from the wheel centre and is still crossed by the steered
+   still an offset from the wheel center and is still crossed by the steered
    brake disc from about 6 degrees, exactly as body-8's is. That is carried
    rather than created and it is on the fairings panel rather than left out,
    because a module that files a sweep defect against its predecessor has to
    run the same sweep over every one of its own parts or the finding is luck.
 
    Gen 9 preset partners, all cited from BUILT geometry per the drift law:
-   wheels-9 (155/65 R20 on all four corners, front centres |z| 0.74, faces
+   wheels-9 (155/65 R20 on all four corners, front centers |z| 0.74, faces
    0.6625 and 0.8175, cover lip 0.8190, swept peak 0.8926 at 14 degrees),
    suspension-9 (front tower plate at (1.50, 0.735, +-0.41), damper topping
    out at y 0.729, subframe mounts held at +-0.50, front metal reaching
@@ -149,7 +149,7 @@
    The built union moved and the module says by how much and why, because a
    number that moves without an explanation is how a ladder rots. It was
    1.764850 m2 above y 0.28 and it is 1.765336, plus 4.86 square
-   centimetres or 0.028 percent. That is two effects with opposite signs.
+   centimeters or 0.028 percent. That is two effects with opposite signs.
    Sealing the two end caps is +8.81 cm2 on its own, measured by applying
    only that fix to the old mesh: the nose and Kamm faces were OPEN, and an
    integrator that unions z intervals was seeing through the holes. Every
@@ -180,7 +180,93 @@ export const SYSTEM = {
   name: 'Body · Gen 9 narrow front',
   color: 0xdcf2fb,
   explode: [0, 1.7, 0],
-  blurb: 'Gen 8 proved a tail cannot move frontal area and named the part that could: the front fairings, holding 1.008 half-width around a tyre that wheels-9 has now moved 70 mm inboard. This body deletes them as a shape. Stations 3 to 5 come to a flat 0.925, the beltline the cabin has carried since body-3, so the widest point of the car leaves the front axle and the bodywork measures 1.850 m against 2.016. Frontal area 2.157 to 2.0415 m2 on the Gen 8 audit convention, 0.022 short of the 2.02 the brief asked for and 0.015 better than wheels-9 predicted. Cd 0.108 to 0.107 for one named mechanism, a 20.7 degree fairing shoulder deleted. Contained lock is re-derived rather than carried and goes UP, 20.2 degrees against body-8\'s published 17.25 and its real 3.1, because the feature that bound body-8 was a louver in the wrong band rather than a surface. The afterbody is body-8 unchanged. 352 kg, 30 miles, and it found a 48.6 mm interference in the part it replaces.',
+  blurb: 'Gen 8 proved a tail cannot move frontal area and named the part that could: the front fairings, holding 1.008 half-width around a tire that wheels-9 has now moved 70 mm inboard. This body deletes them as a shape. Stations 3 to 5 come to a flat 0.925, the beltline the cabin has carried since body-3, so the widest point of the car leaves the front axle and the bodywork measures 1.850 m against 2.016. Frontal area 2.157 to 2.0415 m2 on the Gen 8 audit convention, 0.022 short of the 2.02 the brief asked for and 0.015 better than wheels-9 predicted. Cd 0.108 to 0.107 for one named mechanism, a 20.7 degree fairing shoulder deleted. Contained lock is re-derived rather than carried and goes UP, 20.2 degrees against body-8\'s published 17.25 and its real 3.1, because the feature that bound body-8 was a louver in the wrong band rather than a surface. The afterbody is body-8 unchanged. 352 kg, 30 miles, and it found a 48.6 mm interference in the part it replaces.',
+  /* THE CLOSURES, and on this rung they are not a style choice. This body
+     deleted every panel break on the flank to buy one uninterrupted 5.15 m
+     highlight line, and a hinge lives in exactly the step that deletion
+     removed: body-8 had 83 mm of fairing step to hide one behind, holding
+     1.008 half-width against this body's flat 0.925. So the aerodynamic win
+     of Gen 9 is paid for in hinge kinematics, and the bill is measured.
+
+     Put a conventional axis inside the skin at |z| 0.860 and the front
+     door's leading edge ADVANCES 31.3 mm at 30 degrees, 44.5 at 45 and 57.8
+     at 67, into the fixed fairing panel that owns the other half of its own
+     shutline. Put it out at |z| 0.9250, the panel's own widest point, and
+     the same edge withdraws instead. That is the whole specification, and it
+     costs 8 to 40 mm more curbside to satisfy. Both doors therefore hinge on
+     the surface rather than under it, which on a real car is a four-bar
+     whose instantaneous center sits at or outboard of the skin through the
+     first 20 degrees. */
+  closures: {
+    'door-front': {
+      name: 'Front door',
+      kind: 'door',
+      part: 'doors',
+      mass: 8.5,
+      seconds: 1.2,
+      seat: 'Hinge pillar at the x 0.8487 cut, axis on the skin at |z| 0.9250 rather than inside it',
+      motion: [
+        { kind: 'swing', axis: [0, 1, 0], pivot: [0.8487, 0.700, 0.9250], deg: 67 },
+      ],
+      why: 'The axis is outside the paint and that is forced rather than chosen. A door hinged inside its own skin sweeps its leading edge forward as it opens, and the only thing that ever made that acceptable is a step in the bodywork for the edge to disappear into. This body deleted the step: the flank is 0.925 flat from the A-pillar to the rear arch with nothing but a 5 mm channel in it. Measured at the axis a drawing would use, |z| 0.860, the edge advances 57.8 mm into the fairing panel at full open. Measured at 0.9250 it withdraws instead. The hinge that does this on a real car is a four-bar with its instantaneous center on or outboard of the surface for the first 20 degrees, which is the same hardware a flush-glazed coupe already uses to get its glass out of the seal before the door swings.',
+      cost: [
+        'A four-bar is two links, four bushings and a check strap per hinge against a butt hinge\'s one pin, and it is the part of the door that wears where a pin would not.',
+        'The center stands outboard of the paint while the door is on the move, so the hardware is in the airflow at the one moment the seal is open. That is a wind noise path a butt hinge does not have.',
+        'It buys nothing at all in curbside space, and costs 8 to 40 mm against the axis it replaces. What it buys is a door that can exist on this body at all.',
+      ],
+    },
+    'door-rear': {
+      name: 'Rear door',
+      kind: 'door',
+      part: 'doors',
+      mass: 9.5,
+      seconds: 1.2,
+      seat: 'Coach hinge at the x -0.9411 cut, 110.5 mm ahead of the rear arch, axis on the skin at |z| 0.9250',
+      motion: [
+        { kind: 'swing', axis: [0, -1, 0], pivot: [-0.9411, 0.700, 0.9250], deg: 67 },
+      ],
+      why: 'Hinged at the back, which is what the rest of this body has already decided for it. A conventionally hinged rear door pivots on the B-pillar and drives its leading edge into the front door, 57.3 mm at full open on the same measurement that condemned the inboard axis. Hinging it the other way pins that edge: swept at every angle from 0 to 67 degrees the coach door\'s x minimum stays at -0.9411 exactly, because the hinge edge IS the trailing edge and it does not move. What the pair then opens is one 1.79 m aperture with no door edge in the middle of it, which is the ingress a car with a 0.925 flat flank and no fender step can actually offer.',
+      cost: [
+        'A coach pair has no door edge between the two leaves at the paint, so the side impact load path across that station is the cage tube behind the trim and the sill under it, and both have to be rated for it rather than assumed.',
+        'The rear door cannot be opened before the front one and must not be closable after it. That is an interlock, and an interlock is a failure mode: it is the reason this arrangement is rare on cars that are not showing off.',
+        'A rear-hinged door caught by a gust opens further rather than shutting, which is the argument that removed coach doors from mass production in the first place. The check strap is a safety part here, not a convenience one.',
+      ],
+    },
+    hood: {
+      name: 'Hood',
+      kind: 'hood',
+      part: 'skin',
+      mass: 7,
+      seconds: 1.5,
+      seat: 'Rear cut at x 1.1282, planar to 0.33 mm; axis carried up to the crown at y 1.0560, so the hinge is a beam across the cowl rather than a box in each fender',
+      motion: [
+        { kind: 'swing', axis: [0, 0, 1], pivot: [1.1282, 1.0560, 0], deg: 65 },
+      ],
+      why: 'A hood is charged in height where a door is charged in width, and this one is charged in nothing else. The axis runs along +z, so no point on the panel changes its z at any angle, and the lateral excursion past the parked car is 0.0 mm at all 48 samples. Everything this lid costs, it costs overhead.\n\nTHE AXIS IS AT THE CROWN, AND THAT IS A MEASUREMENT RATHER THAN A PREFERENCE. Fore and aft it is free: the rear cut is planar in x to 0.33 mm, 1.1282 to 1.1286 across its whole 1.617 m width. What defeats a hinge here is camber, because the axis is a straight line and the cut it sits in is a curve. Measured along its own cut line the rear edge falls 172.7 mm, from y 1.0560 at the crown to 0.8832 at |z| 0.8094. Put the axis at the outboard ends, where every car with a hood puts its hinge boxes, and that crown stands 172.7 mm above the axis and sweeps aft as the panel lifts: swept against built geometry it is 0.567 mm into the fixed cowl deck at ONE degree of opening, 2.414 mm at 5 and 5.299 mm at 20. Note which partner that is. It is not the glass, which is 58.2 mm away and is the obstacle a drawing would worry about; it is the panel on the other side of this lid\'s own shutline, which is at zero distance and gets there nineteen degrees first. Put the axis at the crown instead and the rear edge is pinned: the panel\'s x minimum runs 1.1282 to 1.1267 over the whole travel, so the bonded joint back to the canopy keeps 56.7 of its 58.2 mm wide open.\n\nTHE FRONT EDGE ADVANCES 39 MM AND IT STILL CLEARS, WHICH IS A RATE ARGUMENT. A crown axis buys the pinned rear edge by swinging everything below the axis forward, and the leading edge hangs 296 mm below it. Measured, the panel reaches 4.9 mm past its closed x maximum at 1 degree, peaks 39.0 mm past at 15 and is back inside the closed outline by 30. It is advancing into a shutline 5 mm wide, so in plan that reads like a strike. It is not one, and the reason is the ratio: in the 5.0 mm the leading edge moves forward it also rises 19.1 mm, while the nose panel it is moving over falls away at 0.93 mm of height per millimeter of length. The edge gains about 4.7 mm of daylight for every millimeter it spends, and the sweep finds no contact at any sample.\n\nSIXTY FIVE DEGREES, AND FOR ONCE THE LIMIT IS THIS MODULE\'S OWN. Swept over both presets the panel is clean through 68 degrees against ten parts. At 69 it touches body-9/skin by 0.029 mm at (1.130, 1.059, 0.025), which is this panel\'s own rear lip, sitting a few millimeters off the axis, rotating across the shutline into the fixed cowl deck. That is the bill for a hinge line lying IN the paint rather than above it, and it is the same bill the doors on this body pay at the other end of the car, where the fix was to stand the axis outside the skin. Here it is cheap, because 68 degrees is more travel than a hood needs. It ships at 65 with three degrees in hand.',
+      cost: [
+        'The overhead is the whole bill and it is a big one. At 65 degrees the panel\'s top edge stands at y 1.9568 against a car measuring 1.429 m over everything, so the frunk needs 527.7 mm of clear air above the roof to open, and 578.8 mm on Gen 10 because wheels-10 sits the car down. A domestic garage door on its track is the constraint this hits first, and nothing about the panel can be traded to soften it: height is the only currency a +z hinge spends.',
+        'An axis at the crown is not a pair of hinge boxes tucked into the fenders. It is a beam across the cowl on the centerline, or a pair of goose-necks tall enough to reach 172.7 mm above the fender line, and either one stands in the cowl plenum where a wiper drive, a fresh-air intake and the cross-car beam normally live. This module draws the panel and the axis; it does not draw that hardware, and the volume was never budgeted.',
+        'What it opens is 91.8 liters of declared frunk, 340 by 300 by 900 mm, and thermal-9\'s heat pump is a solid 396 by 321 by 392 mm unit sitting in 36.3 of them. Forty percent of the hole this lid exists to reach is already a heat pump. The skateboard is supposed to free the nose; on this rung the thermal package has spent most of what it freed, which is a packaging verdict rather than a body one and belongs to thermal-9 as much as to this file.',
+      ],
+    },
+    decklid: {
+      name: 'Decklid',
+      kind: 'decklid',
+      part: 'tail-cone',
+      mass: 6,
+      seconds: 1.4,
+      seat: 'Front cut at x -1.1600, axis carried up to the crown at y 1.2898; travel limited by interior-6\'s curtain rail, not by the lid',
+      motion: [
+        { kind: 'swing', axis: [0, 0, 1], pivot: [-1.1600, 1.2898, 0], deg: -26 },
+      ],
+      why: 'A lid over a crowned deck cannot hinge on one fixed axis, and this cut is the worst case on the car: measured across its own front line the camber is 220.9 mm, from y 1.0689 at the outboard ends to 1.2898 at the crown. Put the axis at the outboard ends, where a drawing would put it, and the crown of the leading edge swings AFT past the canopy\'s rear edge at x -1.100 by about 15 degrees. Put it at the crown, as this one does, and the leading edge is pinned instead. A real car resolves the rest with a four-bar; the geometry here does not get far enough to need one, for the reason below.\n\nTWENTY SIX DEGREES IS NOT THE LID\'S LIMIT, IT IS interior-6\'s. Swept, this panel strikes interior-6/restraints at about 32 degrees however it is hinged: with the crown axis, with the outboard axis, with 57 mm of compensating translation forward or aft, the answer moves by two degrees and never goes away. The obstruction is the curtain airbag rail, which runs from x -1.100 to -1.320 at y 1.132 to 1.192, directly across the aperture this lid opens. That rail is the same part interior-6\'s own comment admits "already stands outside body-8\'s roof loft by 98 mm" and calls a disagreement an interior generation owes. So the trunk opens 26 degrees with 8 parts swept clean around it, and the thirty-odd degrees missing belong to a module that is not this one.\n\nWhat it opens is the honest part. body-8 measured this tail at 1.498 m wide at x -2.15 with its lower edge at y 0.426, against body-7\'s 1.622 and 0.380, and called it a frunk and a shallow rear well rather than a wagon. Gen 9 does not touch the afterbody, so the well is body-8\'s and so is the verdict: this is the lid over a shallow well, not over a trunk.',
+      cost: [
+        'Twenty six degrees is a shallow lid. Loading anything tall means clearing a panel that is still most of the way over the opening, and the fix is not in this module: the curtain rail has to come inboard and down before this lid can have the other thirty degrees.',
+        'The lid carries no glass and the tail carries no backlight, so a reversing camera and the sensor suite are the only rear vision on this car whether the lid is up or down. autonomy-4\'s rear unit sits on the fixed band behind the cut rather than on the lid, which is why it does not travel with it.',
+        'It buys access to a well that body-8 already booked as poor: 1.498 m across at x -2.15 with the floor at y 0.426.',
+      ],
+    },
+  },
   parts: {
     /* ── structure ────────────────────────────────────────────────────── */
     'front-casting': {
@@ -190,17 +276,17 @@ export const SYSTEM = {
       specs: [
         ['Counterpart', 'body-8 front-casting, 48 kg: spars, mounts and open bay identical'],
         ['Process', 'High-pressure die cast, vacuum assist, 6,100 t lock'],
-        ['Alloy', 'AlSi10MnMg, natural ageing, no quench'],
+        ['Alloy', 'AlSi10MnMg, natural aging, no quench'],
         ['Tower pad', '(1.545, 0.745, +-0.430), was (1.65, 0.66, +-0.535)'],
         ['Receives', 'suspension-9 tower plate (1.50, 0.735, +-0.41), damper top 0.729'],
         ['Maturity', 'Production practice; new die, carried process and alloy'],
       ],
-      how: 'The casting process is the Gen 1 part and is not reopened: AlSi10MnMg injected at 700 degrees C under partial vacuum, filling a 1.5 m part in under 100 milliseconds, reaching strength by natural ageing because a casting this large would warp in the water quench a T6 treatment needs. The crash rails, the upper apron loads and the rocker fronts still gather here, it still stays elastic while the bolted rails ahead of it fold, and every suspension and drive mount is still machined in one fixture so the front axle geometry hangs off a single datum. The four subframe bushings stay exactly where suspension-4 put them, at (plus and minus 1.34 and 1.72, 0.30, plus and minus 0.50), because suspension-9 held that interface deliberately so this casting would not have to move a datum.\n\nOne feature moves and it was derived from the partner rather than agreed in prose. suspension-9\'s front strut translated inboard with its corner, so its top mount lands at (1.50, 0.72, plus and minus 0.41) and its air spring tower plate at (1.50, 0.735, plus and minus 0.41), both read off its built mesh. body-8\'s casting carried its tower boss at (1.65, 0.66, plus and minus 0.535), spanning |z| 0.460 to 0.610, which is 75 mm outboard of the plate that now has to land on it: a strut ending in air, which is the same class of defect body-8 found in body-7\'s C-pillar and the same class the standing rule about visual attachment exists to catch. The pad moves to (1.545, 0.745, plus and minus 0.430) and a rib carries it back onto the spar, routed outboard at |z| 0.485 to 0.555 because suspension-9\'s front air supply line passes (1.60, 0.56, plus and minus 0.43) on its way to the tower. Swept against the built partner, the tower plate now sits 17.5 mm inside the pad and the damper body, which tops out at y 0.729 on its own mesh rather than at the 0.720 its panel quotes, 11.5 mm inside it, so both terminate in casting rather than near it, and the only other suspension-9 hardware within 20 mm of the pad is the air supply line at 14.9 mm. That is where three kilograms come from, and the mechanism is worth stating because it is not obvious: a shock tower is a thick boss on a cantilevered apron arm, its section is set by the bending it takes from the strut, and moving it 125 mm inboard shortens the arm by the same 125 mm against an unchanged load. Less arm and less section for the same job. The reduction is real casting, not an accounting choice.\n\nThe cross portion between the spars is the one thing that changed, ladder-wide. It was a solid block filling x 1.760 to 2.070 over the full 280 mm section height, standing in the volume every thermal variant uses for its heat pump and its lines, and it is now a lower crossmember at x 2.000 to 2.070, y 0.300 to 0.370, with the bay above it open. Every hardpoint is where it was.',
-      why: 'design/gen4.md lists the front suspension towers at y 0.72 to 0.75 near x 1.45, z plus and minus 0.55 as a binding hard point, and this generation changes it. The right way to change a hard point is to derive the new value from the partner that forced it, publish it once, and let everyone else read it from geometry: the new pad centre is (1.545, 0.745, plus and minus 0.430), spanning x 1.445 to 1.645, y 0.7175 to 0.7725 and |z| 0.310 to 0.550, and the mating face it was drawn against is suspension-9\'s tower plate at (1.50, 0.735, plus and minus 0.41). The wrong way, which design/retro-gen4.md was written about, is to leave the hard-point table saying 0.55 and let the next module split the difference.',
+      how: 'The casting process is the Gen 1 part and is not reopened: AlSi10MnMg injected at 700 degrees C under partial vacuum, filling a 1.5 m part in under 100 milliseconds, reaching strength by natural aging because a casting this large would warp in the water quench a T6 treatment needs. The crash rails, the upper apron loads and the rocker fronts still gather here, it still stays elastic while the bolted rails ahead of it fold, and every suspension and drive mount is still machined in one fixture so the front axle geometry hangs off a single datum. The four subframe bushings stay exactly where suspension-4 put them, at (plus and minus 1.34 and 1.72, 0.30, plus and minus 0.50), because suspension-9 held that interface deliberately so this casting would not have to move a datum.\n\nOne feature moves and it was derived from the partner rather than agreed in prose. suspension-9\'s front strut translated inboard with its corner, so its top mount lands at (1.50, 0.72, plus and minus 0.41) and its air spring tower plate at (1.50, 0.735, plus and minus 0.41), both read off its built mesh. body-8\'s casting carried its tower boss at (1.65, 0.66, plus and minus 0.535), spanning |z| 0.460 to 0.610, which is 75 mm outboard of the plate that now has to land on it: a strut ending in air, which is the same class of defect body-8 found in body-7\'s C-pillar and the same class the standing rule about visual attachment exists to catch. The pad moves to (1.545, 0.745, plus and minus 0.430) and a rib carries it back onto the spar, routed outboard at |z| 0.485 to 0.555 because suspension-9\'s front air supply line passes (1.60, 0.56, plus and minus 0.43) on its way to the tower. Swept against the built partner, the tower plate now sits 17.5 mm inside the pad and the damper body, which tops out at y 0.729 on its own mesh rather than at the 0.720 its panel quotes, 11.5 mm inside it, so both terminate in casting rather than near it, and the only other suspension-9 hardware within 20 mm of the pad is the air supply line at 14.9 mm. That is where three kilograms come from, and the mechanism is worth stating because it is not obvious: a shock tower is a thick boss on a cantilevered apron arm, its section is set by the bending it takes from the strut, and moving it 125 mm inboard shortens the arm by the same 125 mm against an unchanged load. Less arm and less section for the same job. The reduction is real casting, not an accounting choice.\n\nThe cross portion between the spars is the one thing that changed, ladder-wide. It was a solid block filling x 1.760 to 2.070 over the full 280 mm section height, standing in the volume every thermal variant uses for its heat pump and its lines, and it is now a lower crossmember at x 2.000 to 2.070, y 0.300 to 0.370, with the bay above it open. Every hardpoint is where it was.',
+      why: 'design/gen4.md lists the front suspension towers at y 0.72 to 0.75 near x 1.45, z plus and minus 0.55 as a binding hard point, and this generation changes it. The right way to change a hard point is to derive the new value from the partner that forced it, publish it once, and let everyone else read it from geometry: the new pad center is (1.545, 0.745, plus and minus 0.430), spanning x 1.445 to 1.645, y 0.7175 to 0.7725 and |z| 0.310 to 0.550, and the mating face it was drawn against is suspension-9\'s tower plate at (1.50, 0.735, plus and minus 0.41). The wrong way, which design/retro-gen4.md was written about, is to leave the hard-point table saying 0.55 and let the next module split the difference.',
       fail: [
         'A new die is a new porosity map: gas porosity is still the process risk, still controlled by vacuum level, still caught by X-ray sampling, and the fleet history of the old tool does not transfer to the new one.',
         'The tower pad is now 125 mm inboard of where the front upper load path has entered this casting since Gen 1, so the apron rib pattern is a fresh topology result rather than a proven one, and it is the item a body-in-white stiffness rig should measure first.',
-        'Every steel bolt into aluminium is a galvanic couple; the cage is hot-stamped steel and lands here through the same adhesive-and-rivet isolation the Gen 1 cage used.',
+        'Every steel bolt into aluminum is a galvanic couple; the cage is hot-stamped steel and lands here through the same adhesive-and-rivet isolation the Gen 1 cage used.',
         'The rail and cradle spar is drawn as a solid box and suspension hardware has shared its volume in every generation since Gen 4, most of it the front air supply line running about 260 mm through it between x 1.60 and 1.86. A real casting is a hollow ribbed shell and those are cored passages rather than interferences, but no drawing on either side shows a cored passage, and a measured overlap that everyone assumes is fine is exactly the kind of thing that turns out not to be.',
       ],
       explode: [0.85, -0.35, 0],
@@ -217,7 +303,7 @@ export const SYSTEM = {
         ['Change this generation', 'None. Gen 9 touches nothing aft of x 0.850'],
         ['Maturity', 'Production practice, carried unchanged since Gen 1'],
       ],
-      how: 'One shot replacing 79 stamped pieces, thick spring-seat bosses fed by conformal die cooling so solidification stays even and hot tears stay out of the rib junctions, short bolted rails and a beam behind them that take the low-speed hits and unbolt for repair. It carries the rear drive cradle on three bushings and reacts the rear belt and seat anchor loads.\n\nThis panel exists to make the scope of the generation checkable, exactly as body-8 listed its front casting to prove it had not touched the nose. Gen 8 hung 525 mm of bonded carbon off the bolted rails at x -2.25 and handed the casting 451 Nm at full airbrake, up 19 percent on body-7. Gen 9 changes neither number, because it changes nothing behind the cowl. The one thing worth checking rather than assuming was whether a 140 mm narrower front track alters the rear load case, and it does not: yaw inertia, rear overhang and the blade station are all unmoved, and suspension-9 leaves the rear geometry at the |z| 0.74 centres wheels-7 set. The rear of this car is the Gen 8 rear on the Gen 8 hardware with the Gen 8 arithmetic.',
+      how: 'One shot replacing 79 stamped pieces, thick spring-seat bosses fed by conformal die cooling so solidification stays even and hot tears stay out of the rib junctions, short bolted rails and a beam behind them that take the low-speed hits and unbolt for repair. It carries the rear drive cradle on three bushings and reacts the rear belt and seat anchor loads.\n\nThis panel exists to make the scope of the generation checkable, exactly as body-8 listed its front casting to prove it had not touched the nose. Gen 8 hung 525 mm of bonded carbon off the bolted rails at x -2.25 and handed the casting 451 Nm at full airbrake, up 19 percent on body-7. Gen 9 changes neither number, because it changes nothing behind the cowl. The one thing worth checking rather than assuming was whether a 140 mm narrower front track alters the rear load case, and it does not: yaw inertia, rear overhang and the blade station are all unmoved, and suspension-9 leaves the rear geometry at the |z| 0.74 centers wheels-7 set. The rear of this car is the Gen 8 rear on the Gen 8 hardware with the Gen 8 arithmetic.',
       why: 'A ladder earns credibility by knowing which inherited part is a constraint and which is merely inherited. Renumbering a 50 kg casting to make a generation look busier spends every proven rear pickup to buy nothing. The discipline has to be internal under an unlimited-resources premise, because nothing external says no, and the form it takes is a spec row that says the change this generation is none.',
       fail: [
         'Hot tearing at thick-to-thin transitions is still the casting defect that matters; CT scans on a sampling plan police it.',
@@ -259,12 +345,12 @@ export const SYSTEM = {
         ['Skin cover', '10.0 mm under a 0.925 flank, was 10.0 mm, unchanged'],
         ['Maturity', 'Production practice, carried unchanged since Gen 1'],
       ],
-      how: 'The side pole test sizes any EV sill: a rigid 254 mm pole at 32 km/h puts all of its energy into a hand-width of rocker. Eight extruded chambers crush in sequence from outboard in, each web adding a step to the force curve, absorbing the hit in about 70 mm of controlled collapse; whatever remains crosses battery-7\'s crossmembers to the far rocker. The 40 mm intrusion budget is a contract with the pack, not a body target.\n\nThe Gen 9 note is about status rather than section. This extrusion has always had its outer face at |z| 0.915, ten millimetres inside the 0.925 beltline, and for eight generations that was a detail because the front fairings stood 83 to 93 mm further out and owned the widest point of the car. They do not now. From y 0.32 to 0.42, which is exactly the rocker\'s own height band, the widest hard part of this car is this extrusion with 10 mm of skin over it, and the widest surface is the flank it sits behind. That makes the 10 mm cover a whole-car dimension rather than a local one: set a rocker 3 mm proud on this body and the print-through kink runs down the one continuous highlight line that now goes from the nose to the Kamm face without a fender break in it. Nothing about the part changed. What changed is that there is nothing standing in front of it any more.',
+      how: 'The side pole test sizes any EV sill: a rigid 254 mm pole at 32 km/h puts all of its energy into a hand-width of rocker. Eight extruded chambers crush in sequence from outboard in, each web adding a step to the force curve, absorbing the hit in about 70 mm of controlled collapse; whatever remains crosses battery-7\'s crossmembers to the far rocker. The 40 mm intrusion budget is a contract with the pack, not a body target.\n\nThe Gen 9 note is about status rather than section. This extrusion has always had its outer face at |z| 0.915, ten millimeters inside the 0.925 beltline, and for eight generations that was a detail because the front fairings stood 83 to 93 mm further out and owned the widest point of the car. They do not now. From y 0.32 to 0.42, which is exactly the rocker\'s own height band, the widest hard part of this car is this extrusion with 10 mm of skin over it, and the widest surface is the flank it sits behind. That makes the 10 mm cover a whole-car dimension rather than a local one: set a rocker 3 mm proud on this body and the print-through kink runs down the one continuous highlight line that now goes from the nose to the Kamm face without a fender break in it. Nothing about the part changed. What changed is that there is nothing standing in front of it any more.',
       why: 'The rocker is the seatbelt of the pack and its section was sized outward from the cell map, which is why it does not move when a body generation narrows the car around it. Recording the promotion is the useful work: the next generation that wants frontal area will find that the 0.925 beltline is the answer, and the first thing it will hit is this extrusion at 0.915 and interior-6 behind it. That is a cabin-width argument, and this panel is where it starts.',
       fail: [
         'Intrusion past 40 mm compromises the outer cell rows and totals the pack; the body repair is the smaller half of that event.',
         'The skin cover is now the tolerance that decides whether a 5.15 m highlight line is straight, and there is no shim path once the skin is bonded.',
-        'A kerb strike can crush inner chambers invisibly, and on this body a kerb reaches the sill directly rather than meeting a frangible fairing first, so sill inspections after a kerb strike move from advisable to scheduled.',
+        'A curb strike can crush inner chambers invisibly, and on this body a curb reaches the sill directly rather than meeting a frangible fairing first, so sill inspections after a curb strike move from advisable to scheduled.',
       ],
       explode: [0, -0.5, 0.3],
     },
@@ -280,11 +366,11 @@ export const SYSTEM = {
         ['Change this generation', 'None; the front track change reaches no cage node'],
         ['Maturity', 'Production practice, roof crush is the certified Gen 6 result'],
       ],
-      how: 'Rails at y 1.296 to 1.300 and |z| 0.510 in a 56 mm tailored-blank section, A-pillars raked 58.9 degrees, B-pillars 110 mm shorter than the Gen 1 part, a third transverse bow at x -0.10 restoring the roof plate action that 105 mm of inboard rail movement took away, and the FMVSS 201 head pad whose inner face sits at |z| 0.467 with seven millimetres of air to the 95th percentile head shadow. body-8\'s C-pillar repair is carried in full: the rear node lands on the rear casting boss at (-1.70, 0.66, 0.535) instead of terminating in bonded skin.\n\nThe check this generation owed was whether narrowing the front of the car by 166 mm reaches any cage node, and it does not. The most forward cage member is the cowl beam at (0.99, 0.870, plus and minus 0.660), and the A-pillar foot at (0.99, 0.880, 0.660). The narrowest the flank gets anywhere near them is 0.925 at x 1.070 falling to 0.923 at 0.850, so the foot sits 260 mm inboard of the skin at its own height and the beam is unreachable by anything this module drew. Roof crush is the certified Gen 6 result on the Gen 6 load path and Gen 9 does nothing to it.',
+      how: 'Rails at y 1.296 to 1.300 and |z| 0.510 in a 56 mm tailored-blank section, A-pillars raked 58.9 degrees, B-pillars 110 mm shorter than the Gen 1 part, a third transverse bow at x -0.10 restoring the roof plate action that 105 mm of inboard rail movement took away, and the FMVSS 201 head pad whose inner face sits at |z| 0.467 with seven millimeters of air to the 95th percentile head shadow. body-8\'s C-pillar repair is carried in full: the rear node lands on the rear casting boss at (-1.70, 0.66, 0.535) instead of terminating in bonded skin.\n\nThe check this generation owed was whether narrowing the front of the car by 166 mm reaches any cage node, and it does not. The most forward cage member is the cowl beam at (0.99, 0.870, plus and minus 0.660), and the A-pillar foot at (0.99, 0.880, 0.660). The narrowest the flank gets anywhere near them is 0.925 at x 1.070 falling to 0.923 at 0.850, so the foot sits 260 mm inboard of the skin at its own height and the beam is unreachable by anything this module drew. Roof crush is the certified Gen 6 result on the Gen 6 load path and Gen 9 does nothing to it.',
       why: 'A cage is the one system on a car where carrying a part unchanged is worth more than improving it, because the certification attaches to the geometry and not to the drawing number. The only reason to touch it would be a load path that ended somewhere it should not, which is what body-8 found and fixed. This generation swept the nodes against the new loft for the same class of defect and found none, and the negative result belongs on the panel because a sweep that was not run is indistinguishable from a sweep that passed.',
       fail: [
         'Martensite does not tolerate straightening: damaged members are cut out and section-replaced, and the rails are tailored blanks, so a section repair must land on the correct thickness zone or the roof-crush result is not the certified one.',
-        'The C-pillar node is a steel-to-aluminium couple at a place it did not use to be, one generation old, still an inspection point rather than a solved problem.',
+        'The C-pillar node is a steel-to-aluminum couple at a place it did not use to be, one generation old, still an inspection point rather than a solved problem.',
         'Hydrogen picked up in the furnace can embrittle boron steel, and dew point control in the line is the quiet safeguard.',
       ],
       explode: [0, 0.36, 0],
@@ -299,16 +385,16 @@ export const SYSTEM = {
         ['Counterpart', 'body-8 skin, 47 kg: identical aft of x 0.850'],
         ['Construction', 'Thin-ply CFRP 1.1 mm, AFP laid, bonded to the carried cage'],
         ['Stations', '15 rings, x +2.375 to -2.775 (5.15 m); 3, 4 and 5 redrawn'],
-        ['Panel joints', 'Bonnet x 2.220 to 1.130, decklid -1.160 to -2.320, 5 by 4 mm'],
+        ['Panel joints', 'Hood x 2.220 to 1.130, decklid -1.160 to -2.320, 5 by 4 mm'],
         ['Silhouette above y 0.28', '1.7482 m2 (body-8: 1.8205 on the same integrator)'],
         ['Frontal area', '2.0415 m2 audit convention (body-8: 2.157), Cd 0.107 provisional'],
         ['Maturity', 'Skin pilot line; Cd 0.107 is an extrapolation, see fairings'],
       ],
-      how: 'Every station from x 0.850 aft is body-8\'s to the fourth decimal: the maximum section at -0.450 still holds 0.925 half-width and a 1.360 crown, closure still begins at -1.100, the per-station equivalent-cone half-angles are still 8.1 / 10.8 / 14.9 / 14.8 / 14.7, and the base is still 0.550 by y 0.545 to 0.975. Stations 0, 1 and 2 are body-8\'s too. Three stations changed, all of them the fairing, and the panel below owns them.\n\nThe frontal-area arithmetic is this part\'s job and it is done with one integrator run over both bodies, which is design/retro-gen8.md\'s standing law after the Gen 7 area figure turned out to have been measured a different way from the Gen 8 one. The integrator is the station method: at each height take the maximum half-width over all fifteen stations, integrate in y above 0.28, double it. On body-8 it returns 1.8205 where body-8 published 1.8221, agreeing to 1.6 square centimetres, and it reproduces body-8\'s own beltline-cap experiment as -0.0649 against its published -0.0650. On this body it returns 1.7482. The other three terms of the audit convention are measured the same way on both: the sub-loft projection below y 0.28, which is the splitter and valance, the floor closeouts, the strakes and the deployed diffuser, is 0.1919 and is carried without a millimetre moving; the tyre columns fall 0.1260 to 0.0868 because wheels-9 stands all four 155 sections in one shadow instead of two; and the protrusion term, which is camera pods, door skins and the glass band standing outside the station silhouette, falls 0.0362 to 0.0322 because the camera pods ride on a flank that came in 33 mm at their station. Three of those four land on the audit\'s own arithmetic: 1.8221 reproduced to 1.6 square centimetres, 0.1260 and 0.0868 exactly, and 0.1919 which is the audit\'s 0.173 of splitter and valance plus the 0.0189 of floor plates, strakes and diffuser it lists separately. The fourth does not, and the panel says so rather than tuning it: the audit\'s implied protrusion residual is 0.0186 against this integrator\'s 0.0362, because this one also counts the 8 mm and 3 mm offsets the glass band and the door skins are lofted at. Those are modelling offsets on carried parts and they are identical on both bodies, so only the delta is used, and the delta is -0.0041 measured one way over both. A is the audit\'s own 2.157 moved by -0.1155, which is 2.0415. The brief asked for 2.02 and this body is 0.022 short, and the reason is on the fairings panel: the front ran out of area before it ran out of geometry.\n\nThe geometry pass that put the shutlines and the panel gaps into this skin is a modelling change and it is reported as one. The station table and the four functions derived from it did not move a digit, so the 1.7482 above is unchanged and so is everything built on it. Two things about the BUILT mesh did move and both were defects rather than surface. The nose face was open: the end cap fanned an open ring without closing the sector across the bottom, so 24.0 percent of the nose window and 21.2 percent of the Kamm window looked straight through the bodywork at the megacastings and the crash rails, and closing the loop still left a 46 by 13 mm slot at the centre of each face because the fan ended on a shrunken ring rather than on a point. Both faces now return 0.00 percent on the same 40,000-ray raster. And the door skins were lofted 3 mm proud of the surface; they are now cut from it, which is what the doors panel has claimed since body-7. Sealing the caps puts 8.81 square centimetres INTO the built union, because an integrator that unions z intervals had been measuring through the holes; everything else in the pass takes 3.96 out. The door offset is worth 0.41 cm2 of that, it is removed from body-8 by the same pass, and the two bodies carry the same cabin stations, so the frontal-area delta this panel rests on is unaffected.',
+      how: 'Every station from x 0.850 aft is body-8\'s to the fourth decimal: the maximum section at -0.450 still holds 0.925 half-width and a 1.360 crown, closure still begins at -1.100, the per-station equivalent-cone half-angles are still 8.1 / 10.8 / 14.9 / 14.8 / 14.7, and the base is still 0.550 by y 0.545 to 0.975. Stations 0, 1 and 2 are body-8\'s too. Three stations changed, all of them the fairing, and the panel below owns them.\n\nThe frontal-area arithmetic is this part\'s job and it is done with one integrator run over both bodies, which is design/retro-gen8.md\'s standing law after the Gen 7 area figure turned out to have been measured a different way from the Gen 8 one. The integrator is the station method: at each height take the maximum half-width over all fifteen stations, integrate in y above 0.28, double it. On body-8 it returns 1.8205 where body-8 published 1.8221, agreeing to 1.6 square centimeters, and it reproduces body-8\'s own beltline-cap experiment as -0.0649 against its published -0.0650. On this body it returns 1.7482. The other three terms of the audit convention are measured the same way on both: the sub-loft projection below y 0.28, which is the splitter and valance, the floor closeouts, the strakes and the deployed diffuser, is 0.1919 and is carried without a millimeter moving; the tire columns fall 0.1260 to 0.0868 because wheels-9 stands all four 155 sections in one shadow instead of two; and the protrusion term, which is camera pods, door skins and the glass band standing outside the station silhouette, falls 0.0362 to 0.0322 because the camera pods ride on a flank that came in 33 mm at their station. Three of those four land on the audit\'s own arithmetic: 1.8221 reproduced to 1.6 square centimeters, 0.1260 and 0.0868 exactly, and 0.1919 which is the audit\'s 0.173 of splitter and valance plus the 0.0189 of floor plates, strakes and diffuser it lists separately. The fourth does not, and the panel says so rather than tuning it: the audit\'s implied protrusion residual is 0.0186 against this integrator\'s 0.0362, because this one also counts the 8 mm and 3 mm offsets the glass band and the door skins are lofted at. Those are modeling offsets on carried parts and they are identical on both bodies, so only the delta is used, and the delta is -0.0041 measured one way over both. A is the audit\'s own 2.157 moved by -0.1155, which is 2.0415. The brief asked for 2.02 and this body is 0.022 short, and the reason is on the fairings panel: the front ran out of area before it ran out of geometry.\n\nThe geometry pass that put the shutlines and the panel gaps into this skin is a modeling change and it is reported as one. The station table and the four functions derived from it did not move a digit, so the 1.7482 above is unchanged and so is everything built on it. Two things about the BUILT mesh did move and both were defects rather than surface. The nose face was open: the end cap fanned an open ring without closing the sector across the bottom, so 24.0 percent of the nose window and 21.2 percent of the Kamm window looked straight through the bodywork at the megacastings and the crash rails, and closing the loop still left a 46 by 13 mm slot at the center of each face because the fan ended on a shrunken ring rather than on a point. Both faces now return 0.00 percent on the same 40,000-ray raster. And the door skins were lofted 3 mm proud of the surface; they are now cut from it, which is what the doors panel has claimed since body-7. Sealing the caps puts 8.81 square centimeters INTO the built union, because an integrator that unions z intervals had been measuring through the holes; everything else in the pass takes 3.96 out. The door offset is worth 0.41 cm2 of that, it is removed from body-8 by the same pass, and the two bodies carry the same cabin stations, so the frontal-area delta this panel rests on is unaffected.',
       why: 'Gen 8\'s lesson was that CdA is a product and an afterbody can only reach one term of it. Gen 9\'s lesson is the next one along and it is more uncomfortable, because it closes a door: with the fairing on the flank, capping every station forward of the cowl at the beltline now moves the integral by 0.0000 m2. There is no third body lever. From y 0.28 to 0.55 the silhouette is the beltline, which is the rockers at |z| 0.915 and interior-6\'s hip room behind them; from y 0.86 up it is the maximum-section ring, which is the Gen 6 roofline. Both are cabin decisions. The 0.022 m2 the brief still wants is 12 mm off the beltline per side, and 12 mm off the beltline is 24 mm of shoulder room, which is an interior generation\'s call and not a body generation\'s. Writing that down precisely is worth more than shaving the nose to make the number look closer.',
       fail: [
-        'Thin-ply carbon takes barely visible impact damage: hail or a car-park knock can delaminate plies under paint that looks perfect, so ultrasound spot checks stay on the service schedule, carried from body-7.',
-        'The bonnet leading edge still runs at 43 degrees because the nose is unchanged, so the pedestrian head-impact map is body-7\'s and is still an extrapolated rather than a certified result.',
+        'Thin-ply carbon takes barely visible impact damage: hail or a parking-garage knock can delaminate plies under paint that looks perfect, so ultrasound spot checks stay on the service schedule, carried from body-7.',
+        'The hood leading edge still runs at 43 degrees because the nose is unchanged, so the pedestrian head-impact map is body-7\'s and is still an extrapolated rather than a certified result.',
         'Deleting the fender break makes the flank one uninterrupted 5.15 m highlight line with four shutlines in it, which is the hardest surface on the car to repair well: a bonded scarf repair anywhere on it is now judged against a reflection that runs the whole car with nothing to hide a step behind.',
       ],
       explode: [0, 0.62, 0],
@@ -325,14 +411,14 @@ export const SYSTEM = {
         ['Contained lock', '20.2 deg, skin-bound (lip 21.1, louvers 21.2); commanded 14.0'],
         ['Maturity', 'Pilot line: enclosed steered wheels exist, not at this track'],
       ],
-      how: 'The move is a subtraction rather than a redesign, because wheels-9 translated its corner rigidly: every value in its swept table is exactly 70.0 mm inboard of the same measurement on wheels-7. Sweeping its built front tyre, wheel, cover and disc about the vertical axis through (1.45, 0.74) reproduces that table here: 0.8190 static at the cover lip, 0.8926 at 14 degrees, 0.9032 at 16, 0.9097 at 17.25, with the peak at hub height 306 mm fore and aft of the axle rather than at the axle itself, where the swept solid is only 0.8190 wide. Add suspension travel by sweeping the same solid vertically over the bump case and the requirement at y 0.58 rises from 0.8700 to 0.8865, which is wheels-9\'s own 50 mm band figure at y 0.50 read 80 mm higher, and it is the number the shoulder was drawn against.\n\nThe pod is therefore drawn at 0.925 flat from y 0.28 to 0.58 and 0.898 to 0.902 at the shoulder, and 0.925 is not a clearance number. It is the beltline: stations 8 and 9 have carried 0.925 since body-3 and stations 6 and 7 carry 0.922 to 0.924, so a fairing at 0.925 is not a fairing at all, it is the flank continuing forward. That is worth 0.0722 m2 of silhouette, which is 0.0066 more than body-8\'s own beltline-cap experiment predicted, because the cap held the shoulder at 0.925 and a redrawn shoulder goes under it to 0.900. What it costs is 6.1 mm of arch clearance, and that pair is one method run over both bodies rather than two numbers that happen to sit in the same sentence. The method is the three-dimensional minimum from the built swept solid at 14 degrees to the built pod skin: 32.4 mm here, 38.5 mm on body-8, both of them landing at the tyre shoulder at hub height. An earlier pass of this panel reported body-8 at 45.4, which is its widest half-width of 1.008 at y 0.42 measured against a swept peak that occurs at y 0.355. Two heights is two methods, and design/retro-gen8.md was written about exactly that, so the number is corrected here rather than kept because it flattered the generation. That did NOT cost contained lock, and the reason is worth stating because wheels-9 predicted it would. Swept against this loft\'s built hardware the pod contains 20.2 degrees against a commanded 14.0, and the binding feature is the pod skin itself: the swept peak grows 5.2 mm per degree past 14, so it reaches the 0.925 flank 6.2 degrees later. The lower lip follows at 21.1 and the louver bank at 21.2. body-8 published 17.25, louver-bound, and its real contained lock was 3.1 degrees because of the lower-closeout foul below. wheels-9 called the 70 mm one currency, area or lock, because it measured the headroom against body-8\'s surface, and on body-8 the binding feature was a louver blade recessed 14 mm into the skin at y 0.500, which is a placement rather than a surface. Move the bank to the one band the steered envelope does not reach and the currency is not one: this body took the area AND three degrees of lock. What it cannot take is the turning circle, because suspension-9 carried the rack at 14 degrees, so 20.2 is contained headroom exactly as body-8\'s 17.25 was.\n\nThe hardware follows. The sealed inboard wall goes to |z| 0.630, which is FRONTZ minus 0.110 computed from this module\'s own constant and not from P.wheelZ, and its outer face at 0.637 stands 25.5 mm inboard of the tyre\'s inner face at 0.6625, which is exactly the clearance body-8 held against wheels-7. The fore and aft closeouts stay at x 1.855 and 1.045, because the swept solid\'s x extent did not move: it spans 1.0917 to 1.8083 static and 1.0915 to 1.8085 at 14 degrees of lock, which is wheels-9\'s own published pair. And the lower closeout is redrawn, because body-8\'s is wrong. Its lip is a 100 mm flange at y 0.282 to 0.302 running from |z| 0.8945 to 0.9945, and sweeping wheels-7\'s own front corner against it shows the tyre reaching it at 3.1 degrees of lock and standing 48.6 mm through it at the commanded 14. body-8 got the REAR lip right by setting it off a measured sweep table and got the front one wrong by setting it off the surface, and nobody caught it because the front pod\'s own hardware was never swept against the wheel it encloses. This lip is built the rear way: its inboard edge follows a sweep table measured at its own height band with an 18 mm standoff, so it is 77 mm deep at the axle and at the ends and narrows to 14 mm over the two swing peaks at x 1.15 and 1.75. Two numbers hold it, measured two ways and both stated. Against the sweep table it was drawn from, which takes the corner\'s maximum |z| anywhere in the y 0.24 to 0.34 band, it holds 17.9 mm at the commanded 14 degrees and runs out at 17.3. Against the built solid in three dimensions, at the height the lip actually occupies, it holds 41.8 mm static and 19.9 at 14 and does not bind until 21.1. The first is the drawing rule and the second is the geometry; the pod skin binds before either of them, so the lip is not what sets contained lock on this body, and the conservative table is left in place because a lip drawn off a band maximum cannot be surprised by a height it did not check.\n\nThe crispness pass added one feature to this lip and no dimensions. It was a single flat strip from its outer edge on the flank to its inner edge over the tyre, which is a surface with nothing for a highlight to break on, and it is now two strips meeting at a knuckle 30 percent of the way in and 6 mm lower, creased so the fold reads. Both edges are exactly where they were, so the 18 mm standoff, the 77 and 14 mm depths and the 17.9 and 19.9 mm clearances above are all unchanged. It also shows its own screws now, four per side seated on the outer strip at |z| about 0.88: this is the part that has to come off to look at a tyre, the module\'s own failure list says so, and a bonded-looking closeout that cannot be removed would contradict it. The heads point down, away from the panel they hold rather than into it, and the bank spans |z| 0.8908 to 0.9201, so the outermost of them is still 4.9 mm inside the 0.925 flank and none of them reaches the silhouette.\n\nThe pod\'s inboard wall now starts at y 0.545, and the 210 mm of it that used to hang below that is the aperture this panel has been asking for. The wall was a flat 800 by 400 mm sheet from y 0.335 to 0.735 at 14 mm off the tyre\'s inner face, and everything that lives in a front corner passes through exactly that band: the brake disc tops out at y 0.5375 and the caliper at 0.5365, the front drive unit at 0.5420, and hv-4 runs its ring bus and its 48 V zonal trunk along the floor perimeter at y 0.302 to 0.433. Swept against every part of every other module on all ten presets, the sheet was fouling thirteen of them and the ring bus read 96.80 mm. Starting the wall above the moving hardware leaves three, and the deepest of those is suspension\'s front structure at 14.93 mm where the upper arm and the damper cross, which is a tower aperture this drawing still does not have. The pod\'s outer surface is untouched and the built silhouette is unchanged to the sixth decimal: the wall was never in the shadow.\n\nThe pod end closeouts lost 25 mm off their lower edge for the same reason, and it is the same 25 mm on all three bodies that carry this pod: they now start at y 0.370 rather than 0.345, which is 7.4 mm clear of the top of hv-4\'s 6 mm ring bus at y 0.3626.',
-      why: 'body-8 wrote the twenty-two miles down and said the next body generation would find them. It found more, because it was allowed to redraw the shoulder as well as the width, and it found them in a shape that is better than a narrower pod: there is no pod. A blister on a flank pays twice, once in the frontal area it adds and once in the wake behind the shoulder where it closes back down, and body-8\'s shoulder closed at 20.7 degrees in plan on a car whose audit had just penalised the tail for 16.5 to 18.3. Deleting a part is the only aerodynamic change that cannot be partly wrong. What it costs is the option: the pod contains 20.2 degrees and not a degree more without growing back outboard, so the ceiling on this car\'s steering is now a body dimension rather than a tyre one, and suspension-9 carried the rack at 14, so the 21.4 m turning circle is fixed for this rung whatever the pod would allow. That was the trade wheels-9 described as one currency, and this module spent it on area because area is what the brief asked for and because the module that could have spent it on lock chose to carry its rack.',
+      how: 'The move is a subtraction rather than a redesign, because wheels-9 translated its corner rigidly: every value in its swept table is exactly 70.0 mm inboard of the same measurement on wheels-7. Sweeping its built front tire, wheel, cover and disc about the vertical axis through (1.45, 0.74) reproduces that table here: 0.8190 static at the cover lip, 0.8926 at 14 degrees, 0.9032 at 16, 0.9097 at 17.25, with the peak at hub height 306 mm fore and aft of the axle rather than at the axle itself, where the swept solid is only 0.8190 wide. Add suspension travel by sweeping the same solid vertically over the bump case and the requirement at y 0.58 rises from 0.8700 to 0.8865, which is wheels-9\'s own 50 mm band figure at y 0.50 read 80 mm higher, and it is the number the shoulder was drawn against.\n\nThe pod is therefore drawn at 0.925 flat from y 0.28 to 0.58 and 0.898 to 0.902 at the shoulder, and 0.925 is not a clearance number. It is the beltline: stations 8 and 9 have carried 0.925 since body-3 and stations 6 and 7 carry 0.922 to 0.924, so a fairing at 0.925 is not a fairing at all, it is the flank continuing forward. That is worth 0.0722 m2 of silhouette, which is 0.0066 more than body-8\'s own beltline-cap experiment predicted, because the cap held the shoulder at 0.925 and a redrawn shoulder goes under it to 0.900. What it costs is 6.1 mm of arch clearance, and that pair is one method run over both bodies rather than two numbers that happen to sit in the same sentence. The method is the three-dimensional minimum from the built swept solid at 14 degrees to the built pod skin: 32.4 mm here, 38.5 mm on body-8, both of them landing at the tire shoulder at hub height. An earlier pass of this panel reported body-8 at 45.4, which is its widest half-width of 1.008 at y 0.42 measured against a swept peak that occurs at y 0.355. Two heights is two methods, and design/retro-gen8.md was written about exactly that, so the number is corrected here rather than kept because it flattered the generation. That did NOT cost contained lock, and the reason is worth stating because wheels-9 predicted it would. Swept against this loft\'s built hardware the pod contains 20.2 degrees against a commanded 14.0, and the binding feature is the pod skin itself: the swept peak grows 5.2 mm per degree past 14, so it reaches the 0.925 flank 6.2 degrees later. The lower lip follows at 21.1 and the louver bank at 21.2. body-8 published 17.25, louver-bound, and its real contained lock was 3.1 degrees because of the lower-closeout foul below. wheels-9 called the 70 mm one currency, area or lock, because it measured the headroom against body-8\'s surface, and on body-8 the binding feature was a louver blade recessed 14 mm into the skin at y 0.500, which is a placement rather than a surface. Move the bank to the one band the steered envelope does not reach and the currency is not one: this body took the area AND three degrees of lock. What it cannot take is the turning circle, because suspension-9 carried the rack at 14 degrees, so 20.2 is contained headroom exactly as body-8\'s 17.25 was.\n\nThe hardware follows. The sealed inboard wall goes to |z| 0.630, which is FRONTZ minus 0.110 computed from this module\'s own constant and not from P.wheelZ, and its outer face at 0.637 stands 25.5 mm inboard of the tire\'s inner face at 0.6625, which is exactly the clearance body-8 held against wheels-7. The fore and aft closeouts stay at x 1.855 and 1.045, because the swept solid\'s x extent did not move: it spans 1.0917 to 1.8083 static and 1.0915 to 1.8085 at 14 degrees of lock, which is wheels-9\'s own published pair. And the lower closeout is redrawn, because body-8\'s is wrong. Its lip is a 100 mm flange at y 0.282 to 0.302 running from |z| 0.8945 to 0.9945, and sweeping wheels-7\'s own front corner against it shows the tire reaching it at 3.1 degrees of lock and standing 48.6 mm through it at the commanded 14. body-8 got the REAR lip right by setting it off a measured sweep table and got the front one wrong by setting it off the surface, and nobody caught it because the front pod\'s own hardware was never swept against the wheel it encloses. This lip is built the rear way: its inboard edge follows a sweep table measured at its own height band with an 18 mm standoff, so it is 77 mm deep at the axle and at the ends and narrows to 14 mm over the two swing peaks at x 1.15 and 1.75. Two numbers hold it, measured two ways and both stated. Against the sweep table it was drawn from, which takes the corner\'s maximum |z| anywhere in the y 0.24 to 0.34 band, it holds 17.9 mm at the commanded 14 degrees and runs out at 17.3. Against the built solid in three dimensions, at the height the lip actually occupies, it holds 41.8 mm static and 19.9 at 14 and does not bind until 21.1. The first is the drawing rule and the second is the geometry; the pod skin binds before either of them, so the lip is not what sets contained lock on this body, and the conservative table is left in place because a lip drawn off a band maximum cannot be surprised by a height it did not check.\n\nThe crispness pass added one feature to this lip and no dimensions. It was a single flat strip from its outer edge on the flank to its inner edge over the tire, which is a surface with nothing for a highlight to break on, and it is now two strips meeting at a knuckle 30 percent of the way in and 6 mm lower, creased so the fold reads. Both edges are exactly where they were, so the 18 mm standoff, the 77 and 14 mm depths and the 17.9 and 19.9 mm clearances above are all unchanged. It also shows its own screws now, four per side seated on the outer strip at |z| about 0.88: this is the part that has to come off to look at a tire, the module\'s own failure list says so, and a bonded-looking closeout that cannot be removed would contradict it. The heads point down, away from the panel they hold rather than into it, and the bank spans |z| 0.8908 to 0.9201, so the outermost of them is still 4.9 mm inside the 0.925 flank and none of them reaches the silhouette.\n\nThe pod\'s inboard wall now starts at y 0.545, and the 210 mm of it that used to hang below that is the aperture this panel has been asking for. The wall was a flat 800 by 400 mm sheet from y 0.335 to 0.735 at 14 mm off the tire\'s inner face, and everything that lives in a front corner passes through exactly that band: the brake disc tops out at y 0.5375 and the caliper at 0.5365, the front drive unit at 0.5420, and hv-4 runs its ring bus and its 48 V zonal trunk along the floor perimeter at y 0.302 to 0.433. Swept against every part of every other module on all ten presets, the sheet was fouling thirteen of them and the ring bus read 96.80 mm. Starting the wall above the moving hardware leaves three, and the deepest of those is suspension\'s front structure at 14.93 mm where the upper arm and the damper cross, which is a tower aperture this drawing still does not have. The pod\'s outer surface is untouched and the built silhouette is unchanged to the sixth decimal: the wall was never in the shadow.\n\nThe pod end closeouts lost 25 mm off their lower edge for the same reason, and it is the same 25 mm on all three bodies that carry this pod: they now start at y 0.370 rather than 0.345, which is 7.4 mm clear of the top of hv-4\'s 6 mm ring bus at y 0.3626.',
+      why: 'body-8 wrote the twenty-two miles down and said the next body generation would find them. It found more, because it was allowed to redraw the shoulder as well as the width, and it found them in a shape that is better than a narrower pod: there is no pod. A blister on a flank pays twice, once in the frontal area it adds and once in the wake behind the shoulder where it closes back down, and body-8\'s shoulder closed at 20.7 degrees in plan on a car whose audit had just penalized the tail for 16.5 to 18.3. Deleting a part is the only aerodynamic change that cannot be partly wrong. What it costs is the option: the pod contains 20.2 degrees and not a degree more without growing back outboard, so the ceiling on this car\'s steering is now a body dimension rather than a tire one, and suspension-9 carried the rack at 14, so the 21.4 m turning circle is fixed for this rung whatever the pod would allow. That was the trade wheels-9 described as one currency, and this module spent it on area because area is what the brief asked for and because the module that could have spent it on lock chose to carry its rack.',
       fail: [
         'The wall is a flat sheet with a straight lower edge, and a real wheelhouse inner needs a shaped aperture for the upright and the damper rather than a horizontal cut: suspension\'s front structure still crosses it at 14.93 mm, and that is the part of this drawing the correction did not reach.',
-        'Snow chains are geometrically impossible inside a closed fairing and there is now materially less room than there was: the arch is 70 mm further inboard and 6.1 mm tighter, so the winter-tyre answer body-8 gave is now the only answer and the manual has to say so without hedging.',
-        'The turning circle is frozen at 21.4 m kerb to kerb, because suspension-9 carried the rack at 14 degrees and a body cannot steer a car. This pod contains 20.2, so a rack opened to 15 would be free here and would return about 19.9 m on the relation body-8 used; the 16.9 m the tyre itself allows still needs the fairing to grow back, and it would get the frontal-area bill in full.',
-        'A punctured front tyre still cannot be inspected without removing the lower closeout, and that closeout is now a variable-depth part whose inboard edge stands 18 mm off the swept envelope and only 14 mm proud of the flank at two stations, so refitting it wrong is a contact failure rather than a rattle.',
-        'The sealed inboard wall is still a flat 14 mm panel at |z| 0.623 to 0.637, set as an offset from the wheel centre rather than off a sweep, and it is still the part of this pod drawn least like the real one. The claim this note used to make about it was also wrong and is worth recording: it said the wall threads the 0.9 mm between the brake disc hat at 0.5985 and the friction ring at 0.6925 STATICALLY, and the cross-module sweep reads the static case at 47.50 mm into wheels-9\'s caliper and 9.07 mm into its disc. A z gap between two named features is not a clearance; the surfaces on either side of it were never measured. Raising the wall to start at y 0.545, above the disc at 0.5375, the caliper at 0.5365 and the drive unit at 0.5525, clears the static case at every station. The steered case is unchanged and is still a real defect: from about 6 degrees of lock the disc rotates into the wall footprint, and a flat panel with a horizontal lower edge cannot clear a corner that rotates about its own centre.',
+        'Snow chains are geometrically impossible inside a closed fairing and there is now materially less room than there was: the arch is 70 mm further inboard and 6.1 mm tighter, so the winter-tire answer body-8 gave is now the only answer and the manual has to say so without hedging.',
+        'The turning circle is frozen at 21.4 m curb to curb, because suspension-9 carried the rack at 14 degrees and a body cannot steer a car. This pod contains 20.2, so a rack opened to 15 would be free here and would return about 19.9 m on the relation body-8 used; the 16.9 m the tire itself allows still needs the fairing to grow back, and it would get the frontal-area bill in full.',
+        'A punctured front tire still cannot be inspected without removing the lower closeout, and that closeout is now a variable-depth part whose inboard edge stands 18 mm off the swept envelope and only 14 mm proud of the flank at two stations, so refitting it wrong is a contact failure rather than a rattle.',
+        'The sealed inboard wall is still a flat 14 mm panel at |z| 0.623 to 0.637, set as an offset from the wheel center rather than off a sweep, and it is still the part of this pod drawn least like the real one. The claim this note used to make about it was also wrong and is worth recording: it said the wall threads the 0.9 mm between the brake disc hat at 0.5985 and the friction ring at 0.6925 STATICALLY, and the cross-module sweep reads the static case at 47.50 mm into wheels-9\'s caliper and 9.07 mm into its disc. A z gap between two named features is not a clearance; the surfaces on either side of it were never measured. Raising the wall to start at y 0.545, above the disc at 0.5375, the caliper at 0.5365 and the drive unit at 0.5525, clears the static case at every station. The steered case is unchanged and is still a real defect: from about 6 degrees of lock the disc rotates into the wall footprint, and a flat panel with a horizontal lower edge cannot clear a corner that rotates about its own center.',
       ],
       explode: [0.35, -0.05, 0.95],
     },
@@ -348,12 +434,12 @@ export const SYSTEM = {
         ['Change this generation', 'None. The front owns this rung'],
         ['Maturity', 'Production practice: boat tails and Kamm truncation are old'],
       ],
-      how: 'Nothing here moved. The flank runs 0.925 at x -1.100, then 0.880 at the rear axle, 0.866 at -1.780, 0.758, 0.654 and 0.550 at the Kamm face, with the crown falling 1.310 to 0.975 and the lower edge rising 0.28 to 0.545. The tightest arch station still holds 18.9 mm at the liner face against wheels-7\'s swept rear tyre, and wheels-9 leaves the rear corner byte-identical to wheels-7, so that clearance is re-verified rather than re-derived. The flank still runs 17.6 degrees in plan on the last three stations and this module does not claim otherwise any more than body-8 did.\n\nWhat is new is what the tail is worth in a car that now has a front to match it. Gen 8 shipped a 0.105 claim that its audit corrected to 0.108, and most of the gap was the flank angle. The fairing shoulder this generation deleted was running 20.7 degrees in plan, four degrees WORSE than the tail flank the audit penalised, at the front of the car where the boundary layer is thin and the consequences of a separation propagate the whole length of the flank behind it. So the honest way to read this rung is not that the tail got better, because it did not, but that the tail was being asked to carry a body that separated 3.5 m ahead of it. One count is booked for the deletion and it is booked on the fairings panel, not here.\n\nTwo things about the built tail changed without a station moving. The Kamm face was OPEN, and that is worth stating plainly because it had been open on every body that used the helper: the end cap fanned a ring that runs from the flank\'s bottom edge over the crown to the other bottom edge without joining the last point to the first, so the sector across the bottom was never filled and 21.2 percent of the face was the rear megacasting seen through the bodywork. Closing the loop was not enough either, because the fan ended on a ring shrunk to five percent rather than on a point, leaving a 46 by 13 mm slot at dead centre under the light band. Both are closed and the face returns 0.00 percent on a 40,000-ray raster that returned 21.2 before. And the marque is carried from body-8 at the same station and the same depth, which is a measurement rather than a style choice: the face is a cone from the ring outline to a near point, not a plane, so swept over the badge\'s 90 by 38 mm footprint on the BUILT cap the surface falls 2.61 mm, from x -2.76739 to -2.76478. A 4.4 mm extrusion with its back face at x -2.7642 puts the rim 1.2 to 3.8 mm proud everywhere and the back face 0.6 to 3.2 mm inside the panel everywhere. A 2.4 mm badge on the same surface would be half sunk into its own tailgate.',
+      how: 'Nothing here moved. The flank runs 0.925 at x -1.100, then 0.880 at the rear axle, 0.866 at -1.780, 0.758, 0.654 and 0.550 at the Kamm face, with the crown falling 1.310 to 0.975 and the lower edge rising 0.28 to 0.545. The tightest arch station still holds 18.9 mm at the liner face against wheels-7\'s swept rear tire, and wheels-9 leaves the rear corner byte-identical to wheels-7, so that clearance is re-verified rather than re-derived. The flank still runs 17.6 degrees in plan on the last three stations and this module does not claim otherwise any more than body-8 did.\n\nWhat is new is what the tail is worth in a car that now has a front to match it. Gen 8 shipped a 0.105 claim that its audit corrected to 0.108, and most of the gap was the flank angle. The fairing shoulder this generation deleted was running 20.7 degrees in plan, four degrees WORSE than the tail flank the audit penalized, at the front of the car where the boundary layer is thin and the consequences of a separation propagate the whole length of the flank behind it. So the honest way to read this rung is not that the tail got better, because it did not, but that the tail was being asked to carry a body that separated 3.5 m ahead of it. One count is booked for the deletion and it is booked on the fairings panel, not here.\n\nTwo things about the built tail changed without a station moving. The Kamm face was OPEN, and that is worth stating plainly because it had been open on every body that used the helper: the end cap fanned a ring that runs from the flank\'s bottom edge over the crown to the other bottom edge without joining the last point to the first, so the sector across the bottom was never filled and 21.2 percent of the face was the rear megacasting seen through the bodywork. Closing the loop was not enough either, because the fan ended on a ring shrunk to five percent rather than on a point, leaving a 46 by 13 mm slot at dead center under the light band. Both are closed and the face returns 0.00 percent on a 40,000-ray raster that returned 21.2 before. And the marque is carried from body-8 at the same station and the same depth, which is a measurement rather than a style choice: the face is a cone from the ring outline to a near point, not a plane, so swept over the badge\'s 90 by 38 mm footprint on the BUILT cap the surface falls 2.61 mm, from x -2.76739 to -2.76478. A 4.4 mm extrusion with its back face at x -2.7642 puts the rim 1.2 to 3.8 mm proud everywhere and the back face 0.6 to 3.2 mm inside the panel everywhere. A 2.4 mm badge on the same surface would be half sunk into its own tailgate.',
       why: 'Gen 7 narrowed the rear track so the tail could close and took no credit. Gen 8 closed the tail and collected 58 miles. Gen 9 narrows the front and collects area rather than coefficient, and the pattern across the three is worth naming: each rung spent a geometric permission the rung before it created, and none of them could have been reordered. That is what makes it a ladder rather than a list, and the tail cone is the part that shows it, because it is the only major aerodynamic surface on this car that has now gone a full generation without a change and still has an open residual against it.',
       fail: [
         'The claim that this tail stays attached still rests on the equivalent cone rather than on the flank, and the flank is at 17.6 degrees; a moving-ground tunnel is still owed and is now owed on two bodies rather than one.',
         'A 525 mm bonded cantilever carrying an active blade is a fatigue structure whose load case is buffet, and the acceptance test is still a tunnel shake that has not been run.',
-        'Boot volume is unchanged and still poor: 1.498 m wide at x -2.15 with the lower edge at y 0.426. This is a frunk and a shallow rear well, and a narrower car does not make it better.',
+        'Trunk volume is unchanged and still poor: 1.498 m wide at x -2.15 with the lower edge at y 0.426. This is a frunk and a shallow rear well, and a narrower car does not make it better.',
       ],
       explode: [-1.45, 0.30, 0],
     },
@@ -365,16 +451,16 @@ export const SYSTEM = {
       specs: [
         ['Counterpart', 'body-8 rear-arch-closeouts, 4 kg: identical'],
         ['Liner', 'CFRP hoop at r 0.400 about the axle, |z| 0.715 to the flank'],
-        ['Lower lip', '14 mm off the swept rear tyre, measured 16.6 mm in 3D'],
+        ['Lower lip', '14 mm off the swept rear tire, measured 16.6 mm in 3D'],
         ['Radial clearance', '41.7 mm at every steer angle, carried'],
         ['Change this generation', 'None; wheels-9 leaves the rear corner untouched'],
         ['Maturity', 'Production practice: wheelhouse liners are universal'],
       ],
-      how: 'A hoop of CFRP swept at radius 0.400 about the rear axle, 41.7 mm outside the tyre\'s built outer diameter of 0.7166, running from just ahead of the tyre over the crown to just behind it, spanning |z| 0.715 outboard to 6 mm inside the flank. Below the axle line it stops, because a wheelhouse closed underneath is a bucket. A lower lip runs along the flank\'s bottom edge from x -1.06 to -1.82 and turns inboard to sit 14 mm off the swept tyre.\n\nThis panel is carried, and it is here because its method is what caught the front defect. body-8 drew this lip by tabulating the swept |z| of the built rear corner against distance from the axle and setting the lip inboard edge off that table, and it verified the result as a true three-dimensional minimum of 16.6 mm at (-1.757, 0.320). It drew the FRONT pod\'s lower closeout the other way, as a fixed 100 mm flange measured inward from the surface, and that flange sits in the steered tyre\'s path from 3.1 degrees of lock. Same body, same generation, same author, one part right and one part wrong, and the difference is entirely which reference the drawing was hung off. The front lip in this module is now built the rear way.',
+      how: 'A hoop of CFRP swept at radius 0.400 about the rear axle, 41.7 mm outside the tire\'s built outer diameter of 0.7166, running from just ahead of the tire over the crown to just behind it, spanning |z| 0.715 outboard to 6 mm inside the flank. Below the axle line it stops, because a wheelhouse closed underneath is a bucket. A lower lip runs along the flank\'s bottom edge from x -1.06 to -1.82 and turns inboard to sit 14 mm off the swept tire.\n\nThis panel is carried, and it is here because its method is what caught the front defect. body-8 drew this lip by tabulating the swept |z| of the built rear corner against distance from the axle and setting the lip inboard edge off that table, and it verified the result as a true three-dimensional minimum of 16.6 mm at (-1.757, 0.320). It drew the FRONT pod\'s lower closeout the other way, as a fixed 100 mm flange measured inward from the surface, and that flange sits in the steered tire\'s path from 3.1 degrees of lock. Same body, same generation, same author, one part right and one part wrong, and the difference is entirely which reference the drawing was hung off. The front lip in this module is now built the rear way.',
       why: 'A ladder where modules file defects against each other and have them closed by name is worth more than one where every module reports a win, and the same is true inside a module. The useful thing this panel does in Gen 9 is not to change but to be the counter-example: the correct method was already in the file, one function away from the part that got it wrong.',
       fail: [
         'A sealed-topped wheelhouse over a wheel that pumps air needs the pumping to go somewhere, and unlike the front pods there is still no louver bank here: the path is the open bottom.',
-        'Stone impact from the tyre is continuous and directly normal to the surface; this takes an elastomeric sacrificial coat rather than paint.',
+        'Stone impact from the tire is continuous and directly normal to the surface; this takes an elastomeric sacrificial coat rather than paint.',
         'The 14 mm lower-lip clearance assumes suspension-9 holds the rear-steer end stop it inherited, so the actuator end stop is a body-protecting component and belongs on the shared FMEA.',
       ],
       explode: [-0.45, -0.05, 1.15],
@@ -391,10 +477,10 @@ export const SYSTEM = {
         ['Forward corner', 'Lower edge at the cowl 0.9472 to 0.9108 half-width'],
         ['Maturity', 'Production practice for the glass; mirrorless is legal in most markets, not all'],
       ],
-      how: 'The band is cut from the same loft stations as the skin and carries body-7\'s stack unchanged: a 1.1 mm ion-exchanged outer ply that resists the same stone strike as 2.1 mm of annealed soda-lime, a 0.7 mm inner, and an electrochromic interlayer that thermal-9 schedules between 20 and 1 percent transmittance. body-3\'s codified lesson is carried too, the near-flat roof band from the centreline out to |z| 0.55 at y 1.340 to 1.360, so the glass wraps the cage rails rather than dipping under them: rail top at 1.324 to 1.328 under a loft roof band at 1.336 to 1.339, eleven millimetres, unchanged.\n\nOne corner moves and it is a consequence rather than a decision. The band is lofted from ring 5 aft, and ring 5 is the cowl station at x 1.070 whose fender shoulder came from 0.936 to 0.900 half-width. The glass therefore starts 36 mm further inboard at its forward lower corner, 0.9108 against body-8\'s 0.9472, and runs into the unchanged 0.9037 at ring 6 instead of stepping down to it. The windscreen base is 72 mm narrower across the car and the A-pillar feet at (0.99, 0.880, plus and minus 0.660) are unmoved, so the change is entirely in the glass, entirely at its lowest corner, and it removes a 36 mm step in the surface the glass was previously bonded across. Nothing in the stack, the span, the electrochromic schedule or the roof band changed, and the mass is identical because the area change is under a percent.',
+      how: 'The band is cut from the same loft stations as the skin and carries body-7\'s stack unchanged: a 1.1 mm ion-exchanged outer ply that resists the same stone strike as 2.1 mm of annealed soda-lime, a 0.7 mm inner, and an electrochromic interlayer that thermal-9 schedules between 20 and 1 percent transmittance. body-3\'s codified lesson is carried too, the near-flat roof band from the centerline out to |z| 0.55 at y 1.340 to 1.360, so the glass wraps the cage rails rather than dipping under them: rail top at 1.324 to 1.328 under a loft roof band at 1.336 to 1.339, eleven millimeters, unchanged.\n\nOne corner moves and it is a consequence rather than a decision. The band is lofted from ring 5 aft, and ring 5 is the cowl station at x 1.070 whose fender shoulder came from 0.936 to 0.900 half-width. The glass therefore starts 36 mm further inboard at its forward lower corner, 0.9108 against body-8\'s 0.9472, and runs into the unchanged 0.9037 at ring 6 instead of stepping down to it. The windshield base is 72 mm narrower across the car and the A-pillar feet at (0.99, 0.880, plus and minus 0.660) are unmoved, so the change is entirely in the glass, entirely at its lowest corner, and it removes a 36 mm step in the surface the glass was previously bonded across. Nothing in the stack, the span, the electrochromic schedule or the roof band changed, and the mass is identical because the area change is under a percent.',
       why: 'A monoform with a deleted backlight is a car that depends on its sensor suite for everything behind the B-pillar, and that was Gen 8\'s decision, taken because a doubly curved backlight on a surface contracting in plan and in height at once is a tolerance problem before it is a mass problem. Gen 9 does not reopen it. What is worth saying is that the forward corner moving is the only place in this whole generation where a front change reached a part that is not a front part, and it reached it through the loft rather than through an interface, which is why it was found by re-lofting rather than by anyone remembering to check.',
       fail: [
-        'One deep chip still condemns the band and the replacement must re-index to the loft within half a millimetre, carried unimproved.',
+        'One deep chip still condemns the band and the replacement must re-index to the loft within half a millimeter, carried unimproved.',
         'A camera-only rear view fails differently from a mirror: a blinded lens is a blank screen, so the rear camera washer circuit is a safety item whose failure caps speed.',
         'This body and interior-6 still disagree by about 20 degrees of seatback at both rows and the rear belt towers still stand 98 mm outside the loft; a narrower front does nothing for either, and an interior generation owes both.',
       ],
@@ -413,8 +499,8 @@ export const SYSTEM = {
         ['Handles', 'None; capacitive strip and e-latch on hv-4\'s 48 V zonal bus'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'Each skin is the master loft surface between two shutlines, hinges adjusted against the casting datum until a swept light line crosses all four doors without a kink, camera pods on 90 mm stalks feeding autonomy-4\'s surround model, e-latches on hv-4\'s corner zonal controllers as fused telemetered channels. The ingress bill is body-7\'s and unchanged: the header inner edge at the B-pillar is at y 1.264 and |z| 0.484, the aperture lost 94 mm of height to the Gen 6 cage, and you sit onto the sill and swing your legs in.\n\nThe shutlines are geometry now and the published trio is corrected rather than carried. body-7 wrote x 1.06 / 0.06 / -0.94 and every body since repeated it, and the first of the three was wrong: x 1.06 sits on an enclosed wheel pod, 15 mm behind this module\'s own wheelhouse aft closeout, and a door leading edge cannot wrap over a wheel enclosure and still swing. body-8 caught it and moved the cut to its blend-out station; this body measures the same three joints against its own partners and lands in the same places, which matters because from x 0.850 aft the two bodies are the same surface and two bodies that share a surface must not disagree about where a door opens. Forward cut x 0.850: the fairing-to-cabin panel joint, 187 mm behind the wheelhouse wall at x 1.037, 242 mm behind wheels-9\'s rearmost front-tyre vertex at 1.0917, 29.6 mm behind interior-6\'s dashboard outboard end at 0.8796, and 140 mm behind the cage A-pillar foot at 0.99 that carries the hinges. Middle cut x 0.060: 14 mm behind the cage B-pillar\'s aft face, the pillar being a 26 mm tube on x 0.020, and 31 mm behind interior-6\'s front seat backrest at 0.0910. Rear cut x -0.940: 110.5 mm ahead of the rear wheelhouse closeout at -1.0505 and 70 mm ahead of the rocker\'s rear end at -1.010. One number does not clear and it is stated rather than buried: interior-6\'s rear bench cushion reaches x -1.035, so its trailing 95 mm sits behind the aperture. Every cut is a real recessed channel, 5 mm wide and 4 mm deep with two walls at about 71 degrees, measured on the built flank at y 0.700 as 4.03, 4.17 and 4.08 mm, and each runs from the rocker top at y 0.420 up to the beltline seam. The door does not own the sill below its own cut: that is the outer face of a 2.02 m extrusion whose section battery-7 specified, and it stays with the skin.\n\nTwo things moved without anyone drawing them and both are consequences of the loft. The camera pods are placed off the surface at x 0.98, and x 0.98 is interpolated between the cowl station at 1.070 and the blend-out station at 0.850, so when the cowl shoulder came in the pods came with it: their outer face is at |z| 0.9768 against body-8\'s 0.9966, so the car measures 1.954 m over the pods against 2.016 over body-8\'s fairing. That matters twice, and the second time it is awkward. It is 41 square centimetres off the protrusion term in the frontal-area integral, which is real. But on body-8 these pods stood 11.5 mm INSIDE the widest bodywork and on this car they stand 51.8 mm outside it, so the honest width of this car is 1.954 m and not the 1.850 m of its bodywork. A camera monitor system is excluded from width in most markets that allow it at all, which is the same qualifier body-6 attached to deleting the mirrors, and it is quoted again here rather than allowed to make a number look better than it is. The second is the door skins themselves, which were lofted 3 mm proud of the surface rather than cut from it. They are cut from it now, which removes a 3 mm step this part never intended and takes 0.41 square centimetres out of the built silhouette; body-8 corrected the same offset in the same pass, and the two bodies carry identical cabin stations, so nothing in the frontal-area comparison moves.',
-      why: 'Doors are where a monoform admits people exist and the Gen 3 settlement holds: spend the tolerance budget on flushness, let the gap be what the seals need. What Gen 9 adds is a harder version of the same problem. body-8 could hide a flushness error at the front shutline behind a fender break, because the fairing stood 83 mm proud and the eye read the step as intentional. This body has no break: one surface runs from the nose to the Kamm face and every one of the four joints is on it. The quarter millimetre was a specification before and it is a requirement now.',
+      how: 'Each skin is the master loft surface between two shutlines, hinges adjusted against the casting datum until a swept light line crosses all four doors without a kink, camera pods on 90 mm stalks feeding autonomy-4\'s surround model, e-latches on hv-4\'s corner zonal controllers as fused telemetered channels. The ingress bill is body-7\'s and unchanged: the header inner edge at the B-pillar is at y 1.264 and |z| 0.484, the aperture lost 94 mm of height to the Gen 6 cage, and you sit onto the sill and swing your legs in.\n\nThe shutlines are geometry now and the published trio is corrected rather than carried. body-7 wrote x 1.06 / 0.06 / -0.94 and every body since repeated it, and the first of the three was wrong: x 1.06 sits on an enclosed wheel pod, 15 mm behind this module\'s own wheelhouse aft closeout, and a door leading edge cannot wrap over a wheel enclosure and still swing. body-8 caught it and moved the cut to its blend-out station; this body measures the same three joints against its own partners and lands in the same places, which matters because from x 0.850 aft the two bodies are the same surface and two bodies that share a surface must not disagree about where a door opens. Forward cut x 0.850: the fairing-to-cabin panel joint, 187 mm behind the wheelhouse wall at x 1.037, 242 mm behind wheels-9\'s rearmost front-tire vertex at 1.0917, 29.6 mm behind interior-6\'s dashboard outboard end at 0.8796, and 140 mm behind the cage A-pillar foot at 0.99 that carries the hinges. Middle cut x 0.060: 14 mm behind the cage B-pillar\'s aft face, the pillar being a 26 mm tube on x 0.020, and 31 mm behind interior-6\'s front seat backrest at 0.0910. Rear cut x -0.940: 110.5 mm ahead of the rear wheelhouse closeout at -1.0505 and 70 mm ahead of the rocker\'s rear end at -1.010. One number does not clear and it is stated rather than buried: interior-6\'s rear bench cushion reaches x -1.035, so its trailing 95 mm sits behind the aperture. Every cut is a real recessed channel, 5 mm wide and 4 mm deep with two walls at about 71 degrees, measured on the built flank at y 0.700 as 4.03, 4.17 and 4.08 mm, and each runs from the rocker top at y 0.420 up to the beltline seam. The door does not own the sill below its own cut: that is the outer face of a 2.02 m extrusion whose section battery-7 specified, and it stays with the skin.\n\nTwo things moved without anyone drawing them and both are consequences of the loft. The camera pods are placed off the surface at x 0.98, and x 0.98 is interpolated between the cowl station at 1.070 and the blend-out station at 0.850, so when the cowl shoulder came in the pods came with it: their outer face is at |z| 0.9768 against body-8\'s 0.9966, so the car measures 1.954 m over the pods against 2.016 over body-8\'s fairing. That matters twice, and the second time it is awkward. It is 41 square centimeters off the protrusion term in the frontal-area integral, which is real. But on body-8 these pods stood 11.5 mm INSIDE the widest bodywork and on this car they stand 51.8 mm outside it, so the honest width of this car is 1.954 m and not the 1.850 m of its bodywork. A camera monitor system is excluded from width in most markets that allow it at all, which is the same qualifier body-6 attached to deleting the mirrors, and it is quoted again here rather than allowed to make a number look better than it is. The second is the door skins themselves, which were lofted 3 mm proud of the surface rather than cut from it. They are cut from it now, which removes a 3 mm step this part never intended and takes 0.41 square centimeters out of the built silhouette; body-8 corrected the same offset in the same pass, and the two bodies carry identical cabin stations, so nothing in the frontal-area comparison moves.',
+      why: 'Doors are where a monoform admits people exist and the Gen 3 settlement holds: spend the tolerance budget on flushness, let the gap be what the seals need. What Gen 9 adds is a harder version of the same problem. body-8 could hide a flushness error at the front shutline behind a fender break, because the fairing stood 83 mm proud and the eye read the step as intentional. This body has no break: one surface runs from the nose to the Kamm face and every one of the four joints is on it. The quarter millimeter was a specification before and it is a requirement now.',
       fail: [
         'E-latches keep their legally required mechanical release, exercised at every service because nobody touches it until the day it matters.',
         'A 948 mm aperture diagonal makes child-seat installation genuinely harder; the ISOFIX bars are unmoved but the arm reach is worse.',
@@ -424,7 +510,7 @@ export const SYSTEM = {
     },
     lightbands: {
       name: 'Light bands',
-      tagline: 'Both bands carried to the millimetre, and the front one is the reason the nose stations could not move either.',
+      tagline: 'Both bands carried to the millimeter, and the front one is the reason the nose stations could not move either.',
       mass: 4,
       count: 2,
       specs: [
@@ -457,7 +543,7 @@ export const SYSTEM = {
         ['Maturity', 'Production practice: multi-position wings have shipped for decades'],
       ],
       how: 'Mechanism, actuation, control logic and fail position are carried without a drawing change: two 48 V spindle drives on fused channels from hv-4\'s rear corner zonal controllers, continuous travel from flush to 78 mm proud, a spring return to flush because a spoiler that fails should cost counts and never control, stow below 80 km/h to restore the certified pedestrian geometry, and full-up in half a second on a hard brake-by-wire demand.\n\nThe Gen 9 check was whether a narrower front changes what this blade does, and the answer is a qualified no with one honest caveat. The base it works on is unchanged at 0.3941 m2, the deck it stands on is unchanged, the span is unchanged, and the download is unchanged at about 365 N. What is different is upstream: the car ahead of this blade is 166 mm narrower and no longer has a separated fender shoulder feeding a thickened boundary layer down the flank. A cleaner flank means a slightly thinner boundary layer arriving at the base, which makes the truncation behave slightly more like the attached case body-8 designed for and slightly less like the one it measured. That is a real effect and it is worth exactly nothing on this panel, because the size of it is a tunnel result and this module does not have one. It is written down so that when the audit runs, the question is already framed.',
-      why: 'A fixed truncation pays average-case drag every hour; a blade with travel buys the best case at speed, the legal case in town, and free download in the one manoeuvre where drag is an asset. Carrying it verbatim into a front generation is correct, and the interesting discipline is refusing to book the upstream improvement. Gen 8 got caught out in the opposite direction on its diffuser, where the first pass debited half a count for an effect that measurement showed went the other way, and the lesson from that is to price what can be measured and name what cannot.',
+      why: 'A fixed truncation pays average-case drag every hour; a blade with travel buys the best case at speed, the legal case in town, and free download in the one maneuver where drag is an asset. Carrying it verbatim into a front generation is correct, and the interesting discipline is refusing to book the upstream improvement. Gen 8 got caught out in the opposite direction on its diffuser, where the first pass debited half a count for an effect that measurement showed went the other way, and the lesson from that is to price what can be measured and name what cannot.',
       fail: [
         'Ice can lock the blade flush; the cold-start sweep detects the torque spike, leaves it stowed, and the range estimate explains the missing counts.',
         'Stuck deployed is the bad direction: an uncertified geometry below 80 km/h, so a second independent spring release drops the blade.',
@@ -477,12 +563,12 @@ export const SYSTEM = {
         ['Frontal area held', '0.0132 m2 below y 0.28, inside the carried 0.1919'],
         ['Maturity', 'Production practice: active diffuser flaps ship in limited series'],
       ],
-      how: 'The control law is carried: pressure taps along the ramp plus suspension-9\'s ride-height signal trim the angle back the moment the expansion approaches separation, in yaw, in crosswind or over a crest, and a spring holds 13 degrees whenever power or control is in doubt, because at 13 a diffuser cannot stall, it merely earns less. Two 48 V drives on hv-4\'s rear zonal channels. The hinge is at x -2.000, clear of P.driveR and of drivetrain-7 whose rearmost vertex is at -1.730.\n\nThis panel appears in a front generation for one reason: it is a frontal-area item and it is one this module could not move. The audit convention counts everything below y 0.28 as real projected blockage rather than silhouette, because the underbody is open between the floor and the tyres, and this deployed ramp contributes 0.0132 m2 of the 0.1919 the sub-loft term carries. Shrinking it would mean either standing the ramp shallower, which costs about six counts of the credit it earns, or narrowing the exit span, which body-8 already showed to be the wrong lever because the exit area is span times rise and the rise is what the ramp length bought. So it is measured, reported, and left alone. The same is true of the 0.173 m2 of splitter and valance and the floor plates behind them: the sub-loft term is a floor argument, the floor is carried, and a front generation that reached under the car to find area would be doing a different generation\'s work badly.',
-      why: 'The underbody exhaust is the last big account on the drag ledger and its optimum angle moves with speed, height and yaw, so fixing the ramp means buying the safest angle forever. What this generation adds is the accounting: 2.0415 m2 of frontal area is 1.7482 of body above y 0.28, 0.1919 of underbody hardware, 0.0868 of tyre and the rest protrusions, and the second of those four is now 9.4 percent of the total and rising as a share, because it is the only one nobody has attacked. That is the next generation\'s sentence, written here.',
+      how: 'The control law is carried: pressure taps along the ramp plus suspension-9\'s ride-height signal trim the angle back the moment the expansion approaches separation, in yaw, in crosswind or over a crest, and a spring holds 13 degrees whenever power or control is in doubt, because at 13 a diffuser cannot stall, it merely earns less. Two 48 V drives on hv-4\'s rear zonal channels. The hinge is at x -2.000, clear of P.driveR and of drivetrain-7 whose rearmost vertex is at -1.730.\n\nThis panel appears in a front generation for one reason: it is a frontal-area item and it is one this module could not move. The audit convention counts everything below y 0.28 as real projected blockage rather than silhouette, because the underbody is open between the floor and the tires, and this deployed ramp contributes 0.0132 m2 of the 0.1919 the sub-loft term carries. Shrinking it would mean either standing the ramp shallower, which costs about six counts of the credit it earns, or narrowing the exit span, which body-8 already showed to be the wrong lever because the exit area is span times rise and the rise is what the ramp length bought. So it is measured, reported, and left alone. The same is true of the 0.173 m2 of splitter and valance and the floor plates behind them: the sub-loft term is a floor argument, the floor is carried, and a front generation that reached under the car to find area would be doing a different generation\'s work badly.',
+      why: 'The underbody exhaust is the last big account on the drag ledger and its optimum angle moves with speed, height and yaw, so fixing the ramp means buying the safest angle forever. What this generation adds is the accounting: 2.0415 m2 of frontal area is 1.7482 of body above y 0.28, 0.1919 of underbody hardware, 0.0868 of tire and the rest protrusions, and the second of those four is now 9.4 percent of the total and rising as a share, because it is the only one nobody has attacked. That is the next generation\'s sentence, written here.',
       fail: [
         'An iced or mud-blinded pressure tap forfeits the steep regime: control falls back to 13 degrees and the range estimate quietly loses the difference.',
-        'The departure angle is 15.9 degrees from the rear contact patch and the rear overhang is 1.325 m, so angled bays are still a kerb-strike geometry.',
-        'Deep snow packs the expansion and the diffuser becomes a plough; rated for the load, parked at 13 by the controller, still beyond the drag model\'s vocabulary.',
+        'The departure angle is 15.9 degrees from the rear contact patch and the rear overhang is 1.325 m, so angled bays are still a curb-strike geometry.',
+        'Deep snow packs the expansion and the diffuser becomes a plow; rated for the load, parked at 13 by the controller, still beyond the drag model\'s vocabulary.',
       ],
       explode: [-1.0, -0.4, 0],
     },
@@ -500,11 +586,11 @@ export const SYSTEM = {
         ['Fail position', 'Spring open, venting the fairing'],
         ['Maturity', 'Pilot line at the fairing; the shutter mechanism is production'],
       ],
-      how: 'The blades, the pivots, the single 48 V rotary actuator per bank, the eFuse current signature used as a position sensor and the cold-start sweep are body-7\'s hardware carried through two generations without a drawing change. Three blades forward admit and four aft exhaust, and the front fairing is still a sealed pod around a wheel that pumps air, so these two banks are still its only inlet and outlet.\n\nWhat moved is the height, and body-8 predicted this in writing: it recorded that the louvers rather than the pod skin were what bound the contained lock, that the bank spans |z| 0.9569 to 0.9986 with the recessed 0.9569 end touching first, and that a later generation narrowing the fairing would have to move this bank and re-derive the number rather than carry it. Sweeping wheels-9\'s corner against a bank left at y 0.500 on the new surface shows why. At that height the swept solid runs to 0.890 at 14 degrees across x 1.12 to 1.24, and a blade recessed body-8\'s 14 mm into a 0.925 flank presents its outer corner at about 0.8955, which is five millimetres of gap at the lock the rack already commands. The bank therefore moves up 130 mm to y 0.630, into the one band of the new pod the steered envelope does not reach: at 14 degrees the solid falls to 0.869 there and at 17.25 to 0.881, against a blade face at 0.891. The actuator bosses follow to y 0.720. Nothing about the hardware changed, the pitch is body-7\'s 62 mm, and the flow path is shorter because the exhaust now sits above the tyre crown rather than beside it.\n\nThe bank now has a hole in front of it, which it did not on any body that carried it, and finding that out took a ray and not an argument. Every blade on every generation of this part has been drawn at the flank\'s half-width minus 14 mm with no aperture cut, which is to say inside the bodywork. Rastered at normal incidence over each bank window on the built mesh, over x 1.05 to 1.34 and 1.56 to 1.83 by y 0.55 to 0.72, 98.2 and 98.4 percent of the rays landed on fairing skin and the blades themselves returned 1.8 and 1.6 percent, all of it at the panel edge. A sealed pod whose only inlet and outlet you cannot see is a sealed pod. Each bank now stands in a real hole cut on grid lines the subdivision already had, x 1.070 to 1.323 aft and 1.573 to 1.820 forward, from y 0.580 up to the loft\'s own next ring line at about y 0.647, with a rim returned 14 mm inboard along the surface normal so the cut has a thickness and a lit lip. The same raster, run over both meshes with wheels-9 and thermal-9 in the scene so the two runs are one method, now returns 22.1 and 16.5 percent blade, 72.4 and 75.4 percent rim and skin, and 5.5 and 8.1 percent the tyre behind, which is what looking into a wheelhouse vent should give.\n\nCutting the hole found the second defect immediately. A blade is a flat plate at constant |z| and this flank tumbles inboard above y 0.580, so a 100 mm blade centred on y 0.630 leaves the surface it is recessed into: measured on the built mesh, every blade\'s top corner stood about 3.4 mm THROUGH the skin at y 0.680. Solid paint hid it. Each blade is now sized off the surface, its top set where the loft is still wide enough to contain the rotated corner with 1.5 mm to spare, which is about 60 mm of blade in a 67 mm window and leaves the rim\'s top wall showing above it. The bank\'s |z| span is untouched at 0.8750 to 0.9158, so every clearance and every lock figure on this panel still holds.',
+      how: 'The blades, the pivots, the single 48 V rotary actuator per bank, the eFuse current signature used as a position sensor and the cold-start sweep are body-7\'s hardware carried through two generations without a drawing change. Three blades forward admit and four aft exhaust, and the front fairing is still a sealed pod around a wheel that pumps air, so these two banks are still its only inlet and outlet.\n\nWhat moved is the height, and body-8 predicted this in writing: it recorded that the louvers rather than the pod skin were what bound the contained lock, that the bank spans |z| 0.9569 to 0.9986 with the recessed 0.9569 end touching first, and that a later generation narrowing the fairing would have to move this bank and re-derive the number rather than carry it. Sweeping wheels-9\'s corner against a bank left at y 0.500 on the new surface shows why. At that height the swept solid runs to 0.890 at 14 degrees across x 1.12 to 1.24, and a blade recessed body-8\'s 14 mm into a 0.925 flank presents its outer corner at about 0.8955, which is five millimeters of gap at the lock the rack already commands. The bank therefore moves up 130 mm to y 0.630, into the one band of the new pod the steered envelope does not reach: at 14 degrees the solid falls to 0.869 there and at 17.25 to 0.881, against a blade face at 0.891. The actuator bosses follow to y 0.720. Nothing about the hardware changed, the pitch is body-7\'s 62 mm, and the flow path is shorter because the exhaust now sits above the tire crown rather than beside it.\n\nThe bank now has a hole in front of it, which it did not on any body that carried it, and finding that out took a ray and not an argument. Every blade on every generation of this part has been drawn at the flank\'s half-width minus 14 mm with no aperture cut, which is to say inside the bodywork. Rastered at normal incidence over each bank window on the built mesh, over x 1.05 to 1.34 and 1.56 to 1.83 by y 0.55 to 0.72, 98.2 and 98.4 percent of the rays landed on fairing skin and the blades themselves returned 1.8 and 1.6 percent, all of it at the panel edge. A sealed pod whose only inlet and outlet you cannot see is a sealed pod. Each bank now stands in a real hole cut on grid lines the subdivision already had, x 1.070 to 1.323 aft and 1.573 to 1.820 forward, from y 0.580 up to the loft\'s own next ring line at about y 0.647, with a rim returned 14 mm inboard along the surface normal so the cut has a thickness and a lit lip. The same raster, run over both meshes with wheels-9 and thermal-9 in the scene so the two runs are one method, now returns 22.1 and 16.5 percent blade, 72.4 and 75.4 percent rim and skin, and 5.5 and 8.1 percent the tire behind, which is what looking into a wheelhouse vent should give.\n\nCutting the hole found the second defect immediately. A blade is a flat plate at constant |z| and this flank tumbles inboard above y 0.580, so a 100 mm blade centered on y 0.630 leaves the surface it is recessed into: measured on the built mesh, every blade\'s top corner stood about 3.4 mm THROUGH the skin at y 0.680. Solid paint hid it. Each blade is now sized off the surface, its top set where the loft is still wide enough to contain the rotated corner with 1.5 mm to spare, which is about 60 mm of blade in a 67 mm window and leaves the rim\'s top wall showing above it. The bank\'s |z| span is untouched at 0.8750 to 0.9158, so every clearance and every lock figure on this panel still holds.',
       why: 'An arch is an air pump whose duty varies a hundred to one between a summer cruise and a mountain descent, and enclosing it does not delete the pump, it removes its accidental relief. Reusing hardware with fleet hours in a new place beats inventing a fairing-specific mechanism, and it is doubly right here because the reason for moving is geometric rather than functional: the part is correct and its station is not. The wider point is that body-8 wrote the instruction for its successor into the panel of the part that would need it, and that is why this took a sweep and an afternoon rather than a defect report from wheels-9.',
       fail: [
         'Grit and ice in the pivots is the chronic case; the cold-start sweep catches a stiff bank and leaves it open, costing counts, never cooling.',
-        'Moving the exhaust above the tyre crown puts it closer to the bonnet shutline, so a bank stuck open at speed now feeds warm arch air along the base of the windscreen rather than down the flank, which is a wiper-icing question nobody has asked and this module cannot answer.',
+        'Moving the exhaust above the tire crown puts it closer to the hood shutline, so a bank stuck open at speed now feeds warm arch air along the base of the windshield rather than down the flank, which is a wiper-icing question nobody has asked and this module cannot answer.',
         'Sealing a pod around a wheel means water goes in and has to come out, and the drain path is 70 mm further inboard and 6.1 mm tighter than it was; a blocked drain still turns the fairing into a bucket at the worst possible radius.',
       ],
       explode: [0.4, -0.05, 1.3],
@@ -521,12 +607,12 @@ export const SYSTEM = {
         ['Frontal area held', '0.1787 m2 of the 0.1919 sub-loft term'],
         ['Maturity', 'Production practice: sealed floors universal, tunnels in series'],
       ],
-      how: 'Carried from body-8 without a panel changing: a carbon lip at a 110 mm gap, a valance behind it so the splitter bolts to something rather than floating, a front closeout bridging to battery-7\'s pack leading edge, the pack underside running to x -1.30, a rear closeout bridging to the diffuser hinge, and strakes dividing the rear run into twin tunnels so a yawed crosswind stalls one side while the other keeps pulling. suspension-9\'s air springs hold the speed-scheduled ride height to a few millimetres and cross-check its height sensors against the flap\'s pressure taps.\n\nThe Gen 9 measurement on this part is its share of the frontal area, and it has quietly become the biggest thing left. Below y 0.28 the audit convention counts real projected blockage, and this floor contributes 0.1787 m2 of it: the valance and splitter across y 0.128 to 0.28 at just over a metre wide, plus the two 1.24 m closeout plates and the strakes standing in their own shadow. Add the diffuser at 0.0132 and the sub-loft term is 0.1919, which is 9.4 percent of a 2.0415 m2 car. For comparison, the tyre columns wheels-9 just spent a whole generation halving are 0.0868. What kept this term untouched is that it is genuinely load-bearing aerodynamically: the splitter creates the stagnation region that feeds the tunnels, body-8 already flagged the tunnel inlets as the yaw-sensitive item, and narrowing the valance to buy area would starve the device that earns six counts at the other end of the car. It is reported rather than taken, which is the same answer body-8 gave and a better-supported one now that the number has a share attached to it.',
+      how: 'Carried from body-8 without a panel changing: a carbon lip at a 110 mm gap, a valance behind it so the splitter bolts to something rather than floating, a front closeout bridging to battery-7\'s pack leading edge, the pack underside running to x -1.30, a rear closeout bridging to the diffuser hinge, and strakes dividing the rear run into twin tunnels so a yawed crosswind stalls one side while the other keeps pulling. suspension-9\'s air springs hold the speed-scheduled ride height to a few millimeters and cross-check its height sensors against the flap\'s pressure taps.\n\nThe Gen 9 measurement on this part is its share of the frontal area, and it has quietly become the biggest thing left. Below y 0.28 the audit convention counts real projected blockage, and this floor contributes 0.1787 m2 of it: the valance and splitter across y 0.128 to 0.28 at just over a meter wide, plus the two 1.24 m closeout plates and the strakes standing in their own shadow. Add the diffuser at 0.0132 and the sub-loft term is 0.1919, which is 9.4 percent of a 2.0415 m2 car. For comparison, the tire columns wheels-9 just spent a whole generation halving are 0.0868. What kept this term untouched is that it is genuinely load-bearing aerodynamically: the splitter creates the stagnation region that feeds the tunnels, body-8 already flagged the tunnel inlets as the yaw-sensitive item, and narrowing the valance to buy area would starve the device that earns six counts at the other end of the car. It is reported rather than taken, which is the same answer body-8 gave and a better-supported one now that the number has a share attached to it.',
       why: 'The underbody is the largest surface on the car and the only one the pack already paid to flatten, so sealing it and shaping it into tunnels remains the highest-value aero purchase at this Cd. Carrying it verbatim is correct for a front generation: nothing this module drew is under the car. The pattern worth naming is that three consecutive generations have now looked at this floor and left it alone for three different good reasons, which usually means the fourth one should look harder.\n\nOne panel of it did change and it is a hole rather than a shape. The valance is written as its two interpolants rather than as a table, so the surface outside the cut is the same surface to the last decimal, station kink at y 0.280 included; what is new is the 0.532 by 0.146 m aperture the intake gates have needed since body-7 and the throat behind it. None of it touches the frontal area: the whole valance sits inside a flank shadow more than 400 mm wider than itself at every height it occupies, so the integral cannot see it, which is also why the aperture buys nothing and the gates panel says so. The splitter now shows its four fixings on its top face at y 0.136, which is the plate\'s real seating face rather than the mid plane, and the strakes show two each on the ramp\'s own rotation.',
       fail: [
-        'Kerbs and ramps still rake the lip first; the shear-away fasteners cost a bracket, carried through six generations.',
-        'A narrow splitter feeds a narrow stagnation region into the tunnels, so the crosswind case is still the one the tunnel programme should re-run first, unchanged and still outstanding from body-7.',
-        'Deep snow packs the tunnels and the floor becomes a plough; structurally rated, aerodynamically dead, still beyond the range model\'s vocabulary.',
+        'Curbs and ramps still rake the lip first; the shear-away fasteners cost a bracket, carried through six generations.',
+        'A narrow splitter feeds a narrow stagnation region into the tunnels, so the crosswind case is still the one the tunnel program should re-run first, unchanged and still outstanding from body-7.',
+        'Deep snow packs the tunnels and the floor becomes a plow; structurally rated, aerodynamically dead, still beyond the range model\'s vocabulary.',
       ],
       explode: [0, -0.55, 0],
     },
@@ -546,7 +632,7 @@ export const SYSTEM = {
       how: 'A four-slat bank below the nose face metering the only air admitted through the body, ducted to thermal-9\'s radiator stack in the front zone this ladder has never moved. The thermal controller owns the position request, the aero controller is granted closure only when every thermal margin is green, and the spring fails the bank open because a stuck-shut gate on a mountain climb cooks hardware while a stuck-open one costs a count.\n\nThe span comes down 240 mm and the argument is body-8\'s, quoted and then acted on. It wrote that the bank was sized stationary on battery-6 rejecting a 480 kW fast-charge peak through the stack with no ram air, that Gen 7 replaced that pack with battery-7 at a much lower C rate by design and drivetrain-6\'s 480 kW with drivetrain-7\'s 260, that thermal-7 followed both down, and that the aperture is therefore oversized for the worst hour it is now asked to cover by a wide margin. It also wrote the reason it did not act: narrowing the nose aperture is a nose change and Gen 8 ended at x -1.100. This is the generation that owns the nose, so it takes it. Two things are stated plainly rather than glossed. First, this buys no frontal area at all: the bank sits on the valance inside a 1.004 m half-width shadow, so its own width is invisible to the integral, and the return is duct loss, mass and the aperture\'s contribution to nose pressure recovery. Second, thermal-9 is being drawn in this same generation and it owns the real sizing case; a 0.56 m bank is derived from thermal-7\'s rejection and body-8\'s measurement, and if thermal-9\'s heat pump wants more air on a hot-day pulldown then this slat count is wrong and thermal-9 gets to say so. The fail-open spring means the direction of that error is safe.\n\nThere is now something behind the bank, and until this pass there was not. This part has claimed since body-7 that it meters the only air admitted through the body, and the valance behind it was a continuous panel: rastered dead ahead over the bank window at z plus and minus 0.30 by y 0.19 to 0.39, 88.2 percent of the rays hit the slats and every single one of the other 11.8 percent hit valance carbon. Nothing was reachable behind the gates because nothing was there, and a duct behind a solid panel is a decal with a triangle budget. The valance is now built in four pieces around a 0.532 by 0.146 m aperture, sized so a 0.560 m slat bank still covers it from straight ahead with 14 mm of overlap at each edge, with the rim carried back as a closed-loop throat to a mouth at x 2.215, which is 6.0 mm ahead of thermal-9\'s forwardmost vertex measured off its built mesh at x 2.2090 on the outdoor coil. The floor of the throat rises to y 0.256 on the way, because that is where the coil face starts and a duct whose exit sits below its heat exchanger is a longer hole. A 21 by 5 bar lattice sits 18 mm behind the valance skin, sized 0.560 by 0.186 so it overlaps every edge of the hole and no oblique view finds a way round the bars. The same raster over both meshes returns 88.3 percent gates, 9.3 percent valance, 1.1 percent thermal-9\'s coil face seen through the throat, 0.7 percent the front megacasting behind it, and 0.6 percent finding a path between the coil\'s own fins and out of the car. Before the aperture every one of those last three was 0.0. The 0.6 percent is thermal-9\'s core geometry rather than this aperture, and it is left as measured.',
       why: 'A fixed intake is sized for the worst hour and paid for every other hour, and the worst hour moved off the road when charging power passed driving power. Metering the opening per minute is what keeps the sealed-nose fiction honest. The reason to act on this rather than write it down again is that body-8 already wrote it down, and a note that survives two generations without being either taken or refused has stopped being a finding and started being furniture.',
       fail: [
-        'Road grit and ice jam slat pivots; the cold-start sweep reports a stiff bank before the motorway or the charger does.',
+        'Road grit and ice jam slat pivots; the cold-start sweep reports a stiff bank before the highway or the charger does.',
         'Stuck shut is the dangerous direction: thermal-9 sheds load, tapers power, and the car explains why, and with 30 percent less aperture the margin between shedding and not shedding is smaller than it was.',
         'The sizing case is inherited from a partner drawn in the same generation rather than measured against a shipped one, which makes this the least well founded number in this module and the first one an integrator should challenge.',
       ],
@@ -564,7 +650,7 @@ export const SYSTEM = {
 
    Governing numbers, all measured against the partners' BUILT geometry:
 
-   - SWEPT FRONT CORNER. wheels-9's front tyre, wheel, cover and disc
+   - SWEPT FRONT CORNER. wheels-9's front tire, wheel, cover and disc
      vertices rotated about the vertical axis through (1.45, 0.74). Peak |z|
      0.8190 static, 0.8298 at 2 degrees, 0.8512 at 6, 0.8720 at 10, 0.8926 at
      14, 0.9032 at 16, 0.9097 at 17.25, 0.9238 at 20, 0.9337 at 22, always at
@@ -596,7 +682,7 @@ export const SYSTEM = {
        term                          body-8    body-9
        loft silhouette above y 0.28  1.8205    1.7482
        sub-loft below y 0.28         0.1919    0.1919   (carried)
-       tyre columns                  0.1260    0.0868   (wheels-9)
+       tire columns                  0.1260    0.0868   (wheels-9)
        protrusions past silhouette   0.0362    0.0322
        A                             2.1570    2.0415
 
@@ -641,17 +727,17 @@ export const SYSTEM = {
      rule, the y 0.24..0.34 band maximum it is offset 18 mm from, is
      deliberately more conservative and runs out at 17.3; it is kept as the
      rule and not quoted as the lock. Commanded lock is 14.0 on both,
-     carried by suspension-9's rack, so the turning circle stays 21.4 m kerb
-     to kerb and the 6.2 degrees are headroom.
+     carried by suspension-9's rack, so the turning circle stays 21.4 m curb
+     to curb and the 6.2 degrees are headroom.
 
    - CARRIED AND NOT FIXED, on the part this generation redrew. The sealed
-     inboard wall is an offset from the wheel centre (FRONTZ - 0.110), the
-     same drawing method the lower closeout is criticised for. It threads
+     inboard wall is an offset from the wheel center (FRONTZ - 0.110), the
+     same drawing method the lower closeout is criticized for. It threads
      0.9 mm between the disc hat at |z| 0.5985 and the friction ring at
      0.6925 static, and the steered disc is through it from about 6 degrees,
      reaching 0.5630 at 14 inside the wall footprint. body-8 is the same in
      kind at 1.9 mm. A flat wall cannot clear a corner rotating about its
-     own centre; the part needs an aperture and neither body draws one.
+     own center; the part needs an aperture and neither body draws one.
 
    - DEFECT FOUND IN body-8 AND NOT REPEATED. Its front fairing lower
      closeout is a 100 mm flange at y 0.282..0.302, |z| 0.8945..0.9945.
@@ -664,7 +750,7 @@ export const SYSTEM = {
 
    - PARTNER CLEARANCES forward of x 0.850, from built meshes. suspension-9
      front metal reaches |z| 0.7100 at (1.315, 0.37), which is its hv-4
-     by-wire boss and is 47.5 mm inside wheels-9's tyre inner face at 0.6625;
+     by-wire boss and is 47.5 mm inside wheels-9's tire inner face at 0.6625;
      suspension-9 has already reported that and scheduled the stub to |z|
      0.58, where it lands inboard of this module's fairing wall at 0.630 and
      is correct. Its front tower plate (1.50, 0.735, +-0.41) and damper top
@@ -701,7 +787,7 @@ const STATIONS = [
   [2.375, [[0.42, 0.440], [0.48, 0.500], [0.55, 0.520], [0.61, 0.490], [0.65, 0.420], [0.680, 0.300], [0.695, 0.150]], 0.705],
   /* 1  over the thermal stack front edge   body-8, unchanged: bumper beam */
   [2.220, [[0.32, 0.620], [0.44, 0.685], [0.58, 0.712], [0.70, 0.672], [0.79, 0.545], [0.825, 0.360], [0.840, 0.170]], 0.850],
-  /* 2  bonnet, frunk zone              body-8, unchanged: the leading flare
+  /* 2  hood, frunk zone              body-8, unchanged: the leading flare
         into the pod is now 36.5 deg and narrowing this station puts it back */
   [2.030, [[0.28, 0.710], [0.44, 0.778], [0.60, 0.800], [0.75, 0.752], [0.85, 0.628], [0.892, 0.400], [0.908, 0.185]], 0.920],
   /* 3  THE POD, forward station. 1.000/1.006/0.992/0.936 -> the beltline.
@@ -716,7 +802,7 @@ const STATIONS = [
   [1.070, [[0.28, 0.925], [0.42, 0.925], [0.58, 0.923], [0.80, 0.900], [0.93, 0.778], [1.015, 0.500], [1.045, 0.230]], 1.070],
   /* 6  fairing blend-out                                body-8, unchanged */
   [0.850, [[0.28, 0.924], [0.55, 0.922], [0.82, 0.893], [0.95, 0.836], [1.06, 0.700], [1.150, 0.480], [1.164, 0.250]], 1.172],
-  /* 7  windscreen header station                        body-8, unchanged */
+  /* 7  windshield header station                        body-8, unchanged */
   [0.300, [[0.28, 0.922], [0.55, 0.920], [0.90, 0.868], [1.02, 0.772], [1.12, 0.628], [1.334, 0.542], [1.346, 0.325]], 1.354],
   /* 8  maximum section, roof crown                      body-8, unchanged */
   [-0.450, [[0.28, 0.925], [0.55, 0.925], [0.90, 0.872], [1.02, 0.780], [1.12, 0.640], [1.340, 0.550], [1.352, 0.330]], 1.360],
@@ -801,7 +887,7 @@ function sweptZ(x) {
    degrees, measured off its built mesh in the y 0.24 to 0.34 band the lower
    closeout occupies, tabulated on distance from the front axle. This is the
    table body-8 should have had and did not: its front lip was set 100 mm in
-   from the surface and its own tyre reached it at 3.1 degrees. */
+   from the surface and its own tire reached it at 3.1 degrees. */
 const SWEEPF = [[0.00, 0.8162], [0.05, 0.8264], [0.10, 0.8420], [0.15, 0.8498],
                 [0.20, 0.8710], [0.25, 0.8893], [0.30, 0.8919], [0.35, 0.8814],
                 [0.36, 0.8500]];
@@ -843,7 +929,7 @@ function xOf(u) {
    Closing the loop is necessary and it is not sufficient, which the same
    raster showed on the next run. The fan ends on a ring shrunk to five
    percent rather than on a point, and nothing fills the inside of that
-   ring: a 46 by 13 mm slot was left at the centre of each face, directly
+   ring: a 46 by 13 mm slot was left at the center of each face, directly
    under each light band, still showing a megacasting through it. The cap
    therefore ends on a real apex, one extra section of coincident points.
    Half of the triangles in that last band are degenerate and the whole
@@ -899,7 +985,7 @@ const glassBand = RINGS.slice(COWL, DECK + 1).map((r) =>
    available. Linear also keeps every clearance in this file exact: the
    surface between stations moves up to 29 mm under a clamped smooth
    interpolant, and the 32.4 mm pod clearance, the 25.5 mm inboard wall gap
-   and the lower lip's 17.9 mm are all quoted to the millimetre off it. ── */
+   and the lower lip's 17.9 mm are all quoted to the millimeter off it. ── */
 
 function rowOf(x) {
   for (let i = 0; i < STATIONS.length - 1; i++) {
@@ -923,8 +1009,8 @@ const FADE = 0.05;
    flank hands over to the cabin flank, so the cut lands on a panel joint
    that already exists rather than in the middle of a panel. Measured
    forward of it: this module's own wheelhouse aft closeout is a 16 mm wall
-   centred at x 1.045, so its rear face is at 1.037 and the cut is 187 mm
-   behind it; wheels-9's front tyre reaches x 1.0917 at its rearmost, 242 mm
+   centered at x 1.045, so its rear face is at 1.037 and the cut is 187 mm
+   behind it; wheels-9's front tire reaches x 1.0917 at its rearmost, 242 mm
    ahead; interior-6's dashboard ends at x 0.8796 outboard of |z| 0.55, so
    the aperture's forward edge is 29.6 mm behind the dash it would otherwise
    have to swing past; and the cage's A-pillar foot and cowl beam stand at
@@ -954,15 +1040,16 @@ const SILL = 0.5185;
 const SEAM = 3;
 const DOORL = [SILL, SEAM], DOORR = [14 - SEAM, 14 - SILL];
 
-/* Bonnet x 2.220 to 1.130: forward of the cowl at station 5 where the glass
+/* Hood x 2.220 to 1.130: forward of the cowl at station 5 where the glass
    root starts, aft of the nose fascia band that carries the light bar, and
    covering P.frunk's x 1.78 to 2.12 with margin. Decklid x -1.160 to
    -2.320, leaving 455 mm of fixed tail under the spoiler mounts and the
    Kamm face. Side gaps at ring fractions 3.7 and 10.3, on the shoulder and
    clear of the beltline seam. The tail-cone joint at x -1.100 deliberately
    gets no shutline: it is a bonded laminate joint, filled and painted, with
-   nothing there to catch light. Only the decklid opens. */
-const BONNET = [rowOf(2.220), rowOf(1.130)];
+   nothing there to catch light. Both of these open; the joint at x -1.100
+   does not, which is why it is the one line here with no groove under it. */
+const HOOD = [rowOf(2.220), rowOf(1.130)];
 const LID = [rowOf(-1.160), rowOf(-2.320)];
 const DECKSPAN = [3.55, 10.45];
 
@@ -971,11 +1058,11 @@ for (const r of SHUT) {
   GROOVES.push({ row: r, ...GAP, span: DOORL, runout: FADE });
   GROOVES.push({ row: r, ...GAP, span: DOORR, runout: FADE });
 }
-for (const r of [...BONNET, ...LID]) {
+for (const r of [...HOOD, ...LID]) {
   GROOVES.push({ row: r, ...GAP, span: DECKSPAN, runout: FADE });
 }
 for (const c of [3.7, 10.3]) {
-  GROOVES.push({ col: c, ...GAP, span: [BONNET[0] - FADE, BONNET[1] + FADE], runout: FADE });
+  GROOVES.push({ col: c, ...GAP, span: [HOOD[0] - FADE, HOOD[1] + FADE], runout: FADE });
   GROOVES.push({ col: c, ...GAP, span: [LID[0] - FADE, LID[1] + FADE], runout: FADE });
 }
 
@@ -1024,8 +1111,8 @@ function gnormal(a, b) {
    for a threshold to sit in, and worse, the big three are not edges at all.
    Station 5's 47.7 is at ring point 2, where the profile table changes the
    HEIGHT it samples from y 0.58 to y 0.82 between stations 5 and 6: the
-   turn is in the parametrisation, not in the surface. Station 6's 39.2 is
-   the same artefact one station along. Station 3's 45.7 is at the flank's
+   turn is in the parametrization, not in the surface. Station 6's 39.2 is
+   the same artifact one station along. Station 3's 45.7 is at the flank's
    bottom edge, where the nose flares from 0.710 to the 0.925 beltline over
    210 mm; that is a continuous flare with one station in it, and breaking
    it is exactly how body-8 faceted its nose. Nothing on this body's station
@@ -1033,13 +1120,13 @@ function gnormal(a, b) {
 
    RING LINES: ring points 5 and 9, the deck shoulder. That line runs 5.8 to
    10.7 degrees over the nose, where it is nothing, and 26.3 to 64.9 degrees
-   from the windscreen header aft, where the section stops climbing and
+   from the windshield header aft, where the section stops climbing and
    turns flat across the deck. It is the one genuine crease in the
    cross-section and it is what makes a Kamm tail read as a tail. The gate
    at 24 degrees is what lets one declaration do both jobs.
 
    The groove lips and floor edges are added below from the grid's own
-   records, so every shutline, the bonnet and the decklid break on all four
+   records, so every shutline, the hood and the decklid break on all four
    of their lines. Groove walls stand at about 71 degrees, well clear of the
    gate, and their run-outs fall under it and stay smooth. ── */
 const GATE = 24;
@@ -1142,6 +1229,17 @@ const SILLL = [CI(0), CI(SILL)], SILLR = [CI(14 - SILL), CI(14)];
 /* each shutline pushed a left and a right groove; both resolve to the same
    split row, which is the far floor edge of the channel */
 const CUT = [SHELL.grooves[0].split, SHELL.grooves[2].split, SHELL.grooves[4].split];
+/* the decklid's own four cut lines, read off the grid's records rather than
+   re-derived: rows from the two LID grooves, columns from the two side gaps
+   that were pushed over the LID span. Resolved, [55, 70] by [22, 49]. */
+const LIDROW = [SHELL.grooves[8].split, SHELL.grooves[9].split];
+const LIDCOL = [SHELL.grooves[11].split, SHELL.grooves[13].split];
+/* and the hood's, the same way. Its side gaps sit at the same ring fraction
+   3.7 and 10.3 as the lid's and still resolve one index tighter, [21, 48]
+   against [22, 49], because loftGrid probes the meters-per-index scale along
+   each groove's own run and the deck is wider at the cowl than at the tail. */
+const HOODROW = [SHELL.grooves[6].split, SHELL.grooves[7].split];
+const HOODCOL = [SHELL.grooves[10].split, SHELL.grooves[12].split];
 
 /* ── ARCH LOUVER APERTURES ─────────────────────────────────────────────
 
@@ -1164,7 +1262,7 @@ const CUT = [SHELL.grooves[0].split, SHELL.grooves[2].split, SHELL.grooves[4].sp
    y 0.630 their |z| is read off, and they overlap the bottom edge of the
    aperture rather than ending on it: measured on the built mesh they run
    y 0.5720 to 0.6325..0.6332, so 60.5 to 61.2 mm tall on a 67 mm window,
-   centred on y 0.602. What sets the top is the surface and not a number,
+   centered on y 0.602. What sets the top is the surface and not a number,
    and the paragraph on the louver part below is where that is derived. ── */
 const VENT = [
   { r: [RI(3), RI(3 + 2 / 3)], x: [xOf(3), xOf(3 + 2 / 3)], n: 3, ry: -0.3 },
@@ -1232,7 +1330,7 @@ const vhz = (y) => (y < 0.280 ? 0.510 + (y - 0.128) / 0.152 * -0.008
 const RAKE = Math.atan2(0.133, 0.292);        /* valance lean, 24.5 degrees */
 const AP = { y0: 0.214, y1: 0.360, z: 0.266 };
 
-/* The marque: a chevron, extruded with a bevelled rim. A decal has no edge
+/* The marque: a chevron, extruded with a beveled rim. A decal has no edge
    for a softbox to find; a badge does, which is the whole reason this is
    geometry and not a texture. */
 const CHEVRON = [
@@ -1269,7 +1367,7 @@ function buildStructure(sys) {
   /* The cross portion is a lower crossmember at the casting's front face,
      x 2.000 to 2.070, y 0.300 to 0.370, not a block filling the nose. It
      used to be one 0.31 x 0.28 x 0.68 solid spanning x 1.760 to 2.070 over
-     the full 280 mm section height, which is 0.0590 m3 of drawn aluminium,
+     the full 280 mm section height, which is 0.0590 m3 of drawn aluminum,
      159 kg at 2,700 kg/m3, against a part that declares 48 kg for the whole
      casting. The bay it filled is where every thermal variant packages its
      chiller, manifold, pumps and heat pump, so the model was drawing metal
@@ -1341,16 +1439,28 @@ function buildStructure(sys) {
 /* ── the Gen 9 shell ── */
 function buildShell(sys) {
   /* ── skin: the nose as ONE panel over the whole open ring, the fixed
-     panels either side of the door apertures, the bonnet band and the nose
+     panels either side of the door apertures, the hood band and the nose
      face. Every station here is body-8's, resampled and grooved but not
      moved. The nose is one panel rather than a flank plus a deck because
      one part owns both there and the surface between them turns by only
      33 degrees over a 210 mm station gap: slicing it would put a hard
-     shading seam down a shoulder the car does not have, and the bonnet's
+     shading seam down a shoulder the car does not have, and the hood's
      side gap at ring fraction 3.7 is the line that belongs there. ── */
   const skin = lib.part('skin', [0, 0.62, 0]);
-  skin.add(panel([RI(0), RI(FAIR0)], FULL));          /* nose, flank and deck */
-  skin.add(panel([RI(FAIR0), RI(COWL)], UP));         /* bonnet and cowl deck */
+  /* THE HOOD COMES OUT OF THE FIRST TWO OF THESE, and like the decklid it is
+     a re-slice rather than a redraw: all four of its cut lines were grooved
+     into the master grid when they were declared, and the two panels above
+     ran straight over the top of them. The lid straddles the fairing
+     blend-out row, so it takes a bite out of both: the nose panel keeps
+     everything ahead of row 7 and the two strips outboard of the side gaps,
+     and the deck panel keeps the two fender tops and the cowl band aft of
+     row 23. What opens is the middle. */
+  skin.add(panel([RI(0), HOODROW[0]], FULL));                       /* nose ahead of the hood */
+  skin.add(panel([HOODROW[0], RI(FAIR0)], [0, HOODCOL[0]]));        /* left of it, down to the sill */
+  skin.add(panel([HOODROW[0], RI(FAIR0)], [HOODCOL[1], SHELL.cols - 1]));
+  skin.add(panel([RI(FAIR0), HOODROW[1]], [CI(3), HOODCOL[0]]));    /* left fender top */
+  skin.add(panel([RI(FAIR0), HOODROW[1]], [HOODCOL[1], CI(11)]));   /* right fender top */
+  skin.add(panel([HOODROW[1], RI(COWL)], UP));                      /* cowl deck aft of the cut */
   skin.add(panel([CUT[2], RI(DECK)], FL));            /* rear quarters */
   skin.add(panel([CUT[2], RI(DECK)], FR));
   skin.add(panel([CUT[0], CUT[2]], SILLL));           /* sill band under the cuts */
@@ -1358,11 +1468,16 @@ function buildShell(sys) {
   skin.add(lib.shell(capOf(RI(0), -0.012, M.paint))); /* nose face, closed */
   sys.add(skin);
 
+  /* the hood, the same part id so the skin stays one clickable thing */
+  const hood = lib.hinge(lib.part('skin', [0, 0.62, 0]), 'hood');
+  hood.add(panel(HOODROW, HOODCOL));
+  sys.add(hood);
+
   /* ── front fairings. The flank band is the pod: 0.925 from y 0.28 to 0.58
      across all three stations. It owns the near lip, the near wall and the
      floor of the front door's shutline, because that joint lands on its own
      blend-out station. Inboard wall at FRONTZ - 0.110 = 0.630, its outer
-     face 25.5 mm inboard of wheels-9's tyre inner face at 0.6625, which is
+     face 25.5 mm inboard of wheels-9's tire inner face at 0.6625, which is
      exactly the clearance body-8 held against wheels-7. Fore and aft
      closeouts stay at x 1.855 and 1.045 because the swept solid's x extent
      did not move. The lower lip is redrawn off SWEEPF. ── */
@@ -1381,9 +1496,9 @@ function buildShell(sys) {
       fair.add(acbox(0.016, 0.330, zo - WALL, 0.005, M.carbon, cx, 0.5350, s * (WALL + zo) / 2));
     }
     /* lower closeout: a flange turning inboard from the flank's bottom edge,
-       its inner edge held 18 mm off the swept front tyre. 77 mm deep at the
+       its inner edge held 18 mm off the swept front tire. 77 mm deep at the
        axle and at the ends, 14 mm over the two swing peaks at x 1.15 and
-       1.75. body-8 ran a fixed 100 mm flange here and its own tyre was
+       1.75. body-8 ran a fixed 100 mm flange here and its own tire was
        48.6 mm through it at the commanded lock.
 
        The flange is drawn in two strips rather than one so it has a fold to
@@ -1404,7 +1519,7 @@ function buildShell(sys) {
     const lipMesh = lib.crease(lib.loft(lip, M.carbon), 25);
     if (s < 0) lipMesh.scale.z = -1;
     fair.add(lipMesh);
-    /* The closeout is the part that has to come off to look at a tyre, so
+    /* The closeout is the part that has to come off to look at a tire, so
        it shows its own screws. They seat on its outer strip, which faces
        down and slightly outboard at |z| about 0.88, well inside the
        0.925 flank, so no head reaches the silhouette. */
@@ -1427,7 +1542,15 @@ function buildShell(sys) {
      the rear axle and 26.3 at x -2.120, so a Kamm tail gets a deck edge
      instead of a gradient. ── */
   const tail = lib.part('tail-cone', [-1.45, 0.30, 0]);
-  tail.add(panel([RI(DECK), RI(LAST)], FULL));
+  /* THE DECKLID COMES OUT OF THIS PANEL, and it is a re-slice rather than a
+     redraw: the four cut lines were already grooved into the master grid
+     when body-8 cut them, and the panel above simply ran straight over the
+     top. What the tail keeps is the band ahead of the lid, the two quarters
+     either side of it and the band behind it; what opens is the middle. */
+  tail.add(panel([RI(DECK), LIDROW[0]], FULL));            /* ahead of the lid */
+  tail.add(panel(LIDROW, [0, LIDCOL[0]]));                 /* left quarter */
+  tail.add(panel(LIDROW, [LIDCOL[1], SHELL.cols - 1]));    /* right quarter */
+  tail.add(panel([LIDROW[1], RI(LAST)], FULL));            /* the fixed tail band */
   tail.add(lib.shell(capOf(RI(LAST), 0.012, M.paint)));                    /* Kamm face */
   /* The marque, and the only one on the car: a sealed nose carrying a
      full-width light band has nowhere honest to put a second.
@@ -1445,6 +1568,11 @@ function buildShell(sys) {
   mark.position.set(-2.7642, 0.820, 0);
   tail.add(mark);
   sys.add(tail);
+
+  /* the decklid, the same part id so the tail stays one clickable thing */
+  const lid = lib.hinge(lib.part('tail-cone', [-1.45, 0.30, 0]), 'decklid');
+  lid.add(panel(LIDROW, LIDCOL));
+  sys.add(lid);
 
   /* ── rear wheelhouse closeouts: body-8's, carried whole. Not one
      coordinate moves, because this module's own text holds this part up as
@@ -1528,7 +1656,7 @@ function buildShell(sys) {
   /* Strake fixings, two per strake, taking the ramp's own rotation so the
      heads sit flat on the panel they bolt through rather than near it.
      Three things are set by geometry rather than by taste. The strake's
-     centre line already lies on the ramp's lower face, so the seat needs no
+     center line already lies on the ramp's lower face, so the seat needs no
      y offset. The head stands 11 mm outboard of the strake's own plane, so
      it clears the 10 mm fin it retains by 1.4 mm. And it has to grow
      DOWNWARD, because the ramp laminate is 12 mm thick above that face and
@@ -1536,7 +1664,7 @@ function buildShell(sys) {
      inside the panel it is supposed to be holding.
 
      The rotation is the whole of that third point and it is easy to get
-     backwards, so it is written down. RZF is atan2 of the ramp's rise over
+     backward, so it is written down. RZF is atan2 of the ramp's rise over
      its run and the run is NEGATIVE, so RZF is 162.00 degrees and not 18:
      it already carries the half turn. lib.fastener's +Y axis under
      Euler(0, 0, RZF, 'ZXY') lands on (-0.3090, -0.9510, 0), which is
@@ -1563,14 +1691,14 @@ function buildShell(sys) {
      standing in a real aperture. At y 0.500 on a 0.925 flank the swept
      solid leaves 5 mm at the commanded lock; at y 0.630 it leaves 22 mm at
      14 degrees and 10 at 17.25, which is why the bank is here. The blades
-     keep the 62 mm pitch and are re-spaced to sit centred in their own
+     keep the 62 mm pitch and are re-spaced to sit centered in their own
      window, which moves the aft bank by 3.7 mm and the forward bank by
      25 mm. Their |z| is untouched, so every clearance and every contained
      lock figure this module publishes off this bank still holds.
 
      Their HEIGHT is not untouched, and cutting the aperture is what found
      it. A blade is a flat plate at constant |z| and the flank tumbles
-     inboard above y 0.580, so a 100 mm blade centred on y 0.630 leaves the
+     inboard above y 0.580, so a 100 mm blade centered on y 0.630 leaves the
      surface it is recessed into: measured on the built mesh, the top corner
      of every blade stood about 3.4 mm THROUGH the skin at y 0.680. It was
      invisible while the skin was solid and would have been a row of plastic
@@ -1698,15 +1826,41 @@ function buildShell(sys) {
      door stops at the rocker top at ring fraction 0.5185, which is y 0.420:
      the sill below it is the outer face of the rocker extrusion and belongs
      to the skin. ── */
-  const doors = lib.part('doors', [0.08, 0, 0.85]);
-  doors.add(panel([CUT[0], CUT[1]], DOORBAND));                            /* front door */
-  doors.add(panel([CUT[1], CUT[2]], DOORBAND));                            /* rear door */
-  for (const x of [0.16, -0.84]) {
-    doors.add(acbox(0.14, 0.024, 0.012, 0.004, M.alu, x, 0.845, halfWidth(x, 0.845) + 0.008));
-  }
+  /* ONE GROUP PER LEAF, plus a third that does not move. Same meshes at the
+     same coordinates as before; what changed is which group owns them, which
+     is what a closure needs and what SPEC.md's closures section spells out.
+     The camera stalk and its pod at x 0.980 are FORWARD of the front door's
+     leading cut at 0.8487, so they are on the A-pillar and not on the door:
+     they keep the `doors` part id and carry no hinge. */
+  const leaf = (id, rows, hx) => {
+    const g = lib.hinge(lib.part('doors', [0.08, 0, 0.85]), id);
+    g.add(panel(rows, DOORBAND));
+    g.add(acbox(0.14, 0.024, 0.012, 0.004, M.alu, hx, 0.845, halfWidth(hx, 0.845) + 0.008));
+    /* THE SURROUND CAMERA IS THIS BODY'S, seated on this body's own surface.
+       It used to be autonomy-4's, placed at an absolute |z| that could not be
+       right on more than one body: measured, the same coordinate stood 11.70
+       mm proud of body-4 and body-6's door skin and 71.5 mm proud of body-7,
+       -8 and -9's, so on the flat-flank bodies it floated clear of the panel
+       it was bolted to. A module builds once and is shared by five bodies, so
+       no coordinate it can write is right for all of them. The body is the
+       only module that knows where its own flank is, which is why body-11
+       already draws its own and why this one does now. Flush, 2 mm inside the
+       skin, so it is a camera rather than a thing standing in the airflow. */
+    if (id === 'door-front') {
+      const camZ = halfWidth(0.100, 1.000);
+      g.add(acbox(0.050, 0.028, 0.020, 0.004, M.sensor, 0.100, 1.000, camZ - 0.002));
+      g.add(acbox(0.090, 0.020, 0.012, 0.003, M.alu, 0.060, 1.000, camZ - 0.004));
+    }
+    return g;
+  };
+  const fixed = lib.part('doors', [0.08, 0, 0.85]);
   const zr = halfWidth(0.98, 0.870);
-  doors.add(acbox(0.014, 0.012, 0.09, 0.004, M.plastic, 0.98, 0.870, zr + 0.045));
-  doors.add(acbox(0.05, 0.028, 0.028, 0.004, M.sensor, 0.98, 0.870, zr + 0.098));
-  sys.add(doors);
-  sys.add(mirrorZ(doors));
+  fixed.add(acbox(0.014, 0.012, 0.09, 0.004, M.plastic, 0.98, 0.870, zr + 0.045));
+  fixed.add(acbox(0.05, 0.028, 0.028, 0.004, M.sensor, 0.98, 0.870, zr + 0.098));
+  for (const g of [leaf('door-front', [CUT[0], CUT[1]], 0.16),
+                   leaf('door-rear', [CUT[1], CUT[2]], -0.84),
+                   fixed]) {
+    sys.add(g);
+    sys.add(mirrorZ(g));
+  }
 }

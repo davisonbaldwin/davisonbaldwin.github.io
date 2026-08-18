@@ -5,16 +5,16 @@ import * as THREE from '../vendor/three.module.js';
 import { TEX } from './textures.js';
 
 /* ── Packaging spec ──────────────────────────────────────────────────────
-   Units are metres. +X is forward, +Y is up, +Z is the passenger side.
+   Units are meters. +X is forward, +Y is up, +Z is the passenger side.
    The driver sits at negative Z. Ground plane is y = 0.
    Every system must stay inside its zone at explode = 0. */
 
 export const P = {
   length: 4.75, width: 1.88, height: 1.44,
   wheelbase: 2.90, track: 1.62,
-  axleF: 1.45, axleR: -1.45,          // x of front and rear axle centrelines
-  wheelY: 0.355,                      // wheel centre height
-  wheelZ: 0.81,                       // wheel centre |z|
+  axleF: 1.45, axleR: -1.45,          // x of front and rear axle centerlines
+  wheelY: 0.355,                      // wheel center height
+  wheelZ: 0.81,                       // wheel center |z|
   tireR: 0.355, tireW: 0.235, rimR: 0.24,
   ground: 0,
   floor: 0.36,                        // cabin floor top
@@ -39,12 +39,12 @@ export const P = {
      the built mesh of all five registered variants it is 0.1025 at
      battery-7's strike shield and 0.3600 at battery's contactor box, so
      it is corrected here to the band the packs occupy, rounded OUTWARD
-     to the centimetre like batteryZone below. 0.10 is therefore 2.5 mm
+     to the centimeter like batteryZone below. 0.10 is therefore 2.5 mm
      under the lowest thing any pack builds, and 0.36 is exact.
 
      `batteryZone` is the MEASURED outer envelope, the union of the built
      bounding boxes of battery, battery-2, battery-3, battery-6 and
-     battery-7, rounded outward to the centimetre: x reaches 1.3700 on
+     battery-7, rounded outward to the centimeter: x reaches 1.3700 on
      battery's coolplate stub, z reaches 0.7800 on the rocker rails of
      battery-3, -6 and -7. tools/interfaces.js asserts the packs stay
      inside it, so growing a pack past this line flags the constant as
@@ -59,7 +59,7 @@ export const P = {
      rail with body-9's rocker beam into one member that reaches y 0.4200,
      closing the 65.0 mm air gap the two used to leave between them, so the
      measured outer envelope of the registered packs genuinely moved.
-     Rounded outward to the centimetre like every other bound here, giving
+     Rounded outward to the centimeter like every other bound here, giving
      0.43 against a built 0.4200. x and z are untouched and still describe
      battery's coolplate stub at 1.3700 and the rocker rails at 0.7800.
      NOTHING READS THIS BUT tools/interfaces.js: grep says the only other
@@ -87,16 +87,16 @@ function phys(o) {
   return new THREE.MeshPhysicalMaterial(Object.assign({ side: THREE.DoubleSide }, o));
 }
 
-/* AUTOMOTIVE PAINT is two coats and has to be modelled as two coats.
+/* AUTOMOTIVE PAINT is two coats and has to be modeled as two coats.
 
-   Underneath is a colour basecoat loaded with aluminium platelets a few
+   Underneath is a color basecoat loaded with aluminum platelets a few
    microns across, each a tiny mirror at its own angle. That is a metal, so
    metalness runs high, and the platelets scatter the reflection into
    discrete moving points. Roughness cannot stand in for that: roughness
    blurs a reflection evenly, flake breaks it up. It needs a normal map.
 
    On top is clear lacquer, which is a dielectric and very nearly a mirror.
-   Its imperfection is ORANGE PEEL, a gentle swell about a millimetre across
+   Its imperfection is ORANGE PEEL, a gentle swell about a millimeter across
    left by surface tension before the coat cured. That belongs in
    clearcoatNormalMap, NOT in clearcoatRoughness: roughness would haze the
    softbox reflections into a smear, whereas peel keeps them sharp and makes
@@ -115,7 +115,7 @@ export const M = {
                    clearcoatNormalMap: TEX.paintPeelNormal,
                    clearcoatNormalScale: new THREE.Vector2(0.10, 0.10),
                    roughnessMap: TEX.paintRough }),
-  /* the dark trim colour is a solid, not a metallic: no flake, and a softer
+  /* the dark trim color is a solid, not a metallic: no flake, and a softer
      clearcoat because trim lacquer is not polished to the same standard */
   paintDark:phys({ color: 0x15191e, metalness: 0.35, roughness: 0.42,
                    clearcoat: 0.75, clearcoatRoughness: 0.10,
@@ -345,8 +345,8 @@ function _grid(sections, o) {
      two different split rows. */
   const U0 = U.slice(), V0 = V.slice();
 
-  /* Grooves. width and depth are metres; the parametric half-width comes
-     from the local metres-per-index scale averaged along the groove's run.
+  /* Grooves. width and depth are meters; the parametric half-width comes
+     from the local meters-per-index scale averaged along the groove's run.
      The channel therefore holds its stated width only as well as that one
      average describes the whole run: measured on body-8 a 5 mm cut comes out
      4.8 to 5.2 mm along a flank, where the scale barely changes, and 3.9 to
@@ -359,7 +359,7 @@ function _grid(sections, o) {
     const w = spec.width, dep = spec.depth;
     const wall = spec.wall != null ? spec.wall : w * 0.28;
     /* Probe the scale only along the run the groove actually has, otherwise
-       a bonnet gap gets sized by the ring spacing at the nose and the tail
+       a hood gap gets sized by the ring spacing at the nose and the tail
        as well as its own, and comes out the wrong width everywhere. */
     const all = axis === 'row' ? V0 : U0;
     const probe = spec.span
@@ -519,14 +519,14 @@ function _gridMesh(grid, mat, o) {
   return q.crease != null ? lib.crease(m, q.crease) : m;
 }
 
-/* UVs for a lofted grid, in METRES of arc length along the surface.
+/* UVs for a lofted grid, in METERS of arc length along the surface.
 
-   Not 0..1 per panel. A normalised UV makes the texture scale depend on how
+   Not 0..1 per panel. A normalized UV makes the texture scale depend on how
    big the panel happens to be, so metal flake would be coarse on a door and
-   fine on a mirror cap, which is exactly backwards: flake is a property of
-   the paint, not of the panel it is sprayed on. Measuring in metres means a
-   map with repeat R tiles every 1/R metres on every surface of every body,
-   and a millimetre-scale effect stays millimetre-scale everywhere.
+   fine on a mirror cap, which is exactly backward: flake is a property of
+   the paint, not of the panel it is sprayed on. Measuring in meters means a
+   map with repeat R tiles every 1/R meters on every surface of every body,
+   and a millimeter-scale effect stays millimeter-scale everywhere.
 
    u runs along each row and v up each column, both accumulated per vertex,
    so a panel that changes width along its length shears slightly rather
@@ -643,8 +643,8 @@ function _chamferBoxGeo(w, h, d, c) {
     const t = vi[key(sx, sy, sz)];
     tri.push(t[0], t[1], t[2]);
   }
-  /* The solid is convex and centred on its own origin, so a face whose
-     normal points back at the centre is wound the wrong way. Fix rather
+  /* The solid is convex and centered on its own origin, so a face whose
+     normal points back at the center is wound the wrong way. Fix rather
      than hand-order 44 triangles. */
   for (let i = 0; i < tri.length; i += 3) {
     const a = tri[i] * 3, b = tri[i + 1] * 3, c2 = tri[i + 2] * 3;
@@ -664,6 +664,15 @@ function _chamferBoxGeo(w, h, d, c) {
 
 /* ── Helpers ─────────────────────────────────────────────────────────── */
 
+/* Scratch for lib.closureAt. Module scope and reused, because it is called
+   once per closure per frame while a door is moving and again 49 times per
+   closure per preset by tools/closures.sh. */
+const _cst = new THREE.Matrix4();
+const _cax = new THREE.Vector3();
+const _cpv = new THREE.Vector3();
+const _crp = new THREE.Vector3();
+const _MIRROR = new THREE.Matrix4().makeScale(1, 1, -1);
+
 export const lib = {
   /* A tagged part group. Everything inside is one clickable part.
      id must match a key in SYSTEM.parts. explode is the part-level
@@ -680,6 +689,79 @@ export const lib = {
 
   /* Mark a group to rotate in drive mode. axis 'x'|'y'|'z', speed rad/s. */
   spin(group, axis, speed) { group.userData.spin = { axis, speed }; return group; },
+
+  /* Mark a group as the moving half of a CLOSURE: a door, a hood, a decklid,
+     a canopy. `id` names an entry in SYSTEM.closures, which owns the
+     kinematics, the mass and the prose; this tag only says which geometry
+     travels with it.
+
+     Two rules the viewer depends on, and both come out of how a part group
+     is already built. The tagged group must be a lib.part group, because
+     that is the object the viewer already captures a home position for and
+     already moves under explode. And everything inside it must be geometry
+     that actually moves: a closure is a rigid body, so a panel that opens
+     has to be its OWN part group rather than a slice of a larger one. Two
+     groups may carry the same closure id when one panel is drawn in several
+     pieces, and several closures may share one part id, which is how four
+     doors stay one clickable `doors` part while opening independently.
+
+     `m` is the mirror flag. lib.mirrorZ toggles it, and the viewer conjugates
+     the motion across the centerline rather than repeating it, so a module
+     authors one hinge on the +z side and gets the correct handedness on the
+     other. */
+  hinge(group, id, mirrored = false) {
+    group.userData.hinge = { id, m: !!mirrored };
+    return group;
+  },
+
+  /* THE KINEMATICS OF ONE CLOSURE, at travel t in [0, 1], as a world matrix.
+
+     This lives in common.js rather than in the viewer because two things
+     have to agree about it exactly: the app, which draws the door, and
+     tools/closures.sh, which sweeps the same door through the same travel to
+     find out whether it hits the car and how much room it needs beside it. A
+     checker that measures a COPY of the motion proves nothing about the
+     motion, and this project has already paid for one predicate drifting
+     from its own probe (tools/audit/float.js, see HANDOFF.md).
+
+     spec.motion is a list of stages composed in declaration order, each over
+     its own [start, end] window of t, so a door can push outboard before it
+     rises. A stage is either
+
+       { kind: 'swing', axis: [x,y,z], pivot: [x,y,z], deg, at: [a,b] }
+       { kind: 'slide', axis: [x,y,z], dist, at: [a,b] }
+
+     and every stage is authored on the +z side. `mirrored` conjugates the
+     whole transform by S = diag(1,1,-1) instead of mirroring the fields,
+     which is the only way to get a rotation across a centerline without a
+     sign rule per field: a mirrored axis negates in x and y and NOT in z,
+     which is exactly the rule people get wrong. */
+  closureAt(spec, t, mirrored, out) {
+    const M = out || new THREE.Matrix4();
+    M.identity();
+    for (const st of spec.motion) {
+      const a = st.at ? st.at[0] : 0, b = st.at ? st.at[1] : 1;
+      const s = b <= a ? (t >= b ? 1 : 0)
+                       : Math.max(0, Math.min(1, (t - a) / (b - a)));
+      if (s <= 0) continue;
+      if (st.kind === 'slide') {
+        _cst.makeTranslation(st.axis[0] * st.dist * s,
+                             st.axis[1] * st.dist * s,
+                             st.axis[2] * st.dist * s);
+      } else {
+        _cax.set(st.axis[0], st.axis[1], st.axis[2]).normalize();
+        _cst.makeRotationAxis(_cax, ((st.deg * Math.PI) / 180) * s);
+        /* about the pivot, not the origin: T(p) R T(-p), which on a pure
+           rotation is one setPosition of p - Rp */
+        _cpv.set(st.pivot[0], st.pivot[1], st.pivot[2]);
+        _crp.copy(_cpv).applyMatrix4(_cst);
+        _cst.setPosition(_cpv.x - _crp.x, _cpv.y - _crp.y, _cpv.z - _crp.z);
+      }
+      M.premultiply(_cst);
+    }
+    if (mirrored) M.premultiply(_MIRROR).multiply(_MIRROR);
+    return M;
+  },
 
   mesh(geo, mat) {
     const m = new THREE.Mesh(geo, mat);
@@ -731,7 +813,7 @@ export const lib = {
     return lib.mesh(geo, mat);
   },
 
-  /* Helical spring centred on local origin, axis along Y. */
+  /* Helical spring centered on local origin, axis along Y. */
   spring(r, len, turns, wireR, mat) {
     const pts = [];
     const N = turns * 16;
@@ -795,10 +877,10 @@ export const lib = {
                          the same value for crease.
        grooves           [{ row | col, width, depth, wall, span, runout }].
                          row/col is a fractional index in the INPUT grid;
-                         width and depth are metres. A groove sinks four
+                         width and depth are meters. A groove sinks four
                          lines into the surface along the local normal: two
                          lips on the surface, two floor edges at depth, with
-                         walls of `wall` metres (default 0.28 x width). span
+                         walls of `wall` meters (default 0.28 x width). span
                          is [a, b] in the other axis's index units and
                          runout is the fade at each end of that span.
        crease            degrees, applied to the finished mesh.
@@ -878,7 +960,7 @@ export const lib = {
     return lib.mesh(new THREE.LatheGeometry(pts, seg), mat);
   },
 
-  /* Box with all twelve edges chamfered by c metres. 44 triangles against
+  /* Box with all twelve edges chamfered by c meters. 44 triangles against
      lib.box's 12, normals already creased, box-projection UVs so mapped
      materials still work. Use it wherever a machined or cast part meets the
      light: a chamfer is what turns one flat highlight into two. */
@@ -888,7 +970,7 @@ export const lib = {
 
   /* Real grille geometry: a lattice of bars with depth, for intakes and
      vents that would otherwise be a flat dark rectangle. The panel spans w
-     along X and h along Y with its bars standing d deep along Z, centred on
+     along X and h along Y with its bars standing d deep along Z, centered on
      the local origin, so the caller rotates the group to face the flow.
 
      opts: bars (vertical, spread along X), cross (horizontal, spread along
@@ -945,10 +1027,10 @@ export const lib = {
 
      The seating face is on y = 0 and the head grows along +Y, so the caller
      owns the one thing that goes wrong here: y must be the VISIBLE face of
-     the thing being bolted, not its centre or its datum. Three of the first
+     the thing being bolted, not its center or its datum. Three of the first
      four banks placed on this car went inside the part they fixed, because
      lib.plate puts its slab between y + t/2 and y + 3t/2 rather than
-     centring it, because a strake straddles the panel it stands on, and
+     centering it, because a strake straddles the panel it stands on, and
      because a louver bank sits inboard of the skin. Ray-test a new bank
      against the rest of the system before believing in it. */
   fastener(r, mat, type = 'hex', o = {}) {
@@ -989,7 +1071,7 @@ export const lib = {
 
   /* Extruded emblem. outline is a closed [x, y] polygon in the local XY
      plane, opts.holes is a list of the same for cut-outs. The badge extrudes
-     along +Z with its back face on z = 0 and a bevelled rim, and the rim is
+     along +Z with its back face on z = 0 and a beveled rim, and the rim is
      the whole point: a decal has no edge to catch a softbox, a badge does. */
   badge(outline, depth, mat, o = {}) {
     const trace = (path, pts) => {
@@ -1021,9 +1103,26 @@ export const lib = {
     const flip = (o) => {
       const e = o.userData?.explode;
       if (e) o.userData.explode = new THREE.Vector3(e.x, e.y, -e.z);
+      /* a hinge crosses the centerline the way a rotation does, not the way
+         a vector does: the viewer conjugates the whole motion by the mirror,
+         so all this flag has to carry is WHICH SIDE the group ended up on.
+         Object3D.clone round-trips userData through JSON, so this is a plain
+         object by the time it gets here and rebuilding it is not optional. */
+      const h = o.userData?.hinge;
+      if (h) o.userData.hinge = { id: h.id, m: !h.m };
     };
+    /* ONE pass, and the second one that used to be here was a defect.
+       Object3D.traverse calls back on the object itself before it recurses,
+       so `c.traverse(flip); flip(c);` flipped the ROOT group twice and left
+       its own explode vector pointing back the way it came. It was invisible
+       on most callers because the group they mirror carries no z explode of
+       its own, and visible on seven that do: suspension-4's air springs and
+       both active damper groups and suspension-9's front knuckle, air
+       springs and both damper groups traveled INBOARD at full explode, on
+       every rung from Gen 4 up. SPEC.md's explode section says corner
+       symmetric parts explode outward through their own vectors, and those
+       seven did the opposite. */
     c.traverse(flip);
-    flip(c);
     c.scale.z *= -1;
     return c;
   },

@@ -1,6 +1,6 @@
 /* Drive units: a permanent-magnet rear drive unit shown as a z-axis teardown
    (clamshell housing, stator, rotor, single-speed gearset, differential) plus
-   a sealed induction front unit. Halfshafts reach the wheel centres on both
+   a sealed induction front unit. Halfshafts reach the wheel centers on both
    axles. Built to the packaging spec in SPEC.md. */
 
 import * as THREE from '../../vendor/three.module.js';
@@ -15,7 +15,7 @@ export const SYSTEM = {
   parts: {
     housing: {
       name: 'Rear drive unit housing',
-      tagline: 'One aluminium casting that is motor frame, gearbox, oil tank and heat exchanger at once.',
+      tagline: 'One aluminum casting that is motor frame, gearbox, oil tank and heat exchanger at once.',
       mass: 23,
       specs: [
         ['Material', 'A380 high-pressure die cast'],
@@ -25,12 +25,12 @@ export const SYSTEM = {
         ['Oil pump', 'Electric, 10 W cruise, 400 W peak'],
         ['Heat exchanger', 'Oil-to-coolant plate, 11 kW'],
       ],
-      how: 'The housing is two castings bolted at the motor face: a motor drum and a gear case. Casting them separately lets each be machined on one datum, which is what holds the three gear axes parallel within 20 microns over 100 mm. That tolerance is not pedantry: 10 microns of axis misalignment measurably raises gear noise, and there is no engine to hide it behind.\n\nThe same casting is the thermal system. A sump at the bottom holds 1.4 litres of transmission fluid; an electric pump draws from it, pushes it through the plate heat exchanger into the water loop, then up to a gallery that sprays the stator end windings and drips through the gear mesh. One fluid lubricates the gears and cools the copper, so the housing needs no second circuit and no shaft seals between wet zones.',
+      how: 'The housing is two castings bolted at the motor face: a motor drum and a gear case. Casting them separately lets each be machined on one datum, which is what holds the three gear axes parallel within 20 microns over 100 mm. That tolerance is not pedantry: 10 microns of axis misalignment measurably raises gear noise, and there is no engine to hide it behind.\n\nThe same casting is the thermal system. A sump at the bottom holds 1.4 liters of transmission fluid; an electric pump draws from it, pushes it through the plate heat exchanger into the water loop, then up to a gallery that sprays the stator end windings and drips through the gear mesh. One fluid lubricates the gears and cools the copper, so the housing needs no second circuit and no shaft seals between wet zones.',
       why: 'Integrating motor, gearbox and inverter mounting into one structure deletes couplings, flanges and one whole layer of tolerance stack. The unit is rigid because it must be: it reacts 2,750 Nm of wheel torque through three mounts, and any compliance in the case shows up as gear mesh movement, which is noise.',
       fail: [
         'Bearing currents from fast inverter edges pit the races by micro-arcing; an insulated rear bearing and a shaft grounding ring give the current a harmless path.',
         'Casting porosity is the classic die-cast leak mode; every housing is pressure-checked with helium before assembly.',
-        'The ATF sees copper, insulation and gear steel at once, so its additive package is a compromise; oil analysis at service catches accelerated ageing.',
+        'The ATF sees copper, insulation and gear steel at once, so its additive package is a compromise; oil analysis at service catches accelerated aging.',
       ],
       explode: [0, -0.2, 0],
     },
@@ -69,7 +69,7 @@ export const SYSTEM = {
       how: 'The magnets sit inside the rotor iron in V-shaped pockets rather than on the surface. That buries them against roughly 15,000 g of centripetal load at full speed, retained by thin lamination bridges left in the steel, and it makes the rotor magnetically lopsided on purpose: flux crosses the pocket axis less easily than the iron between poles. The controller exploits that asymmetry by advancing the current angle, adding reluctance torque, torque from iron alignment alone, worth about a third of the total and costing no magnet material.\n\nAt speed the magnets become the problem they solve. Their flux induces voltage in the stator proportional to rpm, and past about 7,000 rpm that back-EMF would exceed the battery; the field-weakening current described on the stator holds it in check. This is the shape behind the efficiency map: a broad island above 90% covering most of real driving, peaking at 97% at mid speed and mid torque, sagging at low speed (copper loss dominates) and at top speed (field weakening and iron loss dominate).',
       why: 'A permanent-magnet rotor is the most efficient way we know to make torque, which is why it drives the axle that works every trip. The magnets are the most expensive material in the unit and they never switch off, and that exact liability is why the other axle gets an induction machine instead.',
       fail: [
-        'Above about 160 °C combined with fault-level stator current, NdFeB demagnetises irreversibly; the inverter torque limit at high temperature exists to protect the magnets, not the copper.',
+        'Above about 160 °C combined with fault-level stator current, NdFeB demagnetizes irreversibly; the inverter torque limit at high temperature exists to protect the magnets, not the copper.',
         'The retention bridges are sized within 40% of yield at overspeed; a burst rotor is contained by the stator and housing, verified by deliberate overspeed-to-failure tests.',
         'Dysprosium in the magnet alloy is the supply-chain pinch point; the grade here uses grain-boundary diffusion to cut heavy rare earth content by half.',
       ],
@@ -77,7 +77,7 @@ export const SYSTEM = {
     },
     gearset: {
       name: 'Single-speed gearset',
-      tagline: 'One ratio, chosen once: 8.1:1 through helical gears that must be quieter than tyre roar.',
+      tagline: 'One ratio, chosen once: 8.1:1 through helical gears that must be quieter than tire roar.',
       mass: 10,
       specs: [
         ['Ratio', '8.1:1 in two stages'],
@@ -87,8 +87,8 @@ export const SYSTEM = {
         ['Wheel torque', '2,750 Nm at the hubs'],
         ['Finish', 'Ground flanks, crowned microgeometry'],
       ],
-      how: 'A motor that makes full torque from 0 rpm and survives 16,500 rpm needs no gearbox in the automotive sense, just one fixed reduction. Two stages take 8.1:1: the shaft pinion drives an intermediate gear, whose smaller partner drives the large ring gear carrying the differential. At the top of the motor speed range the wheels turn about 2,000 rpm, which is 270 km/h on this tyre; at the bottom, 8.1:1 multiplies 340 Nm into 2,750 Nm at the hubs. One ratio spans the whole envelope because the motor, unlike an engine, is happy across all of it.\n\nThe engineering effort goes into silence. Gear mesh frequencies land at 1 to 2 kHz, exactly where hearing is most sensitive, with no engine to mask them. So the gears are helical with an overlap ratio above 2, meaning at least two tooth pairs always share load and engagement is gradual rather than percussive, and the flanks are ground with deliberate crowning so that under load, as shafts deflect microns, the contact patch stays centred instead of running to an edge.',
-      why: 'A two-speed box would gain roughly 2 to 3% consumption at motorway speed. It costs 15 kg, a shift interruption or a slipping element, and a new failure population. The same money buys battery capacity that pays out everywhere, not just above 120 km/h. Every serious EV maker has run this trade and landed in the same place.',
+      how: 'A motor that makes full torque from 0 rpm and survives 16,500 rpm needs no gearbox in the automotive sense, just one fixed reduction. Two stages take 8.1:1: the shaft pinion drives an intermediate gear, whose smaller partner drives the large ring gear carrying the differential. At the top of the motor speed range the wheels turn about 2,000 rpm, which is 270 km/h on this tire; at the bottom, 8.1:1 multiplies 340 Nm into 2,750 Nm at the hubs. One ratio spans the whole envelope because the motor, unlike an engine, is happy across all of it.\n\nThe engineering effort goes into silence. Gear mesh frequencies land at 1 to 2 kHz, exactly where hearing is most sensitive, with no engine to mask them. So the gears are helical with an overlap ratio above 2, meaning at least two tooth pairs always share load and engagement is gradual rather than percussive, and the flanks are ground with deliberate crowning so that under load, as shafts deflect microns, the contact patch stays centered instead of running to an edge.',
+      why: 'A two-speed box would gain roughly 2 to 3% consumption at highway speed. It costs 15 kg, a shift interruption or a slipping element, and a new failure population. The same money buys battery capacity that pays out everywhere, not just above 120 km/h. Every serious EV maker has run this trade and landed in the same place.',
       fail: [
         'Regenerative braking reverses torque through the mesh, so the coast flanks are working surfaces too and every pedal lift crosses gear lash; torque is ramped through zero in software to keep that crossing inaudible.',
         'Micro-pitting on the flanks after high-load thermal cycles slowly raises whine; it is a wear-out mode watched by cabin-microphone order analysis in fleet data.',
@@ -109,7 +109,7 @@ export const SYSTEM = {
       how: 'The differential lets the outer wheel overrun the inner in a corner while the case delivers torque to both. Four bevel pinions inside the case do the arithmetic mechanically: wheel speeds may differ, torque splits equally. It bolts straight into the bore of the stage-2 ring gear, so the ring gear is also the differential case flange, saving a part and 30 mm of width.\n\nAn open differential has one vice: it can only send both wheels the torque the more slippery one can take. The classical fixes are friction plates or an electronically actuated clutch. Here the fix is upstream: the inverter can cut or restore motor torque in under 10 milliseconds, an order of magnitude faster than any mechanical lock can bite, and the brake controller can lightly drag a spinning wheel to send torque across. The same path carries regeneration: on lift-off the wheels back-drive the case, the ring gear, and the motor, which is now a generator.',
       why: 'Carrying friction hardware to solve wheelspin would add mass and drag to solve a problem the inverter already solves faster. An open diff is the lightest, most efficient answer as long as something quick is watching the wheel speeds, and something very quick is.',
       fail: [
-        'Sustained one-wheel spin, one wheel on a kerb ramp for example, scuffs the bevel pinion thrust faces; the traction controller caps spin duration to protect them.',
+        'Sustained one-wheel spin, one wheel on a curb ramp for example, scuffs the bevel pinion thrust faces; the traction controller caps spin duration to protect them.',
         'The equal-split rule means true split-grip launches are brake-assisted; the drag torque applied is energy deliberately wasted for mobility.',
       ],
       explode: [0, 0, -0.65],
@@ -127,11 +127,11 @@ export const SYSTEM = {
         ['Compliance', '~8 degrees twist at peak torque'],
       ],
       how: 'Each shaft ends in two different joints because it has two different problems. The outer joint at the wheel is a Rzeppa: six balls in curved grooves that hold the driven and driving axes at exactly equal angles, so rotation passes through at constant velocity even at full steering lock or full bump. The inner joint at the drive unit is a tripod: three rollers in straight tracks, which transmits torque while the whole shaft plunges axially as the suspension arcs. Grease-packed rubber boots seal both; the boot is the true life-limiting component.\n\nThe shaft itself is deliberately the softest torsional element in the drive path, winding up about 8 degrees at peak torque. That compliance stores energy, and with 2,750 Nm applied in tens of milliseconds it would oscillate the whole car fore-aft at around 9 Hz. The motor controller closes a damping loop on measured speed ripple and cancels the oscillation electronically, which is why a violent launch feels like one clean shove rather than a shudder.',
-      why: 'Hollow shafts carry torque in their outer fibres where the material actually works, saving roughly a third of the mass of solid bar. Equal-length shafts left and right, arranged by centring each drive unit, keep joint angles symmetric so full torque does not tug the steering.',
+      why: 'Hollow shafts carry torque in their outer fibers where the material actually works, saving roughly a third of the mass of solid bar. Equal-length shafts left and right, arranged by centering each drive unit, keep joint angles symmetric so full torque does not tug the steering.',
       fail: [
         'A torn boot is the dominant field failure: grease leaves, grit enters, and the joint announces itself by clicking on full-lock turns months later.',
         'Every drive-to-regen transition crosses joint and spline lash; torque is ramped through zero in about 50 ms, because letting it snap through is audible as driveline clunk.',
-        'Kerb-strike overload is protected by the traction controller cutting torque faster than the shaft can reach its ultimate rating.',
+        'Curb-strike overload is protected by the traction controller cutting torque faster than the shaft can reach its ultimate rating.',
       ],
       explode: [0, 0, 0.75],
     },
@@ -147,7 +147,7 @@ export const SYSTEM = {
         ['Peak efficiency', '99.3%'],
         ['Torque accuracy', 'within 2% of demand'],
       ],
-      how: 'The battery supplies DC; the motor needs three sinusoidal currents whose frequency and phase track the rotor exactly. Six switches, two per phase, connect each motor terminal to either battery rail 10,000 times a second, and space-vector modulation of the pulse widths makes the average of that chopping a clean sine. A film capacitor across the DC input absorbs the ampere-scale ripple this creates, so the battery and its cabling see smooth current. A control loop reads two phase currents and the rotor angle every switching cycle and lands delivered torque within 2% of demand, which is the number that makes traction control by inverter possible.\n\nThe same hardware runs backwards without modification. Lift off or brake, and the controller retards the current angle: the machine generates, the switches rectify, and up to 150 kW flows into the pack. Around 70% of all braking energy in normal driving returns through this box, which is worth more range than most aerodynamic measures.',
+      how: 'The battery supplies DC; the motor needs three sinusoidal currents whose frequency and phase track the rotor exactly. Six switches, two per phase, connect each motor terminal to either battery rail 10,000 times a second, and space-vector modulation of the pulse widths makes the average of that chopping a clean sine. A film capacitor across the DC input absorbs the ampere-scale ripple this creates, so the battery and its cabling see smooth current. A control loop reads two phase currents and the rotor angle every switching cycle and lands delivered torque within 2% of demand, which is the number that makes traction control by inverter possible.\n\nThe same hardware runs backward without modification. Lift off or brake, and the controller retards the current angle: the machine generates, the switches rectify, and up to 150 kW flows into the pack. Around 70% of all braking energy in normal driving returns through this box, which is worth more range than most aerodynamic measures.',
       why: 'This platform stays at 400 V-class where the industry argument increasingly says 900 V. The case for 900 V is real: half the current for the same power, half the conductor copper, and 350 kW charging without extreme cable cooling. It is weakest exactly here, in a rear unit sitting 300 mm from the pack terminals with almost no cable to save, and SiC conduction losses at 620 A are affordable. The 900 V argument is won or lost in the charging spec and the wiring harness, not in this housing; when the pack architecture moves, this inverter changes dies and nothing else.',
       fail: [
         'Film capacitor capacitance fades with heat and ripple over years; it is sized with 20% margin and its health is inferred from ripple voltage telemetry.',
@@ -168,12 +168,12 @@ export const SYSTEM = {
         ['Switching edge', 'up to 10 kV/us'],
         ['Cooling', 'Double-sided direct liquid'],
       ],
-      how: 'Each module is one phase: a high switch and a low switch, eight silicon carbide MOSFET dies in parallel per switch sharing the 620 A. The IGBT this technology replaced is a bipolar device: it drops a fixed ~0.9 V knee at any current and drags a tail of stored charge through every turn-off. A SiC MOSFET is a plain resistive channel, 1.1 mOhm here, with no knee and no tail. At the 50 to 100 A of ordinary driving, conduction loss falls by two-thirds and switching loss by around five times, and partial load is where a car spends nearly its whole life.\n\nParalleling eight dies works because a MOSFET channel has a positive temperature coefficient: a die running hot gains resistance and sheds current to its neighbours, so the set self-balances. The dies are sintered between two ceramic substrates with coolant on both faces, roughly halving thermal resistance versus single-sided mounting. The 10 kV/us switching edges that make the loss numbers possible are also a liability, stressing motor insulation and radiating interference, so gate resistors are tuned to the slowest edge that still meets the efficiency target.',
+      how: 'Each module is one phase: a high switch and a low switch, eight silicon carbide MOSFET dies in parallel per switch sharing the 620 A. The IGBT this technology replaced is a bipolar device: it drops a fixed ~0.9 V knee at any current and drags a tail of stored charge through every turn-off. A SiC MOSFET is a plain resistive channel, 1.1 mOhm here, with no knee and no tail. At the 50 to 100 A of ordinary driving, conduction loss falls by two-thirds and switching loss by around five times, and partial load is where a car spends nearly its whole life.\n\nParalleling eight dies works because a MOSFET channel has a positive temperature coefficient: a die running hot gains resistance and sheds current to its neighbors, so the set self-balances. The dies are sintered between two ceramic substrates with coolant on both faces, roughly halving thermal resistance versus single-sided mounting. The 10 kV/us switching edges that make the loss numbers possible are also a liability, stressing motor insulation and radiating interference, so gate resistors are tuned to the slowest edge that still meets the efficiency target.',
       why: 'SiC costs two to three times silicon per amp and repays it in the energy budget: 2 to 4% more of the pack reaches the wheels across the real usage profile, which is several kilograms of battery bought back, plus a smaller cooling loop because the loss it does make is halved.',
       fail: [
         'Cosmic-ray neutrons can trigger single-event burnout in high-voltage dies; the fleet-level fix is operating at roughly 60% of rated voltage, which is why 750 V-class dies serve a 450 V bus.',
         'Thermal cycling fatigues the sinter and substrate interfaces over tens of thousands of cycles; on-state voltage is trended in service as the wear indicator.',
-        'Gate oxide threshold drift is the SiC-specific ageing mode, managed by conservative gate drive voltage at some cost in on-resistance.',
+        'Gate oxide threshold drift is the SiC-specific aging mode, managed by conservative gate drive voltage at some cost in on-resistance.',
       ],
       explode: [0, 0.85, 0],
     },
@@ -188,8 +188,8 @@ export const SYSTEM = {
         ['Drag when off', 'Near zero, field collapses'],
         ['Service', 'Sealed for life, no drain plug'],
       ],
-      how: 'An induction machine has no magnets. Its rotor is a cage of cast copper bars; the stator field must run slightly faster than the rotor, and that slip induces currents in the cage which create the rotor field from nothing. The cost is that magnetising current, roughly 30% of the total, does no work, so a running induction machine trails a permanent-magnet machine by about 3 points of efficiency. The benefit is the off state: cut the stator current and the rotor field simply ceases to exist. The unit freewheels with bearing drag only, while a spinning PM motor would generate voltage and churn iron loss every metre of every trip.\n\nThat asymmetry is the whole two-motor strategy: one of each type per car. The rear PMSM, efficient but never able to switch off, drives the axle that always works. The front induction unit is inert on the motorway and summoned in tens of milliseconds for launch, low grip, or hard braking, when forward weight transfer loads the front tyres and front regeneration can harvest what the rear alone cannot. Mechanically it mirrors the rear, its own 7.6:1 gearset and open differential in one casting, but it is sealed for life: no spray gallery, no serviceable oil, because its duty cycle is a fraction of the rear unit’s.',
-      why: 'Two PM motors would cost 4 to 6% of motorway consumption in magnet drag or demand disconnect clutches to avoid it. Two induction motors would give up efficiency on every urban trip. One of each takes the best operating region of both, and lets the front axle be built cheaper because it works a fraction of the time.',
+      how: 'An induction machine has no magnets. Its rotor is a cage of cast copper bars; the stator field must run slightly faster than the rotor, and that slip induces currents in the cage which create the rotor field from nothing. The cost is that magnetizing current, roughly 30% of the total, does no work, so a running induction machine trails a permanent-magnet machine by about 3 points of efficiency. The benefit is the off state: cut the stator current and the rotor field simply ceases to exist. The unit freewheels with bearing drag only, while a spinning PM motor would generate voltage and churn iron loss every meter of every trip.\n\nThat asymmetry is the whole two-motor strategy: one of each type per car. The rear PMSM, efficient but never able to switch off, drives the axle that always works. The front induction unit is inert on the highway and summoned in tens of milliseconds for launch, low grip, or hard braking, when forward weight transfer loads the front tires and front regeneration can harvest what the rear alone cannot. Mechanically it mirrors the rear, its own 7.6:1 gearset and open differential in one casting, but it is sealed for life: no spray gallery, no serviceable oil, because its duty cycle is a fraction of the rear unit’s.',
+      why: 'Two PM motors would cost 4 to 6% of highway consumption in magnet drag or demand disconnect clutches to avoid it. Two induction motors would give up efficiency on every urban trip. One of each takes the best operating region of both, and lets the front axle be built cheaper because it works a fraction of the time.',
       fail: [
         'Slip is heat by definition, made in a rotor with no direct cooling; sustained duty, a long alpine climb, derates the front unit first and the rear carries on alone.',
         'Thermal cycling can crack a cage bar where it meets the end ring; the signature is a torque ripple at slip frequency, detectable in phase current before it is perceptible.',
@@ -208,7 +208,7 @@ export const SYSTEM = {
         ['Wake to full torque', '< 20 ms'],
         ['Rotor sensing', 'Sensorless flux observer'],
       ],
-      how: 'Controlling an induction machine is an estimation problem. There are no magnets whose angle a resolver can report; the quantity that matters is the rotor flux, which exists only while current makes it exist. The controller runs a flux observer, a real-time model fed by phase currents and shaft speed, and steers torque through the estimated field. It is mature theory, but it degrades near zero speed where the model loses signal, so the controller injects brief test pulses when creeping, felt by nobody and essential to the estimate.\n\nThe defining state of this box is off. At cruise the gates are simply held off, the channels open-circuit: no switching, no magnetising current, no loss at all on the front axle, while the torque arbiter runs everything through the rear. On a slip event, a launch request, or hard braking it goes from silent to 150 kW in under 20 milliseconds, about one wheel revolution at motorway speed. Under braking it takes the larger regeneration share, because weight transfer means the front tyres can react braking force the rears cannot.',
+      how: 'Controlling an induction machine is an estimation problem. There are no magnets whose angle a resolver can report; the quantity that matters is the rotor flux, which exists only while current makes it exist. The controller runs a flux observer, a real-time model fed by phase currents and shaft speed, and steers torque through the estimated field. It is mature theory, but it degrades near zero speed where the model loses signal, so the controller injects brief test pulses when creeping, felt by nobody and essential to the estimate.\n\nThe defining state of this box is off. At cruise the gates are simply held off, the channels open-circuit: no switching, no magnetizing current, no loss at all on the front axle, while the torque arbiter runs everything through the rear. On a slip event, a launch request, or hard braking it goes from silent to 150 kW in under 20 milliseconds, about one wheel revolution at highway speed. Under braking it takes the larger regeneration share, because weight transfer means the front tires can react braking force the rears cannot.',
       why: 'It shares its SiC power modules with the rear inverter, one part number, one qualification, one supply line, and differs only in count of parallel dies and in software. Sizing it at 150 kW covers every traction and braking case; a larger front inverter would spend its life asleep at a higher price.',
       fail: [
         'The flux observer inherits every sensor error; a miscalibrated current sensor shows up as torque ripple at low speed, caught by end-of-line self-test.',
@@ -223,18 +223,18 @@ export const SYSTEM = {
 /* ── Geometry ── */
 
 /* Rear unit axes in the x-y plane, motor axis along z.
-   A = motor / input pinion axis, B = intermediate (lay) axis, C = ring gear,
-   differential and halfshaft axis at wheel-centre height. Centre distances
+   A = motor / input pinion axis, B = intermediate (counter) axis, C = ring gear,
+   differential and halfshaft axis at wheel-center height. Center distances
    match the gear radii below (23:56 then 26:86). */
 const A = [-1.48, 0.38];
 const B = [-1.495, 0.458];
 const C = [-1.45, P.wheelY];      // 0.355
-const GZ = -0.25;                 // gear case centre plane, z
+const GZ = -0.25;                 // gear case center plane, z
 
 /* Cylinder with its axis along z instead of y. */
 function zc(mesh) { mesh.rotation.x = Math.PI / 2; return mesh; }
 
-/* Annulus (ring) extruded along z, centred on its own origin. */
+/* Annulus (ring) extruded along z, centered on its own origin. */
 function ringMesh(rOut, rIn, depth, mat, seg = 32) {
   const s = new THREE.Shape();
   s.absarc(0, 0, rOut, 0, Math.PI * 2, false);
@@ -246,7 +246,7 @@ function ringMesh(rOut, rIn, depth, mat, seg = 32) {
   return lib.mesh(geo, mat);
 }
 
-/* One halfshaft, built centred on its own origin so lib.spin works.
+/* One halfshaft, built centered on its own origin so lib.spin works.
    Local +z points outboard. Spans local z -0.2425 .. 0.2425. */
 function halfshaft() {
   const g = new THREE.Group();
@@ -258,7 +258,7 @@ function halfshaft() {
     g.add(joint);
     /* CV boot: cone tapering from the joint toward the shaft */
     const boot = lib.cone(0.042, 0.07, M.rubber, 20);
-    boot.rotation.x = s * Math.PI / 2;   /* apex toward shaft centre */
+    boot.rotation.x = s * Math.PI / 2;   /* apex toward shaft center */
     boot.position.z = s * 0.155;
     g.add(boot);
   }

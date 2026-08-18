@@ -52,7 +52,7 @@
       operation order, with the same sign convention and the same order of
       barycentric rejections. Same doubles, same sequence, same answer.
    2. THE RAY IS BUILT THE SAME WAY. Stock inverts matrixWorld, transforms the
-      origin as a point and the direction as a NORMALISED direction, and then
+      origin as a point and the direction as a NORMALIZED direction, and then
       measures distance by mapping the local hit point back to world and
       taking origin.distanceTo(point). All of that is reproduced rather than
       approximated with a scale factor.
@@ -263,7 +263,7 @@ function build(geometry, material) {
     } else if (depth >= FORCE_MEDIAN_DEPTH) {
       mid = medianSplit(order, c, start, count);
     } else {
-      /* spatial median: partition about the centre of the centroid bounds.
+      /* spatial median: partition about the center of the centroid bounds.
          No sort, one pass, and it separates long runs of geometry the way a
          picking ray meets them. */
       const pivot = (axis === 0 ? clox + chix : axis === 1 ? cloy + chiy : cloz + chiz) * 0.5;
@@ -389,7 +389,7 @@ function triHit(ox, oy, oz, dx, dy, dz, ax, ay, az, bx, by, bz, cx, cy, cz, cull
       completely different expression in doubles. On a ray that grazes a box
       along an edge or through a corner the two disagree by an ulp or so, the
       slab test concludes tmin > tmax, and a real hit inside is never tested.
-      The slack is four double ulps of tmax plus a picometre floor, so a box
+      The slack is four double ulps of tmax plus a picometer floor, so a box
       is at worst one part in 10^15 too generous, which costs a few extra
       triangle tests and never an answer.
 
@@ -416,7 +416,7 @@ function triHit(ox, oy, oz, dx, dy, dz, ax, ay, az, bx, by, bz, cx, cy, cz, cull
    GRAZE_FLOOR to 0 and bvhcheck fails gen9 at 82 against 27: the guard is
    live, and that is how these two numbers were checked. */
 const GRAZE = 8.9e-16;      // four double ulps
-const GRAZE_FLOOR = 1e-12;  // metres, so a box at t near zero still has slack
+const GRAZE_FLOOR = 1e-12;  // meters, so a box at t near zero still has slack
 
 function boxT(bounds, node, ox, oy, oz, idx, idy, idz, tMax) {
   const b = node * 6;
@@ -453,7 +453,17 @@ function boxT(bounds, node, ox, oy, oz, idx, idy, idz, tMax) {
 
 /* Nearest triangle along a LOCAL ray. `hit` receives [t, triIndex], t = -1 on
    a miss. `flip` swaps the winding, which is what BackSide asks for. */
-function traverse(bvh, ox, oy, oz, dx, dy, dz, tMax, cull, flip, hit) {
+/* `accept` is optional and takes the LOCAL ray parameter of a candidate hit,
+   returning false for one that must not be kept. It exists for the section
+   plane and it is the difference between "the nearest triangle" and "the
+   nearest triangle a reader can actually see", which are not the same question
+   once a clipping plane is on. Threaded through the traversal rather than
+   applied to its result, because this tree keeps ONE hit per mesh: filtering
+   afterward can only discard that hit, never replace it with the next one
+   behind it, so the whole mesh dropped out of the pick. See the note on `clip`
+   in bvhRaycast. When it is undefined the `!accept` short-circuits ahead of
+   every call and this function is byte-for-byte the function it was. */
+function traverse(bvh, ox, oy, oz, dx, dy, dz, tMax, cull, flip, hit, accept) {
   const bounds = bvh.bounds, meta = bvh.meta, order = bvh.order;
   const pos = bvh.pos, index = bvh.index;
   /* 0 marks "the ray does not travel along this axis". A real reciprocal can
@@ -489,7 +499,7 @@ function traverse(bvh, ox, oy, oz, dx, dy, dz, tMax, cull, flip, hit) {
           pos[i0], pos[i0 + 1], pos[i0 + 2],
           pos[i1], pos[i1 + 1], pos[i1 + 2],
           pos[i2], pos[i2 + 1], pos[i2 + 2], cull);
-        if (d >= 0 && d < best) { best = d; bestTri = t; }
+        if (d >= 0 && d < best && (!accept || accept(d))) { best = d; bestTri = t; }
       }
       continue;
     }
@@ -543,6 +553,10 @@ export function bvhFor(mesh) {
 
 const _hit = [0, 0];
 const _pt = new THREE.Vector3();
+/* its own scratch, not _pt: the clip predicate runs DURING the traversal and
+   _pt holds the reported hit point after it, so sharing one would have the
+   acceptance test overwrite the answer it is helping to find */
+const _cpt = new THREE.Vector3();
 
 /* Drop-in for mesh.raycast(raycaster, intersects) when only the NEAREST
    intersection on this mesh matters. Pushes at most one, and pushes what the
@@ -569,10 +583,26 @@ const _pt = new THREE.Vector3();
    sphere test threw away a hit its own triangle loop finds when asked
    directly. Those are counted as divergences by the harness and the tree is
    the side that is right. */
-export function bvhRaycast(mesh, raycaster, intersects, maxDistance, invMatrix) {
+/* `clip` is the section plane, in WORLD space, and it returns true for a point
+   the plane has REMOVED. It is the same predicate js/pick.js applies to a hit,
+   handed in rather than applied afterward.
+
+   THE REASON IT CANNOT BE APPLIED AFTERWARD is the shape of this tree. It
+   returns at most ONE intersection per mesh, the nearest, which is what makes
+   it cheap and is stated all over this file. A per-hit filter on top of that
+   can only DISCARD the mesh's single hit, never fall through to the surface
+   behind it, so a mesh whose nearest triangle the section had removed dropped
+   out of the pick entirely and the surface actually drawn on screen was never
+   a candidate. THREE.Mesh.raycast pushes every intersection, so the stock
+   fallback path never had the hole, which is why hover and click disagreed
+   with what the reader could see only while a section was open.
+
+   Costs nothing when no section is on: undefined here means undefined all the
+   way down and the traversal short-circuits ahead of every call. */
+export function bvhRaycast(mesh, raycaster, intersects, maxDistance, invMatrix, clip) {
   const material = mesh.material;
   /* An array material means per-group materials, and a group can cull
-     differently from its neighbour, which one tree cannot express. The cache
+     differently from its neighbor, which one tree cannot express. The cache
      is keyed on the geometry, so this has to be re-checked per MESH rather
      than trusted from the build: two meshes may share a geometry and not
      share a material. Nothing in this tree does today. */
@@ -580,10 +610,10 @@ export function bvhRaycast(mesh, raycaster, intersects, maxDistance, invMatrix) 
 
   /* A nonzero near is DECLINED rather than approximated. Stock keeps the
      nearest hit whose distance is at least `near`; this tree finds the
-     nearest hit full stop and can then only drop it, so on a mesh with a
+     nearest hit period and can then only drop it, so on a mesh with a
      surface inside `near` and another beyond it stock returns the second
      surface and this returned nothing. Measured on gen9 by aiming at each
-     tree-bearing mesh's centre and setting near just past the first hit:
+     tree-bearing mesh's center and setting near just past the first hit:
      274 of 289 meshes diverged. The viewer never sets near, so declining
      costs nothing today and keeps the drop-in claim true for the callers
      that do. */
@@ -597,7 +627,7 @@ export function bvhRaycast(mesh, raycaster, intersects, maxDistance, invMatrix) 
   const mw = mesh.matrixWorld;
   const e = mw.elements;
 
-  /* local ray: origin as a point, direction as a normalised direction, the
+  /* local ray: origin as a point, direction as a normalized direction, the
      way THREE.Ray.applyMatrix4 builds it */
   const ie = (invMatrix || _inv.copy(mw).invert()).elements;
   const px = ray.origin.x, py = ray.origin.y, pz = ray.origin.z;
@@ -620,7 +650,7 @@ export function bvhRaycast(mesh, raycaster, intersects, maxDistance, invMatrix) 
      INCLUSIVE in stock, which drops a hit only when distance is strictly
      greater, so a hit landing exactly on far is kept; the traversal here is
      exclusive, `d < best`, so feeding far in as best dropped it. Measured on
-     gen9, aiming at each tree-bearing mesh's centre and setting far to that
+     gen9, aiming at each tree-bearing mesh's center and setting far to that
      hit's own distance, all 288 meshes that were hit diverged. Nudging the
      bound would only move the boundary, because t and world distance are
      related by a factor this function computes separately from the distance
@@ -640,8 +670,19 @@ export function bvhRaycast(mesh, raycaster, intersects, maxDistance, invMatrix) 
   }
 
   const back = material.side === THREE.BackSide;
+  /* the candidate's LOCAL point taken to world with the same matrix the final
+     hit below uses, so the traversal and the reported hit agree on where the
+     point is. Built only when there is a section to test against, and reached
+     only by a triangle that would have become the new nearest, which is a
+     handful of times per ray rather than once per triangle. */
+  const accept = clip
+    ? (t) => {
+        _cpt.set(ox + dx * t, oy + dy * t, oz + dz * t).applyMatrix4(mw);
+        return !clip(_cpt.x, _cpt.y, _cpt.z);
+      }
+    : undefined;
   traverse(bvh, ox, oy, oz, dx, dy, dz, tMax,
-    back || material.side === THREE.FrontSide, back, _hit);
+    back || material.side === THREE.FrontSide, back, _hit, accept);
   if (_hit[0] < 0) return true;
 
   const t = _hit[0];

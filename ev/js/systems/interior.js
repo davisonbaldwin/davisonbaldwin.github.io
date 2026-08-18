@@ -21,13 +21,13 @@ export const SYSTEM = {
         ['Substrate', 'Long-glass PP, 2.4 mm'],
         ['Crossbeam', 'Cast magnesium, 6.4 kg'],
         ['Top pad', 'TPO skin over 9 mm PU foam'],
-        ['Vent', 'Full-width 8 mm slot, motorised vanes'],
+        ['Vent', 'Full-width 8 mm slot, motorized vanes'],
         ['Airbags', 'Passenger 90 L + knee, invisible seams'],
       ],
-      how: 'The part you see is trim. The part that matters is the cast magnesium crossbeam behind it, running door to door and bolted to both A-pillar bases. It carries the displays, the passenger airbag, the HVAC distribution box, and the steer-by-wire feedback loads, and its first bending mode is held above 38 Hz so the screen does not shimmer on coarse surfaces. Magnesium costs more than steel per part but saves 5 kg high and forward, exactly where mass hurts most.\n\nThe visible slab is three pieces: a padded knee roll low enough to be the first contact in a submarining crash, the main moulding, and a soft top pad. Air arrives through one full-width 8 mm slot under the top pad edge; motorised vanes upstream steer the jet using the Coanda effect, so the cabin is swept by a wide slow sheet of air rather than four cold jets. The slot is sized against the glass roof above it: even with an infrared-reflective silver coating rejecting about two thirds of solar energy, a parked summer cabin still starts 30 °C above ambient.',
+      how: 'The part you see is trim. The part that matters is the cast magnesium crossbeam behind it, running door to door and bolted to both A-pillar bases. It carries the displays, the passenger airbag, the HVAC distribution box, and the steer-by-wire feedback loads, and its first bending mode is held above 38 Hz so the screen does not shimmer on coarse surfaces. Magnesium costs more than steel per part but saves 5 kg high and forward, exactly where mass hurts most.\n\nThe visible slab is three pieces: a padded knee roll low enough to be the first contact in a submarining crash, the main molding, and a soft top pad. Air arrives through one full-width 8 mm slot under the top pad edge; motorized vanes upstream steer the jet using the Coanda effect, so the cabin is swept by a wide slow sheet of air rather than four cold jets. The slot is sized against the glass roof above it: even with an infrared-reflective silver coating rejecting about two thirds of solar energy, a parked summer cabin still starts 30 °C above ambient.',
       why: 'Cabin comfort is a range problem wearing trim. Every watt of summer cooling and winter heating comes out of the pack, and the heat pump can only be as small as the worst-case cabin load, so the coated roof glass and the sheet-flow vent are battery decisions as much as comfort ones. Decluttering the surface, one slot, one screen, no switch banks, is what the buttonless cabin actually buys physically: fewer cutlines, fewer rattles, one tool per market instead of a dozen.',
       fail: [
-        'Squeak and rattle from clip stack-up across the -30 to +85 °C soak range is the top interior warranty item industry-wide; the one-piece main moulding exists to cut the cutline count.',
+        'Squeak and rattle from clip stack-up across the -30 to +85 °C soak range is the top interior warranty item industry-wide; the one-piece main molding exists to cut the cutline count.',
         'The TPO skin chalks and gains gloss under a decade of UV through the glass roof; the coating slows this, it does not stop it.',
         'A failed vane actuator freezes the air sheet in one direction, and reaching it means pulling the whole top pad.',
       ],
@@ -38,14 +38,14 @@ export const SYSTEM = {
       tagline: 'One 14-inch panel where sixty switches used to be, and a strip that never leaves the sight line.',
       mass: 8,
       specs: [
-        ['Centre display', '14 in, 2400 x 1500, bonded'],
+        ['Center display', '14 in, 2400 x 1500, bonded'],
         ['Cluster strip', '12 in ultrawide, 1920 x 320'],
         ['Brightness', '1000 cd/m2, matte etch'],
         ['Compute', 'One SoC renders both panels'],
         ['Tell-tales', 'Isolated ASIL-B display core'],
       ],
-      how: 'The centre panel is optically bonded, glass laminated to pixels with no air gap, which is most of the difference between readable and washed out in sunlight, and it is yawed 10 degrees toward the driver. One automotive SoC renders both panels. The safety-relevant symbols, speed, tell-tales, warnings, do not trust it: an isolated ASIL-B core composites them onto the cluster strip through a hardware overlay, with a watchdog that can repaint speed within 500 ms of a main-OS crash.\n\nThe cluster strip sits on the dash top directly in the driver’s sight line, about 10 degrees below the horizon, and its layout never changes: speed, limit, drive state, range, always in the same places. Everything glanceable lives on the strip; everything that needs a decision lives on the centre panel; everything that must work blind, wipers, indicators, horn, lamps, stays on stalks and the yoke.',
-      why: 'The honest case for one screen is cost and cadence: a switch bank is dozens of parts tooled per market and frozen at launch, while a screen is one part updated over the air for a decade. The honest case against is also real: touch demands eyes, a climate knob is faster and blind-operable, and Euro NCAP’s 2026 protocol penalises exactly this by requiring physical access to core functions. The split here, fixed strip, stalks for reflexes, screen for decisions, is a compromise position, and it is a compromise, not a solved problem.',
+      how: 'The center panel is optically bonded, glass laminated to pixels with no air gap, which is most of the difference between readable and washed out in sunlight, and it is yawed 10 degrees toward the driver. One automotive SoC renders both panels. The safety-relevant symbols, speed, tell-tales, warnings, do not trust it: an isolated ASIL-B core composites them onto the cluster strip through a hardware overlay, with a watchdog that can repaint speed within 500 ms of a main-OS crash.\n\nThe cluster strip sits on the dash top directly in the driver’s sight line, about 10 degrees below the horizon, and its layout never changes: speed, limit, drive state, range, always in the same places. Everything glanceable lives on the strip; everything that needs a decision lives on the center panel; everything that must work blind, wipers, turn signals, horn, lamps, stays on stalks and the yoke.',
+      why: 'The honest case for one screen is cost and cadence: a switch bank is dozens of parts tooled per market and frozen at launch, while a screen is one part updated over the air for a decade. The honest case against is also real: touch demands eyes, a climate knob is faster and blind-operable, and Euro NCAP’s 2026 protocol penalizes exactly this by requiring physical access to core functions. The split here, fixed strip, stalks for reflexes, screen for decisions, is a compromise position, and it is a compromise, not a solved problem.',
       fail: [
         'Low sun directly behind the driver still washes out the matte etch; there is no software fix for geometry.',
         'An SoC failure drops both panels; the ASIL-B island keeps speed and warnings alive on the strip and the car stays drivable.',
@@ -64,7 +64,7 @@ export const SYSTEM = {
         ['Feedback motor', '8 Nm peak, belt drive'],
         ['Ratio', 'Variable, 1.7 turns lock to lock'],
       ],
-      how: 'The column is a 200 mm stub that ends at a duplex sensor pack, and that is the entire mechanical system: no intermediate shaft, no universal joints, nothing through the firewall. Rim angle and rim torque are each measured twice by independent sensors on independent power and communication paths, and the front rack actuator follows the command. The ratio is synthetic: about 1.7 turns lock to lock in a car park, much slower around centre at motorway speed, which is the only reason a cut-down rim is usable at all.\n\nFeel is synthesised by the belt-driven motor on the same stub. It renders an estimate of rack load, tyre self-aligning torque reconstructed from rack current and a vehicle model, plus programmed end stops. Remove its torque and the rim spins weightlessly; everything a driver calls steering feel is this motor’s output.',
+      how: 'The column is a 200 mm stub that ends at a duplex sensor pack, and that is the entire mechanical system: no intermediate shaft, no universal joints, nothing through the firewall. Rim angle and rim torque are each measured twice by independent sensors on independent power and communication paths, and the front rack actuator follows the command. The ratio is synthetic: about 1.7 turns lock to lock in a parking lot, much slower around center at highway speed, which is the only reason a cut-down rim is usable at all.\n\nFeel is synthesized by the belt-driven motor on the same stub. It renders an estimate of rack load, tire self-aligning torque reconstructed from rack current and a vehicle model, plus programmed end stops. Remove its torque and the rim spins weightlessly; everything a driver calls steering feel is this motor’s output.',
       why: 'The yoke argument, stated honestly: a cut top rim clears the cluster sight line and the knee path, and steer-by-wire makes the packaging and left-right drive conversion trivial. Against it, full yokes shipped by others punished hand-over-hand steering wherever the variable ratio did not rescue it, and retrained a reflex a century old. This car keeps a round top and flattens only the bottom: the sight line benefit survives, and a hand thrown at the rim in a slide always finds rim.',
       fail: [
         'There is no mechanical fallback, so the electrical system must clear aviation-grade numbers: dual sensors, dual ECUs, dual power feeds, target failure rate below 10^-9 per hour.',
@@ -104,7 +104,7 @@ export const SYSTEM = {
         ['Cushion depth', '480 mm, dual-density PU'],
         ['Middle seat', 'Flat footwell, full three-point belt'],
       ],
-      how: 'Two moulded foam elements on a steel pan, bolted to the rear pack crossmembers, with belts anchored to the body so a folded seat never carries restraint loads. The 60/40 backrest latches into the parcel shelf structure and folds onto the cushion for a flat load floor.\n\nThe cushion is not a slab, and the reason is autonomy\'s computer. Its case occupies x -0.765 to -0.360 at y 0.377 to 0.463 with the GNSS pod just forward of the lip, which is inside the seat rather than under it: measured off both built meshes that was 170 crossing triangle pairs at 65.00 mm and 32 more at 6.00. There is 57 mm of clear air between the case and the pack lid, so the computer would happily sit lower, but the pan runs across that station and moving it is an autonomy edit paired with a bench edit rather than either one alone. The foam is therefore moulded around the box with 8 mm of nominal gap at the sides and aft face and 13 mm over the lid, which is how every under-seat module in a real car is packaged. What it costs is stated rather than hidden: 34 mm of foam over the computer against 130 mm everywhere else, so the front third of the cushion is firm and the occupant can feel where the box is.\n\nThe flat floor is the skateboard dividend paid out in full: no transmission tunnel, no exhaust path, so the middle passenger gets a flat footwell and the same 480 mm cushion depth as the outboard seats instead of a perch. The honest tax: the pack raises the floor about 130 mm over a saloon, and at a fixed roofline that compresses heel-to-hip height, so tall adults ride slightly knees-up. The skateboard moved the compromise, it did not delete it.',
+      how: 'Two molded foam elements on a steel pan, bolted to the rear pack crossmembers, with belts anchored to the body so a folded seat never carries restraint loads. The 60/40 backrest latches into the package shelf structure and folds onto the cushion for a flat load floor.\n\nThe cushion is not a slab, and the reason is autonomy\'s computer. Its case occupies x -0.765 to -0.360 at y 0.377 to 0.463 with the GNSS pod just forward of the lip, which is inside the seat rather than under it: measured off both built meshes that was 170 crossing triangle pairs at 65.00 mm and 32 more at 6.00. There is 57 mm of clear air between the case and the pack lid, so the computer would happily sit lower, but the pan runs across that station and moving it is an autonomy edit paired with a bench edit rather than either one alone. The foam is therefore molded around the box with 8 mm of nominal gap at the sides and aft face and 13 mm over the lid, which is how every under-seat module in a real car is packaged. What it costs is stated rather than hidden: 34 mm of foam over the computer against 130 mm everywhere else, so the front third of the cushion is firm and the occupant can feel where the box is.\n\nThe flat floor is the skateboard dividend paid out in full: no transmission tunnel, no exhaust path, so the middle passenger gets a flat footwell and the same 480 mm cushion depth as the outboard seats instead of a perch. The honest tax: the pack raises the floor about 130 mm over a sedan, and at a fixed roofline that compresses heel-to-hip height, so tall adults ride slightly knees-up. The skateboard moved the compromise, it did not delete it.',
       why: 'Bench comfort is decided by the platform, not the upholstery. The decision that made this seat work was made in the battery layout: keeping cells out of a tunnel and the floor dead flat is worth more to the middle occupant than any amount of foam tuning.',
       fail: [
         'The middle belt’s upper anchor geometry is marginal for small statures; a booster cushion corrects it and almost nobody fits one there.',
@@ -114,7 +114,7 @@ export const SYSTEM = {
       explode: [-0.25, 0.45, 0],
     },
     console: {
-      name: 'Centre console',
+      name: 'Center console',
       tagline: 'Furniture, not structure: nothing underneath it needs a tunnel.',
       mass: 15,
       specs: [
@@ -123,8 +123,8 @@ export const SYSTEM = {
         ['Charging', 'Two 15 W inductive pads'],
         ['Armrest', 'Sliding pad, 60 mm travel'],
       ],
-      how: 'There is no mechanical reason for this part to exist. With no gearbox and no propshaft the floor between the seats is empty, so the console is pure furniture: a plastic tub bolted to the flat floor, hiding the low-voltage harness spine and the air duct feeding the rear footwells, and carrying an 11 litre bin, two damped cupholders, and two inductive charging pads.\n\nThe pads are thermally limited, not electrically: 15 W into a phone in a sun-soaked cabin will cook it, so a coil temperature cap derates charging above 60 °C, which is why summer wireless charging feels slow. The armrest slides 60 mm to put the elbow behind the wrist on the screen, an ergonomic detail used hundreds of times a day.',
-      why: 'A walk-through cabin was on the table, and some rivals ship one. The armrest won: elbow support at the right height scores higher in long-drive comfort clinics than openness scores in anything measurable. Choosing the console is choosing what the flat floor is spent on, and this car spends it on posture, not theatre.',
+      how: 'There is no mechanical reason for this part to exist. With no gearbox and no driveshaft the floor between the seats is empty, so the console is pure furniture: a plastic tub bolted to the flat floor, hiding the low-voltage harness spine and the air duct feeding the rear footwells, and carrying an 11 liter bin, two damped cupholders, and two inductive charging pads.\n\nThe pads are thermally limited, not electrically: 15 W into a phone in a sun-soaked cabin will cook it, so a coil temperature cap derates charging above 60 °C, which is why summer wireless charging feels slow. The armrest slides 60 mm to put the elbow behind the wrist on the screen, an ergonomic detail used hundreds of times a day.',
+      why: 'A walk-through cabin was on the table, and some rivals ship one. The armrest won: elbow support at the right height scores higher in long-drive comfort clinics than openness scores in anything measurable. Choosing the console is choosing what the flat floor is spent on, and this car spends it on posture, not theater.',
       fail: [
         'The spill drains under the cupholders clog with years of crumbs and sugar; once blocked, the next 250 ml coffee reaches the inductive electronics the drains were validated to protect.',
         'Steel phone cases and stray coins trip the foreign-object detection and charging stops silently.',
@@ -144,7 +144,7 @@ export const SYSTEM = {
         ['Accelerator', 'Dual-track Hall sensor, organ style'],
       ],
       how: 'The brake pedal does not push fluid in normal driving; it pushes a simulator. A plunger loads a coil spring first, then an elastomer stack, giving a two-stage curve: 12 N of breakaway so a resting foot does not brake, a linear region for modulation, then a sharply rising rate so 1.0 g arrives at about 70 N and 55 mm. That curve was tuned in blind clinics, because it is the only thing the driver ever feels.\n\nDecoupling is what makes consistency possible: the controller blends regeneration, up to about 0.3 g from the motors alone, with friction braking, and the handover is imperceptible because pedal force no longer comes from the hydraulics doing the work. More than nine in ten daily braking events end without a pad touching a disc. On total electrical failure the pedal bottoms through to a direct hydraulic push-through circuit on the front axle: roughly triple the effort, longer travel, legal-minimum deceleration.',
-      why: 'A hydraulic pedal’s feel drifts with pad temperature, fluid age, and regen state; a simulator’s feel is identical on the first stop of a winter morning and the tenth stop down a mountain pass. Once braking is blended electronics anyway, synthesising the feel honestly is more truthful to the driver than coupling the pedal to plumbing whose behaviour changes underneath it.',
+      why: 'A hydraulic pedal’s feel drifts with pad temperature, fluid age, and regen state; a simulator’s feel is identical on the first stop of a winter morning and the tenth stop down a mountain pass. Once braking is blended electronics anyway, synthesizing the feel honestly is more truthful to the driver than coupling the pedal to plumbing whose behavior changes underneath it.',
       fail: [
         'The simulator always feels the same, so it cannot telegraph fade or a failing circuit through the sole; that information moves to the display and a chime, an honest demotion.',
         'Push-through fallback shocks drivers who have never felt it: triple effort reads as failure even while meeting the legal stop.',
@@ -181,19 +181,19 @@ export function build() {
   dash.add(trimBlade);
   sys.add(dash);
 
-  /* displays: centre landscape panel yawed at the driver + cluster strip */
+  /* displays: center landscape panel yawed at the driver + cluster strip */
   const displays = lib.part('displays', [0.6, 0.6, 0]);
-  const centre = new THREE.Group();
-  const centreBezel = lib.box(0.022, 0.20, 0.31, M.plastic);
-  const centreFace = lib.box(0.006, 0.19, 0.30, M.sensor);
-  centreFace.position.x = -0.013;
-  centre.add(centreBezel, centreFace);
-  centre.position.set(0.98, 0.78, 0);
-  centre.rotation.set(0, -0.17, -0.12);            /* yaw at driver + rake */
-  displays.add(centre);
-  const centreMount = lib.box(0.06, 0.05, 0.10, M.plastic);
-  centreMount.position.set(1.0, 0.72, 0);
-  displays.add(centreMount);
+  const center = new THREE.Group();
+  const centerBezel = lib.box(0.022, 0.20, 0.31, M.plastic);
+  const centerFace = lib.box(0.006, 0.19, 0.30, M.sensor);
+  centerFace.position.x = -0.013;
+  center.add(centerBezel, centerFace);
+  center.position.set(0.98, 0.78, 0);
+  center.rotation.set(0, -0.17, -0.12);            /* yaw at driver + rake */
+  displays.add(center);
+  const centerMount = lib.box(0.06, 0.05, 0.10, M.plastic);
+  centerMount.position.set(1.0, 0.72, 0);
+  displays.add(centerMount);
   const cluster = new THREE.Group();
   const clusterBezel = lib.box(0.018, 0.06, 0.31, M.plastic);
   const clusterFace = lib.box(0.006, 0.05, 0.30, M.sensor);
@@ -274,7 +274,7 @@ export function build() {
     sys.add(seat);
   }
 
-  /* rear bench: full-width cushion, backrest against the parcel shelf */
+  /* rear bench: full-width cushion, backrest against the package shelf */
   const bench = lib.part('rear-bench', [-0.25, 0.45, 0]);
   /* THE BENCH IS 180 MM NARROWER AND ITS HEADRESTS 78 MM LOWER THAN THEY
      WERE, and both numbers come from the roof rather than from a package
@@ -291,7 +291,7 @@ export function build() {
      side glass rather than the roof: body-4's canopy descends to y 1.013 at
      |z| 0.70 over this station, so a 1.52 m bench put its backrest corners
      outside the greenhouse, and body-3's skin closes to |z| 0.76 by x -1.10. */
-  /* THE CUSHION IS MOULDED AROUND THE COMPUTE INSTEAD OF THROUGH IT, and the
+  /* THE CUSHION IS MOLDED AROUND THE COMPUTE INSTEAD OF THROUGH IT, and the
      same relief carries on interior-4 against the bigger Gen 4 plate.
      autonomy's compute case is built at x -0.765 to -0.360, y 0.377 to 0.463,
      |z| 0.183, and its GNSS and IMU pod sits just forward of the cushion lip
@@ -310,7 +310,7 @@ export function build() {
      So the foam is relieved and nothing else moves: a pocket open at the
      cushion's front face, walls 8.0 mm off the case on both sides and 8.0 mm
      off its aft end, roof 13.0 mm over the case and 8.0 mm over the pod. Only
-     the centre band is cut, because every face of the outboard bolsters is a
+     the center band is cut, because every face of the outboard bolsters is a
      face some other module is measured against. 34 mm of foam is left over
      the pocket where the rest of the cushion carries 130, and that thin
      section is the honest cost of a computer inside a seat. */

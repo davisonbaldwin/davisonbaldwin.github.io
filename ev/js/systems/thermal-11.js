@@ -14,7 +14,7 @@
 
    METHOD, stated so the next reviewer can rerun it rather than believe it.
    The cabin boundary is the surface that separates cabin air from ambient,
-   so it is found by casting a +z ray from the centreline at every (x, y) on
+   so it is found by casting a +z ray from the centerline at every (x, y) on
    a 10 by 4 mm lattice and taking the FIRST surface it meets that is not the
    safety cage, whose tubes stand INSIDE the cabin rather than bounding it.
    The polyline that produces, integrated from the pack lid to the crown, is
@@ -108,7 +108,7 @@
    cowl, passes the front occupant, then the rear one, and leaves low at the
    back of the sill. That is displacement ventilation in the geometry rather
    than in the control law, and its effectiveness is 1.0 rather than 0.9:
-   every cubic metre admitted crosses both breathing zones in series before
+   every cubic meter admitted crosses both breathing zones in series before
    it leaves. So 72 m3/h delivers what 80 m3/h delivered, and it delivers it
    through ONE duct instead of a mirrored pair.
 
@@ -140,7 +140,7 @@
      Thermal's own share 45 to 34 W
      Plus 6 kg off the ledger, 50 to 44 kg
 
-   THE COMPRESSOR LINE IS MOSTLY A CORRECTION AND IT IS LABELLED AS ONE.
+   THE COMPRESSOR LINE IS MOSTLY A CORRECTION AND IT IS LABELED AS ONE.
    Priced by leg on the conservation law above, with the band bottom at 14 C
    and the band top at 30 C:
 
@@ -305,7 +305,7 @@
    lid. Every clearance this file published against the case was therefore
    5.7 mm optimistic, and the two that mattered are re-measured below.
 
-   thermal-9's frunk deck was a single 250 by 760 mm plate on the centreline
+   thermal-9's frunk deck was a single 250 by 760 mm plate on the centerline
    at the same height. The two are the same volume, and hv-11 built there
    first. So the deck of this module is TWO PLATES, one each side, top face
    DECKT 0.6700, spanning |z| 0.110 to 0.400 by x 1.790 to 2.045. The
@@ -320,7 +320,7 @@
    between 1.825 and 1.975 rises straight through the tray. Two posts carry
    the front of the plates to the cross member at 0.3700.
 
-   Everything that used to be at the centreline moved off it:
+   Everything that used to be at the centerline moved off it:
 
    - the pack loop's liquid return crosses the car UNDER the tray, in a band
      at y 0.5550 to 0.6250 across |z| 0.330 from x 1.750 to 2.060 that is
@@ -368,7 +368,7 @@
      upstand inner face 0.6600 to y 0.5600. Shoulder from (0.5600, 0.6900) to
      (0.6200, 0.6000). Cage sill rail at |z| 0.7016 on the flange, cowl beam
      a 26 mm tube at (0.99, 0.870, +-0.420) spanning y 0.844..0.896 over
-     x 0.964..1.016. Intake bank y 0.1924..0.3950. Bonnet at (1.90, z 0.25)
+     x 0.964..1.016. Intake bank y 0.1924..0.3950. Hood at (1.90, z 0.25)
      y 1.003 and at (2.05, z 0.35) y 0.895.
    - battery-11 (built). The two joints this module lands on did NOT move:
      the vapor stub face measures x 1.2970 at (y 0.268, z -0.10) and the
@@ -390,7 +390,7 @@
      inboard face is |z| 0.2695 on the driver side, measured at x 0.847 to
      1.015.
    - hv-11 (built, and it is the partner this module is shaped by). Its
-     buffer tray and case own the nose centreline, section 5a. Its two sill
+     buffer tray and case own the nose centerline, section 5a. Its two sill
      spines stand on edge at y 0.4350 to 0.4750 in the pocket at |z| 0.6187
      to 0.6600, with hv-runs to 0.4800 and bywire-feeds to 0.4820 over the
      whole cabin length, which is the floor of the extract route. Its
@@ -411,7 +411,7 @@
      that finding is carried, unfixed, as drivetrain's stub face to move.
    - autonomy-10 (built and carried). Its compute cold plate is at
      x -0.795..-0.322, y 0.3895..0.4661, |z| 0.200, which is on the
-     centreline inside the rear occupant on a tandem car. thermal-9 lands
+     centerline inside the rear occupant on a tandem car. thermal-9 lands
      three spigots in it and is 2.29 mm inside it; this module does not go
      there at all. See section 7.
    - interior-11 (built, and IT LANDED AND THEN MOVED TWICE WHILE THIS MODULE
@@ -446,7 +446,7 @@
      ports. RE-MEASURED ON THE SHIPPED autonomy-11 rather than on the build
      that was on disk when this section was first written, and every box
      below moved: the hose pair occupies y 0.5438 to 0.5849 over z -0.6487
-     to -0.5688 across x -0.99 to -0.85, and the saddle clamp that realises
+     to -0.5688 across x -0.99 to -0.85, and the saddle clamp that realizes
      the |z| 0.6560 plane is at x -1.1800 to -1.1400, y 0.4940 to 0.5570,
      z -0.6560 to -0.6240, which is 390 mm further AFT than this entry used
      to place it. Its most outboard vertex anywhere is z -0.6560 at
@@ -459,7 +459,7 @@
      AND THE COMPUTE HANDOVER IS MET. autonomy-11's interface block declares
      `compute-coolant-inboard` on part `compute` at z = -0.6560, kind face,
      mirrored false, extent min, which is this module's declaration to the
-     digit. Both halves realise at 0.000 mm and both pass extent min, so
+     digit. Both halves realize at 0.000 mm and both pass extent min, so
      checkInterfaces pairs them and the key reports MET rather than warning
      as one-sided. An earlier draft of this file called it UNMET in four
      places and is corrected in all four. One thing the integrator should
@@ -472,9 +472,9 @@
 
    thermal-9 lands three spigots in autonomy-4's compute cold plate at
    x -0.795, two in hv-4's converter at (-1.43, 0.40, 0.247), and a dash
-   nozzle inside interior-6's moulding. None of those partners is in the
+   nozzle inside interior-6's molding. None of those partners is in the
    Gen 11 preset, and autonomy-4's plate at (x -0.795..-0.322, y 0.395..0.463,
-   on the centreline) is inside the rear occupant's seat on a tandem car.
+   on the centerline) is inside the rear occupant's seat on a tandem car.
    Drawing a manifold at a dead partner's coordinate is how five autonomy-4
    cameras came to float, and design/gen11.md says so about that module by
    name.
@@ -496,12 +496,12 @@
    screen; 1 kg off the recovery core, whose membrane goes 1.86 to 1.67 m2
    with the flow and whose mirrored extract pair became one duct; 2 kg off
    local-circuits, which lost a mirrored aft run, two of its four manifolds
-   and 0.55 litres. The heat pump, the pack loop and the glycol loop are
+   and 0.55 liters. The heat pump, the pack loop and the glycol loop are
    unchanged in mass because their machines are unchanged.
 
    AND THE PACK LOOP'S 19 kg IS STILL UNRESOLVED, for the third generation.
    battery-11 carries battery-6's pool forward without touching it, so about
-   12 litres and 19 kg of fluoroketone still stand on THIS ledger against a
+   12 liters and 19 kg of fluoroketone still stand on THIS ledger against a
    10 kg line. Two modules have now stated it and neither may resolve it
    alone. Restating an open item is not resolving it and this file will not
    pretend otherwise.
@@ -520,7 +520,7 @@
    lib.tube lays SIX segments between every input point at eight radial
    divisions, which is 96 triangles per waypoint. thermal-9's own closing
    paragraph names four segments as the reclamation available to a later
-   pass "if a later pass needs the room", at a cost of up to a millimetre on
+   pass "if a later pass needs the room", at a cost of up to a millimeter on
    the tightest duct clearance and a full re-measure. This is that pass and
    the reclamation is taken: `hose` and `tubeOf` below build at four segments
    per span.
@@ -555,10 +555,10 @@ import { M, lib, P } from '../common.js';
    which partner and which face. ── */
 const CX = 2.1680;        /* coil core plane: core spans 2.1330..2.2030 */
 const COILZ = 0.2700;     /* coil core half-span = body-11 intake slat edge */
-const GY = 0.3050;        /* glycol row centre: y 0.2100..0.4000 */
-const RY = 0.4510;        /* refrigerant row centre: y 0.4300..0.4720 */
+const GY = 0.3050;        /* glycol row center: y 0.2100..0.4000 */
+const RY = 0.4510;        /* refrigerant row center: y 0.4300..0.4720 */
 const FX = 2.1040;        /* fan plane */
-const FY = 0.3050;        /* fan axis height, on the glycol row centre */
+const FY = 0.3050;        /* fan axis height, on the glycol row center */
 const FZ = 0.1500;        /* fan axis |z|; shroud r 0.100 leaves |z|<0.050 clear */
 const RIBY = 0.6225;      /* body-11 front casting RIB BANK crest, measured */
 const TRAYY = 0.6460;     /* hv-11 buffer TRAY rib top, measured. See section 5a */
@@ -571,12 +571,12 @@ const BUFZ = 0.1010;      /* hv-11 buffer case half-width AT ITS WIDEST, swept
                              overstated both published deck clearances. The
                              deck plates start at |z| 0.110. Documentation
                              only: no geometry on this module reads BUFZ. */
-const SPARZ = 0.3440;     /* pad centre in the clear spar top band 0.3350..0.3550 */
+const SPARZ = 0.3440;     /* pad center in the clear spar top band 0.3350..0.3550 */
 const XMEMY = 0.3700;     /* body-11 casting cross member top, |z|<0.28 */
 const DECKY = 0.6580;     /* deck plate underside, 12.0 mm over TRAYY */
 const DECKT = 0.6700;     /* deck plate top face: THE FRUNK DATUM */
-const DECKZ = 0.2550;     /* deck plate centre |z|: each plate spans 0.110..0.400 */
-const DECKX = 1.9175;     /* deck plate centre x: each plate spans 1.790..2.045 */
+const DECKZ = 0.2550;     /* deck plate center |z|: each plate spans 0.110..0.400 */
+const DECKX = 1.9175;     /* deck plate center x: each plate spans 1.790..2.045 */
 const SILLZI = 0.6600;    /* battery-11 sill head / body-11 pan upstand inner face */
 const POCKZ = 0.6000;     /* extract duct axis |z| in the shoulder pocket.
                              0.6150 until autonomy-11 landed in the same
@@ -620,10 +620,10 @@ export const SYSTEM = {
 
        NEITHER CARRIES AN EXTENT CLAUSE, AND AN EARLIER DRAFT OF THIS FILE
        ARGUED AT LENGTH THAT BOTH SHOULD CARRY extent MIN. It was wrong, and
-       the way it was wrong is worth the four lines. realise() computes `lo`
+       the way it was wrong is worth the four lines. realize() computes `lo`
        as the MINIMUM coordinate over every vertex of the named part, and
        `extent: 'min'` fails when lo < at - tol. It does not assert that the
-       part reaches the plane; realisation already does that. So min on a
+       part reaches the plane; realization already does that. So min on a
        part whose liquid line ends at x 1.2850, 12 mm the far side of a
        1.2970 stub face, fails by construction. Run against the built module
        it does: lo 1.2733 against 1.2950. An extent clause belongs on a half
@@ -649,20 +649,20 @@ export const SYSTEM = {
        there is one extract duct and one bulkhead and both are on the driver
        side, so the key is z = -0.6560 rather than |z| = 0.6560. Declaring it
        mirrored would assert a plate at +0.6560 that this module does not
-       build, and realise() would have measured 226 mm to the nearest vertex
+       build, and realize() would have measured 226 mm to the nearest vertex
        and failed the key. extent MIN is the correct clause on a negative
        plane for the half that arrives and must not pass: it fails if any
        vertex of the part goes below -0.6560, which is outboard. ── */
     'compute-coolant-inboard': {
       kind: 'face', axis: 'z', at: -0.6560, tol: 0.003,
       part: 'glycol-loop', mirrored: false, extent: 'min',
-      note: 'the plane autonomy-11 presents its cold plate ports on, 4.0 mm inboard of body-11\'s pan upstand inner face at 0.6600 and of battery-11\'s sill head inner face at the same plane. Driver side only, which is why the key is signed rather than mirrored: an earlier version of this block wrote 0.6560 with mirrored false on a part whose z runs -0.6586 to 0.4297 and failed at 226.3 mm, and -0.6560 with mirrored false and extent min realises at 0.000 mm with lo exactly -0.6560. THE KEY IS MET. autonomy-11 declares it on part `compute` at z = -0.6560, kind face, tol 0.003, mirrored false, extent min, which is this declaration to the digit, and its saddle clamp at x -1.1800 to -1.1400 puts its most outboard vertex at exactly -0.6560. Measured on both built modules, both halves realise at 0.000 mm and both pass extent min, so the key pairs and reports met rather than warning as one-sided. An earlier draft of this file described the handover as UNMET in four places and every one of them is corrected.',
+      note: 'the plane autonomy-11 presents its cold plate ports on, 4.0 mm inboard of body-11\'s pan upstand inner face at 0.6600 and of battery-11\'s sill head inner face at the same plane. Driver side only, which is why the key is signed rather than mirrored: an earlier version of this block wrote 0.6560 with mirrored false on a part whose z runs -0.6586 to 0.4297 and failed at 226.3 mm, and -0.6560 with mirrored false and extent min realizes at 0.000 mm with lo exactly -0.6560. THE KEY IS MET. autonomy-11 declares it on part `compute` at z = -0.6560, kind face, tol 0.003, mirrored false, extent min, which is this declaration to the digit, and its saddle clamp at x -1.1800 to -1.1400 puts its most outboard vertex at exactly -0.6560. Measured on both built modules, both halves realize at 0.000 mm and both pass extent min, so the key pairs and reports met rather than warning as one-sided. An earlier draft of this file described the handover as UNMET in four places and every one of them is corrected.',
     },
   },
   parts: {
     'outdoor-coil': {
       name: 'Outdoor coil and fan bank',
-      tagline: 'body-11 asked what slat count the cooling case wants. The honest answer is that the question is the wrong way round: this coil was 0.79 m of core behind a 0.44 m hole, and it is now the width of the hole.',
+      tagline: 'body-11 asked what slat count the cooling case wants. The honest answer is that the question is the wrong way around: this coil was 0.79 m of core behind a 0.44 m hole, and it is now the width of the hole.',
       mass: 8,
       specs: [
         ['Core', '0.540 m at |z| 0.2700, the intake slats\' own outer edge'],
@@ -686,14 +686,14 @@ export const SYSTEM = {
       tagline: 'The machine is thermal-7\'s and is not reopened. What moved is that three of its four feet were standing on a casting body-11 does not build, and the fourth was inside a crash rail.',
       mass: 9,
       specs: [
-        ['Machine', 'thermal-7\'s R290 economised two-stage scroll, unchanged'],
+        ['Machine', 'thermal-7\'s R290 economized two-stage scroll, unchanged'],
         ['Duty', '8.8 W sweep average against thermal-9\'s 13.3; about 7 percent of the run'],
         ['By leg', '15.8 W at 4 °C, 0 W at 14 °C, 13.0 W at 26 °C plus sun'],
         ['Of that saving', '4.0 W is autonomy-10\'s compute drop, unbooked since Gen 10'],
         ['Mounting', 'Passenger deck plate, top face y 0.6700, |z| 0.118 to 0.375'],
         ['Maturity', 'Pilot line; the R290 crash case is still thermal-7\'s open item'],
       ],
-      how: 'Nothing in the machine changes and that is the panel\'s first statement, for the third generation. thermal-7 took the lift from 63 K to 43 K and got COP 2.9 to 4.2; Carnot at 313 over 43 is 7.28 and 58 percent of it is the top of what a real scroll has shown, so the machine has a few percent left in a term that is now nine watts. What changed is the duty, and this time the duty changed for a reason outside this module. Priced by leg on the cabin conservation law with the band bottom at 14 °C and the band top at 30, thermal-9 with autonomy-4\'s 380 W of compute reads 17, 0 and 28 W and averages 13.3. The SAME module with autonomy-10\'s 192 W reads 17.2, 0 and 13.2 and averages 9.3: worse in winter, because 59 W of free cabin heat went away, and much better in summer, because the same 59 W no longer has to be thrown out. This module reads 15.8, 0 and 13.0 and averages 8.8. Four of the four and a half watts is a correction that has been available since Gen 10 and is booked here because nobody else books it, and half a watt is Gen 11\'s.\n\nThe hardware moved because its foundations did. thermal-9 stands the R290 pan on four legs to "body-9\'s front casting top face at y 0.580" at |z| 0.090 and 0.300, and swept against the BUILT body-11 casting there is nothing at y 0.5800 inboard of |z| 0.340: down-rays at (1.885, 0.090), (1.885, 0.300) and (2.045, 0.300) all miss the casting entirely, and the pan and its vent then cross body-11\'s crash rail at 3.78 mm and its casting at 9.82. So the pan is gone and the machine sits on glycol-loop\'s passenger deck plate, which stands on the one flat band of spar top there is, |z| 0.3350 to 0.3550 inboard of the casting\'s own rib bank. It went UP rather than down, by 60 mm, and hv-11 is why: its 48 V buffer tray is a slab at y 0.6250 to 0.6320 running the full |z| 0.4200 across x 1.825 to 1.975, and thermal-9\'s frunk deck height is inside it by 63.50 mm over 548 crossing pairs, the deepest single pair this module\'s predecessor has anywhere on the Gen 11 car. The compressor, its girth seam, its terminal box with a real gland, the receiver with its sight glass and service port, the suction accumulator that stops forty starts a day returning liquid to a scroll, the hydrocarbon sensor at the enclosure low point and the overboard vent all carry unchanged in every dimension, re-seated on the built deck top face at y 0.6700. The whole assembly lives between |z| 0.118 and 0.375. An earlier draft of this panel said that clears hv-11\'s buffer case "at 0.0953 by 22.7 mm", and 0.0953 is the case\'s hold-down strap tabs rather than the case: swept in y bands on the built module the case reaches |z| 0.1010 at its foot flange, so the lateral clearance is 17.0 mm. The number that actually binds is smaller again and is not a z gap at all. Surface to surface, the nearest approach between this part and hv-11/buffer is 15.06 mm, and it runs diagonally from the mounting plate\'s lower outboard corner at (1.9808, 0.6588, 0.2546) down to the crest of the buffer TRAY\'s outboard rib at (1.9732, 0.6460, 0.2568), which is a tray feature rather than a case one. Both numbers are published because they answer different questions, and the honest headline is the 15.06. Its tallest point is the gallery conditioner vent at y 0.892 under a bonnet measured at 0.99 at that station.',
+      how: 'Nothing in the machine changes and that is the panel\'s first statement, for the third generation. thermal-7 took the lift from 63 K to 43 K and got COP 2.9 to 4.2; Carnot at 313 over 43 is 7.28 and 58 percent of it is the top of what a real scroll has shown, so the machine has a few percent left in a term that is now nine watts. What changed is the duty, and this time the duty changed for a reason outside this module. Priced by leg on the cabin conservation law with the band bottom at 14 °C and the band top at 30, thermal-9 with autonomy-4\'s 380 W of compute reads 17, 0 and 28 W and averages 13.3. The SAME module with autonomy-10\'s 192 W reads 17.2, 0 and 13.2 and averages 9.3: worse in winter, because 59 W of free cabin heat went away, and much better in summer, because the same 59 W no longer has to be thrown out. This module reads 15.8, 0 and 13.0 and averages 8.8. Four of the four and a half watts is a correction that has been available since Gen 10 and is booked here because nobody else books it, and half a watt is Gen 11\'s.\n\nThe hardware moved because its foundations did. thermal-9 stands the R290 pan on four legs to "body-9\'s front casting top face at y 0.580" at |z| 0.090 and 0.300, and swept against the BUILT body-11 casting there is nothing at y 0.5800 inboard of |z| 0.340: down-rays at (1.885, 0.090), (1.885, 0.300) and (2.045, 0.300) all miss the casting entirely, and the pan and its vent then cross body-11\'s crash rail at 3.78 mm and its casting at 9.82. So the pan is gone and the machine sits on glycol-loop\'s passenger deck plate, which stands on the one flat band of spar top there is, |z| 0.3350 to 0.3550 inboard of the casting\'s own rib bank. It went UP rather than down, by 60 mm, and hv-11 is why: its 48 V buffer tray is a slab at y 0.6250 to 0.6320 running the full |z| 0.4200 across x 1.825 to 1.975, and thermal-9\'s frunk deck height is inside it by 63.50 mm over 548 crossing pairs, the deepest single pair this module\'s predecessor has anywhere on the Gen 11 car. The compressor, its girth seam, its terminal box with a real gland, the receiver with its sight glass and service port, the suction accumulator that stops forty starts a day returning liquid to a scroll, the hydrocarbon sensor at the enclosure low point and the overboard vent all carry unchanged in every dimension, re-seated on the built deck top face at y 0.6700. The whole assembly lives between |z| 0.118 and 0.375. An earlier draft of this panel said that clears hv-11\'s buffer case "at 0.0953 by 22.7 mm", and 0.0953 is the case\'s hold-down strap tabs rather than the case: swept in y bands on the built module the case reaches |z| 0.1010 at its foot flange, so the lateral clearance is 17.0 mm. The number that actually binds is smaller again and is not a z gap at all. Surface to surface, the nearest approach between this part and hv-11/buffer is 15.06 mm, and it runs diagonally from the mounting plate\'s lower outboard corner at (1.9808, 0.6588, 0.2546) down to the crest of the buffer TRAY\'s outboard rib at (1.9732, 0.6460, 0.2568), which is a tray feature rather than a case one. Both numbers are published because they answer different questions, and the honest headline is the 15.06. Its tallest point is the gallery conditioner vent at y 0.892 under a hood measured at 0.99 at that station.',
       why: 'A carried machine on new foundations is the most dangerous kind of carry, because the machine is what a reader checks and the foundations are what fails. design/retro-gen4.md\'s drift law exists for exactly this and thermal-9 obeyed it on body-9; the same obedience against body-11 deletes a drained pan, four legs, four footplates and their bolts, because the surface they were designed to bolt to is not built any more. The saving in triangles is incidental. The point is that a leg standing on air is a defect whether or not anyone can see it, and the only way to know is to ray the partner.',
       fail: [
         'Forty starts on a long run is still a duty this machine was not designed against, and at 8.8 W of sweep average it is closer to fifty. The accumulator handles liquid return and the soft start handles inrush, but scroll tip-seal wear is a start-count problem, and thermal-7\'s twenty-year continuous-duty life remains an extrapolation from a different duty cycle.',
@@ -704,22 +704,22 @@ export const SYSTEM = {
     },
     'air-handler': {
       name: 'Two blowers and a float band',
-      tagline: 'A screen 120 mm narrower needs a slot nozzle 120 mm shorter, and a slot jet is the one demist device whose flow scales with the glass rather than with the cabin.',
+      tagline: 'A screen 120 mm narrower needs a slot nozzle 120 mm shorter, and a slot jet is the one defog device whose flow scales with the glass rather than with the cabin.',
       mass: 4,
       specs: [
         ['Ventilation blower', '72 m³/h continuous at 4 W (thermal-9: 80 at 6)'],
-        ['Transient blower', '23 m³/h demist at 4 W, 220 m³/h recirculated on pulldown'],
+        ['Transient blower', '23 m³/h defog at 4 W, 220 m³/h recirculated on pulldown'],
         ['Slot nozzle', '0.400 m against thermal-9\'s 0.520, on a screen that lost 120 mm'],
         ['Case', '|z| 0.230, clear of wheels-11\'s brake master unit at 0.2695'],
         ['Control', 'Float band 14 to 22 °C winter, up to 30 °C summer; no setpoint'],
         ['Maturity', 'Production practice; the float band is Extrapolated, see fails'],
       ],
-      how: 'The two-machine split is thermal-9\'s and it is the largest line it ever found: one blower sized for the union of ventilation, demist and pulldown, run at the union\'s flow for 27.7 hours, cost 44 W and two machines cost 11. Both machines get smaller here and for two different reasons. The ventilation machine falls with the sweep on the module header: a tandem cabin can be swept rather than mixed, so 72 m³/h at effectiveness 1.0 delivers what 80 at 0.9 delivered, and blower power goes with the cube of flow, so 6 W becomes 4 on a wheel turned slower. The transient machine falls with the GLASS. Demist is a mass-transfer problem at the screen and a slot jet delivers it as momentum in the boundary layer at the base, so the flow it needs scales with the length of the slot and not with the volume behind it. body-11\'s screen is 120 mm narrower than body-9\'s, the nozzle goes 0.520 to 0.400 m, and at a held jet velocity the flow goes 30 to 23 m³/h and the power 5 W to 4.\n\nPulldown is the one duty a smaller cabin genuinely shortens and it is reported rather than booked. The cabin volume over the pack lid falls with the section, so the same 220 m³/h of recirculated air turns the cabin over faster and the pulldown transient is shorter. It is not a saving, because the blower draws its pulldown power while it runs and the sweep average of a ten minute transient inside 27.7 hours is already below a watt. What it is, is the answer to a question a reader will ask, and the answer is that the number was already too small to matter.\n\nThe case is 0.460 m wide at |z| 0.230 rather than thermal-9\'s 0.560 spanning -0.250 to 0.310, and the reason is measured rather than proportional: wheels-11\'s brake master unit fills x 0.847 to 1.015 at y 0.5600 to 0.6835 over |z| 0.2695 to 0.4050 on the driver side, and thermal-9 had to move its transient inlet throat 12 mm up and 20 mm inboard to get past it. At |z| 0.230 the case clears it by 34.3 mm and the throat is drawn where the geometry wants it. The clamshell convention is carried whole, because it is right: what is drawn is the rear half of the moulding with its joint flange, its clip lugs and its stiffening ribs, because a solid brick returns zero percent exposure for both blowers, both coils, the blend flap and the drain. The blend flap, the 4 °C dehumidify coil, the 35 °C heating coil and the float band itself are thermal-7\'s and carry unchanged.',
-      why: 'This part is where the tandem argument has to be kept honest, because "half the occupants" is not a flow rate. Ventilation is per person and there were always two people on the reference sweep, so nothing on this panel comes from deleting a rear bench. What comes from the tandem is the SHAPE: two people on the axis of a tube can be served in series by one path, which is worth 10 percent of the flow and 27 percent of the blower power, and one screen 120 mm narrower is worth 23 percent of a demist jet. Both are geometry, both are measurable off the partner, and neither is available to a car with four seats in a box.',
+      how: 'The two-machine split is thermal-9\'s and it is the largest line it ever found: one blower sized for the union of ventilation, defog and pulldown, run at the union\'s flow for 27.7 hours, cost 44 W and two machines cost 11. Both machines get smaller here and for two different reasons. The ventilation machine falls with the sweep on the module header: a tandem cabin can be swept rather than mixed, so 72 m³/h at effectiveness 1.0 delivers what 80 at 0.9 delivered, and blower power goes with the cube of flow, so 6 W becomes 4 on a wheel turned slower. The transient machine falls with the GLASS. Defog is a mass-transfer problem at the screen and a slot jet delivers it as momentum in the boundary layer at the base, so the flow it needs scales with the length of the slot and not with the volume behind it. body-11\'s screen is 120 mm narrower than body-9\'s, the nozzle goes 0.520 to 0.400 m, and at a held jet velocity the flow goes 30 to 23 m³/h and the power 5 W to 4.\n\nPulldown is the one duty a smaller cabin genuinely shortens and it is reported rather than booked. The cabin volume over the pack lid falls with the section, so the same 220 m³/h of recirculated air turns the cabin over faster and the pulldown transient is shorter. It is not a saving, because the blower draws its pulldown power while it runs and the sweep average of a ten minute transient inside 27.7 hours is already below a watt. What it is, is the answer to a question a reader will ask, and the answer is that the number was already too small to matter.\n\nThe case is 0.460 m wide at |z| 0.230 rather than thermal-9\'s 0.560 spanning -0.250 to 0.310, and the reason is measured rather than proportional: wheels-11\'s brake master unit fills x 0.847 to 1.015 at y 0.5600 to 0.6835 over |z| 0.2695 to 0.4050 on the driver side, and thermal-9 had to move its transient inlet throat 12 mm up and 20 mm inboard to get past it. At |z| 0.230 the case clears it by 34.3 mm and the throat is drawn where the geometry wants it. The clamshell convention is carried whole, because it is right: what is drawn is the rear half of the molding with its joint flange, its clip lugs and its stiffening ribs, because a solid brick returns zero percent exposure for both blowers, both coils, the blend flap and the drain. The blend flap, the 4 °C dehumidify coil, the 35 °C heating coil and the float band itself are thermal-7\'s and carry unchanged.',
+      why: 'This part is where the tandem argument has to be kept honest, because "half the occupants" is not a flow rate. Ventilation is per person and there were always two people on the reference sweep, so nothing on this panel comes from deleting a rear bench. What comes from the tandem is the SHAPE: two people on the axis of a tube can be served in series by one path, which is worth 10 percent of the flow and 27 percent of the blower power, and one screen 120 mm narrower is worth 23 percent of a defog jet. Both are geometry, both are measurable off the partner, and neither is available to a car with four seats in a box.',
       fail: [
         'The float band is still the module\'s largest and least evidenced claim, and it is now load bearing across a wider range, because the cabin float at 4 °C is 11.6 °C rather than the 13.5 thermal-9 published. Holding the band bottom at 14 costs 66 W of delivered heat instead of 13. The Maturity row says Extrapolated and the fallback is a conventional setpoint that gives back 25 of the module\'s watts.',
-        'Splitting the blower splits the demist authority and a narrower screen makes the split sharper, not softer. The screen is served by a jet sized against it; the side glass and the backlight are served by nothing, and body-11 has no rear window at all. On a cold wet start the quarter glass clears minutes after the screen, and the car is leaning on camera-fed mirrors for the sector it cannot see through.',
-        'One damper still owns both demist and pulldown, and the case that got worse is recirculation. A tube ventilated in series has the front occupant upstream of the rear one, so a damper stuck in recirculation now recirculates air that has already crossed two people, and the humidity it returns to the screen is higher than it was in a mixed box. Position is sensed rather than inferred, which is thermal-7\'s answer and still the right one.',
+        'Splitting the blower splits the defog authority and a narrower screen makes the split sharper, not softer. The screen is served by a jet sized against it; the side glass and the backlight are served by nothing, and body-11 has no rear window at all. On a cold wet start the quarter glass clears minutes after the screen, and the car is leaning on camera-fed mirrors for the sector it cannot see through.',
+        'One damper still owns both defog and pulldown, and the case that got worse is recirculation. A tube ventilated in series has the front occupant upstream of the rear one, so a damper stuck in recirculation now recirculates air that has already crossed two people, and the humidity it returns to the screen is higher than it was in a mixed box. Position is sensed rather than inferred, which is thermal-7\'s answer and still the right one.',
       ],
       explode: [-0.32, 0.45, 0],
     },
@@ -737,10 +737,10 @@ export const SYSTEM = {
         ['Second tightest', '2.00 mm, plenum bolt ear to body-11\'s pan upstand at z -0.6600'],
         ['Maturity', 'Pilot line in a vehicle, production practice in buildings'],
       ],
-      how: 'The reroute came first and the physics came out of it, which is the honest order to tell it in. thermal-9 runs a mirrored pair of 60 mm extract ducts aft at y 0.478 and |z| 0.672, the sill shoulder, and on Gen 11 that band is solid metal: battery-11\'s merged sill head fills |z| 0.6600 to 0.7800 from y 0.1035 to 0.4200, body-11\'s pan flange fills the same z from 0.4200 to 0.4500 with an upstand carrying on to 0.5600, and the cage lays a 25 mm sill rail on the flange at |z| 0.7016. Swept with the shipped predicate that route is 16.70 mm inside the pan over 1,112 crossing pairs, 7.95 inside the shoulder and 5.89 inside the cage. There is no rocker route left on this car at that height.\n\nWhat body-11 built instead is a pocket, and this module is the first to use it. Above the pan upstand at y 0.5600 the shoulder fairing runs in from |z| 0.6900 to 0.6000 over 60 mm of height, and inboard of the upstand\'s own inner face at 0.6600 the corner is open from the sill top upward. Rayed at 10 mm steps at x 0.000, the free corner is |z| < 0.6600 for y 0.4200 to 0.5600 and closes to 0.6300 by y 0.6000. AND THE POCKET IS BOUNDED IN Y RATHER THAN IN Z, which is the correction that cost this part the most. Swept along the whole cabin at |z| 0.540 to 0.660, its floor is hv-11: spine rails on edge at y 0.4350 to 0.4750, hv-runs to 0.4800 and bywire-feeds to 0.4820, every one of them running the full length of the sill. Its ceiling is body-11\'s shoulder at 0.5767. That is 94.7 mm and it is empty over the whole span but for body-11\'s two cage legs at x -0.9995 and +0.9841. A 60 mm duct on (y 0.5250, |z| 0.6000) spans y 0.4950 to 0.5550 and z 0.5700 to 0.6300: 13.0 mm over hv-11, 21.7 under the shoulder, 30.0 inboard of the upstand, and 27 mm clear of wheels-11\'s rerouted aft harness at |z| 0.5783. An earlier draft added "11.9 clear of autonomy-11\'s coolant saddle clamp at 0.6419" and that clause is deleted rather than repaired: re-measured on the shipped autonomy-11 the saddle is at x -1.1800 to -1.1400 over z -0.6560 to -0.6240, which is 160 mm aft of the aft end of this part and does not share x with it at all. The clearance to autonomy-11 that IS real is 1.85 mm and it is at the other end of this part, published below. A duct on the 0.5050 an earlier draft of this file published reads 200 crossings 25.6 mm inside hv-11\'s spine. It runs on the DRIVER side and that is measured too: suspension-9\'s front air-supply line occupies |z| 0.416 to 0.615 over y 0.297 to 0.508 for the whole length of the car on the passenger side, with clips at (0.700, z 0.575) and (0.000, z 0.610), so the passenger pocket at the height this duct wants is already full.\n\nAND ONE DUCT IS THE RIGHT NUMBER, WHICH IS WHERE THE PHYSICS ARRIVES. A four-seat box has to be mixed because its occupants are at four corners, and mixing is what caps ventilation effectiveness near 0.9. A tandem cabin is a tube with both occupants on its axis, so it can be SWEPT: supply high at the cowl, past the front breathing zone, past the rear one, out low at the back of one sill at x -0.930. Every cubic metre admitted crosses both zones in series before it leaves, which is effectiveness 1.0, so 72 m³/h delivers what 80 did. The ventilation conductance falls 3.22 to 2.90 W/K, the winter UA 28.30 to 27.68, and the blower falls with the cube of the flow. The core itself shrinks with the flow at held NTU: 1.86 m² in a 190 by 200 by 270 block becomes 1.67 m² in 190 by 200 by 240, holding its own y 0.378 to 0.578 to the millimetre because that is the space the firewall has, 15 mm over the front HV run and 2 mm under the air handler floor. The cross-tunnel collector thermal-9 needed to give a mirrored pair something to land on is deleted with the pair.\n\nAND THE TWO TIGHTEST CLEARANCES ON THE WHOLE MODULE ARE BOTH ON THIS PART, 92 mm APART, AND NEITHER WAS PUBLISHED UNTIL NOW. Every thermal-11 part was measured surface to surface against every part of every module a gen11 preset builds, and the list sorted. The tightest is 1.85 mm, from this part\'s extract GRILLE FRAME at (-0.9308, 0.5590, -0.5932) up to the underside of autonomy-11\'s 12 mm cold compute-coolant hose at (-0.9308, 0.5607, -0.5927): the grille faces inboard so the cabin can breathe into it, its frame tops out at y 0.5590, and that hose crosses directly over it on its way outboard to the bulkhead. The second is 2.00 mm, this part\'s lower plenum BOLT EAR at (-0.9436, 0.4954, -0.6580) square across to body-11\'s pan upstand inner face at (-0.9436, 0.4954, -0.6600), which is the 22 mm ear the geometry comment below already sizes and never turned into a published number. Both are held rather than accidental and both are one partner revision from being gone: 1.85 mm is a clearance to a hose whose own module has moved it twice, and 2.00 mm is what is left after the ears came in from 26 mm on -0.6480, which read as 24 crossings at 0.40 mm. The third and fourth are 2.60 mm from local-circuits to wheels-11\'s brake master unit and 2.75 mm from glycol-loop to hv-11\'s spine, so the four tightest places on this module are all inside 3 mm. A panel that prints its 30.0 mm and hides its 1.85 is not reporting a car, and this generation has already rejected two modules for describing geometry they never drew.',
+      how: 'The reroute came first and the physics came out of it, which is the honest order to tell it in. thermal-9 runs a mirrored pair of 60 mm extract ducts aft at y 0.478 and |z| 0.672, the sill shoulder, and on Gen 11 that band is solid metal: battery-11\'s merged sill head fills |z| 0.6600 to 0.7800 from y 0.1035 to 0.4200, body-11\'s pan flange fills the same z from 0.4200 to 0.4500 with an upstand carrying on to 0.5600, and the cage lays a 25 mm sill rail on the flange at |z| 0.7016. Swept with the shipped predicate that route is 16.70 mm inside the pan over 1,112 crossing pairs, 7.95 inside the shoulder and 5.89 inside the cage. There is no rocker route left on this car at that height.\n\nWhat body-11 built instead is a pocket, and this module is the first to use it. Above the pan upstand at y 0.5600 the shoulder fairing runs in from |z| 0.6900 to 0.6000 over 60 mm of height, and inboard of the upstand\'s own inner face at 0.6600 the corner is open from the sill top upward. Rayed at 10 mm steps at x 0.000, the free corner is |z| < 0.6600 for y 0.4200 to 0.5600 and closes to 0.6300 by y 0.6000. AND THE POCKET IS BOUNDED IN Y RATHER THAN IN Z, which is the correction that cost this part the most. Swept along the whole cabin at |z| 0.540 to 0.660, its floor is hv-11: spine rails on edge at y 0.4350 to 0.4750, hv-runs to 0.4800 and bywire-feeds to 0.4820, every one of them running the full length of the sill. Its ceiling is body-11\'s shoulder at 0.5767. That is 94.7 mm and it is empty over the whole span but for body-11\'s two cage legs at x -0.9995 and +0.9841. A 60 mm duct on (y 0.5250, |z| 0.6000) spans y 0.4950 to 0.5550 and z 0.5700 to 0.6300: 13.0 mm over hv-11, 21.7 under the shoulder, 30.0 inboard of the upstand, and 27 mm clear of wheels-11\'s rerouted aft harness at |z| 0.5783. An earlier draft added "11.9 clear of autonomy-11\'s coolant saddle clamp at 0.6419" and that clause is deleted rather than repaired: re-measured on the shipped autonomy-11 the saddle is at x -1.1800 to -1.1400 over z -0.6560 to -0.6240, which is 160 mm aft of the aft end of this part and does not share x with it at all. The clearance to autonomy-11 that IS real is 1.85 mm and it is at the other end of this part, published below. A duct on the 0.5050 an earlier draft of this file published reads 200 crossings 25.6 mm inside hv-11\'s spine. It runs on the DRIVER side and that is measured too: suspension-9\'s front air-supply line occupies |z| 0.416 to 0.615 over y 0.297 to 0.508 for the whole length of the car on the passenger side, with clips at (0.700, z 0.575) and (0.000, z 0.610), so the passenger pocket at the height this duct wants is already full.\n\nAND ONE DUCT IS THE RIGHT NUMBER, WHICH IS WHERE THE PHYSICS ARRIVES. A four-seat box has to be mixed because its occupants are at four corners, and mixing is what caps ventilation effectiveness near 0.9. A tandem cabin is a tube with both occupants on its axis, so it can be SWEPT: supply high at the cowl, past the front breathing zone, past the rear one, out low at the back of one sill at x -0.930. Every cubic meter admitted crosses both zones in series before it leaves, which is effectiveness 1.0, so 72 m³/h delivers what 80 did. The ventilation conductance falls 3.22 to 2.90 W/K, the winter UA 28.30 to 27.68, and the blower falls with the cube of the flow. The core itself shrinks with the flow at held NTU: 1.86 m² in a 190 by 200 by 270 block becomes 1.67 m² in 190 by 200 by 240, holding its own y 0.378 to 0.578 to the millimeter because that is the space the firewall has, 15 mm over the front HV run and 2 mm under the air handler floor. The cross-tunnel collector thermal-9 needed to give a mirrored pair something to land on is deleted with the pair.\n\nAND THE TWO TIGHTEST CLEARANCES ON THE WHOLE MODULE ARE BOTH ON THIS PART, 92 mm APART, AND NEITHER WAS PUBLISHED UNTIL NOW. Every thermal-11 part was measured surface to surface against every part of every module a gen11 preset builds, and the list sorted. The tightest is 1.85 mm, from this part\'s extract GRILLE FRAME at (-0.9308, 0.5590, -0.5932) up to the underside of autonomy-11\'s 12 mm cold compute-coolant hose at (-0.9308, 0.5607, -0.5927): the grille faces inboard so the cabin can breathe into it, its frame tops out at y 0.5590, and that hose crosses directly over it on its way outboard to the bulkhead. The second is 2.00 mm, this part\'s lower plenum BOLT EAR at (-0.9436, 0.4954, -0.6580) square across to body-11\'s pan upstand inner face at (-0.9436, 0.4954, -0.6600), which is the 22 mm ear the geometry comment below already sizes and never turned into a published number. Both are held rather than accidental and both are one partner revision from being gone: 1.85 mm is a clearance to a hose whose own module has moved it twice, and 2.00 mm is what is left after the ears came in from 26 mm on -0.6480, which read as 24 crossings at 0.40 mm. The third and fourth are 2.60 mm from local-circuits to wheels-11\'s brake master unit and 2.75 mm from glycol-loop to hv-11\'s spine, so the four tightest places on this module are all inside 3 mm. A panel that prints its 30.0 mm and hides its 1.85 is not reporting a car, and this generation has already rejected two modules for describing geometry they never drew.',
       why: 'The most useful thing about this part is that the package forced it and the physics agreed. A reviewer should be suspicious of that, so the order is stated: the duct had to move because it was 16.7 mm inside a partner, the only place left was a pocket body-11 created for other reasons, and the pocket happens to put the extract at the back of a tube whose occupants are in line. The effectiveness claim is capped at unity precisely because the arrangement that earns it is also what costs: put the supply low and let each occupant\'s plume carry to a ceiling extract and a real displacement system claims 1.2 to 1.5, and this car cannot, because its floor is a battery lid nothing may be built on.',
       fail: [
-        'THE REAR OCCUPANT BREATHES THE FRONT OCCUPANT\'S AIR AND THAT IS THE MECHANISM, NOT A SIDE EFFECT. In series at 72 m³/h with two people at about 18 litres per hour of CO2 each, the rear breathing zone sits roughly 350 to 400 ppm above the front one in steady state, so a cabin holding 900 ppm at the driver holds about 1,270 at the passenger. That is inside guidance and it is not equal, and no amount of duct sizing fixes it because it is what SERIES means. A car that wanted them equal would need two supply paths and would give back the flow saving that paid for this panel.',
+        'THE REAR OCCUPANT BREATHES THE FRONT OCCUPANT\'S AIR AND THAT IS THE MECHANISM, NOT A SIDE EFFECT. In series at 72 m³/h with two people at about 18 liters per hour of CO2 each, the rear breathing zone sits roughly 350 to 400 ppm above the front one in steady state, so a cabin holding 900 ppm at the driver holds about 1,270 at the passenger. That is inside guidance and it is not equal, and no amount of duct sizing fixes it because it is what SERIES means. A car that wanted them equal would need two supply paths and would give back the flow saving that paid for this panel.',
         'One duct is one failure. thermal-9 had a mirrored pair, so a blocked or crushed duct halved the extract; this has no second path, and a tube ventilated at one end with the extract blocked ventilates by leakage. The dP tapping pair across the core is carried and now trends the duct as well as the membrane, which is a diagnostic and not a redundancy.',
         'The extract plenum lands on body-11\'s pan upstand at x -0.930 and interior-11 has to find its aperture there, exactly as thermal-9 handed a sill trim aperture to interior-6 and interior-6 wrote back that it has no sill trim. The difference is that this one is a single 70 by 70 mm grille on the driver side rather than a mirrored pair, and it is at the aft end of the sill where nobody\'s foot goes. It is still an aperture in a partner that does not exist yet and it is still reported rather than drawn around.',
       ],
@@ -758,11 +758,11 @@ export const SYSTEM = {
         ['Float at 4 °C', '11.6 °C, not thermal-9\'s 13.5: see the module header'],
         ['Maturity', 'Extrapolated; the comfort equivalence is still unmeasured'],
       ],
-      how: 'The conservation law is thermal-7\'s and thermal-9 took it to its stop, and neither statement survives contact with autonomy-10 unchanged. In steady state Tcabin = Tamb + (gains + local delivery) / UA. thermal-9 puts gains at 270 W, of which 120 is the part of autonomy-4\'s 380 W of compute that reaches the cabin, and gets 13.5 °C at a 4 °C ambient through 28.3 W/K. autonomy-10 books 192 W of compute and design/gen11.md carries that into autonomy-11 whole, so on thermal-7\'s own fraction the cabin gets 60.6 W instead of 120 and the gains are 210.6. Through this generation\'s 27.68 W/K the float is 11.61 °C. Holding the band bottom at 14 therefore costs 66 W of delivered heat where thermal-9\'s panel implies 13. The lever is still spent, for exactly the reason thermal-9 gave, but the floor it is spent against moved down two kelvin and the module that owned the sentence never noticed.\n\nWhat the tandem changes is the plumbing, and it changes it completely rather than by half. thermal-9 runs a mirrored pair of 1.7 m feeds aft to four manifolds, two at |z| 0.400 for the front seats and two at 0.470 for the rear bench. Two occupants in LINE need one feed and one return, and they can be run in the two channels battery-11 leaves between its own seat rails at |z| 0.280 and 0.520: the hot line down the passenger channel at |z| 0.400 and the cold line down the driver channel at -0.400, each at y 0.325, which is 17 mm over the lid skin and below the rail tops at 0.3080 in nothing but hose. Two manifolds sit on those lines at x 0.700 and -0.100, which are the two occupants\' hip stations at the booked 36 degrees, with a cross tube at each station under the seat pan. The two aft mains measure 5.157 m of drawn polyline at a 12 mm bore, which is 0.583 litres, and the loop with its panels, stations and vessel comes to about 0.85 against thermal-9\'s 1.40. The duty-cycled pump goes 5 W to 3.\n\nAND THE REAR OCCUPANT FINALLY GETS A RADIANT PANEL. thermal-9\'s third fail says the rear bench gets mats and no panel "because there is no toe board back there". On a tandem there is no toe board either, but there is something a bench never had: design/gen11.md section 6 measures the rear occupant\'s feet passing BESIDE the front seat in a 158 mm channel per side, and a channel has walls. Two 0.240 by 0.090 m panels stand vertically in those channels at x 0.620, |z| 0.5450, facing the feet from 30 mm away, which is closer than the front footwell pair gets to a shin. They are placed against the BUILT wheels-11 harness rather than against the channel: that harness now runs the rocker corner at x 0.5214 to 0.7868, y 0.3272 to 0.4216, |z| 0.5783 to 0.6477, so the panel\'s outboard face at 0.5510 clears it by 27.3 mm. Their feet stop ON battery-11\'s seat rail at y 0.3080 rather than 4 mm inside it, which is what a 46 mm foot on the panel\'s own centre did. The front footwell pair carries from thermal-7 at 0.115 by 0.130 m, moved forward to x 1.0550 to close a defect thermal-9 flagged and could not fix: at x 1.030 the passenger-side panel stood 12 mm inside this module\'s own recovery-core case, and both are this module\'s parts, so it is ours to resolve and it is resolved by measurement rather than by chamfer.',
+      how: 'The conservation law is thermal-7\'s and thermal-9 took it to its stop, and neither statement survives contact with autonomy-10 unchanged. In steady state Tcabin = Tamb + (gains + local delivery) / UA. thermal-9 puts gains at 270 W, of which 120 is the part of autonomy-4\'s 380 W of compute that reaches the cabin, and gets 13.5 °C at a 4 °C ambient through 28.3 W/K. autonomy-10 books 192 W of compute and design/gen11.md carries that into autonomy-11 whole, so on thermal-7\'s own fraction the cabin gets 60.6 W instead of 120 and the gains are 210.6. Through this generation\'s 27.68 W/K the float is 11.61 °C. Holding the band bottom at 14 therefore costs 66 W of delivered heat where thermal-9\'s panel implies 13. The lever is still spent, for exactly the reason thermal-9 gave, but the floor it is spent against moved down two kelvin and the module that owned the sentence never noticed.\n\nWhat the tandem changes is the plumbing, and it changes it completely rather than by half. thermal-9 runs a mirrored pair of 1.7 m feeds aft to four manifolds, two at |z| 0.400 for the front seats and two at 0.470 for the rear bench. Two occupants in LINE need one feed and one return, and they can be run in the two channels battery-11 leaves between its own seat rails at |z| 0.280 and 0.520: the hot line down the passenger channel at |z| 0.400 and the cold line down the driver channel at -0.400, each at y 0.325, which is 17 mm over the lid skin and below the rail tops at 0.3080 in nothing but hose. Two manifolds sit on those lines at x 0.700 and -0.100, which are the two occupants\' hip stations at the booked 36 degrees, with a cross tube at each station under the seat pan. The two aft mains measure 5.157 m of drawn polyline at a 12 mm bore, which is 0.583 liters, and the loop with its panels, stations and vessel comes to about 0.85 against thermal-9\'s 1.40. The duty-cycled pump goes 5 W to 3.\n\nAND THE REAR OCCUPANT FINALLY GETS A RADIANT PANEL. thermal-9\'s third fail says the rear bench gets mats and no panel "because there is no toe board back there". On a tandem there is no toe board either, but there is something a bench never had: design/gen11.md section 6 measures the rear occupant\'s feet passing BESIDE the front seat in a 158 mm channel per side, and a channel has walls. Two 0.240 by 0.090 m panels stand vertically in those channels at x 0.620, |z| 0.5450, facing the feet from 30 mm away, which is closer than the front footwell pair gets to a shin. They are placed against the BUILT wheels-11 harness rather than against the channel: that harness now runs the rocker corner at x 0.5214 to 0.7868, y 0.3272 to 0.4216, |z| 0.5783 to 0.6477, so the panel\'s outboard face at 0.5510 clears it by 27.3 mm. Their feet stop ON battery-11\'s seat rail at y 0.3080 rather than 4 mm inside it, which is what a 46 mm foot on the panel\'s own center did. The front footwell pair carries from thermal-7 at 0.115 by 0.130 m, moved forward to x 1.0550 to close a defect thermal-9 flagged and could not fix: at x 1.030 the passenger-side panel stood 12 mm inside this module\'s own recovery-core case, and both are this module\'s parts, so it is ours to resolve and it is resolved by measurement rather than by chamfer.',
       why: 'design/gen11.md section 6 says this slot\'s best argument now serves half as many people, and the interesting half of that is not the halving. It is that a bench and a tandem fail differently. A rear bench is served worse than the front seats because it is further from every duct and has no structure in front of it; a tandem rear seat is served worse only if you route to it as though it were a bench. Put both occupants on the axis and the delivery problem becomes one-dimensional: one feed, one return, two stations in series, and the one surface a bench never had, which is a wall beside the feet. The panel that fixes thermal-9\'s oldest open comfort complaint is a consequence of the package rather than of a better idea.',
       fail: [
         'The comfort equivalence thermal-7 flagged is still unmeasured and it is now carrying more weight, because the float band bottom is 2.4 K further below the cabin than the panel that wrote it thought. Thirty-five degree contact surfaces in an 11.6 °C float are a stronger claim than the same surfaces in a 13.5 °C one, and there is nothing behind it here.',
-        'Series delivery has a thermal version of the ventilation fail and this panel owns it too. Both stations tap one 35 °C feed in line, so the rear manifold sees the front one\'s return temperature, and on a cold start the rear mats reach temperature roughly 20 seconds after the front ones on a 0.85 litre loop. That is small and it is real, and the fix, a parallel pair of feeds, gives back the pump saving.',
+        'Series delivery has a thermal version of the ventilation fail and this panel owns it too. Both stations tap one 35 °C feed in line, so the rear manifold sees the front one\'s return temperature, and on a cold start the rear mats reach temperature roughly 20 seconds after the front ones on a 0.85 liter loop. That is small and it is real, and the fix, a parallel pair of feeds, gives back the pump saving.',
         'The rear channel panels are in the volume interior-11 needs for the ingress path, and this module has drawn them before that partner exists. design/gen11.md section 9 item 2 says rear ingress is past the front seat and a 1.20 m cabin has no second door line worth the name, so the surface a rear occupant\'s foot slides along on the way in is exactly where a 35 °C panel now stands. It is 12 mm thick with a formed edge and it is bolted to the lid rather than to trim, so interior-11 can move it, but somebody has to.',
       ],
       explode: [0.05, -0.35, 0.25],
@@ -779,12 +779,12 @@ export const SYSTEM = {
         ['Head', 'Receiver axis y 0.7200 built, over the pool at 0.118: 9.5 kPa'],
         ['Maturity', 'Pilot line; the 19 kg fluid ledger is STILL unresolved'],
       ],
-      how: 'design/gen11.md gives this slot one instruction about the pack and it is worth doing literally: the pack loop lands on battery-11, whose geometry changed at the sill, so measure the new gland faces and declare them. Measured, by an x-ray back along the two stub axes through battery-11\'s built mesh, neither face moved. The vapor stub presents its outer face at x 1.2970 at (y 0.268, z -0.10) and the liquid feed at x 1.2970 at (y 0.118, z 0.10), which is where battery-7 put them, where battery-10 carried them and where battery-11 carries them again, and battery-11\'s own header says so in a sentence that this panel is the check on rather than the echo of. Both are declared in the interface block above with NO extent clause, and the reason is a check this module ran on its own declaration and failed: realise() reads `lo` as the minimum coordinate over every vertex of the part, so extent min fails when the part goes PAST the plane, which is exactly what a hose landing on a spigot does. Measured, lo is 1.2733 against a 1.2950 bound. Realisation already proves the flange arrives; an extent clause belongs on the half that has to stop.\n\nWhat DID change is the volume around them, and it changes what this loop may do rather than where it lands. battery-11\'s merged sill now fills |z| 0.6600 to 0.7800 from y 0.1035 to 0.4200 over x -1.06 to 1.08, so the outboard corridor at rocker height that every pack loop on this ladder has treated as free is structure. This loop never used it, because its riser climbs from the stub at |z| 0.100 to the nose on the driver flank at |z| 0.330 to 0.390 and both ends are forward of x 1.08 where the sill has not started. It is stated because the next module to route along a rocker will assume what thermal-9 assumed, and the recovery core one panel up is what happens then.\n\nEverything else is thermal-7\'s architecture with thermal-9\'s control law and it is carried deliberately, including its unresolved item. The loop is a sealed two-phase circuit; the pump is retained and dark for more than 99 percent of a long drive, running only above about 500 W of pack dissipation, which means charging, preconditioning and a hot park; the design load is battery-11\'s measured 15 kW rather than anything scaled from current squared, because the limit is confined-channel critical heat flux in a 1.1 mm boiling gap and not ohmic heating.\n\nAND THE GRAVITY HEAD WENT DOWN RATHER THAN UP, WHICH IS THE CORRECTION THIS PANEL OWES ITS OWN SPEC ROW. An earlier draft of this paragraph read "11.6 kPa rather than thermal-9\'s 10.4, because the receiver went UP 40 mm with the frunk deck". Both halves are the wrong sign against what this file draws. Measured on the built mesh, the receiver axis is y 0.7200 here against thermal-9\'s 0.7800, over the same battery pool at 0.118, so the liquid column is 0.602 m against 0.662 and the receiver went DOWN 60 mm. On the ladder\'s own 15.7 kPa per metre, which is thermal-7\'s and thermal-9\'s 10.4 kPa over their 0.662 m, that is 9.5 kPa: 9 percent LESS head, not 12 percent more. The reason is the same hv-11 buffer that reshaped the frunk one panel over. thermal-9 stands this vessel on a rail at y 0.740 and that rail is inside the buffer tray, so the hardware came down onto a deck plate whose top face is 0.6700, and the machine that went up 60 mm is the heat pump, which moved the other way off a pan that had no casting under it. A thermosiphon at 9.5 kPa still carries several hundred watts unaided and thermal-6 ran a whole generation on the principle; the 9 percent it lost is on the fail list rather than talked away in this sentence.',
-      why: 'This is the panel a package generation is most likely to get wrong, because the pack is the module that visibly changed and the natural move is to change with it. The measurement says the opposite: battery-11 moved 23 kg of aluminium into a sill and did not move either face this loop touches by a micron, so the correct Gen 11 action on this part is almost nothing, and the work is proving that rather than assuming it. design/gen11.md\'s own instruction to measure the gland faces is what makes the nothing publishable.',
+      how: 'design/gen11.md gives this slot one instruction about the pack and it is worth doing literally: the pack loop lands on battery-11, whose geometry changed at the sill, so measure the new gland faces and declare them. Measured, by an x-ray back along the two stub axes through battery-11\'s built mesh, neither face moved. The vapor stub presents its outer face at x 1.2970 at (y 0.268, z -0.10) and the liquid feed at x 1.2970 at (y 0.118, z 0.10), which is where battery-7 put them, where battery-10 carried them and where battery-11 carries them again, and battery-11\'s own header says so in a sentence that this panel is the check on rather than the echo of. Both are declared in the interface block above with NO extent clause, and the reason is a check this module ran on its own declaration and failed: realize() reads `lo` as the minimum coordinate over every vertex of the part, so extent min fails when the part goes PAST the plane, which is exactly what a hose landing on a spigot does. Measured, lo is 1.2733 against a 1.2950 bound. Realization already proves the flange arrives; an extent clause belongs on the half that has to stop.\n\nWhat DID change is the volume around them, and it changes what this loop may do rather than where it lands. battery-11\'s merged sill now fills |z| 0.6600 to 0.7800 from y 0.1035 to 0.4200 over x -1.06 to 1.08, so the outboard corridor at rocker height that every pack loop on this ladder has treated as free is structure. This loop never used it, because its riser climbs from the stub at |z| 0.100 to the nose on the driver flank at |z| 0.330 to 0.390 and both ends are forward of x 1.08 where the sill has not started. It is stated because the next module to route along a rocker will assume what thermal-9 assumed, and the recovery core one panel up is what happens then.\n\nEverything else is thermal-7\'s architecture with thermal-9\'s control law and it is carried deliberately, including its unresolved item. The loop is a sealed two-phase circuit; the pump is retained and dark for more than 99 percent of a long drive, running only above about 500 W of pack dissipation, which means charging, preconditioning and a hot park; the design load is battery-11\'s measured 15 kW rather than anything scaled from current squared, because the limit is confined-channel critical heat flux in a 1.1 mm boiling gap and not ohmic heating.\n\nAND THE GRAVITY HEAD WENT DOWN RATHER THAN UP, WHICH IS THE CORRECTION THIS PANEL OWES ITS OWN SPEC ROW. An earlier draft of this paragraph read "11.6 kPa rather than thermal-9\'s 10.4, because the receiver went UP 40 mm with the frunk deck". Both halves are the wrong sign against what this file draws. Measured on the built mesh, the receiver axis is y 0.7200 here against thermal-9\'s 0.7800, over the same battery pool at 0.118, so the liquid column is 0.602 m against 0.662 and the receiver went DOWN 60 mm. On the ladder\'s own 15.7 kPa per meter, which is thermal-7\'s and thermal-9\'s 10.4 kPa over their 0.662 m, that is 9.5 kPa: 9 percent LESS head, not 12 percent more. The reason is the same hv-11 buffer that reshaped the frunk one panel over. thermal-9 stands this vessel on a rail at y 0.740 and that rail is inside the buffer tray, so the hardware came down onto a deck plate whose top face is 0.6700, and the machine that went up 60 mm is the heat pump, which moved the other way off a pan that had no casting under it. A thermosiphon at 9.5 kPa still carries several hundred watts unaided and thermal-6 ran a whole generation on the principle; the 9 percent it lost is on the fail list rather than talked away in this sentence.',
+      why: 'This is the panel a package generation is most likely to get wrong, because the pack is the module that visibly changed and the natural move is to change with it. The measurement says the opposite: battery-11 moved 23 kg of aluminum into a sill and did not move either face this loop touches by a micron, so the correct Gen 11 action on this part is almost nothing, and the work is proving that rather than assuming it. design/gen11.md\'s own instruction to measure the gland faces is what makes the nothing publishable.',
       fail: [
         'The pump was also the flow sensor and it still is not. For 99 percent of a drive there is no measurement that a leak has started; the replacement is a saturation-pressure trend against ambient, which finds a slow loss in days rather than minutes. This saving cost a diagnostic and it costs it again here.',
         'A thermosiphon is orientation dependent and 9.5 kPa is 9 percent less head than thermal-9 had, because the receiver came down 60 mm onto a deck plate to get clear of hv-11\'s buffer. The receiver is above the pool on level ground and on any grade this car will meet, and the case nobody tests is a long descent, nose down, with a nearly empty receiver. The answer is to start the pump on inclinometer rather than on temperature, which is a control dependency where thermal-7 had a hydraulic certainty.',
-        'The fluid ledger does not close for a third generation. battery-11 carries battery-6\'s pool untouched, so about 12 litres and 19 kg of fluoroketone still stand on THIS module\'s ledger against a 10 kg line, which makes the pack path 22 kg and this module 53 against a declared 44. The three ways out are unchanged: a shallower pool, the mass moving onto the pack where the pool physically is, or a target that admits what two-phase cooling costs. Restating an open item is not resolving it.',
+        'The fluid ledger does not close for a third generation. battery-11 carries battery-6\'s pool untouched, so about 12 liters and 19 kg of fluoroketone still stand on THIS module\'s ledger against a 10 kg line, which makes the pack path 22 kg and this module 53 against a declared 44. The three ways out are unchanged: a shallower pool, the mass moving onto the pack where the pool physically is, or a target that admits what two-phase cooling costs. Restating an open item is not resolving it.',
       ],
       explode: [0.15, -0.25, -0.30],
     },
@@ -800,11 +800,11 @@ export const SYSTEM = {
         ['Drive handover', 'Flanges held at x 1.75; blocker is still drivetrain-9\'s housing'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'The pump arithmetic is thermal-9\'s and the input halved. This loop takes compute heat and converter loss to the coil, and 380 W at a 12 K rise needs 0.0076 kg/s while 192 W at the same rise needs 0.0038. Hydraulic power in a fixed circuit goes with the cube of flow, so what is left is the wet-rotor motor\'s own fixed loss, which is the floor thermal-9 already reached: 6 W becomes 5 on a smaller can and not 0.75. One watt, and the honest note is that the saving from halving the load is almost entirely unavailable because the machine is already at its floor. The three-way parallel manifold that kept autonomy-4\'s voting lanes at one inlet temperature is not drawn, for the reason in section 7 of the header, and the argument behind it is handed on with the interface: a serial flow path that puts lane three 12 K above lane one is a common-mode ageing driver dressed as a plumbing detail, and whoever draws autonomy-11\'s plate should draw it parallel.\n\nTHE FRUNK DECK IS TWO PLATES AND hv-11 IS WHY. thermal-9 carries thermal-7\'s rail at y 0.740 on four legs to a casting top face at y 0.580, with an outboard leg pair at |z| 0.480 that thermal-9 itself moved out from 0.475 to clear body-9\'s crash rail at 0.465. Both facts are false on body-11. Down-rayed on its built casting there is metal at y 0.5800 only over |z| 0.335 to 0.535 and only from x 1.550 to 2.060, and a four-plate rib bank stands on that face to y 0.6225 over |z| 0.3550 to 0.5150, so the flat is |z| 0.3350 to 0.3550 and nothing else; inboard of 0.335 the frunk is open air until x 2.000, where a cross member tops out at y 0.3700 under |z| 0.28. The crash rails moved OUTBOARD to |z| 0.395 to 0.485 when the beam came in to 1.00 m, so the 0.480 legs are 12.87 mm inside them over 72 crossing pairs.\n\nAnd then hv-11 took the middle. Its 48 V buffer tray is a 7 mm slab at y 0.6250 to 0.6320 running the full |z| 0.4200 over x 1.825 to 1.975, with ribs to 0.6460, and its case stands on that to 0.7962 over |z| 0.1010 at its widest across x 1.798 to 2.016. A single centreline deck at frunk height is inside it: thermal-9\'s reads 49.60 mm over 220 crossing pairs on the glycol part alone. So the four legs, their eight footplates and their bolts are deleted for TWO holed plates, each 255 by 290 mm, top face y 0.6700, spanning |z| 0.110 to 0.400 by x 1.790 to 2.045. THE PLATE INNER EDGE CLEARS THE CASE BY 9.0 mm AND NOT THE 14.7 AN EARLIER DRAFT PRINTED, because that draft read the case half-width off its hold-down strap tabs at |z| 0.0953 rather than off its foot flange at 0.1010, which is where the case is widest. 9.00 mm is the surface-to-surface nearest approach between this whole part and hv-11/buffer, plate inner edge at (1.9290, 0.6620, -0.1100) square across to the flange at (1.9290, 0.6620, -0.1010), so it is the real clearance and not a projection of one. It is the second published clearance on this module that a 5.7 mm reading error made look comfortable, the heat pump\'s being the first. Each stands on two pads on the flat spar band at |z| 0.3440, and the pads are at x 1.805 and 2.014 rather than under the middle of the plate because a pad anywhere between 1.825 and 1.975 rises straight through the buffer tray, which cost 68 crossings at 30.80 mm before it was measured. Two posts at (2.015, |z| 0.135) carry the front of the plates down to the cross member at 0.3700.\n\nThe aft runs are carried because they were measured and they still clear: the driver-flank run to the compute bulkhead and the passenger-flank return to the nose both pass suspension-9\'s built rack, air spring and air-supply line and body-11\'s pan, and the self-check sweeps them rather than asserting them. What is NOT carried is where they end. thermal-9 lands three spigots in autonomy-4\'s cold plate at x -0.795 and two in hv-4\'s converter at (-1.43, 0.40, 0.247); neither partner is in this preset and autonomy-4\'s plate is on the centreline inside the rear occupant. The run therefore ends on a bulkhead plate bolted to body-11\'s pan upstand at (-0.900, 0.5250, -0.6560) and the plane is declared as `compute-coolant-inboard` for autonomy-11 to meet. Both of those coordinates are measured rather than chosen: 0.5250 is inside the 94.7 mm free band the sill pocket actually has between hv-11\'s bywire-feeds at 0.4820 and body-11\'s shoulder at 0.5767, and the built result against the shipped autonomy-11 is 8.79 mm between the two parts at their nearest, ear to hose, and -0.900 is forward of body-11\'s cage rear leg, which passes through the same pocket at x -0.9995 to -0.9947. The drive handover flanges stay at (1.75, 0.50, -0.10) and (1.75, 0.50, -0.20) for a fourth generation with the same finding attached: suspension-9 cleared that route when it dropped its crossmember, drivetrain-9\'s own front housing is what blocks it at 1.2 mm, and about 30 mm of stub standoff off that housing wall closes it. It is that module\'s face to move.',
+      how: 'The pump arithmetic is thermal-9\'s and the input halved. This loop takes compute heat and converter loss to the coil, and 380 W at a 12 K rise needs 0.0076 kg/s while 192 W at the same rise needs 0.0038. Hydraulic power in a fixed circuit goes with the cube of flow, so what is left is the wet-rotor motor\'s own fixed loss, which is the floor thermal-9 already reached: 6 W becomes 5 on a smaller can and not 0.75. One watt, and the honest note is that the saving from halving the load is almost entirely unavailable because the machine is already at its floor. The three-way parallel manifold that kept autonomy-4\'s voting lanes at one inlet temperature is not drawn, for the reason in section 7 of the header, and the argument behind it is handed on with the interface: a serial flow path that puts lane three 12 K above lane one is a common-mode aging driver dressed as a plumbing detail, and whoever draws autonomy-11\'s plate should draw it parallel.\n\nTHE FRUNK DECK IS TWO PLATES AND hv-11 IS WHY. thermal-9 carries thermal-7\'s rail at y 0.740 on four legs to a casting top face at y 0.580, with an outboard leg pair at |z| 0.480 that thermal-9 itself moved out from 0.475 to clear body-9\'s crash rail at 0.465. Both facts are false on body-11. Down-rayed on its built casting there is metal at y 0.5800 only over |z| 0.335 to 0.535 and only from x 1.550 to 2.060, and a four-plate rib bank stands on that face to y 0.6225 over |z| 0.3550 to 0.5150, so the flat is |z| 0.3350 to 0.3550 and nothing else; inboard of 0.335 the frunk is open air until x 2.000, where a cross member tops out at y 0.3700 under |z| 0.28. The crash rails moved OUTBOARD to |z| 0.395 to 0.485 when the beam came in to 1.00 m, so the 0.480 legs are 12.87 mm inside them over 72 crossing pairs.\n\nAnd then hv-11 took the middle. Its 48 V buffer tray is a 7 mm slab at y 0.6250 to 0.6320 running the full |z| 0.4200 over x 1.825 to 1.975, with ribs to 0.6460, and its case stands on that to 0.7962 over |z| 0.1010 at its widest across x 1.798 to 2.016. A single centerline deck at frunk height is inside it: thermal-9\'s reads 49.60 mm over 220 crossing pairs on the glycol part alone. So the four legs, their eight footplates and their bolts are deleted for TWO holed plates, each 255 by 290 mm, top face y 0.6700, spanning |z| 0.110 to 0.400 by x 1.790 to 2.045. THE PLATE INNER EDGE CLEARS THE CASE BY 9.0 mm AND NOT THE 14.7 AN EARLIER DRAFT PRINTED, because that draft read the case half-width off its hold-down strap tabs at |z| 0.0953 rather than off its foot flange at 0.1010, which is where the case is widest. 9.00 mm is the surface-to-surface nearest approach between this whole part and hv-11/buffer, plate inner edge at (1.9290, 0.6620, -0.1100) square across to the flange at (1.9290, 0.6620, -0.1010), so it is the real clearance and not a projection of one. It is the second published clearance on this module that a 5.7 mm reading error made look comfortable, the heat pump\'s being the first. Each stands on two pads on the flat spar band at |z| 0.3440, and the pads are at x 1.805 and 2.014 rather than under the middle of the plate because a pad anywhere between 1.825 and 1.975 rises straight through the buffer tray, which cost 68 crossings at 30.80 mm before it was measured. Two posts at (2.015, |z| 0.135) carry the front of the plates down to the cross member at 0.3700.\n\nThe aft runs are carried because they were measured and they still clear: the driver-flank run to the compute bulkhead and the passenger-flank return to the nose both pass suspension-9\'s built rack, air spring and air-supply line and body-11\'s pan, and the self-check sweeps them rather than asserting them. What is NOT carried is where they end. thermal-9 lands three spigots in autonomy-4\'s cold plate at x -0.795 and two in hv-4\'s converter at (-1.43, 0.40, 0.247); neither partner is in this preset and autonomy-4\'s plate is on the centerline inside the rear occupant. The run therefore ends on a bulkhead plate bolted to body-11\'s pan upstand at (-0.900, 0.5250, -0.6560) and the plane is declared as `compute-coolant-inboard` for autonomy-11 to meet. Both of those coordinates are measured rather than chosen: 0.5250 is inside the 94.7 mm free band the sill pocket actually has between hv-11\'s bywire-feeds at 0.4820 and body-11\'s shoulder at 0.5767, and the built result against the shipped autonomy-11 is 8.79 mm between the two parts at their nearest, ear to hose, and -0.900 is forward of body-11\'s cage rear leg, which passes through the same pocket at x -0.9995 to -0.9947. The drive handover flanges stay at (1.75, 0.50, -0.10) and (1.75, 0.50, -0.20) for a fourth generation with the same finding attached: suspension-9 cleared that route when it dropped its crossmember, drivetrain-9\'s own front housing is what blocks it at 1.2 mm, and about 30 mm of stub standoff off that housing wall closes it. It is that module\'s face to move.',
       why: 'The auxiliary term on this car is 439 W and thermal owns 45 of it, so the useful output of this panel is not its one watt. It is the two sentences a successor needs: the largest single thermal load in the vehicle is silicon that this slot can cool and cannot switch off, and it halved at Gen 10 without anyone re-deriving what that did to the cabin. The first sentence is thermal-9\'s and it is still true. The second is this generation\'s and it is on the header, because it moved the float temperature two kelvin and nobody noticed for a whole rung.',
       fail: [
         'Consolidating to one loop still puts compute, the converter and the pack condenser on a single path, so one leak takes all three, and the 12 K rise shrinks the margin between a partial blockage and a throttle event. Flow is monitored rather than level and each load has a thermal fallback, and the topology is a knowing concentration that is worse than thermal-6\'s two-loop split.',
-        'The compute handover is DECLARED AND MET, and what is still open is the ownership rather than the plane. Both modules declare z -0.6560 on the same axis with the same sign and extent, and both realise on it at 0.000 mm, so the interface pairs and checks rather than warns. What neither module has resolved is the hardware across the gap, and it is bigger than either side says. autonomy-11\'s own panel says its hoses stop "1.0 mm short" of this plate\'s ports; measured on both built modules the two parts\' nearest approach anywhere is 8.79 mm, plate ear to hose, and the ports themselves are further off than that. This plate presents them at (-0.900, y 0.509 and 0.541, z -0.6250) and the nearest autonomy-11 geometry to the upper one is 13.00 mm away, to the lower one 43.60. DECLARED_JOINTS ships empty and a sleeved joint would read as an undeclared interference under a zero-new-pairs gate, so neither module draws the coupling and roughly 0.3 kg of coupling, clamp and the hose that closes 44 mm of y belongs to whichever module the integrator assigns it to. A met key is not a closed joint.',
+        'The compute handover is DECLARED AND MET, and what is still open is the ownership rather than the plane. Both modules declare z -0.6560 on the same axis with the same sign and extent, and both realize on it at 0.000 mm, so the interface pairs and checks rather than warns. What neither module has resolved is the hardware across the gap, and it is bigger than either side says. autonomy-11\'s own panel says its hoses stop "1.0 mm short" of this plate\'s ports; measured on both built modules the two parts\' nearest approach anywhere is 8.79 mm, plate ear to hose, and the ports themselves are further off than that. This plate presents them at (-0.900, y 0.509 and 0.541, z -0.6250) and the nearest autonomy-11 geometry to the upper one is 13.00 mm away, to the lower one 43.60. DECLARED_JOINTS ships empty and a sleeved joint would read as an undeclared interference under a zero-new-pairs gate, so neither module draws the coupling and roughly 0.3 kg of coupling, clamp and the hose that closes 44 mm of y belongs to whichever module the integrator assigns it to. A met key is not a closed joint.',
         'A 12 K rise means the coil sees a hotter return, which is free at cruise and is not free parked, and the parked case got worse this generation from the other end: the coil lost 14 percent of its glycol face and its fans lost 24 percent of their swept area. On a 40 °C hot park with the compute stack awake in a charging bay this is the thinnest margin in the module and it is the one nobody watches, because the range meter is not running.',
       ],
       explode: [0.05, -0.45, -0.15],
@@ -819,7 +819,7 @@ export const SYSTEM = {
    FRUNK BAY is no longer a volume, it is two decks and a bay under them:
    body-11 builds casting at y 0.5800 only over |z| 0.335 to 0.535 with a rib
    bank on it to 0.6225 from |z| 0.3550 out, and a cross member at y 0.3700
-   under |z| 0.28, and hv-11 owns the centreline from y 0.6250 up. Every
+   under |z| 0.28, and hv-11 owns the centerline from y 0.6250 up. Every
    mount in the nose lands on the flat spar band, the cross member, or a
    plate standing on them.
 
@@ -864,12 +864,12 @@ export const SYSTEM = {
      the HV pigtail to hv-4's spur end        same, and it was a carried
                                               defect with 11.8 cm3 inside
                                               body structure that nobody owned
-     the single centreline frunk deck         hv-11's buffer is built there
+     the single centerline frunk deck         hv-11's buffer is built there
 
    TUBE SEGMENTS. lib.tube lays six segments between every input point at
    eight radial divisions: 96 triangles per waypoint. thermal-9's closing
    paragraph names four segments as the reclamation available to a later pass
-   at a cost of up to a millimetre on the tightest duct clearance. This pass
+   at a cost of up to a millimeter on the tightest duct clearance. This pass
    needs the room and takes it: hose() and tubeOf() below build at four
    segments per span.
 
@@ -980,10 +980,10 @@ export const SYSTEM = {
    them: outdoor-coil onto body-11's casting front face at x 2.0700, and
    glycol-loop's deck pads onto the casting spar top at y 0.5800.
 
-   Declared interfaces: all three realise, nearest vertex 0.020, 0.020 and
+   Declared interfaces: all three realize, nearest vertex 0.020, 0.020 and
    0.000 mm. `compute-coolant-inboard` is MET, not warning: thermal-11/
    glycol-loop and autonomy-11/compute both declare a face on z at -0.6560,
-   mirrored false, extent min, and both realise at 0.000 mm with lo exactly
+   mirrored false, extent min, and both realize at 0.000 mm with lo exactly
    -0.6560, so checkInterfaces pairs them at a 0.000 mm gap. The two pack
    keys remain one-sided until battery-11 declares them and that is still
    the right visible state. Attachment: 7 part instances, 0 floating.
@@ -1058,7 +1058,7 @@ function ferrule(r, mat) {
 }
 
 /* A P clip: the band and bolted foot that holds a hose where it crosses
-   structure. The foot is orthogonalised against the tangent so a caller
+   structure. The foot is orthogonalized against the tangent so a caller
    cannot build a degenerate basis. */
 function pclip(r, tan, foot, mat) {
   const g = new THREE.Group();
@@ -1118,7 +1118,7 @@ function hose(pts, r, mat, o = {}) {
 }
 
 /* lib.plate with lightening holes, in the XZ plane and with lib.plate's own
-   slab convention: material between y + t/2 and y + 3t/2, NOT centred. */
+   slab convention: material between y + t/2 and y + 3t/2, NOT centered. */
 function holedPlate(w, d, t, r, holes, hr, mat) {
   const s = new THREE.Shape();
   const hw = w / 2, hd = d / 2, rr = Math.min(r, hw, hd);
@@ -1163,8 +1163,8 @@ function sightGlass(r) {
   return g;
 }
 
-/* A motorised valve or damper actuator: a can on a mounting flange with a
-   moulded connector standing off at 1.15 r so it clears the can. */
+/* A motorized valve or damper actuator: a can on a mounting flange with a
+   molded connector standing off at 1.15 r so it clears the can. */
 function actuator(r, h, mat) {
   const g = new THREE.Group();
   g.add(at(lib.cyl(r * 1.2, h * 0.14, M.castAlu, 8), 0, h * 0.07, 0));
@@ -1389,7 +1389,7 @@ export function build() {
     rotor.add(nose);
     for (let i = 0; i < 7; i++) {
       const pivot = new THREE.Group();
-      /* five spanwise sections of a six point aerofoil, twisted 0.62 rad at
+      /* five spanwise sections of a six point airfoil, twisted 0.62 rad at
          the root to 0.32 at the tip and swept back, closed as a loop. The
          swept tip radius measures 0.0873 against a shroud throat at 0.0919,
          so the blade has 4.6 mm of tip clearance in the shroud it turns in. */
@@ -1425,7 +1425,7 @@ export function build() {
      is the measurement that forced it. Each plate spans |z| 0.110 to 0.400
      and x 1.790 to 2.045 with its top face at DECKT 0.6700, which is 24.0 mm
      over hv-11's buffer tray at 0.6250 to 0.6320 and 12.0 mm over that
-     tray's own stiffening ribs at 0.6460. The centreline corridor between
+     tray's own stiffening ribs at 0.6460. The centerline corridor between
      the plates is the buffer case's, |z| 0.1010 at its widest, which is the
      foot flange over y 0.660 to 0.680 rather than the 0.0953 strap tabs an
      earlier draft of this file read the case off. So the plate inner edge
@@ -1437,7 +1437,7 @@ export function build() {
      is. body-11's front casting spar tops out at y 0.5800 over |z| 0.3350
      to 0.5350, but its rib bank stands on that face from |z| 0.3550
      outboard, so the flat is 0.3350 to 0.3550 and nothing else. Each pad is
-     18 mm of z centred on SPARZ 0.3440, 1.0 mm clear of the spar's inner
+     18 mm of z centered on SPARZ 0.3440, 1.0 mm clear of the spar's inner
      edge and 1.0 mm clear of the first rib plate at 0.3550, and 78 mm tall
      because that is exactly spar top to plate underside. Two posts carry
      the front of the plates down to the casting cross member at y 0.3700.
@@ -1528,11 +1528,11 @@ export function build() {
 
   /* THE COMPUTE BULKHEAD, and its height is measured rather than chosen.
      The plate's outboard face is |z| 0.6560, 4.0 mm inside body-11's pan
-     upstand inner face at 0.6600. Its CENTRE is y 0.5250 because the sill
+     upstand inner face at 0.6600. Its CENTER is y 0.5250 because the sill
      pocket's free band is y 0.4820 to 0.5767: hv-11's spine, hv-runs and
      bywire-feeds fill everything below 0.4820 out to the upstand, and
      body-11's shoulder fairing closes the top at 0.5767. A 64 mm plate on
-     that centre leaves 15 mm under it and 20 over. autonomy-11's coolant
+     that center leaves 15 mm under it and 20 over. autonomy-11's coolant
      hose pair descends through the same pocket, measured on the shipped
      module at y 0.5438 to 0.5849 over z -0.6487 to -0.5688 across x -0.99 to
      -0.85, and the built clearance between this whole part and that one is
@@ -1599,7 +1599,7 @@ export function build() {
     [-0.120, 0.348, -0.442],
     [0.200, 0.338, -0.470],
     [0.640, 0.334, -0.464],
-    /* THE CENTRELINE IS CROSSED FORWARD OF THE FRONT SEAT AND NOWHERE ELSE.
+    /* THE CENTERLINE IS CROSSED FORWARD OF THE FRONT SEAT AND NOWHERE ELSE.
        interior-11's front seats reach x 0.6350 and its rear cushion x 0.0050,
        both on the rail tops at y 0.3080, so the lid between the two channels
        is free only forward of 0.635. This return therefore stays in the
@@ -1677,7 +1677,7 @@ export function build() {
      buffer TRAY's outboard rib at (1.9732, 0.6460, 0.2568), from the
      mounting plate's lower outboard corner at (1.9808, 0.6588, 0.2546). Its
      tallest point is the gallery conditioner's tell-tale vent at y 0.892,
-     under a bonnet whose measured underside at that station is 0.99. ══ */
+     under a hood whose measured underside at that station is 0.99. ══ */
   const hp = lib.part('heat-pump', [0.20, 0.50, 0.35]);
 
   hp.add(at(cb(0.150, 0.012, 0.100, M.steel, 0.0018), 1.930, 0.676, 0.230));
@@ -1698,7 +1698,7 @@ export function build() {
     hp.add(at(lib.fastener(0.0038, M.steel, 'hex'), fx, 0.685, fz));
   }
   /* brazed suction and discharge stubs, seated on the shell SURFACE computed
-     from the shell radius at their own z rather than at its centreline, and
+     from the shell radius at their own z rather than at its centerline, and
      the oil drain plug on the low side */
   hp.add(at(lib.cyl(0.010, 0.012, M.castAlu, 8), 1.930, 0.786, 0.230));
   const suction = lib.cyl(0.011, 0.020, M.castAlu, 8);
@@ -1738,7 +1738,7 @@ export function build() {
   hp.add(at(aStrap, 2.010, 0.696, 0.320));
   hp.add(at(servicePort(0.0046, M.plasticLt), 2.010, 0.782, 0.320));
 
-  /* economiser flash vessel, water condenser, chilled evaporator and gallery
+  /* economizer flash vessel, water condenser, chilled evaporator and gallery
      conditioner: two end plates and an exposed pack each, because a case box
      with the plates sealed inside it is a decal with a triangle budget. The
      flash vessel moved 15 mm outboard, to |z| 0.145, so its own 54 mm pack
@@ -1949,7 +1949,7 @@ export function build() {
 
   /* THE THREE LOCAL MACHINES ARE UNDER THE DECK, NOT ON IT, and that is the
      one packaging decision in this part. hv-11's buffer case occupies the
-     nose centreline from y 0.6375 to 0.7962 across |z| 0.1010, which is
+     nose centerline from y 0.6375 to 0.7962 across |z| 0.1010, which is
      exactly where thermal-9 stood this pump, and both deck plates start at
      |z| 0.110 to clear it. What is free is the BAY BETWEEN THE CASTING
      SPARS: x 1.720 to 2.025 by y 0.400 to 0.580 across |z| 0.330 has no
@@ -1957,7 +1957,7 @@ export function build() {
      air-supply trunk at (1.860, 0.403, +0.200). So the pump, the mixing
      valve and the expansion vessel hang on a bracket plate spanning the two
      deck posts, 170 mm below the deck they used to stand on, and they are
-     on the +z side of the centreline because the coil's cold header uses
+     on the +z side of the centerline because the coil's cold header uses
      the -z half of the same bay. */
   loc.add(at(cb(0.012, 0.130, 0.140, M.alu, 0.0018), 2.014, 0.470, 0.070));
   for (const by of [-0.050, 0.050]) {
@@ -2057,7 +2057,7 @@ export function build() {
        battery-11's rail tops at y 0.3080 and both reach |z| 0.3810, and
        between them they cover the lid from the rear bulkhead forward to the
        toe board, so aft of the front seat there is no lid left between the
-       two channels at any height. The only centreline crossing on this car
+       two channels at any height. The only centerline crossing on this car
        is at the front station, and the rear station is therefore in series
        on the two channel lines rather than bridged across them, which is the
        series arrangement the fail list already prices in seconds. */
@@ -2114,8 +2114,8 @@ export function build() {
     loc.add(rp);
     /* THE FEET STOP ON THE LID, THEY DO NOT ENTER IT. battery-11's seat
        rail at |z| 0.4975 to 0.5425 tops out at y 0.3080 over x 0.6296 to
-       0.6950, and a 46 mm foot on the panel's own centre put 4 mm of
-       aluminium inside it. Each foot is 19 mm tall from that rail top to
+       0.6950, and a 46 mm foot on the panel's own center put 4 mm of
+       aluminum inside it. Each foot is 19 mm tall from that rail top to
        the panel's lower edge at 0.3270 and nothing more. */
     for (const fx of [-0.090, 0.090]) {
       loc.add(at(cb(0.020, 0.019, 0.030, M.alu, 0.0016), 0.620 + fx, 0.3175, rz * 0.5385));
@@ -2141,7 +2141,7 @@ export function build() {
 
   ah.add(at(cb(0.200, 0.012, 0.460, M.plastic, 0.0022), 0.886, 0.814, 0));
   ah.add(at(cb(0.200, 0.012, 0.460, M.plastic, 0.0022), 0.886, 0.586, 0));
-  /* both end panels carry the moulded blower aperture the scroll passes
+  /* both end panels carry the molded blower aperture the scroll passes
      through, drawn as the four bars that surround it: a solid end panel
      seals a squirrel cage nobody can then see down the inlet eye */
   for (const [pz, ap] of [[-0.224, 0.120], [0.224, 0.126]]) {
@@ -2164,7 +2164,7 @@ export function build() {
   }
   /* stiffening ribs stop at x 0.946: body-11's cowl beam is a 26 mm cage
      tube at (0.99, 0.870, +-0.420) spanning y 0.844 to 0.896 over x 0.964 to
-     1.016, and it, not the bonnet, is the lowest body structure over this
+     1.016, and it, not the hood, is the lowest body structure over this
      case. */
   for (const rz of [-0.190, -0.060, 0.070, 0.200]) {
     ah.add(at(cb(0.150, 0.006, 0.010, M.plastic, 0.0012), 0.876, 0.8230, rz));
@@ -2199,7 +2199,7 @@ export function build() {
     [0.930, 0.630, 0.096],
   ], 0.0028, M.plasticLt));
 
-  /* transient blower: demist at cruise, recirculated pulldown on demand.
+  /* transient blower: defog at cruise, recirculated pulldown on demand.
      23 m3/h at 4 W on a slot 120 mm shorter than thermal-9's. */
   const scrollT = blower(0.052, 0.072, 0.056, 22, M.plasticLt);
   scrollT.position.set(0.884, 0.700, -0.186);
@@ -2289,14 +2289,14 @@ export function build() {
 
   /* ══ swept ventilation and recovery core ════════════════════════════════
      1.67 m2 of counterflow membrane in a 190 x 200 x 240 mm block, holding
-     y 0.378 to 0.578 to the millimetre because that is what the firewall
+     y 0.378 to 0.578 to the millimeter because that is what the firewall
      has. ONE extract duct, on the driver side, in body-11's shoulder pocket
      at (y 0.5250, |z| 0.6000), running aft to a plenum on the pan upstand at
      x -0.930. The mirrored pair and the cross-tunnel collector that existed
      to land it are both deleted. ══ */
   const rec = lib.part('recovery-core', [-0.15, 0.10, 0.45]);
 
-  /* the moulded frame a core ships in: four corner posts and two end plates,
+  /* the molded frame a core ships in: four corner posts and two end plates,
      with the pack exposed on all four faces */
   for (const [px, pz] of [[0.808, 0.190], [0.982, 0.190], [0.808, 0.410], [0.982, 0.410]]) {
     rec.add(at(cb(0.016, 0.200, 0.016, M.plasticLt, 0.0022), px, 0.478, pz));
@@ -2344,7 +2344,7 @@ export function build() {
     [0.896, 0.618, 0.320],
     [0.888, 0.656, 0.290],
   ], 0.018, M.plasticLt));
-  /* the motorised bypass, promoted from fault position to control device: it
+  /* the motorized bypass, promoted from fault position to control device: it
      is what makes the mild and hot legs of the sweep read the way they do.
      The can faces -z, because up from y 0.580 is the air-handler case floor. */
   rec.add(at(cb(0.038, 0.046, 0.038, M.darkSteel, 0.0035), 0.956, 0.556, 0.208));

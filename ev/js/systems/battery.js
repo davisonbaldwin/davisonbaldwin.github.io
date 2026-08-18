@@ -14,7 +14,7 @@ export const SYSTEM = {
   parts: {
     tray: {
       name: 'Structural tray',
-      tagline: 'A stamped and welded aluminium tub that is also the chassis floor.',
+      tagline: 'A stamped and welded aluminum tub that is also the chassis floor.',
       mass: 95,
       specs: [
         ['Material', 'AA6111 stamped + 6063 extrusions'],
@@ -34,16 +34,16 @@ export const SYSTEM = {
     },
     coolplate: {
       name: 'Cooling plates',
-      tagline: 'Serpentine aluminium channels that hold 960 cells within 2 °C of each other.',
+      tagline: 'Serpentine aluminum channels that hold 960 cells within 2 °C of each other.',
       mass: 24,
       specs: [
-        ['Construction', 'Brazed two-sheet aluminium'],
+        ['Construction', 'Brazed two-sheet aluminum'],
         ['Channel pitch', '52 mm serpentine'],
         ['Coolant', '50/50 ethylene glycol'],
         ['Flow rate', '28 L/min at full load'],
         ['Cell-to-cell gradient', '< 2 °C target'],
       ],
-      how: 'Two stamped aluminium sheets are brazed together so the gap between them forms a serpentine channel. The plate snakes between cell rows and contacts each cell along its side wall through a thermally conductive gap filler. Side-wall cooling reaches the cell jellyroll faster than cooling through the base, because the thermal path crosses fewer material boundaries.\n\nCoolant enters at the front of the pack, splits into four parallel plate circuits to keep the pressure drop low, and returns along the centre spine. During DC fast charging the same plates run in reverse duty and carry heat in from the heat pump to warm a cold pack before it will accept high current.',
+      how: 'Two stamped aluminum sheets are brazed together so the gap between them forms a serpentine channel. The plate snakes between cell rows and contacts each cell along its side wall through a thermally conductive gap filler. Side-wall cooling reaches the cell jellyroll faster than cooling through the base, because the thermal path crosses fewer material boundaries.\n\nCoolant enters at the front of the pack, splits into four parallel plate circuits to keep the pressure drop low, and returns along the center spine. During DC fast charging the same plates run in reverse duty and carry heat in from the heat pump to warm a cold pack before it will accept high current.',
       why: 'Temperature spread, not average temperature, is what ages a pack unevenly. A serpentine that visits every cell row keeps the spread under 2 °C, so all 960 cells age at nearly the same rate and the weakest cell stays close to the mean. Pack life follows the weakest cell.',
       fail: [
         'A clogged channel starves one circuit; the BMS sees the local temperature rise and derates charging.',
@@ -83,8 +83,8 @@ export const SYSTEM = {
         ['Tab design', 'Tabless, full-width current path'],
         ['Case', 'Nickel-plated steel, negative'],
       ],
-      how: 'Each cell is a jellyroll: anode, separator, and cathode wound into a spiral. A conventional cylindrical cell collects current through one small tab, so electrons from the far end of the winding travel the whole strip length. The 4680 shears the foil edge into shingled fingers and folds them flat, turning the entire strip edge into the terminal. Current path length drops from metres to millimetres, and internal resistance falls with it.\n\nLower resistance is what makes the large format viable: a 46 mm cylinder holds five times the energy of a 21700, and without the tabless design it could not shed its heat or sustain fast-charge current.',
-      why: 'Cylinders are wound at hundreds of parts per minute, tolerate swelling with even hoop stress, and a steel can is its own crash structure. The 46 mm diameter is a deliberate optimum: wide enough to cut can-mass overhead per watt-hour, narrow enough that the centre of the jellyroll can still reach the cooling on the wall.',
+      how: 'Each cell is a jellyroll: anode, separator, and cathode wound into a spiral. A conventional cylindrical cell collects current through one small tab, so electrons from the far end of the winding travel the whole strip length. The 4680 shears the foil edge into shingled fingers and folds them flat, turning the entire strip edge into the terminal. Current path length drops from meters to millimeters, and internal resistance falls with it.\n\nLower resistance is what makes the large format viable: a 46 mm cylinder holds five times the energy of a 21700, and without the tabless design it could not shed its heat or sustain fast-charge current.',
+      why: 'Cylinders are wound at hundreds of parts per minute, tolerate swelling with even hoop stress, and a steel can is its own crash structure. The 46 mm diameter is a deliberate optimum: wide enough to cut can-mass overhead per watt-hour, narrow enough that the center of the jellyroll can still reach the cooling on the wall.',
       fail: [
         'Lithium plating during cold fast-charge is the main degradation risk; the BMS blocks high current below 10 °C.',
         'A single-digit ppm manufacturing defect rate across 960 cells is why cell-level fusing at the collector exists.',
@@ -111,7 +111,7 @@ export const SYSTEM = {
     },
     busbars: {
       name: 'HV busbars',
-      tagline: 'Laminated aluminium conductors that gather 960 cells into one 400 A output.',
+      tagline: 'Laminated aluminum conductors that gather 960 cells into one 400 A output.',
       mass: 9,
       specs: [
         ['Conductor', 'Laminated Al, 630 mm² effective'],
@@ -119,7 +119,7 @@ export const SYSTEM = {
         ['Continuous rating', '400 A at 45 °C rise'],
         ['Insulation', 'PET film, 2.5 kV tested'],
       ],
-      how: 'Current collectors laser-welded across each cell top gather the parallel groups; laminated busbars along the centre spine carry the summed current to the contactors. Each cell connects to its collector through a narrow neck of foil that acts as a fuse: if one cell shorts internally, its neck melts and the other 959 carry on.\n\nAluminium wins over copper here on mass: it needs 1.6 times the cross-section but weighs half as much, and every joint is welded aluminium-to-aluminium, avoiding the galvanic pair at a Cu-Al interface.',
+      how: 'Current collectors laser-welded across each cell top gather the parallel groups; laminated busbars along the center spine carry the summed current to the contactors. Each cell connects to its collector through a narrow neck of foil that acts as a fuse: if one cell shorts internally, its neck melts and the other 959 carry on.\n\nAluminum wins over copper here on mass: it needs 1.6 times the cross-section but weighs half as much, and every joint is welded aluminum-to-aluminum, avoiding the galvanic pair at a Cu-Al interface.',
       why: 'The busbar layout is what sets the pack voltage architecture: 96 groups in series, 10 cells per group, nominal 355 V. Grouping in tens means one dead cell costs one percent of capacity, not one percent of voltage stability.',
       fail: [
         'A high-resistance weld joint self-heats under load; pack thermal imaging at end-of-line catches these at single-milliohm resolution.',
@@ -261,7 +261,7 @@ export function build() {
   }
   sys.add(cross);
 
-  /* busbar spine down the centre plus collector strips over the open bay */
+  /* busbar spine down the center plus collector strips over the open bay */
   const bus = lib.part('busbars', [0, 0.52, 0]);
   const spine = lib.box(W - 0.3, 0.008, 0.07, M.busbar);
   spine.position.set(0, 0.262, 0);
@@ -314,14 +314,14 @@ export function build() {
 /* lid metadata lives with the rest, added after the main table for clarity */
 SYSTEM.parts.lid = {
   name: 'Pack lid',
-  tagline: 'A sealed composite-aluminium cover that is also the cabin floor carpet base.',
+  tagline: 'A sealed composite-aluminum cover that is also the cabin floor carpet base.',
   mass: 28,
   specs: [
     ['Material', 'AA5754, 1.2 mm, stiffening beads'],
     ['Seal', 'Compression gasket, IP67'],
     ['Burst discs', '4x rear-facing vent ports'],
   ],
-  how: 'The lid closes the pack against water and dust and carries the burst discs that give thermal-runaway gases a controlled exit path pointing away from the cabin. Stiffening beads let 1.2 mm of aluminium span the full pack width without drumming.',
+  how: 'The lid closes the pack against water and dust and carries the burst discs that give thermal-runaway gases a controlled exit path pointing away from the cabin. Stiffening beads let 1.2 mm of aluminum span the full pack width without drumming.',
   why: 'The lid is deliberately not structural: keeping loads in the tray and crossmembers means the lid can be removed in service without unloading the body.',
   fail: [
     'A distorted gasket after service reseal is the most common field leak path; torque-sequence procedure exists for this reason.',
