@@ -335,7 +335,7 @@ export const SYSTEM = {
       explode: [0, -0.35, 0],
     },
     restraints: {
-      name: 'Occupant restraint set, re-derived',
+      name: 'Belts and airbags, re-derived',
       tagline: 'There is no far-side occupant to be thrown into, and the rear occupant faces a seat back rather than a dashboard. Both of interior-6\'s distinctive bags are wrong for this car.',
       mass: 8,
       specs: [

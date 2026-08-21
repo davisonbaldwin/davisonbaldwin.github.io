@@ -229,7 +229,7 @@ function init() {
       for (let y = 64; y < H; y += 64) { g.beginPath(); g.moveTo(S - 130, y); g.lineTo(2 * S + 130, y); g.stroke(); }
       g.strokeStyle = 'rgba(255,180,84,0.04)';
       for (let x = S; x <= 2 * S; x += 128) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); }
-      // the index: a dashed grey line, steady under everything (the baseline
+      // the index: a dashed gray line, steady under everything (the baseline
       // every verdict is checked against)
       g.setLineDash([8, 7]);
       g.strokeStyle = 'rgba(143,163,184,0.42)'; g.lineWidth = 1.6;
@@ -1312,7 +1312,7 @@ function init() {
     // proxy of its own: an invisible sphere a little proud of the 0.24 core,
     // riding mechG so it turns with the machine. Reachable only once the
     // slices have opened, because a closed planet puts a solid slice between
-    // the pointer and the centre and intersectObjects returns the nearest.
+    // the pointer and the center and intersectObjects returns the nearest.
     coreHit = new THREE.Mesh(new THREE.SphereGeometry(0.30, 16, 12),
                              new THREE.MeshBasicMaterial({ visible: false }));
     mechG.add(coreHit);
@@ -1897,11 +1897,11 @@ function init() {
     const sliceMeshes = slices.map((s) => s.mesh);
     // THE MACHINE IS TESTED FIRST, and it has to be. Each slice's `mesh` is
     // a coarse PICK SHELL rather than the cut geometry you can see: measured
-    // along the planet's centre line, slice0's shell alone answers every ray
+    // along the planet's center line, slice0's shell alone answers every ray
     // from x 576 to 829, so the three of them enclose the heart completely
     // and a nearest-hit test can never reach it however far the planet opens.
     // Priority instead of distance, gated on the planet actually being open,
-    // so the centre only becomes a door once the cuts have revealed what is
+    // so the center only becomes a door once the cuts have revealed what is
     // behind them. 0.55 is past the midpoint of the easing, which is where
     // the machine is unmistakably on screen rather than a glint in a seam.
     if (coreHit && hearts.mech && hearts.mech.g.visible && sepCur > 0.55 &&
@@ -1929,7 +1929,7 @@ function init() {
     pointers.set(e.pointerId, 1);
     if (pointers.size > 1) { dragging = false; return; }
     dragging = true; dragId = e.pointerId; moved = 0; lastX = e.clientX; lastY = e.clientY;
-    // a pointer that has already been cancelled or lifted throws here, and
+    // a pointer that has already been canceled or lifted throws here, and
     // an uncaught throw would abandon the rest of this handler mid-drag
     try { el.setPointerCapture(e.pointerId); } catch (err) { /* drag still works */ }
     lastInput = performance.now();

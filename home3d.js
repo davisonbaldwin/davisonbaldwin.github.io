@@ -6,8 +6,8 @@
 // PORTAL dead ahead, whose aperture is a window onto another sky, and a RIFT
 // off each wingtip, which draw nothing at all and only bend the starlight
 // already behind them. Fly through a door, or hold X and cut your way in.
-// You spawn 300 parsecs short of the galactic centre, nose on it, at rest.
-// Bring the cursor to the centre to arm the stick; hold click to thrust.
+// You spawn 300 parsecs short of the galactic center, nose on it, at rest.
+// Bring the cursor to the center to arm the stick; hold click to thrust.
 // The SVG landing below remains the no-WebGL fallback, and the DOM stays
 // accessible.
 import * as THREE from './vendor/three.module.js';
@@ -41,7 +41,13 @@ function init() {
   // a sky they could not steer, reading a caption of controls that did
   // nothing. They get the flat landing instead, which reaches all three
   // case studies in one click and never moves on its own.
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  // ?reduced forces that branch, for the same reason ?touch exists: an audit
+  // pane cannot emulate the media query, and a path nobody can load is a path
+  // nobody checks. It must be tested HERE, above the return: asking for it
+  // further down only builds the world with its motion switched off, which is
+  // the stranded state this return exists to prevent.
+  const FORCE_REDUCED = new URLSearchParams(location.search).has('reduced');
+  if (FORCE_REDUCED || matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.documentElement.classList.remove('pre3d');
     return;
   }
@@ -63,6 +69,10 @@ function init() {
   // media query, and without this the touch branch is unverifiable here
   const TOUCH_UI = matchMedia('(hover: none) and (pointer: coarse)').matches
     || new URLSearchParams(location.search).has('touch');
+  // one frame is many renders here (the scene and every post pass), and
+  // renderer.info resets on each one, so it is reset by hand in frame()
+  // instead and stats() can report a whole frame
+  renderer.info.autoReset = false;
   renderer.setPixelRatio(Math.min(devicePixelRatio, MAX_PIXEL_RATIO));
   renderer.setSize(innerWidth, innerHeight);
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -160,7 +170,7 @@ function init() {
         // returns the place to sample from, and how much brighter it comes
         // back. A lens does not only bend light, it concentrates it: that
         // gain is what turns a smear into an arc you can actually see, and
-        // it spends no colour of its own, only the sky's
+        // it spends no color of its own, only the sky's
         vec3 bend(vec2 uv, vec4 R, vec4 S) {
           if (R.z <= 0.0) return vec3(uv, 1.0);
           vec2 d = vec2((uv.x - R.x) * uAspect, uv.y - R.y);
@@ -237,6 +247,13 @@ function init() {
 
   // ---- the deep continuum (verbatim constants and scene) -------------------
   const GC_PC = new THREE.Vector3(8200, -20, 0);     // Sgr A*, heliocentric pc
+  // TWO DOORS ON ONE AXIS, and the ship spawns exactly between them. The one
+  // that was always here, dead ahead at the galactic center, now opens EV-01.
+  // The universe moved to a second door the same size, the same 300 pc out,
+  // dead astern: to reach it you turn the ship around. GC_PC itself does not
+  // move, because it is also the star field's center of density.
+  const EV_PC = GC_PC.clone();
+  const UNI_PC = new THREE.Vector3(GC_PC.x - 600, GC_PC.y, GC_PC.z);
   const R_SUN_GAL = 8200, R_DISK = 2500, H_DISK = 300;
   const DEEP_PCPERSEC = 10;                          // base thrust, hotter than the app's 4
   const CHUNK_L = 400, CHUNK_RAD = 2, CHUNK_CAP = 6000, CHUNK_BASE = 2400, CHUNK_BUDGET = 48;
@@ -280,32 +297,33 @@ function init() {
       }`,
   });
 
-  // Sgr A*, gone all in: a depth writing black core, a camera facing quad
-  // carrying a gravitationally lensed accretion disk, and the warm glow kept
-  // so the approach still reads amber from 300 pc out
+  // A DOORWAY, built twice. A depth writing black core, a camera facing quad
+  // whose aperture is a window onto another sky, and the warm rim that makes
+  // the approach read amber from 300 pc out. Both doors share this geometry
+  // and this material's code: two draws of one plane and one sphere.
   const BH_SHADOW = 12;    // pc per shader unit: the aperture's on screen radius
   const BH_SPAN = 4.0;     // shader units to the quad edge, mirrors SPAN below
   const BH_OFF = 14;       // the quad slides this far toward the camera, clear
                            // of the core and behind the bolts (they die at 20)
   const _bhToCam = new THREE.Vector3();
-  let bhQuad, bhMat;
-  const deepGC = new THREE.Group();
-  {
+  const PORTAL_QUAD = new THREE.PlaneGeometry(2, 2);
+  const PORTAL_CORE = new THREE.SphereGeometry(9.5, 48, 32);
+  const PORTAL_CORE_MAT = new THREE.MeshBasicMaterial({ color: 0x000000 });
+  function makePortal(abs, sky) {
+    const g = new THREE.Group();
     // the core still writes depth, so stars behind the hole stay eaten no
     // matter how the transparent pass sorts; held just under the painted
     // shadow so its limb never pokes past the shader edge up close
-    const shadow = new THREE.Mesh(new THREE.SphereGeometry(9.5, 48, 32),
-      new THREE.MeshBasicMaterial({ color: 0x000000 }));
-    deepGC.add(shadow);
+    g.add(new THREE.Mesh(PORTAL_CORE, PORTAL_CORE_MAT));
     // the lensed disk impostor: an analytic two image bend, not a raymarch.
     // units inside: the shadow radius is 1 (about 2.6 GM/c2), the photon
     // ring lives at b = 1, the disk runs 2.9 to 9. the bottom half sees the
     // near side ride in front of the shadow; strongly bent rays fold the
-    // far side into the arcs above and below. uT frozen honours reduced.
-    bhMat = new THREE.ShaderMaterial({
+    // far side into the arcs above and below. uT frozen honors reduced.
+    const mat = new THREE.ShaderMaterial({
       transparent: true, depthWrite: false, premultipliedAlpha: true,
       uniforms: { uT: { value: 0 }, uNear: { value: 0 },
-        uHeat: { value: 0 }, uOpen: { value: 0 } },
+        uHeat: { value: 0 }, uOpen: { value: 0 }, uSky: { value: sky } },
       vertexShader: `
         varying vec2 vP;
         void main() {
@@ -319,6 +337,7 @@ function init() {
         uniform float uNear;                                   // 0 far out, 1 at the lip
         uniform float uHeat;                                   // builds under fire, cools when it stops
         uniform float uOpen;                                   // 0 whole, 1 about to give
+        uniform vec3 uSky;                                     // what color the far side is
         const float SPAN  = 4.0;       // quad edge, in aperture radii
         float h21(vec2 q) { return fract(sin(dot(q, vec2(127.1, 311.7))) * 43758.5453); }
         // what waits on the other side. The aperture is not a hole but a
@@ -333,9 +352,9 @@ function init() {
           vec2 q = vec2(cos(th + wind), sin(th + wind)) * rr * k * 0.75;
           vec3 col = vec3(0.004, 0.006, 0.012);                // night, and nothing else
           // four shells of stars, each finer than the last. No nebula, no
-          // cast of colour: through a door you see a sky, and a sky is stars
+          // cast of color: through a door you see a sky, and a sky is stars
           // each shell walks its own cell and the eight around it, so a star
-          // sitting near a boundary spills into the neighbour instead of
+          // sitting near a boundary spills into the neighbor instead of
           // being sliced off at it. Sampling only the home cell drew a
           // visible lattice of half stars across the whole aperture
           for (int i = 0; i < 4; i++) {
@@ -355,7 +374,12 @@ function init() {
               }
             }
           }
-          return col;
+          // the cast of the far side. The doors are identical objects and
+          // this is the only thing that separates them: one opens on the sky
+          // as it always was, the other on a blue one. It multiplies the
+          // stars and the night they sit in, so it is a cast and not a
+          // nebula, which was ruled out for this aperture long ago.
+          return col * uSky;
         }
         void main() {
           vec2 p = vP * SPAN;
@@ -385,7 +409,7 @@ function init() {
           float pr = exp(-pow((b - 1.0) * (12.0 - 3.5 * uOpen - 3.0 * uHeat), 2.0));
           float rimG = pr * (1.5 + 0.45 * uNear + 2.4 * uHeat + 1.3 * uOpen);
           rgb += rimC * rimG;
-          // this material is premultiplied, so colour must not outrun alpha
+          // this material is premultiplied, so color must not outrun alpha
           // or the heat ramp clips to flat white before it ever reads orange
           a = max(a, clamp(rimG, 0.0, 1.0));
           // the heat soaks inward past the lip and hazes outward, no edges
@@ -402,12 +426,19 @@ function init() {
           gl_FragColor = vec4(rgb * fade, a * fade);
         }`,
     });
-    bhQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), bhMat);
-    bhQuad.frustumCulled = false;
-    deepGC.add(bhQuad);
+    const quad = new THREE.Mesh(PORTAL_QUAD, mat);
+    quad.frustumCulled = false;
+    g.add(quad);
+    g.visible = false;
+    deepScene.add(g);
+    return { abs, g, quad, mat, heat: 0, target: null };
   }
-  deepGC.visible = false;
-  deepScene.add(deepGC);
+  // the same doorway twice: same size, same rim, same rules. EV dead ahead,
+  // the universe dead astern, and the far side of the second one is blue.
+  const portals = [
+    makePortal(EV_PC, new THREE.Vector3(1.0, 1.0, 1.0)),
+    makePortal(UNI_PC, new THREE.Vector3(0.42, 0.72, 1.85)),
+  ];
 
   // ---- chunked galactic star field (verbatim) ------------------------------
   const chunkMap = new Map();
@@ -865,6 +896,10 @@ function init() {
     { name: '01 · UNIVERSE', href: 'studies/universe.html', accent: '#7fb4ff', bg: '#05070d' },
     { name: '02 · STOCK EVALUATOR', href: 'studies/stock-evaluator.html', accent: '#ffb454', bg: '#15130d' },
     { name: '03 · MUSIC TECHNOLOGY', href: 'studies/music-technology.html', accent: '#d9a96a', bg: '#141114' },
+    // the fourth, and the only door that opens on a running app rather than a
+    // case study. Its background is the EV app's own, so the fade out of this
+    // page is already the color of the page it lands on
+    { name: '04 · EV·01', href: 'ev/index.html', accent: '#d4a24c', bg: '#0a0d11' },
   ];
 
 
@@ -921,7 +956,7 @@ function init() {
     // the flash
     const flash = new THREE.Sprite(new THREE.SpriteMaterial({ map: impactTex,
       transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 1 }));
-    flash.position.copy(T.g ? T.g.position : deepGC.position);
+    flash.position.copy(T.g.position);
     flash.scale.setScalar(T.r * 1.5);
     deepScene.add(flash);
     // the debris, thrown in the world's own light
@@ -958,19 +993,23 @@ function init() {
     }
     sayBriefly(WORLDS[R.world].name + ' · TEARING ' + Math.round(R.open * 100) + '%');
   }
-  let gcHeat = 0;                                    // how hot the portal's rim is running
   function hitTarget(T, absHitPos) {
     if (T.dead || leaving || committed) return;
-    if (T === gcTarget) gcHeat = Math.min(1, gcHeat + 0.22);
+    T.portal.heat = Math.min(1, T.portal.heat + 0.22);
     T.hp--;
     T.shake = 0.3;
     flashAt(absHitPos, T.r * 0.35);
     if (T.hp <= 0) { explode(T); return; }
     sayBriefly(WORLDS[T.world].name + ' · HULL ' + Math.round((T.hp / T.hpMax) * 100) + '%');
   }
-  // the black hole takes fire too, though it takes more convincing
-  const gcTarget = { world: 0, r: 14, hp: 18, hpMax: 18, dead: false, shake: 0,
-    abs: GC_PC, g: null };
+  // both doors answer the gun, and both take the same convincing. A target
+  // carries the door it belongs to: the group is what the beam ray is tested
+  // against and what the breach throws its flash from, and the portal is where
+  // the rim's heat lives. EV is dead ahead, the universe dead astern.
+  const mkTarget = (P, world) => (P.target = { world, r: 14, hp: 18, hpMax: 18,
+    dead: false, shake: 0, abs: P.abs, g: P.g, portal: P });
+  mkTarget(portals[0], 3);
+  mkTarget(portals[1], 0);
 
   // ---- flight state: seated exactly like flyToDeep at the GC ---------------
   // orientation is a free quaternion, not yaw/pitch: the ship can fly full
@@ -1434,7 +1473,7 @@ function init() {
       if (e.key !== ' ' && e.key !== 'Enter') return;
       e.preventDefault();
       if (thrustId !== null) return;                 // a key never releases a finger's hold
-      thrustOff({ type: 'pointerup' });              // same tap-or-hold judgement
+      thrustOff({ type: 'pointerup' });              // same tap-or-hold judgment
     });
     // the throttle's half of the same latch. A plain reset, never
     // thrustOff: losing focus inside the 300 ms tap window would
@@ -1589,34 +1628,38 @@ function init() {
         if (S) deep.pos.addScaledVector(_right, S * v);
       }
     }
-    deepGC.position.set(GC_PC.x - deep.pos.x, GC_PC.y - deep.pos.y, GC_PC.z - deep.pos.z);
-    deepGC.visible = deepGC.position.length() < 5000;
-    // the portal faces the lens: billboard the impostor, slide it toward the
-    // camera clear of the core, shrink to hold its apparent size, and advance
-    // the clock (frozen under reduced motion). The slide and the scale must
-    // use the SAME offset: clamping one and not the other made the aperture
-    // balloon on the last few parsecs and then vanish through the near plane
-    if (deepGC.visible) {
-      _bhToCam.copy(deepCam.position).sub(deepGC.position);
+    // both doors ride the floating origin and both face the lens: billboard
+    // the impostor, slide it toward the camera clear of its core, shrink it to
+    // hold its apparent size, and advance the clock (frozen under reduced
+    // motion). The slide and the scale must use the SAME offset: clamping one
+    // and not the other made the aperture balloon on the last few parsecs and
+    // then vanish through the near plane
+    for (const P of portals) {
+      P.g.position.set(P.abs.x - deep.pos.x, P.abs.y - deep.pos.y, P.abs.z - deep.pos.z);
+      P.g.visible = P.g.position.length() < 5000;
+      if (!P.g.visible) continue;
+      _bhToCam.copy(deepCam.position).sub(P.g.position);
       const dBH = Math.max(1, _bhToCam.length());
       const off = Math.min(BH_OFF, dBH * 0.5);       // never past the camera
-      bhQuad.position.copy(_bhToCam.normalize()).multiplyScalar(off);
-      bhQuad.scale.setScalar(BH_SHADOW * BH_SPAN * (dBH - off) / dBH);
-      bhQuad.lookAt(deepCam.position);
-      if (!reduced) bhMat.uniforms.uT.value = performance.now() * 0.001;
-      // the far side resolves on the approach: dark and rumoured at 300 pc,
+      P.quad.position.copy(_bhToCam.normalize()).multiplyScalar(off);
+      P.quad.scale.setScalar(BH_SHADOW * BH_SPAN * (dBH - off) / dBH);
+      P.quad.lookAt(deepCam.position);
+      if (!reduced) P.mat.uniforms.uT.value = performance.now() * 0.001;
+      // the far side resolves on the approach: dark and rumored at 300 pc,
       // full daylight of another sky by the time the lip swallows you
-      bhMat.uniforms.uNear.value = 1 - Math.min(1, Math.max(0, (dBH - 18) / 240));
+      P.mat.uniforms.uNear.value = 1 - Math.min(1, Math.max(0, (dBH - 18) / 240));
       // heat pours in per hit and bleeds away steadily; damage never cools
-      gcHeat = Math.max(0, gcHeat - dt * 0.6);
-      bhMat.uniforms.uHeat.value = gcHeat;
-      bhMat.uniforms.uOpen.value = 1 - gcTarget.hp / gcTarget.hpMax;
+      P.heat = Math.max(0, P.heat - dt * 0.6);
+      P.mat.uniforms.uHeat.value = P.heat;
+      P.mat.uniforms.uOpen.value = 1 - P.target.hp / P.target.hpMax;
     }
-    // the portal IS the universe: to arrive in its case study you must truly
-    // fly in, past the rim, not merely sail near it. No aimed cone shortcut
-    // here, so a pilot can park, aim and open fire without being taken
+    // a portal IS its destination: to arrive you must truly fly in, past the
+    // rim, not merely sail near it. No aimed cone shortcut here, so a pilot can
+    // park between the two doors, aim and open fire without being taken
     if (flyMode && !leaving && !committed && !reduced) {
-      if (sweptDist(GC_PC) < 13) enterStudy(0);      // through the rim's glare itself
+      for (const P of portals) {
+        if (sweptDist(P.abs) < 13) { enterStudy(P.target.world); break; }
+      }
     }
     // the rifts: nothing to draw, only a place on screen where the sky is
     // bent. Each is projected to uv, given an einstein radius from how big
@@ -1724,9 +1767,10 @@ function init() {
         return t - Math.sqrt(R * R - d2);
       };
       let hitT = null, hitD = BEAM_MAX, hitIsRift = false;
-      if (!gcTarget.dead) {
-        const t = rayHit(deepGC.position, GC_HIT_R);
-        if (t > 0 && t < hitD) { hitD = t; hitT = gcTarget; }
+      for (const P of portals) {
+        if (P.target.dead) continue;
+        const t = rayHit(P.g.position, GC_HIT_R);
+        if (t > 0 && t < hitD) { hitD = t; hitT = P.target; }
       }
       // the tears answer the gun too, with a target box far wider than the
       // warp looks: you are shooting a seam in space, not a hull
@@ -1774,15 +1818,16 @@ function init() {
   // touch pad's buttons on a phone (absent under reduced motion, where
   // only the orbit and the menu remain)
   el.setAttribute('aria-label',
-    'A starship parked in deep space. A portal hangs ahead of it and a rift off each wing, '
-    + 'one for each of the three case studies. '
+    'A starship parked in deep space. A portal hangs dead ahead of it opening on the EV-01 '
+    + 'vehicle model, a second portal hangs dead astern opening on the universe, and a rift '
+    + 'hangs off each wing: four ways in. '
     + (TOUCH_UI
       ? (reduced
         ? 'Drag to orbit the ship and pinch to zoom. '
         : 'Drag to orbit the ship and pinch to zoom, or use the Fly button to take the stick: '
           + 'hold Thrust to move, tilt a held finger to steer, hold Fire to shoot. ')
       : 'Press F to fly, the arrow keys to steer, W to thrust and X to fire. ')
-    + 'The three worlds are also links at the top of this page.');
+    + 'All four are also links at the top of this page.');
   document.body.insertBefore(el, document.body.firstChild);
   document.body.classList.add('world-on');
   document.documentElement.classList.remove('pre3d');
@@ -1812,6 +1857,7 @@ function init() {
   // ---- loop ----------------------------------------------------------------
   let lastT = performance.now();
   function frame(now) {
+    renderer.info.reset();                           // one frame, many renders
     if (contextLost) return;
     try {
       const dt = Math.min(0.1, (now - lastT) / 1000);
@@ -1832,7 +1878,10 @@ function init() {
   }
   requestAnimationFrame(frame);
   requestAnimationFrame(() => { el.style.opacity = '1'; });
-  window.__approach = { deep, deepCam, chunkMap, orbit, rifts,   // debug handle
+  window.__approach = { deep, deepCam, chunkMap, orbit, rifts, portals,   // debug handle
+    // what the last frame actually cost, which is otherwise closed over
+    stats() { const r = renderer.info.render, m = renderer.info.memory;
+      return { calls: r.calls, triangles: r.triangles, geometries: m.geometries, textures: m.textures }; },
     get armed() { return flyArmed; }, get speed() { return flySpeed; },
     get observing() { return !flyMode; } };
 }

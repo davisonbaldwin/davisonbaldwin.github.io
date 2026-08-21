@@ -270,7 +270,7 @@ export const SYSTEM = {
       explode: [0, -0.35, 0],
     },
     restraints: {
-      name: 'Occupant restraint set',
+      name: 'Belts and airbags',
       tagline: 'A nose with no engine in it has less stroke to give, so the restraints have to start earlier and know who is sitting there.',
       mass: 9,
       specs: [

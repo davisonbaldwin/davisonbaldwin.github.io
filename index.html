@@ -78,7 +78,7 @@
      The dialog CSS that used to sit here (about-open, its backdrop and
      close button) was orphaned when the About nav link was removed: nothing
      on THIS page can set that class, only rooms.html does. Deleted rather
-     than left as a rumour of a feature. */
+     than left as a rumor of a feature. */
   body.world-on .about { display: none; }
 
   @media (max-width: 900px) {
@@ -171,12 +171,15 @@
 
 <!-- With the world on, the SVG that carries the case study links is hidden,
      which took the studies out of the tab order and out of the screen
-     reader's reach entirely. These keep all three one Tab from the top of
-     the page, and they surface visibly the moment they take focus. -->
-<nav class="world-index" aria-label="The three worlds">
+     reader's reach entirely. These keep all four one Tab from the top of
+     the page, and they surface visibly the moment they take focus.
+     04 is the portal dead ahead in the 3D scene, and the one door here that
+     opens on a running app rather than a case study. -->
+<nav class="world-index" aria-label="The three worlds and the machine">
   <a href="studies/universe.html">01 Universe</a>
   <a href="studies/stock-evaluator.html">02 Stock Evaluator</a>
   <a href="studies/music-technology.html">03 Music Technology</a>
+  <a href="ev/index.html">04 EV·01</a>
 </nav>
 
 <main class="landing">
@@ -197,7 +200,7 @@
         <!-- world 03's own palette. This slice used to be filled with the
              A Soul's Journey gradient, a leftover from the nine-room planet
              where slice 3 was that chapter, so Music Technology wore another
-             world's colours in the no-WebGL fallback -->
+             world's colors in the no-WebGL fallback -->
         <linearGradient id="gmus" x1="0" y1="0" x2="0.5" y2="1">
           <stop offset="0%" stop-color="#d9a96a"/><stop offset="55%" stop-color="#4a3a52"/>
           <stop offset="100%" stop-color="#141114"/>
@@ -461,6 +464,6 @@
 <!-- the deep approach: the fly-through homepage world. landing3d.js (the
      spinning planet) now lives on rooms.html; the SVG planet below remains
      the no-WebGL fallback for this page. -->
-<script type="module" src="home3d.js?v=51"></script>
+<script type="module" src="home3d.js?v=94"></script>
 </body>
 </html>

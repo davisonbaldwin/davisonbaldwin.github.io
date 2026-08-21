@@ -257,13 +257,21 @@ export const stopRung = (s) => LADDER.find((g) => g.id === s.gen) || null;
 /* Total dwell for autoplay, in ms. Reading speed rather than a flat interval,
    because the stops are not the same length: the Gen 11 stop is three times
    the Gen 1 stop and a fixed timer would either rush it or leave the short
-   ones sitting there. 240 words a minute is an unhurried screen read, and the
-   constant covers the 1.2 s camera flight that lands before anyone starts.
+   ones sitting there.
 
-   Any interaction stops the timer for good rather than resetting it, which is
-   the right default for a tour a reader can also drive: pressing next means
-   they are driving now. */
+   PACED FOR A SKIM, AND CAPPED. It was 240 words a minute, an unhurried read
+   of every word, which put the whole tour at 5.4 minutes, the mean stop at 25
+   seconds and Gen 11 at 39.5. Watched rather than measured, that is a wait.
+   330 with a 16 second ceiling is 3.3 minutes, mean 15.4, and nothing sits
+   long enough to feel stuck. The ceiling is what does the real work: it only
+   binds on the four longest stops, and those were the ones that dragged.
+
+   This is the right trade because the reader is not trapped by it. Any
+   interaction stops the timer FOR GOOD rather than resetting it, so someone
+   who wants to finish a panel presses next once and is driving from then on.
+   The constant still covers the 1.2 s camera flight that lands before anyone
+   starts reading. */
 export function dwellMs(stop) {
   const words = stop.paras.join(' ').split(/\s+/).length;
-  return Math.round(Math.max(6500, (words / 240) * 60000 + 2200));
+  return Math.round(Math.max(6000, Math.min(16000, (words / 330) * 60000 + 1800)));
 }
