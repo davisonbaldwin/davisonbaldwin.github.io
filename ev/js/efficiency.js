@@ -46,38 +46,22 @@ const BASE = {
 
 /* per-system overrides, keyed by system id.
 
-   BODY ENTRIES CARRY Cd ONLY. Frontal area moved out of this table entirely
-   in the re-zero: see AREA below and design/area-rezero.md. */
-const METRICS = {
-  'body': { cd: 0.21 },
-  'body-aero': { cd: 0.17 },
-  'body-3': { cd: 0.145 },
-  /* body-7 uses the INDEPENDENT AUDIT's figure, not the module's own claim
-     of Cd 0.105. The audit found the plan taper does not begin until x -1.83
-     because the haunch is pinned by the 1.62 m rear track, cramming all
-     400 mm of closure into the last 845 mm at 25 to 33 degrees, past the
-     attached-flow limit. Separation is likely, so Cd 0.118. */
-  'body-7': { cd: 0.118 },
-  /* body-8 audited: Cd 0.108 not the module's 0.105, because the flank runs
-     16.5 to 18.3 degrees in plan and the equivalent cone sits ON 15 rather
-     than the 12 the earlier audit priced, and the truncated base grew. */
-  'body-8': { cd: 0.108 },
-  /* body-9 audited independently. The Cd claim of 0.107 is NOT confirmed:
-     the 1.15 counts the module books for deleting the fairing blister are
-     priced on a 0.083 m2 trailing cross-section that measures 0.0736, so the
-     count is 1.02, and three debits go unbooked. The 0.3941 m2 base did not
-     move, which costs +0.31 counts against a smaller reference area on the
-     audit's own 0.030 base coefficient; wetted area is essentially unchanged
-     while A fell, worth +0.7 to +1.0 counts of friction; and the camera pods
-     now stand 51.8 mm proud of a flat flank where they sat 11.5 mm inside
-     body-8's fairing shadow. Gen 9 buys area, not coefficient. */
-  'body-9': { cd: 0.108 },
-  'body-4': { cd: 0.140 },
-  'body-6': { cd: 0.130 },
-  /* body-5 is the demoted value study and js/registry.js does not register
-     it. It has no row in AREA and was not re-zeroed. Re-registering it means
-     measuring it first with tools/area.sh. */
-  'body-5': { cd: 0.185 },
+   NO BODY ENTRIES. Frontal area moved out of this table in the first half of
+   the re-zero (AREA below, design/area-rezero.md) and the drag coefficient in
+   the second (CD below, design/cd-rezero.md). A body moves the budget by
+   being measured, never by writing here. */
+/* Exported READ ONLY for tools/aero-run.js, which prints the buildup beside
+   what the model carries. Nothing in the app reads it from outside this file,
+   and nothing should: the one consumer of a metric is computeBudget below. */
+export const METRICS = {
+  /* NO BODY ROWS. The drag coefficient left this table in the second half of
+     the re-zero, exactly as frontal area left it in the first: both are
+     properties of the CONFIGURATION, not of one slot, and both are MEASURED
+     off the built geometry rather than booked. See CD below and
+     design/cd-rezero.md. The audit history that used to live here, body-7
+     rejected 0.105 for 0.118, body-8 0.105 for 0.108, body-9's claim of
+     0.107 unconfirmed, is preserved in design/area-rezero.md and stands as
+     the record of the booked era; the booked column itself is retired. */
   /* battLoss: r_cell/V relative to Gen 1, so both the bus-voltage climb and
      the deletion of interconnect resistance show up in the waterfall */
   'battery':   { kwh: 95,  battLoss: 1.060 },  // 355 V, tabbed cells + busbars
@@ -172,27 +156,7 @@ const METRICS = {
      METRICS is keyed by system id and a slot with no row inherits BASE.
      Omitting battery-10's line put Gen 10 at 822 miles. body-11 and
      interior-11 carry no row here for the same reason no interior ever has:
-     they move mass and area, which are measured elsewhere. */
-
-  /* body-11 CARRIES body-9's Cd 0.108 UNCHANGED, and the row exists precisely
-     because it books nothing. Without it body-11 inherits BASE's 0.21, which
-     is Gen 1's blunt shell, and the ladder read 126.1 Wh/mi and 1,507 miles:
-     a generation that narrows the car by 680 mm reported as WORSE than the one
-     it succeeds. That is the same trap battery-10's line documents, one slot
-     over, and it caught the integrator who wrote "a row for every module,
-     including those that book nothing" and then left this one out.
-
-     Why 0.108 and not a better number. design/area-rezero.md froze the drag
-     coefficient project-wide until one integrator re-zeroes every body at
-     once, and there is no tunnel here. Gen 11's gain is AREA, which is
-     MEASURED at 1.6920 m2 against Gen 10's 2.0897 and regenerated from the
-     built geometry by tools/area.sh. A tandem greenhouse with a 1.20 m
-     section and a faired pack shoulder very likely earns a coefficient too,
-     and this generation does not claim it, exactly as design/gen11.md says
-     no Cd may be booked. Carrying the predecessor's number is the
-     conservative direction: if the real coefficient is better, Gen 11 is
-     understated. */
-  'body-11': { cd: 0.108 },
+     they move mass, area and shape, which are measured elsewhere. */
 
   /* battery-11 CARRIES battery-10's pack: same chemistry, same 1.30 m cell
      width, same 210 layers, same 190.0 kWh. It refused the +17 layers its
@@ -236,6 +200,28 @@ const METRICS = {
      function of vehicle width. The sensor count is unchanged, so the
      front-end power is unchanged, so the number is unchanged. */
   'autonomy-11': { auxDelta: -75 },
+  /* autonomy-12 is autonomy-11 with one camera mount moved to body-12's
+     tail (the drivetrain-9 precedent, one module over). Nothing electrical
+     changed, so the row carries the same delta: carrying is not booking,
+     and a fork with no row would inherit BASE and hand Gen 12 an 855 W
+     autonomy bill it never ran. */
+  'autonomy-12': { auxDelta: -75 },
+
+  /* ── GEN 13, the floor ──────────────────────────────────────────────────
+     A row for every new module, including the three that book nothing,
+     because a slot with no row inherits BASE (the battery-10 lesson). */
+  /* wheels-13 is wheels-11 with a static fairing on each front wheel. A
+     pant moves no tread and changes no pressure: Crr carries at 0.0038,
+     unbooked as wheels-10 left it. What it changes is measured elsewhere:
+     the wheel term of the drag buildup and the AREA cell. */
+  'wheels-13': { crr: 0.0038 },
+  /* thermal-13 moves the recovery core out of the occupants and re-routes
+     its ducts; nothing electrical changed and the membrane is the same 1.67
+     m2, so the -306.5 W carries. */
+  'thermal-13': { auxDelta: -306.5 },
+  /* autonomy-13 is autonomy-12 with four mounts re-seated 65 mm lower on
+     body-13. Same lanes, same duty, same 192 W: carrying is not booking. */
+  'autonomy-13': { auxDelta: -75 },
 };
 
 /* additive entries stack on the slot baseline instead of replacing it */
@@ -319,25 +305,34 @@ const ADDITIVE = new Set(['autonomy-4']);
    shadow cannot sit here unnoticed. That guard is the whole point: standing
    rule 2 of design/area-rezero.md used to be a rule people had to remember. */
 export const AREA = {
-  'body':        { 'wheels': 2.4045, 'wheels-2': 2.3743, 'wheels-3': 2.3733, 'wheels-6': 2.3738, 'wheels-7': 2.3820, 'wheels-9': 2.3353, 'wheels-10': 2.3267, 'wheels-11': 2.3267 },
-  'body-aero':   { 'wheels': 2.4183, 'wheels-2': 2.3937, 'wheels-3': 2.3937, 'wheels-6': 2.3932, 'wheels-7': 2.3998, 'wheels-9': 2.3589, 'wheels-10': 2.3515, 'wheels-11': 2.3515 },
-  'body-3':      { 'wheels': 2.4392, 'wheels-2': 2.4137, 'wheels-3': 2.4124, 'wheels-6': 2.4135, 'wheels-7': 2.4218, 'wheels-9': 2.3769, 'wheels-10': 2.3678, 'wheels-11': 2.3677 },
-  'body-4':      { 'wheels': 2.3898, 'wheels-2': 2.3645, 'wheels-3': 2.3638, 'wheels-6': 2.3648, 'wheels-7': 2.3718, 'wheels-9': 2.3267, 'wheels-10': 2.3177, 'wheels-11': 2.3175 },
-  'body-6':      { 'wheels': 2.4439, 'wheels-2': 2.4163, 'wheels-3': 2.4125, 'wheels-6': 2.4155, 'wheels-7': 2.4302, 'wheels-9': 2.3824, 'wheels-10': 2.3734, 'wheels-11': 2.3734 },
-  'body-7':      { 'wheels': 2.2115, 'wheels-2': 2.1864, 'wheels-3': 2.1840, 'wheels-6': 2.1855, 'wheels-7': 2.2106, 'wheels-9': 2.1622, 'wheels-10': 2.1550, 'wheels-11': 2.1550 },
-  'body-8':      { 'wheels': 2.2253, 'wheels-2': 2.1998, 'wheels-3': 2.1976, 'wheels-6': 2.1990, 'wheels-7': 2.2114, 'wheels-9': 2.1741, 'wheels-10': 2.1670, 'wheels-11': 2.1670 },
-  'body-9':      { 'wheels': 2.1587, 'wheels-2': 2.1235, 'wheels-3': 2.1212, 'wheels-6': 2.1227, 'wheels-7': 2.1351, 'wheels-9': 2.0978, 'wheels-10': 2.0897, 'wheels-11': 2.0906 },
+  'body':        { 'wheels': 2.4045, 'wheels-2': 2.3743, 'wheels-3': 2.3733, 'wheels-6': 2.3738, 'wheels-7': 2.3820, 'wheels-9': 2.3353, 'wheels-10': 2.3267, 'wheels-11': 2.3267, 'wheels-13': 2.3351 },
+  'body-aero':   { 'wheels': 2.4183, 'wheels-2': 2.3937, 'wheels-3': 2.3937, 'wheels-6': 2.3932, 'wheels-7': 2.3998, 'wheels-9': 2.3589, 'wheels-10': 2.3515, 'wheels-11': 2.3515, 'wheels-13': 2.3578 },
+  'body-3':      { 'wheels': 2.4392, 'wheels-2': 2.4137, 'wheels-3': 2.4124, 'wheels-6': 2.4135, 'wheels-7': 2.4218, 'wheels-9': 2.3769, 'wheels-10': 2.3678, 'wheels-11': 2.3677, 'wheels-13': 2.3769 },
+  'body-4':      { 'wheels': 2.3898, 'wheels-2': 2.3645, 'wheels-3': 2.3638, 'wheels-6': 2.3648, 'wheels-7': 2.3718, 'wheels-9': 2.3267, 'wheels-10': 2.3177, 'wheels-11': 2.3175, 'wheels-13': 2.3267 },
+  'body-6':      { 'wheels': 2.4439, 'wheels-2': 2.4163, 'wheels-3': 2.4125, 'wheels-6': 2.4155, 'wheels-7': 2.4302, 'wheels-9': 2.3824, 'wheels-10': 2.3734, 'wheels-11': 2.3734, 'wheels-13': 2.3825 },
+  'body-7':      { 'wheels': 2.2115, 'wheels-2': 2.1864, 'wheels-3': 2.1840, 'wheels-6': 2.1855, 'wheels-7': 2.2106, 'wheels-9': 2.1622, 'wheels-10': 2.1550, 'wheels-11': 2.1550, 'wheels-13': 2.1610 },
+  'body-8':      { 'wheels': 2.2253, 'wheels-2': 2.1998, 'wheels-3': 2.1976, 'wheels-6': 2.1990, 'wheels-7': 2.2114, 'wheels-9': 2.1741, 'wheels-10': 2.1670, 'wheels-11': 2.1670, 'wheels-13': 2.1729 },
+  'body-9':      { 'wheels': 2.1587, 'wheels-2': 2.1235, 'wheels-3': 2.1212, 'wheels-6': 2.1227, 'wheels-7': 2.1351, 'wheels-9': 2.0978, 'wheels-10': 2.0897, 'wheels-11': 2.0906, 'wheels-13': 2.0965 },
   /* REGENERATED 2026-08-13 after body-11's four hood stations came down
      under the driver's eye line. Every cell fell by 0.0005 to 0.0006 m2 and
      no other body's row moved at all, which is the sweep confirming that the
-     change was local to the front deck.
-     The prediction attached to that change was that it would cost NOTHING,
-     on the argument that a silhouette lying entirely inside a taller one adds
-     nothing to the union. That argument was wrong by 6 cm2 and the guard in
-     tools/area.sh is what said so, which is exactly what it is for: the cells
-     are measured, not reasoned about. Gen 11 goes from 1.6920 to 1.6914 m2,
-     so the vision fix made the car very slightly better rather than free. */
-  'body-11':     { 'wheels': 1.8327, 'wheels-2': 1.7657, 'wheels-3': 1.7616, 'wheels-6': 1.7702, 'wheels-7': 1.7904, 'wheels-9': 1.7088, 'wheels-10': 1.6915, 'wheels-11': 1.6914 },
+     change was local to the front deck. The prediction attached to that
+     change was that it would cost NOTHING; it was wrong by 6 cm2 and the
+     guard in tools/area.sh is what said so. Gen 11 goes 1.6920 to 1.6914. */
+  'body-11':     { 'wheels': 1.8327, 'wheels-2': 1.7657, 'wheels-3': 1.7616, 'wheels-6': 1.7702, 'wheels-7': 1.7904, 'wheels-9': 1.7088, 'wheels-10': 1.6915, 'wheels-11': 1.6914, 'wheels-13': 1.7334 },
+  /* body-12 pays 0.0248 m2 over body-11: the spat walls stand 32.5 mm
+     outside a tire column the union already charged, their trailing closures
+     add a sliver at the band, and nothing else moved. The tail got 740 mm
+     longer and the row barely notices: length is not area. */
+  'body-12':     { 'wheels': 1.8380, 'wheels-2': 1.7718, 'wheels-3': 1.7708, 'wheels-6': 1.7767, 'wheels-7': 1.7951, 'wheels-9': 1.7270, 'wheels-10': 1.7162, 'wheels-11': 1.7162, 'wheels-13': 1.7467 },
+  /* body-13, Gen 13: the cabin down 65 mm with the seats on the pack lid.
+     On wheels-11 it reads 1.6381 against body-12's 1.7162, which is the
+     -0.078 design/gen13.md section 4 priced for the roof; on wheels-13 the
+     front pants add 0.0306 back (the pod's band 45 mm over the tread and its
+     disc 18 mm outside the tire column) and the rung reads 1.6687. The
+     wheels-13 column on every other body is what the pants alone cost that
+     body, 0.030 to 0.042 m2. */
+  'body-13':     { 'wheels': 1.7599, 'wheels-2': 1.6937, 'wheels-3': 1.6927, 'wheels-6': 1.6987, 'wheels-7': 1.7170, 'wheels-9': 1.6489, 'wheels-10': 1.6382, 'wheels-11': 1.6381, 'wheels-13': 1.6687 },
 };
 
 /* The body is whichever active id has a row, the wheels whichever has a cell
@@ -373,71 +368,105 @@ function warnOnce(msg) {
   if (typeof console !== 'undefined' && console.warn) console.warn(msg);
 }
 
-/* ── THE DRAG COEFFICIENT IS AN INTERNAL CURRENCY. IT IS NOT A TUNNEL
-      RESULT, AND THIS LADDER CANNOT MAKE IT ONE. ──
+/* ── THE DRAG COEFFICIENT, MEASURED. The second half of the re-zero. ──
 
-   design/retro-gen9.md's second finding was that the absolute Cd drifted
-   below credibility, and it blocked further drag work until the ladder was
-   re-zeroed. The area half of that re-zero is done above. The coefficient
-   half CANNOT BE DONE HERE, and saying so plainly is the honest outcome
-   rather than a failure to finish the job.
+   design/retro-gen9.md blocked drag work until one integrator re-zeroed
+   every body at once. design/area-rezero.md did the AREA half and recorded
+   that the coefficient half could not be done by ARGUMENT, because a Cd is a
+   wake measurement and there is no tunnel here. That freeze then cost what
+   design/retro-gen11.md measured: the most reshaped body on the ladder
+   booked zero counts, because under the freeze a shape had no way to earn
+   one, and it inherited a coefficient from a car it does not resemble.
 
-   WHY NOT. A drag coefficient is a wake measurement. It comes out of a wind
-   tunnel or a validated CFD solve and out of nothing else. There is no
-   tunnel and no solver in this project, so any number written here would be
-   an invention dressed as a correction, which is worse than the drift it
-   claimed to fix.
+   This table is the second half, done the way the first was: MEASURED, one
+   method, every configuration, one run. tools/aerogeom.js takes wetted area,
+   a 25 mm section march, base area and an underbody roughness index off the
+   built triangles; tools/aero.js turns them into a COMPONENT BUILDUP with
+   every empirical coefficient published, cited in place, and applied
+   identically to every cell. It is anchored twice: Gen 1 returns 0.2018
+   against the asserted class-typical 0.21, and the Ahmed body, the reference
+   bluff shape of automotive aerodynamics, returns 0.2060 against its
+   published 0.230. Both anchors read LOW, so every figure here is a floor.
+   design/cd-rezero.md is the write-up, including the two rungs this column
+   sent backward and the decision to adopt it anyway (Davis, 2026-08-21):
+   ascent is earned by geometry now, not by bookkeeping.
 
-   THE BASE, NAMED. Every Cd above is `body`'s 0.21 plus booked counts. That
-   base is an asserted class-typical figure for a stamped-and-cast reference
-   sedan rather than a measurement, and as a base it is defensible: real
-   production sedans of that description sit at 0.20 to 0.23. What is not
-   defensible is where the accumulated counts arrive.
+   THIS IS STILL NOT A TUNNEL RESULT. It is the same kind of claim as a
+   preliminary-design drag estimate, good to 10 or 15 percent, and its known
+   bias is optimism about vortex drag, which no correlation over geometry can
+   see. What makes it admissible where the booked counts were not: to move a
+   cell of this table you must move the GEOMETRY and rerun the sweep. There
+   is no way to argue with it in prose.
 
-   WHERE THE LADDER CROSSES THE REAL WORLD. The lowest figure ever recorded
-   on a full-scale four-wheeled car is the Mercedes VISION EQXX at 0.17, and
-   the EQXX is a technology demonstrator that was never sold. The lowest on a
-   car anyone could actually buy is the Lightyear 0 at 0.175, then the VW XL1
-   at 0.189. The best research vehicles ever built, the Ford Probe IV and V
-   and the GM Precept, sit at 0.137 to 0.163. The Schlorwagen's 0.113 was a
-   wheel-shrouded teardrop and not a car anyone could drive to work.
+   Keyed exactly like AREA, and for the same reason: a coefficient is a
+   property of the configuration. body-7 measures 0.1714 on Gen 6's wheels
+   and 0.1742 on Gen 7's, and one number per body would have to be one of
+   those on both cars, which is the exact one-number-two-cars failure the
+   pre-re-zero area table had.
 
-   This ladder reaches 0.17 at GEN 2 and 0.130 at GEN 5. So a four-seat
-   sedan on this ladder matches the lowest coefficient ever recorded on any
-   full-scale car at its second rung, and at its fifth it is below every
-   research vehicle on that list, the Probe V's 0.137 included. The rungs
-   that carry it there are exactly the four that were never independently
-   audited: body-aero, body-3, body-4 and body-6. The three that were audited
-   all moved the wrong way for the claim, 0.105 to 0.118, 0.105 to 0.108 and
-   0.107 to 0.108.
+   SECOND REVISION, 2026-08-21 night: a forebody term (Hucho's edge, plan,
+   cowl and rake penalties) and the roughness index windowed between the
+   axles, design/cd-rezero.md section 7 and design/gen12-front.md.
 
-   THE OFFSET, RECORDED SO A READER IS NOT MISLED. The Gen 9 audit expected
-   body-9 to measure Cd 0.14 to 0.16 and CdA 0.29 to 0.33 in a tunnel. This
-   file carries 0.108, so the top of the ladder is optimistic by roughly
-   +0.032 to +0.052 in Cd, which is 30 to 48 percent.
+   THIRD REVISION, 2026-08-22: the wheel term is the ROTATING tire outside
+   the car's FILLED outline, PER AXLE, against what stands beside or ahead
+   of that axle. design/gen13.md section 7 and design/cd-rezero.md section 8.
+   Three things the first two revisions got wrong, each found by running the
+   rule written before it: a static part of the wheels module was charged as
+   a tire; tires were credited with filling holes in the projection where
+   no firewall or sill closure is drawn; and a frontal projection collapses
+   x, so four tires cast two silhouettes and a rear spat was credited with
+   hiding the fronts. Under the corrected rule every wheel term rises, Gen 1
+   to 0.2611 with a wheel share of 23 percent against Hucho's quarter, and
+   Gen 12 to 0.1788 because its front tires stand in clean air outside a
+   0.60 flank. Every cell below is from that revision. The body-12 cell
+   history (three spat constructions measured, the enclosure lost) is in
+   design/gen12.md and the module's own panel.
 
-   AND THE AREA RE-ZERO DID NOT CLOSE IT. Gen 9's CdA was 0.2206 on the old
-   area and is 0.2266 on the measured one. The gap to the audit's expectation
-   was 0.069 to 0.109 m2 before this pass and is 0.063 to 0.103 after it, so
-   0.0060 m2 of a gap that starts at 0.069: under a tenth. And it closes from
-   the wrong side, by making the reference area larger rather than by making
-   the coefficient honest. The credibility problem is in the
-   coefficient, not in the reference area, and now that the area is measured
-   there is nowhere else for it to hide.
+   REGENERATE with tools/aero.sh --table after any body, wheels or pack
+   change. A new body needs a row here, a row in AREA, and entries in
+   tools/area.js, and the loud fallback below is what tells you if you
+   forget. */
+export const CD = {
+  'body':          { 'wheels': 0.2611, 'wheels-2': 0.2511, 'wheels-3': 0.2506, 'wheels-6': 0.2489, 'wheels-7': 0.2404, 'wheels-9': 0.2388, 'wheels-10': 0.2358, 'wheels-11': 0.2360, 'wheels-13': 0.2266 },
+  'body-aero':     { 'wheels': 0.1685, 'wheels-2': 0.1581, 'wheels-3': 0.1577, 'wheels-6': 0.1585, 'wheels-7': 0.1494, 'wheels-9': 0.1473, 'wheels-10': 0.1446, 'wheels-11': 0.1447, 'wheels-13': 0.1390 },
+  'body-3':        { 'wheels': 0.1915, 'wheels-2': 0.1771, 'wheels-3': 0.1766, 'wheels-6': 0.1734, 'wheels-7': 0.1624, 'wheels-9': 0.1554, 'wheels-10': 0.1514, 'wheels-11': 0.1517, 'wheels-13': 0.1383 },
+  'body-4':        { 'wheels': 0.1844, 'wheels-2': 0.1734, 'wheels-3': 0.1727, 'wheels-6': 0.1714, 'wheels-7': 0.1602, 'wheels-9': 0.1560, 'wheels-10': 0.1522, 'wheels-11': 0.1525, 'wheels-13': 0.1387 },
+  'body-6':        { 'wheels': 0.2049, 'wheels-2': 0.1898, 'wheels-3': 0.1888, 'wheels-6': 0.1879, 'wheels-7': 0.1761, 'wheels-9': 0.1699, 'wheels-10': 0.1655, 'wheels-11': 0.1658, 'wheels-13': 0.1492 },
+  'body-7':        { 'wheels': 0.2026, 'wheels-2': 0.1917, 'wheels-3': 0.1912, 'wheels-6': 0.1922, 'wheels-7': 0.1783, 'wheels-9': 0.1848, 'wheels-10': 0.1821, 'wheels-11': 0.1821, 'wheels-13': 0.1717 },
+  'body-8':        { 'wheels': 0.1708, 'wheels-2': 0.1598, 'wheels-3': 0.1599, 'wheels-6': 0.1613, 'wheels-7': 0.1503, 'wheels-9': 0.1502, 'wheels-10': 0.1476, 'wheels-11': 0.1476, 'wheels-13': 0.1370 },
+  'body-9':        { 'wheels': 0.1792, 'wheels-2': 0.1645, 'wheels-3': 0.1646, 'wheels-6': 0.1660, 'wheels-7': 0.1546, 'wheels-9': 0.1546, 'wheels-10': 0.1509, 'wheels-11': 0.1519, 'wheels-13': 0.1410 },
+  'body-11':       { 'wheels': 0.3432, 'wheels-2': 0.3215, 'wheels-3': 0.3222, 'wheels-6': 0.3173, 'wheels-7': 0.2831, 'wheels-9': 0.2849, 'wheels-10': 0.2766, 'wheels-11': 0.2766, 'wheels-13': 0.2258 },
+  'body-12':       { 'wheels': 0.2504, 'wheels-2': 0.2232, 'wheels-3': 0.2232, 'wheels-6': 0.2212, 'wheels-7': 0.1910, 'wheels-9': 0.1869, 'wheels-10': 0.1788, 'wheels-11': 0.1788, 'wheels-13': 0.1319 },
+  'body-13':       { 'wheels': 0.2565, 'wheels-2': 0.2282, 'wheels-3': 0.2282, 'wheels-6': 0.2262, 'wheels-7': 0.1945, 'wheels-9': 0.1904, 'wheels-10': 0.1818, 'wheels-11': 0.1818, 'wheels-13': 0.1327 },
+};
 
-   WHAT IS STILL TRUE. Every rung-to-rung Cd comparison is sound, because
-   each count was booked against a named mechanism on the rung before it.
-   The currency is internally consistent. It is the exchange rate to the real
-   world that is unknown, and LOSS_NOTES.Aero says so in the UI. */
-/* Data, for tools and for the next pass to argue against. Nothing imports it
-   yet; the reader-facing version of all of this is LOSS_NOTES.Aero below,
-   which the panel does show. */
+/* One lookup, one loud fallback, exactly as areaFor above and for the same
+   reason: a silent default returns a plausible budget for an unmeasured car,
+   and that is how a fiction gets published. */
+export function cdFor(activeIds) {
+  let row = null, bodyId = null;
+  for (const id of activeIds) if (CD[id]) { row = CD[id]; bodyId = id; }
+  if (row) for (const id of activeIds) if (row[id] !== undefined) return row[id];
+  warnOnce(row
+    ? 'efficiency: no CD cell for ' + bodyId + ' with these wheels. Falling back to Gen 1 Cd ' + BASE.cd + '. Run tools/aero.sh --table.'
+    : 'efficiency: no CD row for the active body. Falling back to Gen 1 Cd ' + BASE.cd + '. Run tools/aero.sh --table.');
+  return BASE.cd;
+}
+
+/* ── What remains of the booked-Cd era: the record of where it stood when it
+      ended. The essay that lived here, on why a coefficient could not be
+      measured in this project, was half right: it cannot be measured by
+      ARGUMENT. design/cd-rezero.md is the account of measuring it by
+      geometry plus published correlation instead, and the CD table above is
+      the result. CD_BASIS survives as data for the app and the tools: the
+      method's two anchors, its stated band, and the anchors from the real
+      world that bound what any figure here may credibly claim. */
 export const CD_BASIS = {
-  base: 0.21,
-  baseId: 'body',
-  topOfLadder: 0.108,
-  tunnelExpectation: [0.14, 0.16],   // design/retro-gen9.md, body-9
-  cdaExpectation: [0.29, 0.33],
+  method: 'component buildup over built geometry, tools/aero.js',
+  band: 0.15,                        // good to about 15 percent, biased LOW
+  anchorGen1: { measured: 0.2018, asserted: 0.21 },
+  anchorAhmed: { measured: 0.2060, published: 0.230 },
   anchors: { EQXX: 0.17, 'Lightyear 0': 0.175, 'VW XL1': 0.189,
              'GM Precept': 0.163, 'Ford Probe IV': 0.152, 'Ford Probe V': 0.137 },
 };
@@ -447,7 +476,7 @@ export const CD_BASIS = {
 export const LOSS_NOTES = {
   Aero: {
     blurb: 'Energy spent shoving air out of the way.',
-    how: 'Aerodynamic drag rises with the square of speed, so this is the term that dominates on the highway and almost vanishes in town. What sets it is CdA, the drag coefficient multiplied by the frontal area the car presents. Both halves matter equally, and a good Cd on a large frontal area is not a good car.\n\nOn the mixed cycle the model uses an effective 86 km/h for this term, weighted toward higher speeds because drag work grows with the cube of speed and the fast part of a journey dominates the average.\n\nThe two halves of CdA are known to very different standards here, and it is worth knowing which is which. THE FRONTAL AREA IS MEASURED. It is the union of the shadow the body, the wheels and the pack cast on a plane across the airstream, integrated from the ground up off the built geometry, by one integrator run over every generation at once. Change the shape and the number moves on its own.\n\nTHE DRAG COEFFICIENT IS NOT MEASURED. A coefficient is a wake result and needs a wind tunnel, which this project does not have. Every Cd on the ladder is the Gen 1 reference car\'s 0.21 plus counts booked against named mechanisms, so comparing one generation with the next is sound. The absolute value is not a tunnel figure and should not be read as one: this ladder reaches 0.17 by Gen 2, which matches the lowest drag coefficient ever recorded on a full-scale car of any kind, and by Gen 5 it is at 0.130, below every research prototype ever built. The independent audit of Gen 9 expected the real number to be nearer 0.14 to 0.16 than the 0.108 carried here. Treat the coefficient as the model\'s own currency and the area as the physical measurement.',
+    how: 'Aerodynamic drag rises with the square of speed, so this is the term that dominates on the highway and almost vanishes in town. What sets it is CdA, the drag coefficient multiplied by the frontal area the car presents. Both halves matter equally, and a good Cd on a large frontal area is not a good car.\n\nOn the mixed cycle the model uses an effective 86 km/h for this term, weighted toward higher speeds because drag work grows with the cube of speed and the fast part of a journey dominates the average.\n\nBoth halves of CdA are MEASURED off the built geometry here, and to different standards worth knowing. THE FRONTAL AREA IS EXACT: the union of the shadow the body, wheels and pack cast on a plane across the airstream, integrated from the ground up, by one integrator over every generation at once.\n\nTHE DRAG COEFFICIENT IS A MEASURED ESTIMATE. A final coefficient is a wake result and needs a wind tunnel, which this project does not have. Instead every configuration gets a component buildup, the method used to design real cars before their tunnel time: wetted area, section taper, base area and underbody roughness are measured off the triangles, and each is priced by a published empirical coefficient applied identically to every generation. The method reproduces the reference sedan at 0.202 against its accepted 0.21, and the Ahmed body, the standard test shape of car aerodynamics, at 0.206 against its wind-tunnel 0.230, so treat every coefficient here as good to roughly 15 percent and, if anything, flattering. Adopting this measurement in 2026 sent two generations backward, which the ladder shows rather than hides: a rung is bought back with geometry, not bookkeeping.',
     moves: 'Body shape and size. Lower Cd through a longer taper, a smoother surface and a narrower plan; lower frontal area through a lower roof and more tumblehome.',
   },
   Rolling: {
@@ -492,10 +521,11 @@ export function computeBudget(activeIds, massKg, over) {
     Object.assign(m, o);
   }
   m.auxW = Math.max(120, m.auxW + auxAdd);
-  /* after the loop, because area is a property of the configuration and no
-     single slot's entry is allowed to set it */
+  /* after the loop, because area and coefficient are properties of the
+     configuration and no single slot's entry is allowed to set either */
   m.area = areaFor(activeIds);
-  /* after area, so an override can move the one quantity the loop is not
+  m.cd = cdFor(activeIds);
+  /* after both, so an override can move the quantities the loop is not
      allowed to set */
   if (over) Object.assign(m, over);
 

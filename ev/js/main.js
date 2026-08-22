@@ -1088,7 +1088,7 @@ function buildLadder() {
   ladBars = figs.map((f) => {
     const b = el('button', 'lad');
     /* a floor of 8 percent so Gen 1 is a bar and not a line: the ladder
-       climbs 416 to 1,942, which is a 4.7 to 1 range on a 34 px strip */
+       spans 423 to 1,560, about 3.7 to 1 on a 34 px strip */
     b.style.setProperty('--h', (8 + 92 * ((f.miles || 0) / max)).toFixed(1) + '%');
     b.dataset.gen = f.id;
     b.onclick = () => goGeneration(f.id);
@@ -1108,7 +1108,16 @@ function refreshLadder() {
     b.el.title = `${b.label} · ${rounded(asDist(b.miles))} ${U().d}`;
     b.el.setAttribute('aria-label', b.el.title);
   }
-  const lo = ladBars[0], hi = ladBars[ladBars.length - 1];
+  /* the endpoint labels are the strip's MIN and MAX, not its first and last
+     bars. Those were the same thing for as long as the ladder was monotonic,
+     and the Cd re-zero ended that: Gen 11 is the last rung and not the
+     highest, so labeling the last bar captioned a 1,560-mile strip "1,415".
+     See design/cd-rezero.md. */
+  let lo = ladBars[0], hi = ladBars[0];
+  for (const b of ladBars) {
+    if ((b.miles || 0) < (lo.miles || 0)) lo = b;
+    if ((b.miles || 0) > (hi.miles || 0)) hi = b;
+  }
   $('#ladLo').textContent = rounded(asDist(lo.miles));
   $('#ladHi').textContent = `${rounded(asDist(hi.miles))} ${U().d}`;
 }
