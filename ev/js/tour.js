@@ -89,15 +89,21 @@ export const VIEWS = {
              The tour restores whatever the x-ray switch was set to when it
              opened, because a tour must not change the app it walked. */
 export const STOPS = [
+  /* THE OPENING STOP WEARS THE TOP RUNG. Davis, 2026-08-23: the app opens on
+     Gen 17 and the tour opens itself on a first visit, so an opening stop on
+     Gen 1 was a hard cut from the best car to the plainest one before a word
+     had been read. The opening holds the car the reader is already looking
+     at and says so; the step back to Gen 1 is the second stop, where the
+     title explains it. */
   {
     id: 'open',
     title: 'Seventeen rungs',
     theme: 'what this is',
-    gen: 'gen1', against: null, view: 'hero',
+    gen: 'gen17', against: null, view: 'hero',
     cite: 'design/app-brief.md',
     paras: [
-      'This model is a ladder. Seventeen generations of one car, each strictly better than the last, with the engineering argument for every step written into the parts themselves.',
-      'The tour walks it end to end. At each rung the car becomes that generation, the slots that changed stay lit while the ones that carry fade back, and every figure below is computed live from the same model the readout reads. Nothing here is typed in.',
+      'This model is a ladder. Seventeen generations of one car, each strictly better than the last, with the engineering argument for every step written into the parts themselves. The car on the stage is the seventeenth, the top rung.',
+      'The tour walks it end to end, from the first rung back up to this one. At each rung the car becomes that generation, the slots that changed stay lit while the ones that carry fade back, and every figure below is computed live from the same model the readout reads. Nothing here is typed in.',
     ],
   },
 
@@ -323,8 +329,9 @@ export const STOPS = [
 ];
 
 /* Which rungs the tour visits, in order, for the progress marks. A stop that
-   repeats a rung (the opening pair, the close) is still its own mark: the
-   marks count STOPS, and labeling them by rung is what would be misleading. */
+   repeats a rung (the opening and the close both wear the top rung) is still
+   its own mark: the marks count STOPS, and labeling them by rung is what
+   would be misleading. */
 export const stopRung = (s) => LADDER.find((g) => g.id === s.gen) || null;
 
 /* Total dwell for autoplay, in ms. Reading speed rather than a flat interval,

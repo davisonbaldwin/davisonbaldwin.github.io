@@ -3277,9 +3277,15 @@ function setRailHidden(hidden) {
   try { localStorage.setItem('ev-rail-hidden', hidden ? '1' : '0'); } catch {}
 }
 railToggle.onclick = () => setRailHidden(!document.body.classList.contains('rail-hidden'));
-try { if (localStorage.getItem('ev-rail-hidden') === '1') setRailHidden(true); } catch {}
+/* BOTH SIDE PANELS ARE OPEN WHEN THE SITE OPENS. Davis, 2026-08-23: "the side
+   window tabs should also be open automatically when opening the site". The
+   hidden state was sticky across visits here since the collapsible rail
+   shipped; it is not restored any more, so a reader who collapsed a panel
+   last time gets the whole instrument back on the next load, and the toggle
+   still works for the session. The key is still written so nothing else
+   that reads it breaks. */
 
-/* collapsible efficiency card, sticky across visits. Same pattern as the
+/* collapsible efficiency card, for the session. Same pattern as the
    rail: the card slides out and its control follows it to the edge, so the
    way back is always visible. */
 const effToggle = $('#effToggle');
@@ -3290,7 +3296,7 @@ function setEffHidden(hidden) {
   try { localStorage.setItem('ev-eff-hidden', hidden ? '1' : '0'); } catch {}
 }
 effToggle.onclick = () => setEffHidden(!document.body.classList.contains('eff-hidden'));
-try { if (localStorage.getItem('ev-eff-hidden') === '1') setEffHidden(true); } catch {}
+/* open on every load, see the rail above */
 
 /* the slider's track fills to the thumb, so the control reads its own value
    at a glance the way a gauge does */
@@ -4058,11 +4064,35 @@ $('#hintX').onclick = () => {
   try { localStorage.setItem('ev-hint-hidden', '1'); } catch {}
 };
 
+/* THE TOUR OPENS ITSELF FOR A FIRST VISITOR. Davis, 2026-08-23: the tour is
+   the model's argument, and a reader who has never been here should not have
+   to find a button to hear it. So the first visit opens the tour at its first
+   stop, a second after the boot plate lifts and the car has landed, with
+   autoplay off: the reader drives it, or closes it. The visit is remembered
+   (ev-tour-seen) the moment the tour opens, so a reload does not reopen it
+   and the TOUR button is the way back; the same guarded read every other
+   remembered choice here uses. A returning reader with the key set sees the
+   car, as before. */
+const firstVisitTour = () => {
+  let seen = true;
+  try { seen = !!localStorage.getItem('ev-tour-seen'); } catch {}
+  if (seen) return;
+  setTimeout(() => {
+    /* written here, when the tour opens, and not a second earlier at the
+       boot: a reader who leaves inside that second has not seen it, and
+       keeps the one opening they are owed. Written whether or not the tour
+       is already on, because a reader who pressed TOUR themselves in that
+       second has seen it too. */
+    try { localStorage.setItem('ev-tour-seen', '1'); } catch {}
+    if (!tourOn) setTour(true, 0);
+  }, 1000);
+};
 const liftBoot = () => {
   if (lifted) return;
   lifted = true;
   document.body.classList.add('booted');
   setTimeout(() => $('#boot')?.remove(), 400);
+  firstVisitTour();
 };
 requestAnimationFrame(() => requestAnimationFrame(liftBoot));
 /* rAF does not run at all in a background tab, and a plate that outlives
