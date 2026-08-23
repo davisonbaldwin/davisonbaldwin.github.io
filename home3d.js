@@ -1580,10 +1580,18 @@ function init() {
   // proceeds exactly as for a first visit; an answer ends the pull for this
   // session and the caption says so. The chip is its own fixed element, so a
   // hidden controls line does not hide the choice.
+  // THE PULL TAKES THE SAME TIME FROM ANYWHERE. Davis, 2026-08-23, having
+  // flown to the edge of the disk and waited: a fixed acceleration to a fixed
+  // cap (60 pc/s^2 to 300 pc/s, the first version) was about three seconds
+  // from the spawn and minutes from where full boost can put a ship in sixty
+  // seconds, tens of thousands of parsecs out. Now startPull measures the
+  // distance and sets a constant acceleration from rest that closes it in
+  // PULL_TIME, so the ship at the spawn drifts in and the one that fled comes
+  // in like a meteor, and both arrive on the same count.
   const PULL_AFTER = 60;                             // seconds of world time
-  const PULL_ACCEL = 60, PULL_VMAX = 300;            // pc/s^2, pc/s: about 5 s from the spawn
+  const PULL_TIME = 4;                               // seconds from the start of the pull to the door, from anywhere
   const OFFER_FOR = 8;                               // seconds a returning visitor has to decline
-  let pullT = 0, pulling = false, pullV = 0, pullOff = false, pullOffer = false, offerT = 0, offerShown = -1;
+  let pullT = 0, pulling = false, pullV = 0, pullA = 0, pullOff = false, pullOffer = false, offerT = 0, offerShown = -1;
   const keepBtn = document.createElement('button');
   keepBtn.className = 'home3d-chrome';
   keepBtn.textContent = 'KEEP FLYING';
@@ -1597,6 +1605,10 @@ function init() {
     if (reduced) { enterStudy(3); return; }
     flyMode = true; flyArmed = true; orbitOwned = true;
     flyThrottle = false; flyCruise = false; padRelease(); heldKeys.clear();
+    // the present distance sets the pull: d = a t^2 / 2 closed in PULL_TIME
+    const d0 = Math.max(1, portals[0].abs.distanceTo(deep.pos));
+    pullA = 2 * d0 / (PULL_TIME * PULL_TIME);
+    pullV = 0;
     say(WORLDS[3].name + ' · PULLING YOU IN');
   }
   function keepFlying() {
@@ -1713,10 +1725,11 @@ function init() {
       _qPull.setFromUnitVectors(deepForward(), _pullDir);
       _qPullStep.copy(_qId).slerp(_qPull, Math.min(1, dt * 1.4));
       deep.q.premultiply(_qPullStep);
-      // the ship into it, faster every frame: the capture test below fires
-      // when the swept path crosses the rim
-      pullV = Math.min(PULL_VMAX, pullV + PULL_ACCEL * dt);
-      deep.pos.addScaledVector(_pullDir, pullV * dt);
+      // the ship into it, faster every frame at the acceleration startPull
+      // set for this distance, never past the door itself: the capture test
+      // below fires when the swept path crosses the rim
+      pullV += pullA * dt;
+      deep.pos.addScaledVector(_pullDir, Math.min(pullV * dt, P.abs.distanceTo(deep.pos)));
     }
     // both doors ride the floating origin and both face the lens: billboard
     // the impostor, slide it toward the camera clear of its core, shrink it to
