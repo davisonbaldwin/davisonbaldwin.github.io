@@ -1214,12 +1214,14 @@ function init() {
     }
     if (e.key === 'f' || e.key === 'F') { toggleObserve(); return; }
     if (e.key === 'h' || e.key === 'H') { capHidden = !capHidden; applyCapVis(); return; }
+    if (e.key === 'k' || e.key === 'K') { keepFlying(); return; }
     heldKeys.add(e.key.toLowerCase());
   });
   addEventListener('keyup', (e) => heldKeys.delete(e.key.toLowerCase()));
   // F in and out of the observer's seat. Entering seeds the orbit from the
   // chase camera's own vantage, so the world never jumps under you.
   function toggleObserve() {
+    if (pulling) return;                             // the pull has the stick
     flyMode = !flyMode;
     orbitOwned = true;                               // the stick has been taken at least once
     if (!flyMode) {
@@ -1278,6 +1280,16 @@ function init() {
     'font:600 12px Menlo,monospace;color:#8fa0bd;background:rgba(2,3,10,0.5);' +
     'border:1px solid rgba(204,215,232,0.28);border-radius:50%';
   document.body.appendChild(showBtn);
+  // has this browser been here before? Read BEFORE applyCapVis writes
+  // homeCapHidden at this boot, which is why it is here and not beside the
+  // pull that uses it: homeCapHidden has been written at every boot since the
+  // HIDE chip shipped, so everyone who visited before the pull existed counts
+  // as returning; homeVisited is the explicit mark from here on.
+  let returning = false;
+  try {
+    returning = localStorage.getItem('homeVisited') === '1' || localStorage.getItem('homeCapHidden') !== null;
+    localStorage.setItem('homeVisited', '1');
+  } catch (e) {}
   let capHidden = false;
   try { capHidden = localStorage.getItem('homeCapHidden') === '1'; } catch (e) {}
   const applyCapVis = () => {
@@ -1548,6 +1560,53 @@ function init() {
   // win the race and the beam would keep chewing on a target already lost.
   // Kept separate from `leaving`, which is enterStudy's own re-entry guard.
   let committed = false;
+  // THE ONE-MINUTE PULL. Davis, 2026-08-23: a visitor who has not flown into
+  // anything in sixty seconds is taken by the EV door, the portfolio's main
+  // piece, so that everyone reaches it inside a minute whether they steer or
+  // not. The clock counts world time (rAF stops in a hidden tab, so a visitor
+  // who tabbed away is not yanked on return); entering any door the ordinary
+  // way ends it. The pull is a gravity, not a cut: the stick is taken, every
+  // input is ignored, the nose is turned onto the door over about two seconds
+  // and the ship accelerates into it until the ordinary capture test fires,
+  // so the fade, the caption and the landing are the ones a pilot earns by
+  // flying in. Under reduced motion there is no flight to take and the door
+  // is entered directly. While the pull is on, only the EV door captures:
+  // a rift or the astern door crossed on the way in does not win the race.
+  // RETURNING VISITORS GET A CHOICE. Davis, same day: "for returning visitors
+  // let's give them an option to keep flying around". A first visit is taken
+  // at the minute, as above. A visitor who has been here before (`returning`,
+  // read at boot from homeVisited or the older homeCapHidden) gets eight seconds
+  // of countdown and a KEEP FLYING chip, or the K key; no answer and the pull
+  // proceeds exactly as for a first visit; an answer ends the pull for this
+  // session and the caption says so. The chip is its own fixed element, so a
+  // hidden controls line does not hide the choice.
+  const PULL_AFTER = 60;                             // seconds of world time
+  const PULL_ACCEL = 60, PULL_VMAX = 300;            // pc/s^2, pc/s: about 5 s from the spawn
+  const OFFER_FOR = 8;                               // seconds a returning visitor has to decline
+  let pullT = 0, pulling = false, pullV = 0, pullOff = false, pullOffer = false, offerT = 0, offerShown = -1;
+  const keepBtn = document.createElement('button');
+  keepBtn.className = 'home3d-chrome';
+  keepBtn.textContent = 'KEEP FLYING';
+  keepBtn.setAttribute('aria-label', 'Keep flying: decline the pull into the EV door (K)');
+  keepBtn.style.cssText = 'position:fixed;left:50%;bottom:58px;transform:translateX(-50%);z-index:4;display:none;' +
+    'pointer-events:auto;cursor:pointer;font:600 11px Menlo,monospace;letter-spacing:0.16em;color:#e9d7aa;' +
+    'background:rgba(2,3,10,0.62);border:1px solid rgba(212,162,76,0.75);border-radius:3px;padding:8px 14px';
+  document.body.appendChild(keepBtn);
+  function startPull() {
+    pulling = true;
+    if (reduced) { enterStudy(3); return; }
+    flyMode = true; flyArmed = true; orbitOwned = true;
+    flyThrottle = false; flyCruise = false; padRelease(); heldKeys.clear();
+    say(WORLDS[3].name + ' · PULLING YOU IN');
+  }
+  function keepFlying() {
+    if (!pullOffer) return;
+    pullOffer = false; pullOff = true;
+    keepBtn.style.display = 'none';
+    sayBriefly('STAYING OUT HERE · FLY ON', 2.5);
+  }
+  keepBtn.addEventListener('click', keepFlying);
+  const _pullDir = new THREE.Vector3(), _qPull = new THREE.Quaternion(), _qPullStep = new THREE.Quaternion(), _qId = new THREE.Quaternion();
   function enterStudy(i) {
     if (leaving) return;
     leaving = true;
@@ -1572,7 +1631,7 @@ function init() {
     if (flyMode && !flyArmed && Math.abs(mouseNDC.x) < dzz && Math.abs(mouseNDC.y) < dzz) { flyArmed = true; say(CAP_REST); }
     turnIn = 0;
     let steerActive = false;
-    if (flyMode && flyArmed && !TOUCH_UI && !reduced) {
+    if (flyMode && flyArmed && !TOUCH_UI && !reduced && !pulling) {
       const stick = (v) => { const a = Math.abs(v); return a < dzz ? 0 : Math.sign(v) * (a - dzz) / (1 - dzz); };
       const sx = stick(mouseNDC.x), sy = stick(mouseNDC.y);
       steer(sx * 1.5 * dt, sy * 1.3 * dt);
@@ -1582,7 +1641,7 @@ function init() {
     // the touch stick steers per frame while held, same dead zone and
     // rates as the cursor stick; screen-down on the nub dives, like the
     // old drag did
-    if (flyMode && flyArmed && TOUCH_UI && !reduced && stick.id !== null) {
+    if (flyMode && flyArmed && TOUCH_UI && !reduced && !pulling && stick.id !== null) {
       const s = (v) => { const a = Math.abs(v); return a < dzz ? 0 : Math.sign(v) * (a - dzz) / (1 - dzz); };
       const sx = s(Math.max(-1, Math.min(1, stick.dx / STICK_R)));
       const sy = s(Math.max(-1, Math.min(1, stick.dy / STICK_R)));
@@ -1592,7 +1651,7 @@ function init() {
     }
     // arrows are the stick too: right arrow banks the nose right, up and
     // down pitch, and a held pitch carries clean through a full loop
-    if (flyMode && !reduced) {
+    if (flyMode && !reduced && !pulling) {
       const kx = (heldKeys.has('arrowright') ? 1 : 0) - (heldKeys.has('arrowleft') ? 1 : 0);
       const ky = (heldKeys.has('arrowup') ? 1 : 0) - (heldKeys.has('arrowdown') ? 1 : 0);
       if (kx || ky) { steer(kx * 1.5 * dt, ky * 1.3 * dt); turnIn += kx; steerActive = true; }
@@ -1617,7 +1676,7 @@ function init() {
     // the capture tests below can sweep the whole path actually flown
     _prevPos.copy(deep.pos);
     swept = true;
-    if (flyMode) {
+    if (flyMode && !pulling) {
       const boost = (heldKeys.has('shift') ? 7 : 1) * flySpeed;
       const F = (heldKeys.has('w') ? 1 : 0) - (heldKeys.has('s') ? 1 : 0);
       const S = (heldKeys.has('d') ? 1 : 0) - (heldKeys.has('a') ? 1 : 0);
@@ -1627,6 +1686,37 @@ function init() {
         if (auto || F) deep.pos.addScaledVector(fwd, (auto * 0.7 + F) * v);
         if (S) deep.pos.addScaledVector(_right, S * v);
       }
+    }
+    // the one-minute pull: see the note at PULL_AFTER
+    if (!leaving && !committed && !pullOff) {
+      pullT += dt;
+      if (!pulling && !pullOffer && pullT >= PULL_AFTER) {
+        if (returning) { pullOffer = true; offerT = OFFER_FOR; offerShown = -1; keepBtn.style.display = 'block'; }
+        else startPull();
+      }
+      if (pullOffer) {
+        offerT -= dt;
+        const n = Math.max(0, Math.ceil(offerT));
+        if (n !== offerShown) {
+          offerShown = n;
+          keepBtn.textContent = 'KEEP FLYING · ' + n;
+          say(WORLDS[3].name + ' · PULLING IN ' + n + ' · KEEP FLYING? (K)');
+        }
+        if (offerT <= 0) { pullOffer = false; keepBtn.style.display = 'none'; startPull(); }
+      }
+    }
+    if (pulling && !leaving && !committed && !reduced) {
+      const P = portals[0];                           // EV, dead ahead of the spawn
+      _pullDir.set(P.abs.x - deep.pos.x, P.abs.y - deep.pos.y, P.abs.z - deep.pos.z).normalize();
+      // the nose onto the door: the world-space turn that carries the current
+      // forward onto the pull direction, taken a slice at a time
+      _qPull.setFromUnitVectors(deepForward(), _pullDir);
+      _qPullStep.copy(_qId).slerp(_qPull, Math.min(1, dt * 1.4));
+      deep.q.premultiply(_qPullStep);
+      // the ship into it, faster every frame: the capture test below fires
+      // when the swept path crosses the rim
+      pullV = Math.min(PULL_VMAX, pullV + PULL_ACCEL * dt);
+      deep.pos.addScaledVector(_pullDir, pullV * dt);
     }
     // both doors ride the floating origin and both face the lens: billboard
     // the impostor, slide it toward the camera clear of its core, shrink it to
@@ -1656,8 +1746,9 @@ function init() {
     // a portal IS its destination: to arrive you must truly fly in, past the
     // rim, not merely sail near it. No aimed cone shortcut here, so a pilot can
     // park between the two doors, aim and open fire without being taken
-    if (flyMode && !leaving && !committed && !reduced) {
+    if ((flyMode || pulling) && !leaving && !committed && !reduced) {
       for (const P of portals) {
+        if (pulling && P !== portals[0]) continue;    // the pull takes you to the EV door and nowhere else
         if (sweptDist(P.abs) < 13) { enterStudy(P.target.world); break; }
       }
     }
@@ -1672,7 +1763,7 @@ function init() {
       _riftV.set(R.abs.x - deep.pos.x, R.abs.y - deep.pos.y, R.abs.z - deep.pos.z);
       const dR = _riftV.length();
       if (dR > 1400) continue;
-      if (flyMode && !leaving && !committed && !reduced && sweptDist(R.abs) < R.enter) { enterStudy(R.world); continue; }
+      if (flyMode && !pulling && !leaving && !committed && !reduced && sweptDist(R.abs) < R.enter) { enterStudy(R.world); continue; }
       _riftV.applyMatrix4(deepCam.matrixWorldInverse);
       if (_riftV.z > -1) continue;                   // behind the lens, no bend
       _riftV.applyMatrix4(deepCam.projectionMatrix);
