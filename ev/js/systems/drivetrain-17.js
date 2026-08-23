@@ -1,3 +1,23 @@
+/* drivetrain-17: THE TRACK. drivetrain-9 with the rear in-wheel rings 20 mm
+   inboard (REAR_Z 0.74 to 0.72, RING_Z 0.69 to 0.67, FLANGE_Z 0.65 to 0.63),
+   everything at the rear corner that stands outboard of |z| 0.625 riding
+   with them (the hub bearings, the corner inverters, the coolant stubs, the
+   loop connectors), the loop bracket on hv-15's run end holding, and the
+   three service tubes between them laid flat at |z| 0.6120, in the 22 mm
+   between hv-15's run end (0.6035) and the wheel's web, which came to 0.626, and the front
+   halfshafts 20 mm shorter (outboard joint face 0.6925 to 0.6725, half-span
+   0.1975, pair center 0.475, bar 0.290 m against 0.330), because wheels-17
+   brings both wheel centers to |z| 0.72. design/gen17.md is the brief. The
+   machines, the ratios, the inverters and every other coordinate are
+   drivetrain-9's; the annulus the rings occupy is declared (SYSTEM.annulus)
+   so the checker asserts the band the rings are actually in. The shaft
+   articulation at the same travel: about 21 percent more angle than Gen 9
+   for 20 mm less bar, by the same four-bar drivetrain-9's panel used. Mass:
+   0.3 kg less bar, derived. Every absolute rear |z| in the carried text
+   below reads 20 mm inboard here where it is outboard of 0.625.
+
+   ── drivetrain-9's own header follows, unchanged ─────────────────────
+
 /* Drive units, Gen 9: the front. This module is drivetrain-7 with ONE
    dimension changed, and the dimension is the front halfshaft length.
    Everything else, both rear corners, the coordinator, the front machine,
@@ -428,11 +448,15 @@ import * as THREE from '../../vendor/three.module.js';
 import { M, lib, P } from '../common.js';
 
 export const SYSTEM = {
-  id: 'drivetrain-9',
-  name: 'Drive units · Gen 9 narrow front',
+  id: 'drivetrain-17',
+  name: 'Drive units · Gen 17 the track',
   color: 0xe8a24c,
+  /* GEN 17: the rear annulus this module's rings occupy, declared so that
+     tools/check-interfaces.sh asserts THIS band rather than the Gen 7
+     contract written for a rear track at |z| 0.74. Same radii, 20 mm in. */
+  annulus: { rIn: 0.155, rOut: 0.235, zIn: 0.63, zOut: 0.71 },
   explode: [0, 0, 0],
-  blurb: 'drivetrain-7 with one dimension changed. The front track came in 70 mm per side, so each front halfshaft loses 70 mm of bar and its outboard joint face lands on wheels-9\'s hub face at |z| 0.6925 instead of overrunning it. That is worth 0.42 kg and it costs 19 percent more articulation angle for the same wheel travel, both computed rather than claimed. The reason it gets a generation number is not the geometry: this interface was found 10 mm short at Gen 8 and 70 mm long at Gen 9, wrong twice running in opposite directions, and the fix it needed was an assertion rather than a third manual correction. This module now declares that plane as an interface and tools/check-interfaces.sh proves it against both halves\' built meshes.',
+  blurb: 'drivetrain-9 with the rear rings 20 mm inboard and the front halfshafts 20 mm shorter, for wheels-17\'s 1.44 m track; the annulus the rings occupy is declared for the checker. Nothing else moves.\n\n' + 'drivetrain-9: drivetrain-7 with one dimension changed. The front track came in 70 mm per side, so each front halfshaft loses 70 mm of bar and its outboard joint face lands on wheels-9\'s hub face at |z| 0.6925 instead of overrunning it. That is worth 0.42 kg and it costs 19 percent more articulation angle for the same wheel travel, both computed rather than claimed. The reason it gets a generation number is not the geometry: this interface was found 10 mm short at Gen 8 and 70 mm long at Gen 9, wrong twice running in opposite directions, and the fix it needed was an assertion rather than a third manual correction. This module now declares that plane as an interface and tools/check-interfaces.sh proves it against both halves\' built meshes.',
   /* The assertion this module's why panel asks for, now that there is a
      mechanism to carry it. Schema in SPEC.md; tools/check-interfaces.sh
      proves it against the built mesh of both halves and fails the preset if
@@ -441,7 +465,7 @@ export const SYSTEM = {
      short of Gen 8 and the 70 mm long of Gen 9 in one predicate. */
   interfaces: {
     'front-halfshaft-outboard': {
-      kind: 'face', axis: 'z', at: 0.6925, tol: 0.002,
+      kind: 'face', axis: 'z', at: 0.6725, tol: 0.002,
       part: 'front-unit', mirrored: true, extent: 'max',
       note: 'outboard CV joint face. Shaft pair center |z| 0.485, joint center 0.180 out, joint 55 mm long, so the face lands on 0.6925.',
     },
@@ -581,7 +605,7 @@ export const SYSTEM = {
     'front-unit': {
       name: 'Front drive unit',
       tagline: 'The whole of Gen 9 in this module is on this panel: 70 mm off each halfshaft, 0.42 kg back, a fifth more articulation angle, and an interface that has now been wrong twice in a row.',
-      mass: 37.58,
+      mass: 37.28,
       specs: [
         ['Machine', 'Yokeless axial flux, 130 kW / 240 Nm (Gen 5: 270 / 450)'],
         ['Reduction', '5.95:1 two-stage, open diff (carried since Gen 2)'],
@@ -656,9 +680,9 @@ const WY = P.wheelY;            // 0.355, wheel center height
    FRONTZ for exactly that reason, so at Gen 9 both tracks are 1.48 m and
    neither of them comes from P.wheelZ. The front geometry in this file
    reads 0.74 through the two measured hub faces below, never through P. */
-const REAR_Z = 0.74;
-const RING_Z = 0.69;            // motor annulus center plane, |z| 0.65..0.73
-const FLANGE_Z = 0.65;          // contract flange face, |z|
+const REAR_Z = 0.72;            // Gen 17: the rear wheel center, 20 mm inboard (was 0.74 from Gen 7)
+const RING_Z = 0.67;            // motor annulus center plane, |z| 0.63..0.71 (Gen 17; was 0.69)
+const FLANGE_Z = 0.63;          // contract flange face, |z| (Gen 17; was 0.65)
 
 /* Front unit axes, carried from drivetrain-2's installation through Gen 3
    and Gen 5. The machine shrank; the axes did not move. */
@@ -833,9 +857,9 @@ function halfshaft(out) {
      |z| 0.165, because the bar's own radius is the 22 mm structural section
      the mass ledger on the front-unit panel is computed from. */
   g.add(zrev([
-    [0.0220, -0.1650], [0.0220, -0.1560], [0.0186, -0.1470],
-    [0.0186, 0.1470], [0.0220, 0.1560], [0.0220, 0.1650],
-    [0.0000, 0.1650], [0.0000, -0.1650],
+    [0.0220, -0.1550], [0.0220, -0.1460], [0.0186, -0.1370],
+    [0.0186, 0.1370], [0.0220, 0.1460], [0.0220, 0.1550],
+    [0.0000, 0.1550], [0.0000, -0.1550],
   ], M.steel, 14, { crease: 26 }));
 
   for (const s of [-1, 1]) {
@@ -856,16 +880,16 @@ function halfshaft(out) {
        fixed joint is a bell that swells to its ball track. */
     const fixed = s === out;
     const bell = fixed ? zrev([
-      [0.0225, s * 0.1525], [0.0320, s * 0.1525], [0.0320, s * 0.1580],
-      [0.0292, s * 0.1592], [0.0292, s * 0.1652], [0.0330, s * 0.1700],
-      [0.0360, s * 0.1800], [0.0360, s * 0.1930], [0.0344, s * 0.1975],
-      [0.0225, s * 0.1975],
+      [0.0225, s * 0.1425], [0.0320, s * 0.1425], [0.0320, s * 0.1480],
+      [0.0292, s * 0.1492], [0.0292, s * 0.1552], [0.0330, s * 0.1600],
+      [0.0360, s * 0.1700], [0.0360, s * 0.1830], [0.0344, s * 0.1875],
+      [0.0225, s * 0.1875],
     ], M.darkSteel, 16, { crease: 30 }) : zrev([
-      [0.0225, s * 0.1525], [0.0320, s * 0.1525], [0.0320, s * 0.1585],
-      [0.0292, s * 0.1597], [0.0292, s * 0.1657], [0.0345, s * 0.1705],
-      [0.0360, s * 0.1755], [0.0360, s * 0.1885], [0.0338, s * 0.1885],
-      [0.0338, s * 0.1935], [0.0360, s * 0.1935], [0.0360, s * 0.2045],
-      [0.0340, s * 0.2075], [0.0225, s * 0.2075],
+      [0.0225, s * 0.1425], [0.0320, s * 0.1425], [0.0320, s * 0.1485],
+      [0.0292, s * 0.1497], [0.0292, s * 0.1557], [0.0345, s * 0.1605],
+      [0.0360, s * 0.1655], [0.0360, s * 0.1785], [0.0338, s * 0.1785],
+      [0.0338, s * 0.1835], [0.0360, s * 0.1835], [0.0360, s * 0.1945],
+      [0.0340, s * 0.1975], [0.0225, s * 0.1975],
     ], M.darkSteel, 16, { crease: 30 });
     g.add(bell);
 
@@ -899,7 +923,7 @@ function halfshaft(out) {
       [0.0338, s * 0.0968], [0.0402, s * 0.1030], [0.0402, s * 0.1074],
       [0.0332, s * 0.1136], [0.0392, s * 0.1198], [0.0392, s * 0.1242],
       [0.0328, s * 0.1304], [0.0378, s * 0.1366], [0.0378, s * 0.1410],
-      [0.0352, s * 0.1470], [0.0352, s * 0.1550], [0.0322, s * 0.1550],
+      [0.0352, s * 0.1470], [0.0352, s * 0.1450], [0.0322, s * 0.1450],
       [0.0322, s * 0.1480], [0.0235, s * 0.1462],
     ], M.rubber, 16, { crease: 34 }));
 
@@ -943,7 +967,7 @@ function halfshaft(out) {
     }
   }
   const fgeo = new THREE.ExtrudeGeometry(fs, { depth: 0.0100, bevelEnabled: false, curveSegments: 8 });
-  fgeo.translate(0, 0, out * 0.1975 - (out > 0 ? 0 : 0.0100));
+  fgeo.translate(0, 0, out * 0.1875 - (out > 0 ? 0 : 0.0100));   /* Gen 17: the 10 mm flange's outboard face on local 0.1975, world 0.6725 */
   g.add(lib.crease(lib.mesh(fgeo, M.steel), 28));
 
   return g;
@@ -1205,10 +1229,10 @@ function statorRingPart(s) {
      bore, hold the surface at r 0.1421 at the crossing. */
   const rzA = (120 / 180) * Math.PI, rzC = Math.cos(rzA), rzS = Math.sin(rzA);
   part.add(lib.tube([
-    [RX + rzC * 0.1600, WY + rzS * 0.1600, s * 0.6560],
-    [RX + rzC * 0.1372, WY + rzS * 0.1372, s * 0.6508],
-    [RX + rzC * 0.1330, WY + rzS * 0.1330, s * 0.6440],
-    [RX + rzC * 0.1395, WY + rzS * 0.1395, s * 0.6340],
+    [RX + rzC * 0.1600, WY + rzS * 0.1600, s * 0.6360],
+    [RX + rzC * 0.1372, WY + rzS * 0.1372, s * 0.6308],
+    [RX + rzC * 0.1330, WY + rzS * 0.1330, s * 0.6240],
+    [RX + rzC * 0.1395, WY + rzS * 0.1395, s * 0.6140],
   ], 0.0030, M.plastic, false, 14));
 
   /* phase terminal land on the inboard end face, r 0.163..0.181, spanning
@@ -1273,11 +1297,11 @@ function statorRingPart(s) {
   pStub.position.set(pc * 0.1712, ps * 0.1712, -s * 0.022);
   g.add(pStub);
   part.add(lib.tube([
-    [RX + pc * 0.1712, WY + ps * 0.1712, s * 0.672],
-    [RX + pc * 0.160, WY + ps * 0.160, s * 0.660],
-    [RX + pc * 0.145, WY + ps * 0.145, s * 0.653],
-    [RX + pc * 0.134, WY + ps * 0.134, s * 0.645],
-    [RX + pc * 0.130, WY + ps * 0.130, s * 0.638],
+    [RX + pc * 0.1712, WY + ps * 0.1712, s * 0.6520],
+    [RX + pc * 0.160, WY + ps * 0.160, s * 0.6400],
+    [RX + pc * 0.145, WY + ps * 0.145, s * 0.6330],
+    [RX + pc * 0.134, WY + ps * 0.134, s * 0.6250],
+    [RX + pc * 0.130, WY + ps * 0.130, s * 0.6180],
   ], 0.004, M.plasticLt, false, 24));
 
   part.add(g);
@@ -1301,7 +1325,7 @@ function statorRingPart(s) {
 function hubBearingPart(s) {
   const part = lib.part('hub-bearings', [0, 0, s * 0.78]);
   const g = new THREE.Group();
-  g.position.set(RX, WY, s * 0.685);
+  g.position.set(RX, WY, s * 0.6650);
 
   /* THE BARREL IS STEPPED, AND THE STEP IS WHY THE PROBES EXIST AS
      GEOMETRY. A plain r 0.072 cylinder running the full |z| 0.6475..0.7225
@@ -1476,7 +1500,7 @@ function hubBearingPart(s) {
     let d = jbA - a;
     while (d > Math.PI) d -= Math.PI * 2;
     while (d < -Math.PI) d += Math.PI * 2;
-    const pts = [[RX + Math.cos(a) * 0.0620, WY + Math.sin(a) * 0.0620, s * 0.7255]];
+    const pts = [[RX + Math.cos(a) * 0.0620, WY + Math.sin(a) * 0.0620, s * 0.7055]];
     for (let q = 0; q <= 8; q++) {
       const t = q / 8, ang = a + d * t, rr = 0.0665 - 0.0025 * t * t;
       pts.push([RX + Math.cos(ang) * rr, WY + Math.sin(ang) * rr, s * (0.7250 - 0.0045 * t * t)]);
@@ -1561,7 +1585,7 @@ function cornerInverterPart(s) {
      which is exactly why it is the safe crispness move on a part whose
      extremes are load bearing. */
   const body = lib.cbox(0.100, 0.032, 0.022, 0.0026, M.castAlu);
-  body.position.set(RX, 0.498, s * 0.630);
+  body.position.set(RX, 0.498, s * 0.6100);
   part.add(body);
 
   /* The fins are on the lid, and on the AFT HALF of it, because the forward
@@ -1573,7 +1597,7 @@ function cornerInverterPart(s) {
      volume. Straight down from this pack is 43.3 mm to suspension-9 and
      straight up is the upper-link plate. */
   part.add(lib.fins(0.046, 0.010, 0.018, 8, 0.0018, M.alu)
-    .translateX(RX + 0.021).translateY(0.5185).translateZ(s * 0.630));
+    .translateX(RX + 0.021).translateY(0.5185).translateZ(s * 0.6100));
 
   const board = lib.cbox(0.084, 0.024, 0.005, 0.0012, M.pcb);
   board.position.set(RX, 0.498, s * 0.6165);
@@ -1582,7 +1606,7 @@ function cornerInverterPart(s) {
   /* the ceramic link stands proud on the lid, in the 94 mm of x between
      the two upper links rather than under either of them */
   const capStack = lib.cbox(0.030, 0.013, 0.013, 0.0022, M.plasticLt);
-  capStack.position.set(RX - 0.022, 0.5205, s * 0.628);
+  capStack.position.set(RX - 0.022, 0.5205, s * 0.6080);
   part.add(capStack);
 
   /* Signal connector for the resolver pair and the corner's temperature
@@ -1604,10 +1628,10 @@ function cornerInverterPart(s) {
   for (const adeg of [75, 90, 105]) {
     const a = (adeg / 180) * Math.PI, c = Math.cos(a), n = Math.sin(a);
     part.add(lib.tube([
-      [RX + c * 0.1704, WY + n * 0.1704, s * 0.6560],
-      [RX + c * 0.1380, WY + n * 0.1380, s * 0.6525],
-      [RX + c * 0.1320, WY + n * 0.1320, s * 0.6440],
-      [RX + c * 0.1400, WY + n * 0.1400, s * 0.6340],
+      [RX + c * 0.1704, WY + n * 0.1704, s * 0.6360],
+      [RX + c * 0.1380, WY + n * 0.1380, s * 0.6325],
+      [RX + c * 0.1320, WY + n * 0.1320, s * 0.6240],
+      [RX + c * 0.1400, WY + n * 0.1400, s * 0.6140],
     ], 0.005, M.busbar, false, 14));
   }
 
@@ -1616,13 +1640,13 @@ function cornerInverterPart(s) {
      the pack the only route to it passes through the air spring, forward of
      it the loops have 120 mm of free column to fall into. */
   const dcLanding = lib.cbox(0.032, 0.020, 0.026, 0.0026, M.hv);
-  dcLanding.position.set(RX + 0.058, 0.492, s * 0.624);
+  dcLanding.position.set(RX + 0.058, 0.492, s * 0.604);
   part.add(dcLanding);
   /* two ORed inlets with real backshells, so the two loops arrive at two
      terminations rather than at one orange brick */
   for (const ls of [-1, 1]) {
     const shell = lib.cbox(0.011, 0.014, 0.014, 0.0020, M.hv);
-    shell.position.set(RX + 0.0675, 0.4920, s * (0.624 + ls * 0.0070));
+    shell.position.set(RX + 0.0675, 0.4920, s * (0.604 + ls * 0.0070));
     part.add(shell);
   }
 
@@ -1698,22 +1722,22 @@ function serviceLoopPart(s) {
      loop A: deliberate slack, 70 mm bend radius, 250 mm of cable for 90 mm
      of net span. */
   part.add(lib.tube([
-    [-1.360, 0.420, s * 0.622],
-    [-1.336, 0.394, s * 0.612],
-    [-1.320, 0.438, s * 0.616],
-    [-1.336, 0.476, s * 0.622],
-    [-1.362, 0.492, s * 0.624],
-    [-1.380, 0.494, s * 0.624],
+    [-1.360, 0.420, s * 0.6120],
+    [-1.336, 0.394, s * 0.6120],
+    [-1.320, 0.438, s * 0.6120],
+    [-1.336, 0.476, s * 0.6120],
+    [-1.362, 0.492, s * 0.6120],
+    [-1.380, 0.494, s * 0.6120],
   ], 0.0065, M.hv, false, 20));
 
   /* loop B: its own bend plane, 8 mm outboard of A, same landing */
   part.add(lib.tube([
-    [-1.352, 0.414, s * 0.628],
-    [-1.328, 0.386, s * 0.620],
-    [-1.308, 0.434, s * 0.624],
-    [-1.326, 0.474, s * 0.630],
-    [-1.356, 0.490, s * 0.630],
-    [-1.378, 0.492, s * 0.628],
+    [-1.352, 0.414, s * 0.6120],
+    [-1.328, 0.386, s * 0.6120],
+    [-1.308, 0.434, s * 0.6120],
+    [-1.326, 0.474, s * 0.6120],
+    [-1.356, 0.490, s * 0.6120],
+    [-1.378, 0.492, s * 0.6120],
   ], 0.0065, M.hv, false, 20));
 
   /* purge air line, dry side of the bundle, landing on the carrier boss
@@ -1721,12 +1745,12 @@ function serviceLoopPart(s) {
      The boss moved with the bundle, from 125 degrees around the carrier to
      55, so the umbilical still flexes as one object. */
   part.add(lib.tube([
-    [-1.352, 0.402, s * 0.614],
-    [-1.330, 0.390, s * 0.606],
-    [-1.318, 0.428, s * 0.614],
-    [-1.334, 0.458, s * 0.626],
-    [-1.356, 0.468, s * 0.634],
-    [-1.371, 0.468, s * 0.6405],
+    [-1.352, 0.402, s * 0.6120],
+    [-1.330, 0.390, s * 0.6120],
+    [-1.318, 0.428, s * 0.6120],
+    [-1.334, 0.458, s * 0.6120],
+    [-1.356, 0.468, s * 0.6120],
+    [-1.371, 0.468, s * 0.6120],
   ], 0.004, M.plasticLt, false, 16));
 
   /* THE BUNDLE IS CLIPPED, NOT FLOATING. One 26 mm block called a clamp sat
@@ -1736,13 +1760,13 @@ function serviceLoopPart(s) {
      that hold loop A and loop B to their own bend planes. The 70 mm bend
      radius on the specs table is a design minimum, and a minimum radius on
      a cable nobody has clipped is a wish. */
-  const saddle = lib.cbox(0.030, 0.020, 0.034, 0.0035, M.plastic);
-  saddle.position.set(-1.3160, 0.4340, s * 0.6210);
+  const saddle = lib.cbox(0.030, 0.020, 0.018, 0.0035, M.plastic);   /* Gen 17: 18 mm deep, not 34: it lives in the 22 mm between hv-15's run end and the wheel web */
+  saddle.position.set(-1.3160, 0.4340, s * 0.6120);   /* Gen 17: in the 22 mm between hv-15's run and the wheel web */
   part.add(saddle);
-  const strap = lib.cbox(0.008, 0.030, 0.036, 0.0016, M.plastic);
-  strap.position.set(-1.3040, 0.4340, s * 0.6210);
+  const strap = lib.cbox(0.008, 0.030, 0.020, 0.0016, M.plastic);
+  strap.position.set(-1.3040, 0.4340, s * 0.6120);
   part.add(strap);
-  for (const [cx, cy, cz, cr] of [[-1.3405, 0.4805, 0.6230, 0.0085],
+  for (const [cx, cy, cz, cr] of [[-1.3405, 0.4805, 0.6120, 0.0085],
                                   [-1.3320, 0.3900, 0.6160, 0.0085]]) {
     const clip = zrev([
       [0.0092, -0.0045], [0.0104, -0.0033], [0.0104, 0.0033], [0.0092, 0.0045],
@@ -2109,7 +2133,7 @@ function frontUnitPart() {
      is now on its second consecutive miss in opposite directions. */
   for (const sz of [-1, 1]) {
     const shaftG = halfshaft(sz);
-    shaftG.position.set(C7[0], C7[1], sz * 0.485);
+    shaftG.position.set(C7[0], C7[1], sz * 0.475);   /* Gen 17: (0.6725 + 0.2775) / 2 */
     lib.spin(shaftG, 'z', 30);
     part.add(shaftG);
   }

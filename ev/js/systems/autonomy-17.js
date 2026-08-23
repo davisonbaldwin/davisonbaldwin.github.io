@@ -1,4 +1,50 @@
-/* Autonomy, Gen 13: autonomy-12 with every mount that is a function of a
+/* autonomy-17: THE TRACK. autonomy-16 with the compute coolant saddle, the
+   part that realizes the handover plane to thermal's glycol loop, 20 mm
+   inboard: its outboard face from z -0.6560 to -0.6360, its screws with it,
+   the cold-hose ends at thermal-17's ports 20 mm inboard too (z -0.6050).
+   The rear tire of wheels-17's 1.44 m track stands at |z| 0.6525 at x -1.08
+   to -1.82, which is 3.5 mm inside the saddle's old face at x -1.18 to
+   -1.14; the plane moves 20 so the saddle clears the face by 16.5, and
+   thermal-17 moves its plate to the same plane. design/gen17.md is the
+   brief. Nothing else moves: every sensor, the header, the compute deck,
+   the rear camera autonomy-16 re-seated.
+
+   ── autonomy-16's own header follows, unchanged ──────────────────────
+
+/* autonomy-16: autonomy-15 with ONE placement moved, the rear camera, down
+   45 mm to y 0.790, because body-16's tail shrink brought the Kamm face's
+   crown from 0.887 to 0.828 and the unit autonomy-15 seated at 0.835 read
+   8.5 mm inside the new paint on the first checker run of the gen16 set
+   (design/gen16.md section 12). A planned fork of one placement, in the
+   pattern of autonomy-15: everything below this paragraph is autonomy-15's
+   text and geometry, unchanged, and reads "autonomy-15" where it names
+   itself. ──────────────────────────────────────────────────────────────
+
+ Autonomy, Gen 15: autonomy-13 with the flank camera pads re-seated on
+   body-15's skin, planned before the first floating instance and not after.
+
+   body-15 brings the flank in from |z| 0.600 to 0.560 from the shoulder up.
+   autonomy-13 seats its two flank cameras on that surface at x 0.780 over
+   y 0.935 to 0.955: the pads at |z| 0.5770, their screws' heads to 0.5891
+   against a skin that measured 0.5900 at the pad's center. Ray-swept on the
+   built body-15, the skin at (0.780, 0.945) is 0.5536, at the pad's bottom
+   (0.935) 0.5548 and at its top (0.955) about 0.5525; the flank tumbles
+   0.12 mm per mm of height here where it tumbled 0.24 on body-13. So the
+   pads move 37.4 mm inboard to |z| 0.5396, the screws to 0.5436 with their
+   heads 2.0 mm off the skin at the pad's center and 0.8 at its top (a draft
+   1 mm further out put the top head 0.7 mm through the skin, where the
+   flank tumbles, and the checker said so), and the camera body with them
+   to 0.5106, still looking forward and outboard through its own aperture. The flank separation falls from 1.096 m to 1.023, 6.7 percent,
+   and the panel says so. Nothing else moves: the roof antennas on a crown
+   that did not move, the header frame on a canopy that did not, the DMS
+   on the cowl member, the radars in a held nose and a held tail, the rear
+   camera on a Kamm that did not move, the compute on the tail deck. Same
+   lanes, same duty, same 192 W: js/efficiency.js carries -75 W for this id
+   as for autonomy-13.
+
+   autonomy-13's header follows as the record of the re-seat on the floor. */
+
+/* (autonomy-13) Autonomy, Gen 13: autonomy-12 with every mount that is a function of a
    body surface re-seated against body-13, which brings the greenhouse, the
    cowl skin and the tail crown down 65 mm (design/gen13.md). Everything
    else, the triplex compute, the radar ring, the cameras' shared header, the
@@ -260,8 +306,8 @@ const DUTY = { cruise: 0.58, elevated: 0.30, dense: 0.12 };
    them, which is corroboration across modalities and nothing cleverer. */
 
 export const SYSTEM = {
-  id: 'autonomy-13',
-  name: 'Autonomy · Gen 13 re-seat',
+  id: 'autonomy-17',
+  name: 'Autonomy · Gen 17 the track',
   color: 0x6ea8ff,
   explode: [0, 2.3, 0],
   /* THE ONE PLANE THIS MODULE HAS TO MEET, and it is met rather than
@@ -276,12 +322,12 @@ export const SYSTEM = {
      and the plane is signed, which is the convention thermal-11 uses. */
   interfaces: {
     'compute-coolant-inboard': {
-      kind: 'face', axis: 'z', at: -0.6560, tol: 0.003,
+      kind: 'face', axis: 'z', at: -0.6360, tol: 0.003,
       part: 'compute', mirrored: false, extent: 'min',
       note: 'the saddle clamp that carries this module\'s two coolant hoses onto thermal-11\'s bulkhead. thermal-11/glycol-loop declares the same plane on the same axis with the same sign.',
     },
   },
-  blurb: 'The asymmetric triplex carries whole: one full-rate lane, one diverse checker, one in retention, 192 W typical and the 640 W peak held. Everything else is new, because every sensor on Gen 10 is aimed at a body 680 mm wider than this one. The compute leaves the centerline it shared with the rear occupant and goes behind them; the driver monitor leaves the header, because a tandem driver sits on the axis 260 mm from it; and the two baselines that did not change did not change for reasons that are measurements rather than luck.',
+  blurb: 'autonomy-16 with the compute coolant saddle 20 mm inboard (the handover plane z -0.6560 to -0.6360) because the rear tire of the 1.44 m track stands 3.5 mm inside its old face; the hose ends follow thermal-17\'s ports. Nothing else moves.\n\n' + 'autonomy-16: autonomy-13 with the two flank cameras re-seated on body-15\'s skin, 36 mm inboard, planned as a fork and not discovered from a floating instance; the pads 2 mm off a flank that now measures 0.554 at the pad where it measured 0.590, the separation 1.023 m against 1.096. Nothing else moves and nothing electrical changes: -75 W carried.\n\n' + 'The asymmetric triplex carries whole: one full-rate lane, one diverse checker, one in retention, 192 W typical and the 640 W peak held. Everything else is new, because every sensor on Gen 10 is aimed at a body 680 mm wider than this one. The compute leaves the centerline it shared with the rear occupant and goes behind them; the driver monitor leaves the header, because a tandem driver sits on the axis 260 mm from it; and the two baselines that did not change did not change for reasons that are measurements rather than luck.',
   parts: {
     compute: {
       name: 'Asymmetric triplex compute',
@@ -295,7 +341,7 @@ export const SYSTEM = {
         ['Mount', 'Slung under the cant rail on four measured shoes'],
         ['Coolant', '1.517 m of hose to thermal-11\'s declared |z| 0.6560'],
       ],
-      how: 'The machine is autonomy-10\'s and the argument for it is autonomy-10\'s. Three independent 500 TOPS SoCs on one cold plate, each with its own DRAM and its own pair of diode-ORed 48 V feeds. Lane A runs the primary stack at the full 20 Hz tick. Lane B runs a separately written stack, distilled and quantized into a working set resident in its own on-die SRAM, at 10 Hz on a quarter of the input pixel and point rate. Lane C sits in retention with clocks gated, SRAM held and DRAM in self-refresh, and comes to full rate in 60 ms when the first two disagree or the scene crosses an escalation trigger. Over the mixed cycle this module assumes 58 percent cruise, 30 percent elevated and 12 percent dense, and the ledger that turns that into 192 W is unchanged: lane B to a reduced-rate checker is 72 W, lane C to retention in cruise is 88 W, foveated ingest on whichever lanes are at full rate is 28 W, 188 W of a 240 W target with the module missing by 52 W and saying so.\n\nWhat moved is the address, and the partner said so first. autonomy-10\'s plate sits at x -0.795 to -0.322, y 0.3895 to 0.4661, |z| up to 0.200, which its own panel calls "under the rear seat". On a tandem there is no under-the-rear-seat: thermal-11 puts the two occupants\' hip stations at the built x 0.700 and -0.100 and design/gen11.md section 5 puts the seat pan 150 mm over a lid at y 0.3020, so that box is occupied from y 0.302 to 0.452 by the rear occupant\'s seat and above that by the rear occupant. thermal-11\'s own header reaches the same conclusion in one line, "autonomy-4\'s plate is on the centerline inside the rear occupant", and it acted on it: it declines to draw the three spigots thermal-9 drove into autonomy-4 and ends its glycol run on a bulkhead plate instead.\n\nSo the plate goes behind the rear occupant, and the place was found by sweeping rather than by choosing. A 20 mm occupancy voxel grid over body-11, battery-11, hv-11, thermal-11, wheels-11, drivetrain-9 and suspension-9 leaves exactly one volume in this car big enough for a 420 by 300 mm plate and not inside somebody: the tail behind the rear occupant and over the rear casting. The box x -1.575 to -1.070, y 0.668 to 0.756, |z| under 0.210 contains zero partner vertices. That it is behind the occupant is now a measurement rather than a derivation, because interior-11 landed: its rear seat cushion ends at x -1.0944, the cold plate\'s forward edge is x -1.5262, and the assembly\'s own forward-most feature, the coolant boss at x -1.1710, clears the cushion by 76.6 mm.\n\nThe height is interior-11\'s to give and it took most of it. Standing the plate on the cant rail at y 0.780 to 0.845 is the obvious drawing and it does not survive the luggage. It was clear when it was drawn and it was 142.65 mm inside interior-11/luggage over 1,277 triangle pairs a few hours later, because that part is a box from x -1.3950 to -1.1499, y 0.7750 to 1.1132, |z| 0.4050 and it did not exist yet. The whole assembly therefore hangs under the rail rather than standing on it, y 0.6745 to 0.7511 with the mounting straps reaching 0.7600, which leaves 15.0 mm to the luggage floor. It still takes about 40 liters of what design/gen11.md section 9 item 3 already lists as luggage volume this generation deletes, and it now takes it from underneath rather than out of the middle. That is a real cost and it is named rather than absorbed.\n\nThe mount is four measured points and not A plane. body-11\'s tail cant rail is a rounded section whose top varies 21 mm over 300 mm of x, so a flat shoe laid on its nominal height touches at one point and floats elsewhere, which is design/crispness.md\'s hardware-on-a-groove-floor lesson and autonomy-10\'s own ROOF_SEAT lesson in a different place. Each shoe is seated on the highest cage vertex anywhere under its own shoe and arm strip, ray-swept at 2 mm: 0.7540 at (-1.234, |z| 0.455) and 0.7456 at (-1.398, |z| 0.435), and both sit on 1.5 mm of shim rather than on a fit. The footprint matters as much as the point: a 24 mm box scanned around a chosen station, rather than the strip the hardware actually covers, misses the crown at the aft foot by 1.1 mm and puts 32 triangle pairs 5.78 mm into body-11/cage. From each shoe an arm reaches inboard to |z| 0.402, which is inside the rail\'s own inner face at 0.4334 and 0.4153, and a strap drops from there to a transverse channel whose top face is the plate underside at y 0.6745.\n\nThe coolant is the one joint this module does not close, deliberately. thermal-11 declares `compute-coolant-inboard` at |z| 0.6560 and builds a bulkhead plate at x -0.955 to -0.845 with two ports on the axis (-0.900, z -0.6250). This module runs 1.05 m of hose from the plate down the driver flank to those two ports and stops 1.0 mm short of them, and it does not declare the key. Both decisions have measured reasons and the fail list carries them.',
+      how: 'Gen 17: the coolant saddle on the sill wall, the part that realizes the handover plane to thermal\'s loop, comes 20 mm inboard to z -0.6360 because wheels-17\'s rear tire face at |z| 0.6525 stood 3.5 mm inside its old face; the two cold-hose ends land on thermal-17\'s ports at -0.6050. The deck, the SoCs, the plate and the sensors do not move.\n\nThe machine is autonomy-10\'s and the argument for it is autonomy-10\'s. Three independent 500 TOPS SoCs on one cold plate, each with its own DRAM and its own pair of diode-ORed 48 V feeds. Lane A runs the primary stack at the full 20 Hz tick. Lane B runs a separately written stack, distilled and quantized into a working set resident in its own on-die SRAM, at 10 Hz on a quarter of the input pixel and point rate. Lane C sits in retention with clocks gated, SRAM held and DRAM in self-refresh, and comes to full rate in 60 ms when the first two disagree or the scene crosses an escalation trigger. Over the mixed cycle this module assumes 58 percent cruise, 30 percent elevated and 12 percent dense, and the ledger that turns that into 192 W is unchanged: lane B to a reduced-rate checker is 72 W, lane C to retention in cruise is 88 W, foveated ingest on whichever lanes are at full rate is 28 W, 188 W of a 240 W target with the module missing by 52 W and saying so.\n\nWhat moved is the address, and the partner said so first. autonomy-10\'s plate sits at x -0.795 to -0.322, y 0.3895 to 0.4661, |z| up to 0.200, which its own panel calls "under the rear seat". On a tandem there is no under-the-rear-seat: thermal-11 puts the two occupants\' hip stations at the built x 0.700 and -0.100 and design/gen11.md section 5 puts the seat pan 150 mm over a lid at y 0.3020, so that box is occupied from y 0.302 to 0.452 by the rear occupant\'s seat and above that by the rear occupant. thermal-11\'s own header reaches the same conclusion in one line, "autonomy-4\'s plate is on the centerline inside the rear occupant", and it acted on it: it declines to draw the three spigots thermal-9 drove into autonomy-4 and ends its glycol run on a bulkhead plate instead.\n\nSo the plate goes behind the rear occupant, and the place was found by sweeping rather than by choosing. A 20 mm occupancy voxel grid over body-11, battery-11, hv-11, thermal-11, wheels-11, drivetrain-9 and suspension-9 leaves exactly one volume in this car big enough for a 420 by 300 mm plate and not inside somebody: the tail behind the rear occupant and over the rear casting. The box x -1.575 to -1.070, y 0.668 to 0.756, |z| under 0.210 contains zero partner vertices. That it is behind the occupant is now a measurement rather than a derivation, because interior-11 landed: its rear seat cushion ends at x -1.0944, the cold plate\'s forward edge is x -1.5262, and the assembly\'s own forward-most feature, the coolant boss at x -1.1710, clears the cushion by 76.6 mm.\n\nThe height is interior-11\'s to give and it took most of it. Standing the plate on the cant rail at y 0.780 to 0.845 is the obvious drawing and it does not survive the luggage. It was clear when it was drawn and it was 142.65 mm inside interior-11/luggage over 1,277 triangle pairs a few hours later, because that part is a box from x -1.3950 to -1.1499, y 0.7750 to 1.1132, |z| 0.4050 and it did not exist yet. The whole assembly therefore hangs under the rail rather than standing on it, y 0.6745 to 0.7511 with the mounting straps reaching 0.7600, which leaves 15.0 mm to the luggage floor. It still takes about 40 liters of what design/gen11.md section 9 item 3 already lists as luggage volume this generation deletes, and it now takes it from underneath rather than out of the middle. That is a real cost and it is named rather than absorbed.\n\nThe mount is four measured points and not A plane. body-11\'s tail cant rail is a rounded section whose top varies 21 mm over 300 mm of x, so a flat shoe laid on its nominal height touches at one point and floats elsewhere, which is design/crispness.md\'s hardware-on-a-groove-floor lesson and autonomy-10\'s own ROOF_SEAT lesson in a different place. Each shoe is seated on the highest cage vertex anywhere under its own shoe and arm strip, ray-swept at 2 mm: 0.7540 at (-1.234, |z| 0.455) and 0.7456 at (-1.398, |z| 0.435), and both sit on 1.5 mm of shim rather than on a fit. The footprint matters as much as the point: a 24 mm box scanned around a chosen station, rather than the strip the hardware actually covers, misses the crown at the aft foot by 1.1 mm and puts 32 triangle pairs 5.78 mm into body-11/cage. From each shoe an arm reaches inboard to |z| 0.402, which is inside the rail\'s own inner face at 0.4334 and 0.4153, and a strap drops from there to a transverse channel whose top face is the plate underside at y 0.6745.\n\nThe coolant is the one joint this module does not close, deliberately. thermal-11 declares `compute-coolant-inboard` at |z| 0.6560 and builds a bulkhead plate at x -0.955 to -0.845 with two ports on the axis (-0.900, z -0.6250). This module runs 1.05 m of hose from the plate down the driver flank to those two ports and stops 1.0 mm short of them, and it does not declare the key. Both decisions have measured reasons and the fail list carries them.',
       why: 'Moving a cold plate is not an architecture change and this panel does not pretend it is. What is worth arguing is the claim underneath it, that a package generation can invalidate a mount without touching a single line of the module that owns it. That is exactly what happened here and it happened silently: autonomy-10 builds without error on this preset, reports the correct triangle count, passes its own smoke test, and puts 12.5 kg of computer inside a passenger. Nothing in a module can see that, because the occupant lives in a module that does not exist yet and the volume it needs is described in a design document.\n\nThe general form is the one SPEC.md keeps finding: a check is only as good as the shape of fault it can represent, and there is still no check on this car that can represent "this part is where a person goes". The nearest thing is tools/occupant.sh, and it tests one occupant against one liner. What this module can do instead is refuse to place anything by coordinate, publish the sweep that found each volume, and say which volumes are empty of geometry but not empty of people. The tail deck is empty of both, measured, and that is why it is the only place the plate went.',
       fail: [
         'The coolant joint is 1.0 mm of air and only one of the two ports could be reached at all. thermal-11 draws its bulkhead ports as two vertical r 0.007 stubs on one axis at (-0.900, z -0.6250), 36 mm apart in y. The upper one has a free top face and the feed lands on it. The lower one has no accessible face: above it is the upper port, below it is a plate underside at y 0.494 with 12 mm of air to hv-11\'s by-wire feeds at 0.4820, and inboard is the plate\'s own face at z -0.632. So the return lands on the plate top beside it instead. Two ports side by side in x, or one pair of horizontal spigots, makes both reachable, and that is thermal-11\'s geometry to change rather than this module\'s. Both landings are 1.0 mm standoffs rather than sleeved joints, because DECLARED_JOINTS ships empty on the argument that a declaration is an agreement between two modules and not a way to make a red line go away. autonomy-10 took the other option and carries 24 undeclared triangle pairs at 2.29 mm from Gen 4 for it.',
@@ -337,11 +383,11 @@ export const SYSTEM = {
         ['Imagers', '5x 12 MP HDR + 1 thermal, gen-locked'],
         ['Thermal', '640 x 512 microbolometer, 8 to 14 um'],
         ['Dynamic range', '140 dB split pixel'],
-        ['Flank separation', '1.096 m, against 1.800 on Gen 10'],
+        ['Flank separation', '1.023 m on body-15 (autonomy-13: 1.096; Gen 10: 1.800)'],
         ['Primary ingest', 'Foveated: full rate on the ROI, quarter elsewhere'],
         ['Checker ingest', 'Quarter rate, whole field'],
       ],
-      how: 'The imagers and the read-out contract are autonomy-10\'s: a 12 MP wide whose center crop reproduces a 50 degree main in software, a telephoto that resolves a vehicle at 300 m, two wide flank units, a rear camera, and a long-wave thermal imager in the nose. The primary lane ingests a foveated frame at 0.3625 of the pixel rate and the checker takes a quarter-rate whole field. None of that is reopened.\n\nThe forward wedge moves 2 mm and that is the whole of it. autonomy-10 dropped the shared header casting to y 1.290 to get the wedge out of body-9\'s canopy, and body-11\'s roof is 38 mm lower, so the first question was whether the whole assembly had to be redrawn. It did not, because the header sits at x 0.42 where the canopy is falling toward the windshield rather than at the crown: ray-swept, the glass measures 1.3189 at (0.3925, 0) and 1.3166 at (0.3925, 0.060). What it did need was 2 mm, and the reason is a graze rather than an intrusion: at 1.290 the wedge\'s upper front corner crosses body-11/skin by 0.09 mm over 6 triangle pairs at (0.429, 1.304, 0.057), which the shipped predicate counts as a penetrating part pair and which no amount of prose makes zero. At 1.288 that corner clears by 2.1 mm and the binding corner at the back of the wedge clears the canopy by 9.9 mm, against 7.74 mm on body-9. Move the header 60 mm forward instead and none of it works: the glass is 1.2940 at x 0.60.\n\nThe flank pair moves 352 mm inboard and it is the mount that changes, not the camera. Gen 10 stands them at (0.1, 1.0, plus and minus 0.9) on a body whose door skin was 71 mm outboard of the mount. On body-11 that is open air: tools/check-interfaces.sh reports both instances floating at 273.6 mm from body-11/doors, which is the exact failure mode HANDOFF.md records against three autonomy-4 instances and the reason this file measures every mount. The new station is x 0.780, which is the mirror position just ahead of the front occupant\'s shoulder at the built hip station of 0.700, and the flank there measures |z| 0.5901 at y 1.010. The surface tumbles 0.24 mm per mm of height through the camera\'s own 30 mm, from 0.5951 at y 0.990 to 0.5855 at 1.030, so the mount pads are 20 mm tall rather than 40 and their outer faces sit on |z| 0.5891, 1.0 mm off the skin at the pad\'s own height instead of 4 mm off at one end and buried at the other.\n\nThe thermal imager comes back 3 mm. body-11\'s nose at (y 0.530, z 0) measures x 2.3630 against body-9\'s 2.375, so the germanium window at Gen 10\'s station would stand 2.0 mm off the skin instead of the 3.30 it was drawn for. The casing moves to x 2.335 and the window face to 2.358, which is 5.0 mm of clear air.\n\nThe rear camera moves aft and down. Gen 10 sits at (-2.24, 0.96) under body-9\'s kamm flap; body-11\'s flap spans x -2.3672 to -2.1827 at y 0.9444 to 1.0182 and its tail cone measures x -2.4405 at (y 0.900, z 0), so the unit went to (-2.410, 0.900, 0) on Gen 11, and this fork carries it to (-2.658, 0.900, 0) against body-12\'s tail face at -2.688: the same 12.5 mm standoff off a face that moved 248 mm aft, which is the whole reason autonomy-12 exists as a module.',
+      how: 'Gen 16: the rear camera comes down 45 mm to y 0.790, under a Kamm crown that body-16 brought from 0.887 to 0.828 when it shrank the tail\'s upper section; its nozzle tops out 13 mm under the new crown and its body stands 7.5 mm over the rear light band. Nothing else in this module moves, and what follows is autonomy-15\'s account.\n\nThe imagers and the read-out contract are autonomy-10\'s: a 12 MP wide whose center crop reproduces a 50 degree main in software, a telephoto that resolves a vehicle at 300 m, two wide flank units, a rear camera, and a long-wave thermal imager in the nose. The primary lane ingests a foveated frame at 0.3625 of the pixel rate and the checker takes a quarter-rate whole field. None of that is reopened.\n\nThe forward wedge moves 2 mm and that is the whole of it. autonomy-10 dropped the shared header casting to y 1.290 to get the wedge out of body-9\'s canopy, and body-11\'s roof is 38 mm lower, so the first question was whether the whole assembly had to be redrawn. It did not, because the header sits at x 0.42 where the canopy is falling toward the windshield rather than at the crown: ray-swept, the glass measures 1.3189 at (0.3925, 0) and 1.3166 at (0.3925, 0.060). What it did need was 2 mm, and the reason is a graze rather than an intrusion: at 1.290 the wedge\'s upper front corner crosses body-11/skin by 0.09 mm over 6 triangle pairs at (0.429, 1.304, 0.057), which the shipped predicate counts as a penetrating part pair and which no amount of prose makes zero. At 1.288 that corner clears by 2.1 mm and the binding corner at the back of the wedge clears the canopy by 9.9 mm, against 7.74 mm on body-9. Move the header 60 mm forward instead and none of it works: the glass is 1.2940 at x 0.60.\n\nThe flank pair moves 352 mm inboard and it is the mount that changes, not the camera. Gen 10 stands them at (0.1, 1.0, plus and minus 0.9) on a body whose door skin was 71 mm outboard of the mount. On body-11 that is open air: tools/check-interfaces.sh reports both instances floating at 273.6 mm from body-11/doors, which is the exact failure mode HANDOFF.md records against three autonomy-4 instances and the reason this file measures every mount. The new station is x 0.780, which is the mirror position just ahead of the front occupant\'s shoulder at the built hip station of 0.700, and the flank there measures |z| 0.5901 at y 1.010. The surface tumbles 0.24 mm per mm of height through the camera\'s own 30 mm, from 0.5951 at y 0.990 to 0.5855 at 1.030, so the mount pads are 20 mm tall rather than 40 and their outer faces sit on |z| 0.5891, 1.0 mm off the skin at the pad\'s own height instead of 4 mm off at one end and buried at the other.\n\nThe thermal imager comes back 3 mm. body-11\'s nose at (y 0.530, z 0) measures x 2.3630 against body-9\'s 2.375, so the germanium window at Gen 10\'s station would stand 2.0 mm off the skin instead of the 3.30 it was drawn for. The casing moves to x 2.335 and the window face to 2.358, which is 5.0 mm of clear air.\n\nThe rear camera moves aft and down. Gen 10 sits at (-2.24, 0.96) under body-9\'s kamm flap; body-11\'s flap spans x -2.3672 to -2.1827 at y 0.9444 to 1.0182 and its tail cone measures x -2.4405 at (y 0.900, z 0), so the unit went to (-2.410, 0.900, 0) on Gen 11, and this fork carries it to (-2.658, 0.900, 0) against body-12\'s tail face at -2.688: the same 12.5 mm standoff off a face that moved 248 mm aft, which is the whole reason autonomy-12 exists as a module.',
       why: 'Consolidation against redundancy was Gen 4\'s trade and foveation was Gen 10\'s, and neither is reopened. What this generation has to answer for is the geometry, because a 1.20 m car is a smaller instrument.\n\nThe flank pair is the loss and it is measurable. Their separation goes from 1.800 m to 1.096 m, both figures taken off the mount station each module states, which is a 39.1 percent cut. Two cameras cross-fixing a target abeam the car resolve range as the baseline over the angular disparity, so at a fixed per-camera bearing noise the same target is resolved 1.64 times worse in range than it was on Gen 10. That is a ratio and not an accuracy claim, because this project has never published a bearing noise figure and inventing one to multiply it by would be arithmetic dressed as evidence.\n\nThe two baselines that did not move are the more interesting half, because both look like they should have. The lidar pair holds 0.600 m because it was never a function of the flank: the nose half-width at the puck station measures |z| 0.5103 at (2.320, 0.615) and the pucks sit at 0.300, so what binds them is the light band aperture, and a tandem narrows the greenhouse and not the nose. The GNSS pair holds 0.650 m because its baseline is longitudinal, and a car does not get shorter between the ears when it gets narrower between the shoulders. Two of the four baselines on this car survived the generation for reasons that are measurements, and saying so is what stops the width from being blamed for everything.',
       fail: [
         'The flank pair is 1.096 m apart instead of 1.800, and the 1.64x cross-range penalty falls exactly where a lane-change decision is made. The stack leans harder on corner radar, which measures range directly and does not care about baseline, and the honest cost is that a camera-only fallback abeam the car is now the weakest fix on the vehicle.',
@@ -835,7 +881,7 @@ export function build() {
     const bp = lib.part('cameras', [0, 0.2, 0.5 * s]);
     const bcam = camUnit(0.036, 0.030, 0.024, 0.009, 0.022);
     bcam.rotation.y = -1.15 * s;
-    bcam.position.set(0.780, 0.945, 0.5480 * s);
+    bcam.position.set(0.780, 0.945, 0.5106 * s);   /* Gen 15: 37.4 mm inboard with body-15's flank */
     bp.add(bcam);
     /* Two pads rather than one on the axis, because the camera's own harness
        tail leaves the back face on that axis. They are 20 mm tall, not 40:
@@ -844,33 +890,39 @@ export function build() {
     const foot = new THREE.Group();
     for (const fx of [1, -1]) {
       const pad = lib.cbox(0.010, 0.020, 0.0080, 0.0009, M.castAlu);
-      pad.position.set(0.780 + fx * 0.013, 0.945, s * 0.5770);
+      pad.position.set(0.780 + fx * 0.013, 0.945, s * 0.5396);
       foot.add(pad);
-      foot.add(screw([0.780 + fx * 0.013, 0.945, s * 0.5810], [0, 0, s], 0.0024, M.steel));
+      foot.add(screw([0.780 + fx * 0.013, 0.945, s * 0.5436], [0, 0, s], 0.0024, M.steel));
     }
     bp.add(foot);
     sys.add(bp);
   }
 
-  /* Rear camera in the Kamm face, 65 mm lower than autonomy-12 seated it.
-     body-13's tail face measures x -2.6879 at (y 0.835, z 0), the same plane
-     body-12 presented at 0.900 (the Kamm cap is a shallow cone and this is
-     its center line), and its kamm flap now spans y 0.893 to 0.955, so the
-     unit sits under the flap and behind nothing with the same 12.5 mm lens
-     standoff autonomy-11 measured against body-11. */
+  /* Rear camera in the Kamm face, GEN 16: 45 mm lower again, because body-16
+     shrinks the tail's upper section from x -2.300 aft (design/gen16.md
+     section 4) and the Kamm face's crown comes down from y 0.887 to 0.828.
+     autonomy-15 seated the unit at 0.835 with the washer nozzle to 0.860;
+     on body-16 that is 8.5 mm inside the paint, and tools/check-interfaces.sh
+     said so on the first run of the gen16 set. The unit sits at y 0.790 now:
+     its body spans 0.7775 to 0.8025, the nozzle tops out at 0.815, 13 mm
+     under the new crown, and the rear light band's top edge is at 0.785, so
+     the lens looks out over the lamp by 7.5 mm rather than through it. Same
+     x, same 12.5 mm standoff class off a cap that is a shallow cone about
+     this center line; the flap above it is at 0.92 now and it is still under
+     the flap and behind nothing. */
   const camRear = lib.part('cameras', [-0.5, 0.25, 0]);
   const rc = camUnit(0.035, 0.025, 0.02, 0.007, 0.018);
   rc.rotation.y = Math.PI;
-  rc.position.set(-2.658, 0.835, 0);
+  rc.position.set(-2.658, 0.790, 0);
   camRear.add(rc);
   /* Washer nozzle ABOVE the lens, carried from Gen 10 for the reason Gen 10
-     gives: hung underneath it lands in the flap below. */
+     gives: hung underneath it lands in the lamp below. */
   const nozBody = lib.cbox(0.012, 0.009, 0.010, 0.002, M.plasticLt);
-  nozBody.position.set(-2.6505, 0.8555, 0.022);
+  nozBody.position.set(-2.6505, 0.8105, 0.022);
   camRear.add(nozBody);
   const noz = lib.cyl(0.0022, 0.011, M.plasticLt, 8);
   noz.rotation.z = Math.PI / 2;
-  noz.position.set(-2.6620, 0.8555, 0.022);
+  noz.position.set(-2.6620, 0.8105, 0.022);
   camRear.add(noz);
   sys.add(camRear);
 
@@ -1309,9 +1361,9 @@ export function build() {
       [-1.1600, 0.5350, -0.5800],
       [-1.0600, 0.5350, -0.5800],
       [-0.9400, 0.5620, -0.5800],
-      [-0.9100, 0.5730, -0.6180],
-      [-0.9000, 0.5810, -0.6250],
-      [-0.9000, 0.5670, -0.6250],
+      [-0.9100, 0.5730, -0.5980],
+      [-0.9000, 0.5810, -0.6050],
+      [-0.9000, 0.5670, -0.6050],
     ] },
     { mat: M.coolantHot, r: 0.0060, pts: [
       [-1.1600, 0.6980, -0.1820],
@@ -1320,9 +1372,9 @@ export function build() {
       [-1.1600, 0.5500, -0.5800],
       [-1.0600, 0.5500, -0.5800],
       [-0.9400, 0.5780, -0.5800],
-      [-0.9000, 0.5780, -0.6100],
-      [-0.8700, 0.5780, -0.6350],
-      [-0.8600, 0.5710, -0.6440],
+      [-0.9000, 0.5780, -0.5900],
+      [-0.8700, 0.5780, -0.6150],
+      [-0.8600, 0.5710, -0.6240],
     ] },
   ];
   for (const H of HOSE) {
@@ -1344,10 +1396,10 @@ export function build() {
     comp.add(clip);
   }
   const saddle = lib.cbox(0.040, 0.060, 0.020, 0.0018, M.castAlu);
-  saddle.position.set(-1.160, 0.5240, -0.6460);
+  saddle.position.set(-1.160, 0.5240, -0.6260);   /* Gen 17: 20 mm inboard, faces -0.616 and -0.636, off the tire at 0.6525 */
   comp.add(saddle);
   for (const sy of [1, -1]) {
-    comp.add(screw([-1.160, 0.5240 + sy * 0.022, -0.6340], [0, 0, 1], 0.0028, M.steel));
+    comp.add(screw([-1.160, 0.5240 + sy * 0.022, -0.6140], [0, 0, 1], 0.0028, M.steel));
   }
   for (const H of HOSE) {
     const strap = lib.cbox(0.010, 0.014, 0.030, 0.0010, M.plasticLt);

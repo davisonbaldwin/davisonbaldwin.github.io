@@ -42,7 +42,7 @@ export const SYSTEM = {
       specs: [
         ['Ancestor', 'interior.js displays, 8 kg'],
         ['Center panel', '15 in on its own pedestal, bonded, 1000 cd/m2'],
-        ['Health band', '1.30 m strip on the ASIL-D island'],
+        ['Health band', '1.30 m strip on the asil-d island'],
         ['Drivers', 'Two cores, one per hv-4 control ring direction'],
         ['Handover', 'Counts down autonomy-4’s 10 s budget'],
         ['Maturity', 'Production practice'],

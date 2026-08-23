@@ -1954,7 +1954,7 @@ function init() {
       hoverIdx = idx;
       hoverNear = p2.near || idx >= 0;
       const want = p2.mini ? ['RETURN HOME', ACC]
-        : p2.core ? ['THE MACHINE \u00b7 LOCKED', '#d4a24c']
+        : p2.core ? ['THE MACHINE', '#d4a24c']
         : p2.star ? ['ENTER THE UNIVERSE', '#7fb4ff']
         : p2.about ? ['ABOUT DAVIS · OPEN', '#ffd9a0']
         : idx >= 0 ? [WORLDS[idx].name + ' · ENTER', capColors[idx]]

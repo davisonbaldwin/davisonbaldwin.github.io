@@ -80,9 +80,10 @@ export const VIEWS = {
              paragraphs are actually about.
    `cite`    the document in design/ the prose comes from. Printed, because a
              claim about engineering that cannot be traced is decoration.
-   `xray`    fade the shell for this stop. Three of the thirteen ask for it,
-             and they are the three whose argument is INSIDE the car: the
-             nervous system, the 190 kWh pack and the tandem package. On any
+   `xray`    fade the shell for this stop. Five of the nineteen ask for it,
+             and they are the five whose argument is INSIDE the car: the
+             nervous system, the 190 kWh pack, the tandem package, the
+             corner and the track. On any
              of those the body is itself a changed slot, so it stays solid
              under the compare ghosting and hides the thing being discussed.
              The tour restores whatever the x-ray switch was set to when it
@@ -90,12 +91,12 @@ export const VIEWS = {
 export const STOPS = [
   {
     id: 'open',
-    title: 'Eleven rungs',
+    title: 'Seventeen rungs',
     theme: 'what this is',
     gen: 'gen1', against: null, view: 'hero',
     cite: 'design/app-brief.md',
     paras: [
-      'This model is a ladder. Eleven generations of one car, each strictly better than the last, with the engineering argument for every step written into the parts themselves.',
+      'This model is a ladder. Seventeen generations of one car, each strictly better than the last, with the engineering argument for every step written into the parts themselves.',
       'The tour walks it end to end. At each rung the car becomes that generation, the slots that changed stay lit while the ones that carry fade back, and every figure below is computed live from the same model the readout reads. Nothing here is typed in.',
     ],
   },
@@ -108,7 +109,7 @@ export const STOPS = [
     cite: 'design/gen3.md',
     paras: [
       'Gen 1 is deliberately ordinary: an NMC 4680 pack, a radial permanent-magnet motor, a stamped and cast body. Nothing about it is clever, and that is its job. It is the reference every rung after it is measured against, so it has to be honest rather than good.',
-      '{range} at {rate}. Those two numbers are what the next ten generations move.',
+      '{range} at {rate}. Those two numbers are what the next sixteen generations move.',
     ],
   },
 
@@ -236,15 +237,87 @@ export const STOPS = [
   },
 
   {
+    id: 'gen12',
+    title: 'The shape',
+    theme: 'Gen 12',
+    gen: 'gen12', against: 'gen11', view: 'rearQ', read: 'body-12',
+    cite: 'design/gen12.md',
+    paras: [
+      'Gen 11 bought its area with a package and paid for it in drag: the re-zeroed coefficient, a drag buildup off the built triangles with every empirical term published and identical on every rung, read it as the worst shape on the ladder. The wide pan stopped at x -1.07 in a 59 degree plan break and the rear tires stood in clean air, a fifth of the car\'s drag on their own.',
+      'Gen 12 keeps the package and redraws the rear around it: the shoulder carried aft over the rear wheels and a tail 740 mm longer, drawn station by station against the separation walk so the flow reaches the Kamm face instead of leaving the body behind the cabin. {dRange} on {slots}, and {dArea} of area, because an afterbody cannot move frontal area and this one does not pretend to.',
+    ],
+  },
+
+  {
+    id: 'gen13',
+    title: 'The floor',
+    theme: 'Gen 13',
+    gen: 'gen13', against: 'gen12', view: 'side', read: 'body-13',
+    cite: 'design/gen13.md',
+    paras: [
+      'The roof was floored by a seat riser, not by the pack. The cabin had sat on a 150 mm pan on tracks over a battery lid that was already the floor; put both occupants on the lid as shells and the whole greenhouse comes down 65 mm with the head under it, at the same 50 mm of clearance. The first fairing over a steered wheel arrives on the same rung, a pod on the knuckle that turns with the tire.',
+      'It is the rung the five-column rule starts on: mass, area and drag coefficient against the rung below, consumption and range against the best on the ladder, and every kilogram derived off drawn geometry. {dRange}, {dArea}, {dMass}, and the method\'s third revision on the wheel term, which re-priced every rung before this one and is said so.',
+    ],
+  },
+
+  {
+    id: 'gen14',
+    title: 'The outline',
+    theme: 'Gen 14',
+    gen: 'gen14', against: 'gen13', view: 'frontQ', read: 'wheels-14',
+    cite: 'design/gen14.md',
+    paras: [
+      'What the frontal outline of Gen 13 still carried that nothing needed: a greenhouse drawn to the flank it stood on instead of the head it held, and a rear tire whose crown the spat wall, edge-on to the air, never hid. The greenhouse comes in to the head; a crown band fairs each rear wheel on its own upright; the front pants come down to the disc floor.',
+      'The trap shows for the second time and is priced first: an area lever alone raises the coefficient, because friction and the wheel term are charged against a smaller reference area, so the area lever and the coefficient lever are one rung or neither. {dRange} on {slots}, {dArea}, and the hand wheel replaced by the by-wire yoke because the low sightline was the dashboard\'s and the wheel was merely first in the line.',
+    ],
+  },
+
+  {
+    id: 'gen15',
+    title: 'The flank',
+    theme: 'Gen 15',
+    gen: 'gen15', against: 'gen14', view: 'front', read: 'body-15',
+    cite: 'design/gen15.md',
+    paras: [
+      'The last dimension of the outline set by nothing the occupant needs. The probe of the flank band found a recovery core, a charge port, two zone drops, two camera pads and the body\'s own pillars beside a 0.52 m pair of shoulders in a 1.20 m cabin, so the cabin comes in to 1.12 m from the shoulder up at every station, and the front casting\'s corners set the number. The cowl break closes to the 15 degrees the method scores at zero.',
+      'Every tenant a planned fork, and two tools the rung owed: the wheel envelope, which sweeps a fairing through lock, rear steer, bump and rebound against every partner\'s surface and found 1.7 mm at the combined extremes on the shipped wheels; and a ruler that prints every blocker on a sightline rather than the first. {dRange}, {dArea}, {slots}.',
+    ],
+  },
+
+  {
+    id: 'gen16',
+    title: 'The corner',
+    theme: 'Gen 16',
+    gen: 'gen16', against: 'gen15', view: 'low', read: 'suspension-16', xray: true,
+    cite: 'design/gen16.md',
+    paras: [
+      'The suspension redrawn for the car it actually carries, 120 kg lighter than the one it was estimated for at Gen 4 and Gen 9: every forged section at the load ratio to the one third, every wall at the load ratio, the bars at the one quarter, the bellows and the damper bore at the square root, and not one hard point moved. Then its ledger read against its own drawing for the first time, by a tool built for the rung, and found wrong both ways: 31 kg of structure and knuckle booked that the drawings do not hold, 16 kg of bar and rack drawn and never booked. Both corrections stand, and the five planes partners land on are declared at last.',
+      'The body takes the two skin levers left on this package: the canopy glass on the loft instead of 8 mm proud of it, which was the car\'s whole crown in the frontal projection and nothing needed it; and the tail\'s upper section shrunk about its waterline from x -2.300 aft until the upper stream reaches the Kamm at the limit, nine scenarios swept before one was drawn. {dRange}, {dMass}, {dArea}, and the lightest car on the ladder, best on all five columns.',
+    ],
+  },
+
+  {
+    id: 'gen17',
+    title: 'The track',
+    theme: 'Gen 17',
+    gen: 'gen17', against: 'gen16', view: 'frontQ', read: 'wheels-17', xray: true,
+    cite: 'design/gen17.md',
+    paras: [
+      'The track has been 1.48 m since Gen 9, held at Gen 11 on a stability budget written in prose. Measured on Gen 16 with a tool built for the question, the laden center of gravity sits at 0.455 m and the static stability factor at 1.63, with room in it; and the geometry of the outline below the shoulder turned out to be the sill: the tires stood 27.5 mm proud of it each side. Both axles come in 20 mm so the tire\'s 135 mm section sits centered on the sill\'s 120 mm chambered section, which is the only track that lowers the outline at all: one axle alone makes the area worse, and the tool showed it before a line was drawn.',
+      'Seven modules follow one decision: every corner translated 20 mm inboard the way Gen 9 translated 70, the front upper arm shortened because its inner pivot already sits 30 mm from the drive housing, the rear rings and the front halfshafts with the wheels, the pack\'s corner keep-out with the tire and sixteen cell layers a side giving 9.7 mm for it, the spat wall following the rear tire in, the compute handover plane off the tire, and the by-wire boss contract open since Gen 9 closed at the front and named at the rear. {dRange}, {dArea}, {dMass}, on {slots}, the thinnest coefficient margin on the ladder and said so.',
+    ],
+  },
+
+  {
     id: 'close',
     title: 'What it cost, and what is open',
     theme: 'the end of the ladder',
-    gen: 'gen11', against: 'gen1', view: 'hero', read: 'interior-11',
-    cite: 'design/app-pass-1.md',
+    gen: 'gen17', against: 'gen1', view: 'hero', read: 'interior-15',
+    cite: 'design/retro-gen17.md',
     paras: [
       'End to end: {dRange} and {dRate} over the reference car, on {slots}.',
-      'It is not finished, and the model says where. Gen 11 shipped with every one of the driver\'s eight sightlines blocked, a car nobody could see out of, and it passed every automated check the project has because none of them asked. A person looking at a render caught it in one glance. Four sightlines are open now, dead ahead among them, which no earlier rung has ever had.',
-      'The hand wheel still stands in the low sightline and the interior cannot lower it alone, because the air handler sits underneath. That is a package decision across two slots, and it is written down rather than quietly fixed.',
+      'It is not finished, and the model says where. Every rung from Gen 13 on has improved every column against the rung below, and the last five did it with no change to the method that prices them; the seventeenth is the lightest car on the ladder and the best on all five. What is open is named rather than hidden: the air handler that stands 30 mm into the front occupant\'s thigh has been carried through six retrospectives; the regenerative braking constant is a cycle assumption nobody has booked per configuration; 202 W of low-voltage load has no owner; and the regen question and the 202 W remain his to call. The track was the last package lever, and it is spent.',
+      'The rule that makes this a ladder rather than a list: a generation that does not correct or build on a specific lesson does not ship, and a number that cannot be traced to a document in design/ is decoration. Every figure in this tour is computed on arrival from the same model the readout uses, and every stop cites the document its argument comes from.',
     ],
   },
 ];
@@ -270,8 +343,17 @@ export const stopRung = (s) => LADDER.find((g) => g.id === s.gen) || null;
    interaction stops the timer FOR GOOD rather than resetting it, so someone
    who wants to finish a panel presses next once and is driving from then on.
    The constant still covers the 1.2 s camera flight that lands before anyone
-   starts reading. */
+   starts reading.
+
+   AND AGAIN, 2026-08-22: with eighteen stops Davis said autoplay "still feels
+   like it goes through each window a little slowly", so it went to 420 words
+   a minute under an 11 second ceiling; then "a little too fast now, split the
+   difference". So: 375 words a minute, a 13.5 second ceiling and a 5.5 second
+   floor. The whole tour is about 3.8 minutes, the mean stop about 12 seconds,
+   the long stops (Gen 11, Gen 16, the close) sit at the ceiling, and a reader
+   who wants the words presses next once and has them for as long as they
+   like. Autoplay is a trailer, not the read. */
 export function dwellMs(stop) {
   const words = stop.paras.join(' ').split(/\s+/).length;
-  return Math.round(Math.max(6000, Math.min(16000, (words / 330) * 60000 + 1800)));
+  return Math.round(Math.max(5500, Math.min(13500, (words / 375) * 60000 + 1650)));
 }

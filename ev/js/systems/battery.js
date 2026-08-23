@@ -117,7 +117,7 @@ export const SYSTEM = {
         ['Conductor', 'Laminated Al, 630 mm² effective'],
         ['Joint', 'Laser weld to cell collectors'],
         ['Continuous rating', '400 A at 45 °C rise'],
-        ['Insulation', 'PET film, 2.5 kV tested'],
+        ['Insulation', 'Pet film, 2.5 kV tested'],
       ],
       how: 'Current collectors laser-welded across each cell top gather the parallel groups; laminated busbars along the center spine carry the summed current to the contactors. Each cell connects to its collector through a narrow neck of foil that acts as a fuse: if one cell shorts internally, its neck melts and the other 959 carry on.\n\nAluminum wins over copper here on mass: it needs 1.6 times the cross-section but weighs half as much, and every joint is welded aluminum-to-aluminum, avoiding the galvanic pair at a Cu-Al interface.',
       why: 'The busbar layout is what sets the pack voltage architecture: 96 groups in series, 10 cells per group, nominal 355 V. Grouping in tens means one dead cell costs one percent of capacity, not one percent of voltage stability.',

@@ -118,7 +118,7 @@ export const SYSTEM = {
       explode: [0, -0.75, 0],
     },
     'gnss-imu': {
-      name: 'GNSS-IMU pose unit',
+      name: 'Gnss-imu pose unit',
       tagline: 'Centimeters when the sky is open, honest dead reckoning when it is not.',
       mass: 0.2,
       specs: [

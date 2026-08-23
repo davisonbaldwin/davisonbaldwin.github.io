@@ -1,3 +1,85 @@
+/* Suspension, generation 16: THE CORNER. suspension-9 redrawn for the loads
+   of the car it actually carries, and the first module on this slot whose
+   ledger is derived off its drawing.
+
+   design/retro-gen15.md section 5 named this module as the mass column's
+   real lever: 176 kg of structures, knuckles and active chassis estimated at
+   Gen 4 (1,395 kg curb) and Gen 9 (1,388) for a car that Gen 15 had brought
+   to 1,268.7, re-priced twice and never redrawn. design/gen16.md is the
+   brief. Two things happen here and they are kept apart in every panel:
+
+   1. THE SECTIONS MEET THE LOAD. With two 75 kg occupants the laden masses
+      are 1,537.5 and 1,418.7 kg, and every load a corner sees scales with
+      the laden mass: LOAD = 0.9227. A strength-sized forging carries stress
+      through a section modulus that goes as r cubed, so the wishbone legs
+      and the five rear links take LOAD to the one third on their radius
+      (0.9736); a wall carries a wall stress, so the subframe rails and
+      crossmembers and the rear tower shear web take LOAD on their wall
+      (9.0 to 8.3 mm, 8.0 to 7.4, 10.0 to 9.2); a bar sized to a roll rate
+      takes LOAD to the one quarter on its diameter (27.7 to 27.1 mm front,
+      22.3 to 21.9 rear); a bellows at the same pressure takes the square
+      root on its radius (55.0 to 52.8 mm front, 52.0 to 50.0 rear); the
+      damper bore comes from 46 to 44 mm for the same reason; and the rack
+      bar comes from 40 to 30 mm, which is the 11.1 kN peak rack force at a
+      real rack's stress rather than a scaling (suspension-9 drew a 40 mm
+      bar and never priced it). NO HARD POINT MOVES: every pivot, ball joint,
+      damper mount, spring seat, tie rod end, the four body mounts, the
+      tower plates, the knuckle's two faces, the hub flange on 0.6925, the
+      rear upright's top face on 0.580, the ECU's flange plane and the four
+      by-wire bosses are suspension-9's to the digit, so the kinematics and
+      every partner interface carry exactly. tools/geohash.sh --soup proves
+      which meshes moved and which did not.
+
+   2. THE LEDGER MEETS THE DRAWING. tools/ledger.sh (built by this rung)
+      prints what each part's drawn geometry weighs at its material's
+      density beside what the part books, and on suspension-9 the two
+      columns disagreed in BOTH directions. The front subframe and
+      wishbones book 41 kg over 28.5 kg of drawn metal (the rails are
+      drawn hollow and their volume IS their wall); the rear structure 55
+      over 46.4; the knuckles 16 over 13.2. The decouplers book 12 kg when
+      1.1 m of 27.7 mm solid bar is 5.2 kg on its own and the two bars are
+      8.3; the rack books 10 when its drawn 40 mm bar alone is 9.5. So the
+      ledger below is derived, part by part, by one rule stated in each
+      Mass row: solid forgings, castings, bars and plates at their drawn
+      volume; hollow extrusions at their drawn wall; a lathe or cylinder
+      standing in for a vessel, a can, a tube or a sleeve at its drawn
+      surface times a stated wall; and what a part contains that is not
+      drawn (a bearing in a barrel, oil in a damper, copper in a motor, the
+      dogs in a clutch housing, a ball stud in a joint) stated and counted.
+      The result is 161.0 kg against 176: the structures, knuckles, springs,
+      supply and dampers come DOWN 31.1 kg and the decouplers, rack and
+      rear-steer go UP 16.4 (the feeds and the ECU move by tenths), and both
+      directions are the finding. The rule
+      from Gen 13 is that a kilogram this ladder books is derived off drawn
+      geometry; this is that rule applied to the one slot it had never
+      reached, and it is not a shaving: where the drawing was heavier than
+      the book, the book went up.
+
+   What does not change, and is therefore suspension-9's text below, read
+   "suspension-9" where it names itself: the translated corner, the roll
+   stiffness arithmetic, the rear pickup plane, the by-wire amendment, the
+   knuckle's bore and its caliper face, the dropped crossmember, the rocker
+   line, the ECU's plane, every clearance sweep. Two published figures move
+   by tenths because the legs' sections are thinner: the lower A-arm legs
+   cross wheels-15's disc bell web at |z| 0.6040 by 12.6 and 11.2 mm (were
+   13.0 and 11.5), and the checker's front-structure x discs pair reads
+   15.2 mm (was 14.8) because the thinner I-section's flange tip sits at a
+   different radius on the same line. Carried Gen 1 geometry, still
+   measured, still reported.
+
+   AND THIS MODULE DECLARES ITS HALF. wheels-15's pant bracket and saddle
+   foot, body-15's subframe and cradle mounts and drivetrain-9's halfshaft
+   face have all been declared against a suspension-9 that declared nothing,
+   and tools/check-interfaces.sh has warned "no partner declares the mating
+   half" on every rung since Gen 13. SYSTEM.interfaces below carries the
+   five planes this module's own geometry realizes, and the checker asserts
+   them from vertices. The by-wire stub station (|x| 1.30) is NOT declared:
+   the boss is a box whose vertices stand at 1.285 and 1.315 and a
+   declaration that cannot be realized by a real vertex is a comment, not an
+   interface; hv-15's key stays visible as unmet, which is the honest state.
+
+   ── suspension-9's own header follows, unchanged ──────────────────────
+
 /* Suspension, generation 9: the narrow-track front. suspension-4 carried
    unchanged from Gen 4 through Gen 8 and cannot survive a 140 mm front
    track change, so this is the first new suspension in five rungs.
@@ -71,12 +153,29 @@ import { M, lib, P } from '../common.js';
    0.559 to 0.679, wheel hub face 0.690, rim flange 0.670. Every number in
    the knuckle below is a clearance against one of those. */
 
-const FZ = 0.74;        // front wheel center |z|, was 0.81
-const RZ = 0.74;        // rear wheel center |z|, carried from Gen 7
+const FZ = 0.72;        // front wheel center |z|, Gen 17: was 0.74 (Gen 9), 0.81 (Gen 1)
+const RZ = 0.72;        // rear wheel center |z|, Gen 17: was 0.74 from Gen 7
 const D = 0.07;         // the move: 70 mm per side
-const LIP = 0.38;       // lower wishbone inner pivot |z| (0.45 - D)
-const UIP = 0.34;       // upper wishbone inner pivot |z| (0.38 - D + 0.03)
-const RJ = 0.60;        // rear outer joint plane |z|, was 0.70
+const LIP = 0.36;       // lower wishbone inner pivot |z|, Gen 17: 0.38 less the 20 mm (0.45 - D at Gen 9)
+const UIP = 0.34;       // upper wishbone inner pivot |z|, HELD at Gen 17: the drive housing is at 0.31
+const RJ = 0.58;        // rear outer joint plane |z|, Gen 17: was 0.60 (Gen 9), 0.70 (Gen 7)
+
+/* THE LOAD RATIO, and it is the only new number in the corner. suspension-4
+   was sized at Gen 4 (1,395 kg curb) and suspension-9 translated it at Gen 9
+   (1,388); Gen 15 is 1,268.7 kg. With two 75 kg occupants the laden masses
+   are 1,537.5 and 1,418.7 and every load a corner sees, vertical, lateral,
+   braking and the roll couple, scales with the laden mass: LOAD is the ratio.
+   A strength-sized section carries stress, so a solid forging scales its
+   radius as LOAD to the one third (section modulus goes as r cubed) and a
+   wall scales as LOAD; a bar sized to a roll rate scales its diameter as
+   LOAD to the one quarter (stiffness goes as d to the fourth); a bellows at
+   the same pressure scales its radius as the square root; a rack bar at the
+   same stress as the square root. Each is applied where it belongs below,
+   and nowhere to a hard point. */
+const LOAD = 1418.7 / 1537.5;                 /* 0.9227 */
+const K3 = Math.pow(LOAD, 1 / 3);             /* 0.9736, forged sections */
+const K4 = Math.pow(LOAD, 1 / 4);             /* 0.9801, bars */
+const K2 = Math.sqrt(LOAD);                   /* 0.9606, bellows, rack bar */
 
 /* Two underfloor mounting planes, and they are NOT the same plane. An
    earlier draft used one constant for both and described it as the battery
@@ -101,16 +200,59 @@ const LIDY = 0.3080;    // ECU flange underside, on interior-6's NVH pad
 const PACKLID = 0.3020; // battery-7 floorlid top, measured at all four clips
 
 export const SYSTEM = {
-  id: 'suspension-9',
-  name: 'Suspension · Gen 9 narrow track',
+  id: 'suspension-17',
+  name: 'Suspension · Gen 17 the track',
   color: 0xc0a2ec,
   explode: [0, -0.62, 0],
-  blurb: 'The front corner moves 70 mm inboard to match the rear, and the corner is translated rather than redrawn, so every kinematic property carries and only roll stiffness changes. It falls 16.5 percent at the front and the decouplers grow the bars to put the rate and the balance back exactly, leaving 0.9 percent of roll gradient that a bar cannot reach because the roll center moved. What no control can buy back is stated in numbers: the roll-over margin and the load transfer are geometry, and geometry does not negotiate.',
+  interfaces: {
+    /* THIS MODULE'S HALF, declared for the first time on the slot. Each key
+       below is one a partner has declared against a carried suspension-9
+       since Gen 13, and each is realized by a vertex this module actually
+       builds on the plane: the cap-center vertex of the mount seat, the
+       knuckle plate's outboard face, the upright body's top face, the hub
+       flange's outboard face. Read the header for the one key NOT declared. */
+    'front-subframe-mount': {
+      kind: 'face', axis: 'z', at: 0.5000, tol: 0.003,
+      part: 'front-structure', mirrored: true,
+      note: 'the four front body mounts seat on the casting bosses at (1.34 and 1.72, 0.297, +-0.50); body-15 declares the inner boss face at x 1.72 and this is the seat that lands on it.',
+    },
+    'rear-cradle-mount': {
+      kind: 'face', axis: 'z', at: 0.5000, tol: 0.003,
+      part: 'rear-structure', mirrored: true,
+      note: 'the rear cradle mounts at (-1.34 and -1.72, 0.297, +-0.50), body-15 declaring the boss face at x -1.72.',
+    },
+    'front-pant-bracket': {
+      kind: 'face', axis: 'z', at: 0.5630, tol: 0.002,
+      part: 'front-knuckle', mirrored: true,
+      note: 'the front knuckle plate outboard face. wheels-15 seats its pant bracket foot on it at (1.505, 0.470) with extent min; the plate is suspension-9 geometry held to the digit.',
+    },
+    'rear-saddle-foot': {
+      kind: 'face', axis: 'y', at: 0.5800, tol: 0.002,
+      part: 'rear-structure', mirrored: false,
+      note: 'the rear upright body top face at (-1.45, |z| 0.600), between the upper joint bolt stacks; wheels-15 seats its saddle foot on it.',
+    },
+    'front-halfshaft-outboard': {
+      kind: 'face', axis: 'z', at: 0.6725, tol: 0.002,
+      part: 'front-knuckle', mirrored: true, extent: 'max',
+      note: 'the hub flange outboard face, the plane wheels-17 clamps on and drivetrain-17 lands its CV flange on; the knuckle part reaches it and goes no further, which extent max asserts.',
+    },
+    /* GEN 17: THE BY-WIRE CONTRACT CLOSES. hv-15 has presented its four stub
+       faces on |z| 0.5200 since Gen 11; this module's bosses sat on 0.70
+       inside the wheels since Gen 4 and declared nothing. The bosses now
+       stand at |z| 0.520 to 0.550 with their inboard faces ON the stubs, and
+       the key is declared from this side with a vertex on the plane. */
+    'bywire-stub-outboard': {
+      kind: 'face', axis: 'z', at: 0.5200, tol: 0.002,
+      part: '48v-feeds', mirrored: true,
+      note: 'the by-wire boss inboard face, on hv-15\'s stub mating face. hv-15 declares it with extent max; the leads from these bosses run inboard, so no extent here.',
+    },
+  },
+  blurb: 'suspension-9 redrawn for the car it carries, and its ledger derived off its drawing for the first time. Every forged section at the load ratio to the one third, every wall at the load ratio, the bars at the one quarter, the bellows and the damper bore at the square root, and not one hard point moved, so the kinematics, the roll arithmetic and every partner plane carry exactly. tools/ledger.sh, built for this rung, read the old ledger against the old drawing and found it wrong both ways: 30 kg of structure and knuckle that were never drawn, 12 kg of bar and rack that were drawn and never booked. 161.0 kg against 176, the corrections stated in each panel, and the five planes partners land on declared at last.\n\n' + 'suspension-9: The front corner moves 70 mm inboard to match the rear, and the corner is translated rather than redrawn, so every kinematic property carries and only roll stiffness changes. It falls 16.5 percent at the front and the decouplers grow the bars to put the rate and the balance back exactly, leaving 0.9 percent of roll gradient that a bar cannot reach because the roll center moved. What no control can buy back is stated in numbers: the roll-over margin and the load transfer are geometry, and geometry does not negotiate.',
   parts: {
     'front-structure': {
       name: 'Front subframe and wishbones',
-      tagline: 'The corner is translated, not redrawn: same arms, same angles, 70 mm further in.',
-      mass: 41,
+      tagline: 'The corner is translated, not redrawn, and now its sections are drawn for the car it carries and its ledger for the sections it draws.',
+      mass: 28.6,
       specs: [
         ['Wheel center', '(+/-1.45, 0.355, +/-0.74), was +/-0.81'],
         ['Lower arm', 'Inner |z| 0.38, ball joint 0.64, length unchanged'],
@@ -118,9 +260,9 @@ export const SYSTEM = {
         ['Roll center', '104 mm at 1.62 m track, 95 mm true, 97 as drawn'],
         ['Camber gain', '-1.3 deg per 60 mm bump, carried'],
         ['Maturity', 'Production practice'],
-        ['Mass', '41 kg here plus 16 of uprights, 57 against Gen 4\'s 55'],
+        ['Mass', '28.6 kg derived: 8,658 cm3 of drawn aluminum (arms, rails\' walls, clevises, risers, gussets) 23.4, steel and washers 2.9, bushes 0.6, plus 1.6 of ball studs the joints are drawn without; was 41 booked over 28.5 drawn'],
       ],
-      how: 'A track change can be taken two ways. Shorten the arms and leave the inner pivots where they are, and the wishbones lose 27 percent of their length: camber gain rises by a third, the instant center swings, the roll center climbs, bush loads rise, and every calibration the chassis ECU has learned since Gen 4 is wrong. Move the inner pivots inboard with the ball joints, and the corner is congruent with the one it replaces: arm lengths identical, arm angles identical, kingpin, caster and scrub radius identical, motion ratios identical, bump steer identical because the tie rod inner end travels the same 70 mm as its outer end. The second way costs package space and nothing else, and this module takes it. The lower inner pivots go from |z| 0.45 to 0.38, the upper from 0.38 to 0.34, the lower ball joint from 0.71 to 0.64, the upper from 0.70 to 0.63.\n\nOne pivot pair stops short and the panel will not round it away. A pure translation puts the upper inner pivots at |z| 0.31, inside the front drive zone. drivetrain-7\'s front housing was swept vertex by vertex rather than read: excluding the halfshafts, which drivetrain-7 already declares as living outside the zone, it reaches |z| 0.3100 at x 1.505 to 1.585 and 0.2200 at x 1.427 to 1.473. This module therefore narrows P.driveF from z +/-0.35 to +/-0.31, the measured value, and parks the upper pivots at 0.34 with their bushes spanning 0.32 to 0.36, ten millimeters outside it. The upper arm ends up 30 mm shorter than congruence would make it, 0.29 m against 0.32, which moves the front roll center from the 95 mm a true translation gives to 97 mm as drawn, against 104 mm at the old track. Nine millimeters of roll center is the entire kinematic bill for this generation. Two things still cross the narrowed zone and both are carried rather than new: the anti-roll bar center section at x 1.70 and the rack at x 1.22 have run through the drive-zone footprint since Gen 1, and both are measured clear of drivetrain-7\'s built housing, which spans x 1.338 to 1.622. A zone is a reservation; the sweep against built geometry is the test that actually matters, and this module reports both.\n\nThe subframe keeps its body interface exactly: rails at |z| 0.46, four bushed mounts at (+/-1.34 and +/-1.72, 0.30, +/-0.50), so the front casting body-9 inherits from body-8 does not move a datum. What changed inside it is the forward crossmember, which drops from y 0.25 to y 0.21. Swept over that crossmember\'s own footprint, x 1.32 to 1.40, drivetrain-7\'s front housing bottoms out at y 0.2624, and the Gen 4 crossmember topped out at y 0.285: a 22.6 mm interference across the 80 mm the crossmember is deep, and nobody had measured it. Dropped, the top goes to 0.245 and it clears by 17.4 mm, and the lower arm pivots ride on 40 mm risers. The housing\'s absolute low point is y 0.2560, but that occurs at x 1.525, well aft of this crossmember, and quoting it here would have overstated both the defect and the fix. The crossmembers also carry the pivots 170 mm from the rails now instead of 100, so they gain section and the arms lose length, and the net is plus two kilograms.',
+      how: 'Gen 16: the legs\' forged I-sections take load to the one third on every dimension (r 0.015 to 0.0146), the rails\' 9 mm wall and the crossmembers\' 8 mm come to 8.3 and 7.4, and nothing else moves: the inner pivots, the ball joints, the four body mounts, the riser clevises and the dropped crossmember\'s 17.4 mm over the drive housing are suspension-9\'s to the digit. The ledger meets the drawing: 41 kg was booked over 28.5 kg of drawn metal, the rails being hollow extrusions whose drawn volume is their wall, and the derived figure is 28.6 including the four ball studs the joints are drawn without. A real aluminum subframe with two pairs of forged arms is 22 to 28 kg; the 41 was Gen 4\'s fabricated number carried through a translation that re-priced nothing.\n\nA track change can be taken two ways. Shorten the arms and leave the inner pivots where they are, and the wishbones lose 27 percent of their length: camber gain rises by a third, the instant center swings, the roll center climbs, bush loads rise, and every calibration the chassis ECU has learned since Gen 4 is wrong. Move the inner pivots inboard with the ball joints, and the corner is congruent with the one it replaces: arm lengths identical, arm angles identical, kingpin, caster and scrub radius identical, motion ratios identical, bump steer identical because the tie rod inner end travels the same 70 mm as its outer end. The second way costs package space and nothing else, and this module takes it. The lower inner pivots go from |z| 0.45 to 0.38, the upper from 0.38 to 0.34, the lower ball joint from 0.71 to 0.64, the upper from 0.70 to 0.63.\n\nOne pivot pair stops short and the panel will not round it away. A pure translation puts the upper inner pivots at |z| 0.31, inside the front drive zone. drivetrain-7\'s front housing was swept vertex by vertex rather than read: excluding the halfshafts, which drivetrain-7 already declares as living outside the zone, it reaches |z| 0.3100 at x 1.505 to 1.585 and 0.2200 at x 1.427 to 1.473. This module therefore narrows P.driveF from z +/-0.35 to +/-0.31, the measured value, and parks the upper pivots at 0.34 with their bushes spanning 0.32 to 0.36, ten millimeters outside it. The upper arm ends up 30 mm shorter than congruence would make it, 0.29 m against 0.32, which moves the front roll center from the 95 mm a true translation gives to 97 mm as drawn, against 104 mm at the old track. Nine millimeters of roll center is the entire kinematic bill for this generation. Two things still cross the narrowed zone and both are carried rather than new: the anti-roll bar center section at x 1.70 and the rack at x 1.22 have run through the drive-zone footprint since Gen 1, and both are measured clear of drivetrain-7\'s built housing, which spans x 1.338 to 1.622. A zone is a reservation; the sweep against built geometry is the test that actually matters, and this module reports both.\n\nThe subframe keeps its body interface exactly: rails at |z| 0.46, four bushed mounts at (+/-1.34 and +/-1.72, 0.30, +/-0.50), so the front casting body-9 inherits from body-8 does not move a datum. What changed inside it is the forward crossmember, which drops from y 0.25 to y 0.21. Swept over that crossmember\'s own footprint, x 1.32 to 1.40, drivetrain-7\'s front housing bottoms out at y 0.2624, and the Gen 4 crossmember topped out at y 0.285: a 22.6 mm interference across the 80 mm the crossmember is deep, and nobody had measured it. Dropped, the top goes to 0.245 and it clears by 17.4 mm, and the lower arm pivots ride on 40 mm risers. The housing\'s absolute low point is y 0.2560, but that occurs at x 1.525, well aft of this crossmember, and quoting it here would have overstated both the defect and the fix. The crossmembers also carry the pivots 170 mm from the rails now instead of 100, so they gain section and the arms lose length, and the net is plus two kilograms.',
       why: 'Congruence is the whole argument. A narrowed track is a big enough change to the car without also being a redesign of the corner, and every property that can be carried should be carried, because a property that is carried has the fleet history of the generation that proved it. The temptation with 140 mm to find is to re-optimize the kinematics at the same time and claim both wins; the discipline is to change one variable so the roll stiffness arithmetic in the decoupler panel is exactly true rather than approximately true.',
       fail: [
         'The upper pivots now sit 30 mm from a zone boundary that only exists because this module narrowed it. If any future front drive unit grows past |z| 0.310 the wishbone has nowhere to go, and the next module to widen that housing owns a suspension redesign it may not know it has bought.',
@@ -133,7 +275,7 @@ export const SYSTEM = {
     'front-knuckle': {
       name: 'Front uprights',
       tagline: 'Redrawn for one reason: the old one was inside the brake disc, and two generations never noticed.',
-      mass: 16,
+      mass: 14.4,
       count: 2,
       specs: [
         ['Body plane', '|z| 0.551 to 0.583, inboard of the disc'],
@@ -144,9 +286,9 @@ export const SYSTEM = {
         ['Joints', 'Lower 0.64, upper 0.63, steering arm 0.635'],
         ['Open defect', 'Seven members cross the disc web at |z| 0.6040'],
         ['Maturity', 'Production practice'],
-        ['Mass', '16 kg the pair, the Gen 1 knuckle number carried'],
+        ['Mass', '14.4 kg the pair, derived: 2,161 cm3 of drawn casting 5.8, the two barrels counted as the wheel bearing units they stand in for at 3.5 each, hub flanges 1.5, sensors 0.1; was 16 booked, the Gen 1 number'],
       ],
-      how: 'suspension-4 drew the knuckle as a single plate 70 mm inboard of the wheel center with a hub boss through it. Sweeping it against wheels-7\'s built front corner, that plate spans |z| 0.724 to 0.756 and the disc hat spans 0.750 to 0.7625 at r 0.078 to 0.090: six millimeters of plate inside the rotating hat, on every front corner, since Gen 4. Translating the same plate to the new track would have carried the defect inboard with it, so the knuckle is the one front part that is redrawn rather than moved.\n\nThe new body sits at |z| 0.551 to 0.583, 15.5 mm inboard of the disc ring face, which wheels-9\'s built mesh puts at 0.5985 (0.595 is the ring alone, not the face). The ball joints stay exactly where the translation puts them and both clear, narrowly: lower at (1.45, 0.235, 0.64) passes the disc bore at r 0.120 with 1.7 mm to the nearest disc surface, upper at (1.45, 0.565, 0.63) clears the 0.1826 outside diameter at r 0.210 by 3.5 mm. A bearing barrel of r 0.054 runs outboard from the body to |z| 0.6845 through the hat bore, and a hub flange of r 0.072 lands flat on the wheel hub face at |z| 0.6925, which is the plane wheels-9 puts 74 vertices on at r 0 to 0.0740. That last number moved during review: the flange was drawn to 0.690 off wheels-7 prose and stood 2.5 mm short of the face it is supposed to clamp.\n\nAnd then the whole assembly was swept against the shaft that goes through it, which nobody had done. Every clearance above is measured against the wheel. Measured against drivetrain-9 instead, this part and its front unit shared 2,036 crossing triangle pairs, the largest count anywhere on the ladder, for three reasons that are all this module\'s. The body was one solid 85 by 360 by 32 mm box with no bearing bore, and since its aft face stood at x 1.4275 against an axle line at 1.45 there was not enough plate behind the axle to cut one: the outboard CV boot presents r 0.0420 across that band and stood 19.5 mm inside solid aluminum. The aft stiffening rib ran the full 300 mm at x 1.4415, 2.5 mm off the axle line, so the bar went through it. And the wheel speed lead climbed through (1.4520, 0.3400), 15.1 mm off the same line. The plate now reaches 42.5 mm further aft, keeps its forward edge and both z faces exactly where they were, and carries a real bearing bore: r 0.052 nominal, 0.0487 as built once the extrude bevel has closed the mouth, with an 18 mm wall behind it. The rib is two segments that stop clear of the bore and the lead climbs behind it. Crossings against drivetrain-9/front-unit are 2,036 to zero. Station by station the tightest radial gap through the plate is 4.6 mm, at z 0.575 where the boot\'s big clamp presents r 0.0420, and the tightest surface separation anywhere in the joint is 3.28 mm, between that boot and this part\'s steering arm.\n\nThe outboard end tells the other half of that story. Both modules were drawing the same hub. This part closed its barrel and its hub flange down to r 0.020 on the axis, and drivetrain-9 bolts a real CV flange of r 0.0225 to 0.0520 into that space over |z| 0.6825 to 0.6925, ten millimeters thick. Two solids, one volume, and the CV flange is the half that cannot move, because SYSTEM.interfaces declares its outboard face on 0.6925 with extent max and the checker asserts it. So this half opens: the seal land flares to r 0.0575 and the hub flange becomes an annulus of r 0.0575 to 0.0720, leaving 5.5 mm of radial air. That is the correct assembly rather than a concession, because a bolted halfshaft goes into the center of a hub and the wheel clamps on the annulus around it.\n\nThe caliper interface was missed entirely and is now built. wheels-9\'s caliper does not bolt to the knuckle body: its source runs a two-lug bracket outboard of the ring face and lands it, in its own words, on the upright\'s inboard face at |z| 0.6475, at (1.425, 0.488) and (1.425, 0.528). This part had two lugs on its trailing face that stood 54 and 88 mm from any caliper surface, so the front brakes hung on nothing. An arch now reaches that face around the trailing-upper quadrant, crossing the ring band at radius 0.206 or better and topping out 2.4 mm clear of the disc, with a 26 by 78 by 8 mm pad whose inboard face is at 0.6475 exactly. It goes around the trailing side because straight over the crown is where the upper ball joint sits.',
+      how: 'Gen 16: the envelope is untouched because both faces are contract (wheels-15\'s pant bracket foot on 0.5830, the disc ring at 0.5985, the hub flange on 0.6925, now declared), so the knuckle\'s mass is the drawing\'s rather than a scaling: 4,301 cm3 of drawn aluminum, of which the two bearing barrels are 2,140; the casting at its density is 5.8 kg the pair and the barrels are booked as the steel bearing units they stand in for, 3.5 kg each, because a solid aluminum cylinder at 2,700 kg/m3 is not a wheel bearing. 14.4 against the 16 Gen 1 carried, and the 1.6 is the difference between a number and a drawing.\n\nsuspension-4 drew the knuckle as a single plate 70 mm inboard of the wheel center with a hub boss through it. Sweeping it against wheels-7\'s built front corner, that plate spans |z| 0.724 to 0.756 and the disc hat spans 0.750 to 0.7625 at r 0.078 to 0.090: six millimeters of plate inside the rotating hat, on every front corner, since Gen 4. Translating the same plate to the new track would have carried the defect inboard with it, so the knuckle is the one front part that is redrawn rather than moved.\n\nThe new body sits at |z| 0.551 to 0.583, 15.5 mm inboard of the disc ring face, which wheels-9\'s built mesh puts at 0.5985 (0.595 is the ring alone, not the face). The ball joints stay exactly where the translation puts them and both clear, narrowly: lower at (1.45, 0.235, 0.64) passes the disc bore at r 0.120 with 1.7 mm to the nearest disc surface, upper at (1.45, 0.565, 0.63) clears the 0.1826 outside diameter at r 0.210 by 3.5 mm. A bearing barrel of r 0.054 runs outboard from the body to |z| 0.6845 through the hat bore, and a hub flange of r 0.072 lands flat on the wheel hub face at |z| 0.6925, which is the plane wheels-9 puts 74 vertices on at r 0 to 0.0740. That last number moved during review: the flange was drawn to 0.690 off wheels-7 prose and stood 2.5 mm short of the face it is supposed to clamp.\n\nAnd then the whole assembly was swept against the shaft that goes through it, which nobody had done. Every clearance above is measured against the wheel. Measured against drivetrain-9 instead, this part and its front unit shared 2,036 crossing triangle pairs, the largest count anywhere on the ladder, for three reasons that are all this module\'s. The body was one solid 85 by 360 by 32 mm box with no bearing bore, and since its aft face stood at x 1.4275 against an axle line at 1.45 there was not enough plate behind the axle to cut one: the outboard CV boot presents r 0.0420 across that band and stood 19.5 mm inside solid aluminum. The aft stiffening rib ran the full 300 mm at x 1.4415, 2.5 mm off the axle line, so the bar went through it. And the wheel speed lead climbed through (1.4520, 0.3400), 15.1 mm off the same line. The plate now reaches 42.5 mm further aft, keeps its forward edge and both z faces exactly where they were, and carries a real bearing bore: r 0.052 nominal, 0.0487 as built once the extrude bevel has closed the mouth, with an 18 mm wall behind it. The rib is two segments that stop clear of the bore and the lead climbs behind it. Crossings against drivetrain-9/front-unit are 2,036 to zero. Station by station the tightest radial gap through the plate is 4.6 mm, at z 0.575 where the boot\'s big clamp presents r 0.0420, and the tightest surface separation anywhere in the joint is 3.28 mm, between that boot and this part\'s steering arm.\n\nThe outboard end tells the other half of that story. Both modules were drawing the same hub. This part closed its barrel and its hub flange down to r 0.020 on the axis, and drivetrain-9 bolts a real CV flange of r 0.0225 to 0.0520 into that space over |z| 0.6825 to 0.6925, ten millimeters thick. Two solids, one volume, and the CV flange is the half that cannot move, because SYSTEM.interfaces declares its outboard face on 0.6925 with extent max and the checker asserts it. So this half opens: the seal land flares to r 0.0575 and the hub flange becomes an annulus of r 0.0575 to 0.0720, leaving 5.5 mm of radial air. That is the correct assembly rather than a concession, because a bolted halfshaft goes into the center of a hub and the wheel clamps on the annulus around it.\n\nThe caliper interface was missed entirely and is now built. wheels-9\'s caliper does not bolt to the knuckle body: its source runs a two-lug bracket outboard of the ring face and lands it, in its own words, on the upright\'s inboard face at |z| 0.6475, at (1.425, 0.488) and (1.425, 0.528). This part had two lugs on its trailing face that stood 54 and 88 mm from any caliper surface, so the front brakes hung on nothing. An arch now reaches that face around the trailing-upper quadrant, crossing the ring band at radius 0.206 or better and topping out 2.4 mm clear of the disc, with a 26 by 78 by 8 mm pad whose inboard face is at 0.6475 exactly. It goes around the trailing side because straight over the crown is where the upper ball joint sits.',
       why: 'A knuckle is the one part in a corner that has to know where every other part is, and it is therefore the part most worth measuring rather than assuming. The lesson from Gen 8 was that a comparison run by one method over both rungs finds errors that two methods hide; the corner equivalent is that a clearance swept against built geometry finds interferences that two spec sheets agreeing with each other will not. This part proves that twice over, once in its favor and once against: the same sweep that found the plate inside the hat also found the caliper bracket landing on air and seven members crossing a disc web, and the caliper is not the only neighbor it touches.',
       fail: [
         'An open defect, measured and not fixed. wheels-9\'s front disc closes its bell with a solid web at |z| 0.6040, an annulus from r 0.0900 to 0.1825, and seven members cross it: the knuckle lower leg by 15.1 mm, the upper leg by 11.7, both lower A-arm legs by 13.0 and 11.5, the steering arm by 6.9, the tie rod by 6.6 and its outer ball joint by 8.2. The cause is one number rather than seven: the lower ball joint sits at r 0.120 and the steering arm joint at r 0.090, both inside the disc\'s radial shadow, so any metal reaching them from a body plane at 0.583 has to pass through that web. The upper joint at r 0.210 is outside the shadow and its arms clear by 11.9 and 12.4 mm, which is the proof that the drawing is right wherever the radius allows it. This is Gen 1 geometry translated faithfully: suspension-4 had the identical relationship against wheels-7\'s front disc, whose web sat at |z| 0.6740. Fixing it means moving the lower and steering joint planes inboard of 0.5985 or their radii outboard of 0.1826, and both are kinematic changes: the first moves bump steer and the roll center, the second moves camber gain and the steering ratio. Neither belongs in a generation whose entire claim is that the corner is congruent, so it is published here for whoever redraws the front corner rather than half-fixed by this one.',
@@ -159,7 +301,7 @@ export const SYSTEM = {
     'rear-structure': {
       name: 'Rear subframe and links',
       tagline: 'The rear track carries, the rear rates carry to the newton, and the pickup plane moves 100 mm because the motor is in the way.',
-      mass: 55,
+      mass: 46.9,
       specs: [
         ['Wheel center', '(-1.45, 0.355, +/-0.74), carried from Gen 7'],
         ['Outer joints', '|z| 0.60, was 0.70'],
@@ -167,9 +309,9 @@ export const SYSTEM = {
         ['Motion ratio', '0.615 at the spring, unchanged to three places'],
         ['Link couple', '0.4375 of vertical wheel load, was 0.125'],
         ['Maturity', 'Production practice'],
-        ['Mass', '55 kg against suspension-4\'s 54'],
+        ['Mass', '46.9 kg derived: 8,605 cm3 of drawn aluminum (frame walls, towers, clevises) 23.2, eight forged steel links 11.2, two uprights 7.3, washers and pivots 2.2, bushes 0.6, plus 2.4 of ball studs; was 55 booked over 46.4 drawn'],
       ],
-      how: 'design/gen9.md says the rear carries, and the rear track, the five-link topology, the anti-squat, the commanded toe authority and every rate do carry. What could not carry is where the links attach, and the reason is drivetrain-7 rather than this module. Sweeping its built rear corner in cylindrical coordinates about the axle: the hub carrier is a ring from r 0.1555 to 0.168 over |z| 0.657 to 0.729, the stator fills 0.127 to 0.196 over 0.636 to 0.726, the rotor 0.188 to 0.233 over 0.650 to 0.728, and a carrier flange closes the bore from r 0.069 to 0.144 over 0.6395 to 0.6495. There is a free pocket at r 0.072 to 0.1555 between |z| 0.657 and 0.729, and there is no radial or axial path out of it. wheels-7 reported 352 suspension-4 vertices inside the annulus and was too kind: the old rear outer joints are not merely intruding, they are in a sealed volume with no route to the rest of the car.\n\nSo the pickup plane moves inboard to |z| 0.60, ahead of the stator face at 0.636, and the upright becomes what an in-wheel motor axle actually needs, a carrier that ends at a flange of r 0.086 landing exactly on drivetrain-7\'s carrier flange face at |z| 0.6395. The links shorten from 0.26 to 0.16 in span. The rate arithmetic then has to be re-run rather than assumed, and it is: the spring sat at 0.16 of a 0.26 span for a motion ratio of 0.615, so it moves to 0.0985 of a 0.16 span, which is |z| 0.539, and the wheel rate and the 1.55 Hz rear ride frequency come out identical. The damper keeps its 0.769 ratio at |z| 0.563 and its inclination, and the bar drop link keeps 0.615 at 0.539. Nothing about how this axle rides changes. What changes is what it costs to hold the wheel: the wheel center is now 140 mm outboard of the joint plane instead of 40, so the couple the upper and lower links take for a given vertical wheel load goes from 0.125 to 0.4375 of it, three and a half times, and the bushes, the link sections and the carrier all grew to suit. That is where the kilogram went.',
+      how: 'Gen 16: the five links\' forged oval sections take load to the one third (every radius times 0.9736), the rails\' and crossmembers\' walls load, the tower shear webs 10 to 9.2 mm; the pickup plane at |z| 0.60, the spring link\'s seat, the upright body and its top face on y 0.580 (wheels-15\'s saddle foot, now declared here) do not move. The ledger meets the drawing at 46.9 against 55, the eight links alone being 11.2 kg of solid steel at their drawn section, which is what forged links weigh.\n\ndesign/gen9.md says the rear carries, and the rear track, the five-link topology, the anti-squat, the commanded toe authority and every rate do carry. What could not carry is where the links attach, and the reason is drivetrain-7 rather than this module. Sweeping its built rear corner in cylindrical coordinates about the axle: the hub carrier is a ring from r 0.1555 to 0.168 over |z| 0.657 to 0.729, the stator fills 0.127 to 0.196 over 0.636 to 0.726, the rotor 0.188 to 0.233 over 0.650 to 0.728, and a carrier flange closes the bore from r 0.069 to 0.144 over 0.6395 to 0.6495. There is a free pocket at r 0.072 to 0.1555 between |z| 0.657 and 0.729, and there is no radial or axial path out of it. wheels-7 reported 352 suspension-4 vertices inside the annulus and was too kind: the old rear outer joints are not merely intruding, they are in a sealed volume with no route to the rest of the car.\n\nSo the pickup plane moves inboard to |z| 0.60, ahead of the stator face at 0.636, and the upright becomes what an in-wheel motor axle actually needs, a carrier that ends at a flange of r 0.086 landing exactly on drivetrain-7\'s carrier flange face at |z| 0.6395. The links shorten from 0.26 to 0.16 in span. The rate arithmetic then has to be re-run rather than assumed, and it is: the spring sat at 0.16 of a 0.26 span for a motion ratio of 0.615, so it moves to 0.0985 of a 0.16 span, which is |z| 0.539, and the wheel rate and the 1.55 Hz rear ride frequency come out identical. The damper keeps its 0.769 ratio at |z| 0.563 and its inclination, and the bar drop link keeps 0.615 at 0.539. Nothing about how this axle rides changes. What changes is what it costs to hold the wheel: the wheel center is now 140 mm outboard of the joint plane instead of 40, so the couple the upper and lower links take for a given vertical wheel load goes from 0.125 to 0.4375 of it, three and a half times, and the bushes, the link sections and the carrier all grew to suit. That is where the kilogram went.',
       why: 'Two contracts were both honored for two generations and they were never checked against each other. The annulus contract said r 0.155 to 0.235 over |z| 0.65 to 0.73 was the motor\'s, and it was obeyed by the modules that read it; the rear suspension geometry predated it and was carried by a module that had no reason to re-read it. The failure mode is not carelessness, it is that carrying a part is exactly the state in which nobody re-verifies it. A slot that has not changed in five generations is the most likely place in the car to find a defect, not the least.',
       fail: [
         'A 140 mm overhang from the joint plane to the wheel center is the structural price of an in-wheel motor and it is now paid in the open rather than hidden. Carrier stiffness, not link stiffness, sets rear camber compliance from here, and a compliance number that used to belong to bushes now belongs to a casting.',
@@ -181,7 +323,7 @@ export const SYSTEM = {
     'air-springs': {
       name: 'Air springs',
       tagline: 'Carried whole, and moved: front bellows 70 mm inboard, rear seats 61 mm, both to keep the frequency they had.',
-      mass: 12,
+      mass: 7.4,
       count: 4,
       specs: [
         ['Type', 'Rolling-lobe single chamber, carried from Gen 4'],
@@ -189,9 +331,10 @@ export const SYSTEM = {
         ['Front seat', 'Translated 70 mm inboard with the corner'],
         ['Rear seat', '|z| 0.539, moved to hold motion ratio 0.615'],
         ['Roll share', 'Front 497 Nm/deg of 1,383, rear 524 of 1,001'],
+        ['Mass', '7.4 kg the set, derived: sleeves as a 4 mm cord-reinforced shell over their drawn 0.218 m2 (0.96), pistons as 4 mm spun cans (1.4), plates and towers at drawn volume (1.0), crimp rings 1.6, perches and studs 1.9, plus 0.5 of internal bump stops not drawn; was 12 booked'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'Nothing in this part is new and both ends of the car moved it, for opposite reasons that produce the same result. At the front the whole corner translated, so the strut sits at the same angle on the same arm at the same fraction of its length, and the motion ratio is unchanged by construction. At the rear the outer joint plane moved but the wheel did not, so the seat had to be re-solved: 0.615 of the old 0.26 m span is 0.16 m from the pivot, and 0.615 of the new 0.16 m span is 0.0985 m, which puts the seat at |z| 0.539. Same ratio, same rate, same frequency, 61 mm further in.\n\nWhat the narrow track does change is how much of the roll stiffness these springs are responsible for, and the answer is less. An air spring holds a fixed ride frequency, so its rate is proportional to the load it carries, and its contribution to roll stiffness is that rate times track squared over two. At the design load the front pair gives 596 Nm per degree at a 1.62 m track and 497 at 1.48. The bars pick up the difference, so the springs go from 40 percent of front roll stiffness to 36. That is worth stating because the two devices behave differently with payload: spring roll stiffness scales with load and bar roll stiffness does not, so a bar-heavier car holds a slightly different roll balance empty than laden. It is a couple of percent and the chassis ECU now carries a load term in its roll model that it did not need in Gen 4.',
+      how: 'Gen 16: the bellows radius comes down as the square root of load, 55.0 to 52.8 mm front and 52.0 to 50.0 rear, because at the same supply pressure the effective area carries the corner and the corner is lighter; the seats, the frequency and the motion ratios do not move. The ledger is derived with a shell rule and says so: a rolling-lobe sleeve is a 4 mm cord-reinforced membrane and a piston is a spun can, so the drawn solids of revolution are upper bounds and the surface times the wall is the metal and the rubber; the four internal bump stops the drawing omits are counted at 0.12 kg each. 7.4 against 12.\n\nNothing in this part is new and both ends of the car moved it, for opposite reasons that produce the same result. At the front the whole corner translated, so the strut sits at the same angle on the same arm at the same fraction of its length, and the motion ratio is unchanged by construction. At the rear the outer joint plane moved but the wheel did not, so the seat had to be re-solved: 0.615 of the old 0.26 m span is 0.16 m from the pivot, and 0.615 of the new 0.16 m span is 0.0985 m, which puts the seat at |z| 0.539. Same ratio, same rate, same frequency, 61 mm further in.\n\nWhat the narrow track does change is how much of the roll stiffness these springs are responsible for, and the answer is less. An air spring holds a fixed ride frequency, so its rate is proportional to the load it carries, and its contribution to roll stiffness is that rate times track squared over two. At the design load the front pair gives 596 Nm per degree at a 1.62 m track and 497 at 1.48. The bars pick up the difference, so the springs go from 40 percent of front roll stiffness to 36. That is worth stating because the two devices behave differently with payload: spring roll stiffness scales with load and bar roll stiffness does not, so a bar-heavier car holds a slightly different roll balance empty than laden. It is a couple of percent and the chassis ECU now carries a load term in its roll model that it did not need in Gen 4.',
       why: 'The reason the air spring is the right part to carry through a track change is that it is the one spring type whose defining property, constant frequency under any load, is untouched by geometry. A steel coil at a new motion ratio is a new coil. An air spring at a new motion ratio is the same spring at a different pressure, and the pressure is a control variable this car already owns.',
       fail: [
         'Every failure mode from Gen 4 carries: abraded lobes from grit, slow leaks read as compressor duty trend, total loss ending on the internal bumpstop at 80 km/h. None of them got better and none got worse.',
@@ -203,16 +346,17 @@ export const SYSTEM = {
     'air-supply': {
       name: 'Compressor and valve block',
       tagline: 'The unit is untouched by the track. One of its four lines was not, and it was found inside a steered tire.',
-      mass: 7,
+      mass: 6.4,
       specs: [
         ['Compressor', 'Twin piston, 300 W at 48 V, carried'],
         ['Reservoir', '3.0 L at 15 bar, carried'],
         ['Lift speed', '40 mm on all corners in 6 s'],
         ['Feed', 'hv-4 front passenger zone'],
         ['Rocker line', 'Front run at |z| 0.505 to 0.522, was 0.60 to 0.62'],
+        ['Mass', '6.4 kg derived: tank as a 1.5 mm vessel over its drawn 0.103 m2 with its seams and drain (1.5), the compressor counted as the 300 W motor it is (2.8), valve block and head at drawn volume (0.9), coils 0.2, dryer with desiccant 0.2, lines as 1 mm nylon (0.2), bands 0.3, straps, clips and sensors 0.3; was 7 booked'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'The reservoir and compressor sit where Gen 4 put them, ahead of the front subframe on the passenger side, on rubber, because the unit runs while the car is parked and leveling. The architecture argument is unchanged: a 3 liter tank at 15 bar converts a peak demand into an average one, so 40 mm of lift on four corners takes 6 seconds from stored air while a 300 W compressor refills at leisure, and 300 W at 48 V is 6.5 A through unremarkable wire.\n\nWhat did change is the plumbing, and one line changed for a reason the track makes easy to miss. The front spring seats moved 70 mm inboard and the rear seats 61 mm, so all four supply lines are re-routed and two of them are now shorter; the cross-car line to the driver-side front spring drops from 1.42 m to 1.28. The fourth line is the rocker trunk to the rear passenger spring, and suspension-4 ran it at |z| 0.62 to 0.63 through the front wheelhouse, which was 45 mm clear of a wheel centered on 0.81. Pulling it in by 20 mm was not enough. Sweeping wheels-9\'s built front corner about the kingpin axis, the swept solid at the commanded 14 degrees of lock reaches |z| 0.5844 at x 1.10 and 0.5600 at x 1.30, and the line as drawn stood 25.4 mm inside the tire. It now runs at 0.505 to 0.522 through that band and returns to 0.61 through the cabin, because interior-6 holds seat-rail material out to |z| 0.543 under the floor and a line pulled in for its whole length would have traded a tire for a seat rail. A pressurized line inside a steered tire is not a clearance question, it is the line, and it was found by sweeping rather than by looking, because at zero lock it was clear.\n\nLine volume is part of the lift-speed budget, and the shorter runs give back about 4 percent of the 6 second figure, which is inside the rounding and is not claimed as an improvement.',
+      how: 'Gen 16: nothing moves and nothing scales: the unit is the Gen 4 one. Its ledger is derived with the same shell rule as the springs and it lands where it was booked, 6.4 against 7, with the one stated exception that a drawn can is not a motor and the compressor is counted at the 2.8 kg a 300 W twin-piston unit weighs rather than at its drawn sheet.\n\nThe reservoir and compressor sit where Gen 4 put them, ahead of the front subframe on the passenger side, on rubber, because the unit runs while the car is parked and leveling. The architecture argument is unchanged: a 3 liter tank at 15 bar converts a peak demand into an average one, so 40 mm of lift on four corners takes 6 seconds from stored air while a 300 W compressor refills at leisure, and 300 W at 48 V is 6.5 A through unremarkable wire.\n\nWhat did change is the plumbing, and one line changed for a reason the track makes easy to miss. The front spring seats moved 70 mm inboard and the rear seats 61 mm, so all four supply lines are re-routed and two of them are now shorter; the cross-car line to the driver-side front spring drops from 1.42 m to 1.28. The fourth line is the rocker trunk to the rear passenger spring, and suspension-4 ran it at |z| 0.62 to 0.63 through the front wheelhouse, which was 45 mm clear of a wheel centered on 0.81. Pulling it in by 20 mm was not enough. Sweeping wheels-9\'s built front corner about the kingpin axis, the swept solid at the commanded 14 degrees of lock reaches |z| 0.5844 at x 1.10 and 0.5600 at x 1.30, and the line as drawn stood 25.4 mm inside the tire. It now runs at 0.505 to 0.522 through that band and returns to 0.61 through the cabin, because interior-6 holds seat-rail material out to |z| 0.543 under the floor and a line pulled in for its whole length would have traded a tire for a seat rail. A pressurized line inside a steered tire is not a clearance question, it is the line, and it was found by sweeping rather than by looking, because at zero lock it was clear.\n\nLine volume is part of the lift-speed budget, and the shorter runs give back about 4 percent of the 6 second figure, which is inside the rounding and is not claimed as an improvement.',
       why: 'A generation is judged partly by what it leaves alone. The supply unit was sized for average demand rather than peak, which is why it is 7 kg rather than 12, and a track change touches neither the demand nor the average. Re-drawing it to look busy would be the opposite of engineering. Its plumbing is a different matter, and the lesson from the trunk line is worth keeping: when a wheel moves 70 mm, everything that passes its wheelhouse moves 70 mm, including the parts of the car nobody thinks of as chassis.',
       fail: [
         'A saturated dryer still cascades into wet valves and then ice. The humidity sensor watching the bed is there because nobody changes desiccant on schedule.',
@@ -225,7 +369,7 @@ export const SYSTEM = {
     'active-dampers': {
       name: 'Active dampers',
       tagline: 'Same valve, same law, same 4 ms, and a new job holding a car with 10 percent less roll stiffness under it.',
-      mass: 16,
+      mass: 12.2,
       count: 4,
       specs: [
         ['Base', '46 mm monotube, Gen 1 bore, carried'],
@@ -233,9 +377,10 @@ export const SYSTEM = {
         ['Force span', '0.4 to 3.2 kN at 0.5 m/s'],
         ['Front mount', '(1.50, 0.72, +/-0.41), rim to y 0.729, angle carried'],
         ['Rear mount', '|z| 0.563 at ratio 0.769, inclination unchanged'],
+        ['Mass', '12.2 kg the four, derived: bodies as 2 mm monotubes over their drawn surface (2.2), rods solid (1.5), oil 1.1, valve canisters as 2 mm shells with their valves (1.9), top mounts, eyes, caps and studs at drawn volume (3.1), plus 0.6 per damper of piston, rod guide and seal pack not drawn (2.4); was 16 booked'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'The hardware is Gen 4\'s and the skyhook law is Gen 4\'s. Both mounts moved and neither ratio did: the front strut translated with its corner so its inclination and its 0.417 ratio are unchanged by construction, and the rear damper was re-solved onto the shorter trailing link at |z| 0.563, holding 0.769, with its top mount moved the same 80 mm in z so the strut angle is identical. A damper that keeps its ratio and its angle keeps its curve, and the whole Gen 4 damper calibration is valid on day one.\n\nWhat the dampers inherit is a transient job that got slightly harder. Roll stiffness is 10.3 percent lower than Gen 8 before the bars are re-sized and exactly equal after, but roll stiffness only sets the steady state. The transient is set by damping in roll, and roll damping from four dampers scales with track squared exactly as stiffness does, so the front pair lost 16.5 percent of its roll damping authority when the track came in. The valves make that back the only way they can, by running firmer in the roll-rate channel: the skyhook gain on the roll axis is up 18 percent at the front, which is inside the force span and costs nothing at the wheel because the same valve is doing the same work at a different set point. There is no free lunch hiding in that sentence: the dampers were not saturated before and are not saturated now.',
+      how: 'Gen 16: the bore comes from 46 to 44 mm, the square root of load on the radius, because the 0.4 to 3.2 kN force span was the heavier car\'s and the valve head and its law carry; the published overlap against drivetrain-9\'s bar at the 26.5 mm axis separation therefore reads 12.3 mm rather than 13.1 and the checker\'s deepest pair on the car, front unit x active dampers, reads 78.3 against 79.1, the same carried Gen 4 geometry a millimeter less deep. Both mounts hold to the digit. The ledger is derived with the shell rule and states what a drawing cannot show: 0.6 kg of piston, rod guide and seal pack per unit. 12.2 against 16.\n\nThe hardware is Gen 4\'s and the skyhook law is Gen 4\'s. Both mounts moved and neither ratio did: the front strut translated with its corner so its inclination and its 0.417 ratio are unchanged by construction, and the rear damper was re-solved onto the shorter trailing link at |z| 0.563, holding 0.769, with its top mount moved the same 80 mm in z so the strut angle is identical. A damper that keeps its ratio and its angle keeps its curve, and the whole Gen 4 damper calibration is valid on day one.\n\nWhat the dampers inherit is a transient job that got slightly harder. Roll stiffness is 10.3 percent lower than Gen 8 before the bars are re-sized and exactly equal after, but roll stiffness only sets the steady state. The transient is set by damping in roll, and roll damping from four dampers scales with track squared exactly as stiffness does, so the front pair lost 16.5 percent of its roll damping authority when the track came in. The valves make that back the only way they can, by running firmer in the roll-rate channel: the skyhook gain on the roll axis is up 18 percent at the front, which is inside the force span and costs nothing at the wheel because the same valve is doing the same work at a different set point. There is no free lunch hiding in that sentence: the dampers were not saturated before and are not saturated now.',
       why: 'The reason an active damper is the right thing to have when the track narrows is that damping is the term you can re-tune in software and stiffness is not. A passive car losing 16.5 percent of front roll damping would need new valving in every corner and a new shim stack for every market; this one needs a gain change on one axis of one controller, tested overnight.',
       fail: [
         'Higher roll-channel gain means the valve spends more of its life away from mid-stroke, which is a duty question rather than a force question. Solenoid thermal duty rises about 12 percent on a mountain road, inside the derate model and visible in it.',
@@ -248,7 +393,7 @@ export const SYSTEM = {
     'arb-decouplers': {
       name: 'Anti-roll decouplers',
       tagline: 'The clutch that lets a bar be any size it likes, spent on getting 245 Nm per degree back.',
-      mass: 12,
+      mass: 20.2,
       count: 2,
       specs: [
         ['Bars', '27.7 mm front, 22.3 mm rear, was 26.5 and 21.0'],
@@ -257,9 +402,10 @@ export const SYSTEM = {
         ['Lock torque', '1,550 Nm front, 1,150 rear, was 1,400 and 900'],
         ['Straight-line state', 'Open, wheels decoupled, unchanged'],
         ['Fail state', 'Locked, sprung to lock, unchanged'],
+        ['Mass', '20.2 kg derived and up from 12: the bars are solid steel at their drawn section, 5.0 and 3.2 kg; hubs as 10 mm rings 1.8; clutch drums as 4 mm housings 3.6 plus 1.0 each of dogs, springs and actuator hub not drawn (2.0); flanges 1.5, drop links and clevises 2.0, solenoids 0.6, bushes and fixings 0.5'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'This is the part design/gen9.md asked to show its arithmetic, so here is all of it, one method run over both rungs. Roll stiffness from anything mounted at the wheel scales with track squared: (1.48/1.62) squared is 0.8346, so a 140 mm narrower front track removes 16.5 percent of every front contribution. Start from the design point: 1,205 kg of sprung mass split 52/48 front to rear, because both rear traction motors are unsprung, giving 313 kg and 289 kg sprung per corner; the carried 1.45 and 1.55 Hz ride frequencies then put 26.0 N/mm under each front corner and 27.4 under each rear. Spring roll rate is wheel rate times track squared over two, which is 596 Nm per degree at the front and 628 at the rear on a 1.62 m track. Gen 4\'s stated 58/42 split closes the system and sizes the bars it shipped with: 890 Nm per degree front, 448 rear, total 2,562.\n\nNow run the same method over the rungs. Gen 7 narrowed the rear track to 1.48 and left everything else alone, so the rear scaled by 0.8346 and nobody wrote it down: Gen 8 rolls on 1,486 front and 898 rear, a 62.3/37.7 split against a designed 58/42, with a total of 2,384. Gen 9 narrows the front too, and because both ends now scale by the same factor the split returns to exactly 58.0/42.0, with the total at 2,138, which is 10.3 percent below Gen 8. Restoring that total while holding the split needs 886 Nm per degree from the front bar against the 743 the carried bar gives, and 477 from the rear against 374. Bar stiffness goes as diameter to the fourth, so the front bar is 26.5 times 1.1923 to the quarter power, which is 27.7 mm, and the rear is 21.0 times 1.2752 to the quarter, which is 22.3. The balance comes back to the number Gen 4 designed, and the gradient comes back almost to Gen 8\'s 1.98 degrees per g. The residual is the roll center. The front-structure panel measures the front roll center falling from 103.7 mm to 97.0 as drawn, and because the center of gravity sits 0.48 of the wheelbase behind the front axle the front end owns 0.52 of the roll axis height under it, so the axis drops 3.5 mm, which lengthens the roll moment arm from 0.3993 m to 0.4028. Same stiffness, longer lever: 2.00 degrees per g against 1.98, 0.9 percent worse. A bar can restore a rate and it cannot move a roll center, so that 0.9 percent is the one part of the roll loss that stays lost, and it is stated here rather than rounded into the 1.98.\n\nThat also settles a number wheels-9 published for this module to use, and the answer is that it does not apply. wheels-9 solved the front wishbone lines with the outer joints translated and the inner pivots held, which puts the instant center at z -1.739 and raises the front roll center to 0.1262, shortens the roll-moment arm 5.7 percent and cuts the required injection from 19.8 percent to 13.0. Every step of that is correct for the corner it describes and this module drew a different one. Translating the inner pivots too, which is the whole thesis, puts the instant center at z -2.381 and the roll center at 0.0970, so the arm gets 1.7 percent longer rather than 5.7 shorter and there is no credit to take. The full track term is found in the bars. Both figures come from the same construction run over both corners, which is why they can be compared at all: partner prose said 13.0 and partner geometry says the number was for another drawing.\n\nThe reason those bars can grow at all is the clutch, and the reason it is worth spending the growth here rather than on stiffer springs is that a bar is the only roll device that can be switched off. A conventional car sizes its bar as a compromise between roll control and one-wheel harshness, because a bar copies one wheel\'s bump to the other side; this bar is open on the straight, so the harshness constraint is not binding and diameter is free until stress or clutch torque says otherwise. Both were checked. At the same roll angle the front bar\'s torque rises 8.9 percent while its section modulus rises 14, so peak surface stress falls 4.5 percent; the rear bar has no track change to help it, so its torque rises 27.5 percent against 20 percent more section and its stress rises 6.2, which the material has and the panel states. Clutch capacity follows torque: 1,400 to 1,550 Nm front, 900 to 1,150 rear, which is a 3 mm bigger dog collar at each end and about two kilograms across the part.',
+      how: 'Gen 16: the bars come from 27.7 to 27.1 mm and 22.3 to 21.9, load to the one quarter on the diameter, because the roll moment they react is the laden mass times the same CG height and a bar\'s rate goes as d to the fourth; the lock torques come to 1,430 and 1,060 Nm. The ledger goes up, and that is this rung\'s finding on the slot as much as the structures\' going down: 1.1 m of 27 mm solid bar is 5.0 kg, the pair is 8.3, and the 12 kg suspension-9 booked for the bars, two 1,550 Nm dog clutches and their solenoids could not have held them. 20.2 derived, the clutch internals counted at 1.0 kg a housing and said so.\n\nThis is the part design/gen9.md asked to show its arithmetic, so here is all of it, one method run over both rungs. Roll stiffness from anything mounted at the wheel scales with track squared: (1.48/1.62) squared is 0.8346, so a 140 mm narrower front track removes 16.5 percent of every front contribution. Start from the design point: 1,205 kg of sprung mass split 52/48 front to rear, because both rear traction motors are unsprung, giving 313 kg and 289 kg sprung per corner; the carried 1.45 and 1.55 Hz ride frequencies then put 26.0 N/mm under each front corner and 27.4 under each rear. Spring roll rate is wheel rate times track squared over two, which is 596 Nm per degree at the front and 628 at the rear on a 1.62 m track. Gen 4\'s stated 58/42 split closes the system and sizes the bars it shipped with: 890 Nm per degree front, 448 rear, total 2,562.\n\nNow run the same method over the rungs. Gen 7 narrowed the rear track to 1.48 and left everything else alone, so the rear scaled by 0.8346 and nobody wrote it down: Gen 8 rolls on 1,486 front and 898 rear, a 62.3/37.7 split against a designed 58/42, with a total of 2,384. Gen 9 narrows the front too, and because both ends now scale by the same factor the split returns to exactly 58.0/42.0, with the total at 2,138, which is 10.3 percent below Gen 8. Restoring that total while holding the split needs 886 Nm per degree from the front bar against the 743 the carried bar gives, and 477 from the rear against 374. Bar stiffness goes as diameter to the fourth, so the front bar is 26.5 times 1.1923 to the quarter power, which is 27.7 mm, and the rear is 21.0 times 1.2752 to the quarter, which is 22.3. The balance comes back to the number Gen 4 designed, and the gradient comes back almost to Gen 8\'s 1.98 degrees per g. The residual is the roll center. The front-structure panel measures the front roll center falling from 103.7 mm to 97.0 as drawn, and because the center of gravity sits 0.48 of the wheelbase behind the front axle the front end owns 0.52 of the roll axis height under it, so the axis drops 3.5 mm, which lengthens the roll moment arm from 0.3993 m to 0.4028. Same stiffness, longer lever: 2.00 degrees per g against 1.98, 0.9 percent worse. A bar can restore a rate and it cannot move a roll center, so that 0.9 percent is the one part of the roll loss that stays lost, and it is stated here rather than rounded into the 1.98.\n\nThat also settles a number wheels-9 published for this module to use, and the answer is that it does not apply. wheels-9 solved the front wishbone lines with the outer joints translated and the inner pivots held, which puts the instant center at z -1.739 and raises the front roll center to 0.1262, shortens the roll-moment arm 5.7 percent and cuts the required injection from 19.8 percent to 13.0. Every step of that is correct for the corner it describes and this module drew a different one. Translating the inner pivots too, which is the whole thesis, puts the instant center at z -2.381 and the roll center at 0.0970, so the arm gets 1.7 percent longer rather than 5.7 shorter and there is no credit to take. The full track term is found in the bars. Both figures come from the same construction run over both corners, which is why they can be compared at all: partner prose said 13.0 and partner geometry says the number was for another drawing.\n\nThe reason those bars can grow at all is the clutch, and the reason it is worth spending the growth here rather than on stiffer springs is that a bar is the only roll device that can be switched off. A conventional car sizes its bar as a compromise between roll control and one-wheel harshness, because a bar copies one wheel\'s bump to the other side; this bar is open on the straight, so the harshness constraint is not binding and diameter is free until stress or clutch torque says otherwise. Both were checked. At the same roll angle the front bar\'s torque rises 8.9 percent while its section modulus rises 14, so peak surface stress falls 4.5 percent; the rear bar has no track change to help it, so its torque rises 27.5 percent against 20 percent more section and its stress rises 6.2, which the material has and the panel states. Clutch capacity follows torque: 1,400 to 1,550 Nm front, 900 to 1,150 rear, which is a 3 mm bigger dog collar at each end and about two kilograms across the part.',
       why: 'The honest accounting of what control buys back, since the generation is built on the claim. It buys back roll stiffness completely, because roll stiffness is a rate and rates are what a bar supplies, and it buys back the roll stiffness split, which matters more than the total and had drifted unnoticed for two generations. It buys back none of the roll-over margin: static stability factor is mean track over twice the center of gravity height, no actuator appears in that expression, and at a 0.50 m center of gravity the number goes 1.62 in Gen 4, 1.55 in Gen 8 with one narrow axle, and 1.48 now. Allowing the usual 15 percent for suspension and tire compliance, the on-road threshold is about 1.26 g against Gen 8\'s 1.32, and since wheels-7\'s tire gives up at 0.74 g the car still slides half a g before it rolls and cannot roll over on flat pavement at all; what genuinely gets worse is the tripped case, where the lateral velocity needed to go over a curb falls about 4.5 percent. It buys back none of the load transfer either, because transfer is mass times acceleration times center of gravity height over track: at 0.74 g on 1,400 kg the total rises from 3,279 to 3,434 N, 4.7 percent, and all the bars do is choose the split, which moves from 2,043 front and 1,236 rear to 1,992 and 1,442. Axle capacity lost to transfer goes as the square of it, so the front actually improves 5 percent and the rear worsens 36, the sum rises 6, and on a term worth roughly 6 percent of peak lateral that is 0.4 percent of grip, about 0.003 g. Track does not change a tire\'s cornering stiffness at all; it changes load transfer, and the 13 percent of grip this ladder has given away belongs to wheels-7\'s tire and not to this track. A generation that said control recovered the narrow track would be lying by about half, and the half it recovers is the half a driver feels every day.',
       fail: [
         'The bars are stiffer when locked, so the one thing the decoupler cannot protect is a single-wheel bump taken mid-corner with the collar closed. Cross-axle disturbance transfer in that state rises 19 percent at the front and 27 at the rear, and that is the true capability cost of buying roll stiffness with diameter.',
@@ -271,8 +417,8 @@ export const SYSTEM = {
     },
     steering: {
       name: 'Steer-by-wire rack',
-      tagline: '140 mm shorter, both lanes still 760 mm apart, and the tie rods are the same two rods.',
-      mass: 10,
+      tagline: '140 mm shorter, both lanes still 760 mm apart, a 30 mm bar where a 40 was drawn and never priced, and the ledger up by 6.7 kg because the motors are real.',
+      mass: 16.7,
       specs: [
         ['Rack', '0.96 m, was 1.10'],
         ['Lane centers', '+/-0.38, separation 0.76 m unchanged'],
@@ -280,9 +426,9 @@ export const SYSTEM = {
         ['Peak rack force', '12 kN from either lane alone'],
         ['Bump steer', 'Unchanged: both rod ends moved together'],
         ['Maturity', 'Production practice'],
-        ['Mass', '10 kg against suspension-4\'s 11'],
+        ['Mass', '16.7 kg derived and up from 10: a 30 mm rack bar at drawn volume 5.2, the housing as a 5 mm wall about it 1.5, two ball-nut units 2.4, two lane motors counted as the motors they are 3.6, lane ECUs 0.9, covers 0.5, tie rods solid 1.1 plus four ball studs 1.0, isolators, ears and fixings 0.5'],
       ],
-      how: 'The rack loses 70 mm at each end because both tie rod outer ball joints came in 70 mm with the knuckles, and the inner ends came with them: 0.545 to 0.475. The rod itself is untouched, same length, same two ball joints, which is the whole reason bump steer carries. A tie rod defines a bump steer curve by its length and by where its inner end sits relative to the arm pivots, and translating a corner moves the arm pivots and the rod inner end by the same 70 mm, so the relationship is identical and the curve is identical. Nothing about steering feel or straight-line stability had to be re-tuned.\n\nThe dual-lane architecture is unchanged and deliberately so. Both ball-nut drives stay at |z| 0.38, which keeps them 760 mm apart on a shorter rack, still sharing nothing but a forged steel bar, still one hv-4 zone each, still full 12 kN authority from either lane alone and sub-2 ms failover. What the shorter rack does change is worth one sentence: the same steering arm on the same knuckle at a narrower track means the same rack travel produces the same wheel angle, because the steering arm length never moved, so the ratio, the lock and the rack force are all carried. The kilogram saved is bar, housing and the two shorter boots.',
+      how: 'Gen 16: the rack bar comes from 40 to 30 mm, which is not a scaling but a pricing: suspension-9 drew a 40 mm bar and booked 10 kg for the whole rack when the bar alone is 9.5 kg of steel, and a 30 mm bar at the 11.1 kN peak the lighter car needs is under 16 MPa and is what a rack this length is. The lanes, the 0.76 m separation, the tie rod ends and the bump steer do not move. The ledger goes up to 16.7 because the two lane motors, the ball nuts and the housing are real and were never counted; it is stated here as plainly as the structures\' coming down.\n\nThe rack loses 70 mm at each end because both tie rod outer ball joints came in 70 mm with the knuckles, and the inner ends came with them: 0.545 to 0.475. The rod itself is untouched, same length, same two ball joints, which is the whole reason bump steer carries. A tie rod defines a bump steer curve by its length and by where its inner end sits relative to the arm pivots, and translating a corner moves the arm pivots and the rod inner end by the same 70 mm, so the relationship is identical and the curve is identical. Nothing about steering feel or straight-line stability had to be re-tuned.\n\nThe dual-lane architecture is unchanged and deliberately so. Both ball-nut drives stay at |z| 0.38, which keeps them 760 mm apart on a shorter rack, still sharing nothing but a forged steel bar, still one hv-4 zone each, still full 12 kN authority from either lane alone and sub-2 ms failover. What the shorter rack does change is worth one sentence: the same steering arm on the same knuckle at a narrower track means the same rack travel produces the same wheel angle, because the steering arm length never moved, so the ratio, the lock and the rack force are all carried. The kilogram saved is bar, housing and the two shorter boots.',
       why: 'The steering was already the most carefully separated pair of lanes on the car and a track change is not a reason to reopen it. The interesting decision was to hold the lane separation at 760 mm on a 960 mm rack rather than let the nuts move in with the ends, because lane separation is the property that makes a flooded connector or a cooked winding a single-lane event: it buys nothing to keep the geometry tidy and lose the thing that made it redundant.',
       fail: [
         'Total electrical loss is still no steering, so both zones plus the capacitor bank must still finish a lane change, and the bank is still sized against exactly that maneuver.',
@@ -295,16 +441,17 @@ export const SYSTEM = {
     'rear-steer': {
       name: 'Rear-steer actuator',
       tagline: 'Five kilograms that got more valuable the moment the front axle got narrower.',
-      mass: 5,
+      mass: 6.4,
       specs: [
         ['Authority', '3.0 deg each way, unchanged'],
         ['Tie rods', 'Outer ends to |z| 0.625 with the pickup plane'],
         ['Low speed', 'Opposite phase below 50 km/h'],
         ['High speed', 'Same phase above 80 km/h'],
         ['Fail', 'Sprung and pinned to center'],
+        ['Mass', '6.4 kg derived and up from 5: housing as a 5 mm wall over its drawn 0.110 m2 (1.5), flanges 0.1, motor as a motor 0.9, belt drive and its box 0.5, screw and nut inside the housing 0.8 (not drawn), tie rods solid 1.6, joints and boots 0.5, straps and fixings 0.5; was 5 booked'],
         ['Maturity', 'Pilot line'],
       ],
-      how: 'The actuator is Gen 4\'s and it hangs where Gen 4 hung it, below y 0.22 under the rear subframe. Its tie rods follow the rear pickup plane inboard, landing on the knuckle toe arm at |z| 0.625 instead of 0.705, which shortens each rod by 80 mm and raises its axial load for a given toe moment by the ratio of the toe arm lengths. The thrust spec is unchanged because the toe arm moved with everything else.\n\nWhat changed is the value of the part rather than the part. A narrower front track means less yaw authority from front differential braking, 8.6 percent less, in the same direction and for the same reason drivetrain-7 reported the rear pair losing a third of its vectoring authority when the rear track came in. Rear steer is the one yaw actuator on the car whose authority does not scale with track at all: it works through slip angle, not through a force difference across a lever. In a generation that narrowed the last wide axle, the actuator that does not care about track is the one that ends up carrying the transient, and the speed schedule shifts accordingly, with the coordinator leaning on angle earlier and on brake-based yaw later than it did in Gen 8.',
+      how: 'Gen 16: nothing moves. Its ledger, derived with the same rule, comes out 1.4 kg over the 5 suspension-9 booked, because the screw and nut inside the housing and the two solid tie rods are real; stated.\n\nThe actuator is Gen 4\'s and it hangs where Gen 4 hung it, below y 0.22 under the rear subframe. Its tie rods follow the rear pickup plane inboard, landing on the knuckle toe arm at |z| 0.625 instead of 0.705, which shortens each rod by 80 mm and raises its axial load for a given toe moment by the ratio of the toe arm lengths. The thrust spec is unchanged because the toe arm moved with everything else.\n\nWhat changed is the value of the part rather than the part. A narrower front track means less yaw authority from front differential braking, 8.6 percent less, in the same direction and for the same reason drivetrain-7 reported the rear pair losing a third of its vectoring authority when the rear track came in. Rear steer is the one yaw actuator on the car whose authority does not scale with track at all: it works through slip angle, not through a force difference across a lever. In a generation that narrowed the last wide axle, the actuator that does not care about track is the one that ends up carrying the transient, and the speed schedule shifts accordingly, with the coordinator leaning on angle earlier and on brake-based yaw later than it did in Gen 8.',
       why: 'This is the clearest case on the car of a part bought for one reason paying for itself under a different one. Gen 4 added rear steer to make a 2.90 m wheelbase park like 2.2 m and to delete the lane-change tail step. Gen 9 needs it because two narrow tracks have taken every lever-arm-based yaw actuator down by nearly a tenth, and the one that works on geometry rather than leverage is suddenly the backbone.',
       fail: [
         'Stuck off-center is still worse than dead, still not back-drivable, still pinned by a sprung detent, still speed-limped past 0.5 degrees of stuck offset.',
@@ -316,7 +463,7 @@ export const SYSTEM = {
     'chassis-ecu': {
       name: 'Chassis ECU',
       tagline: 'Same kilogram of computer, three new numbers in its model, still allowed to die.',
-      mass: 1,
+      mass: 1.1,
       specs: [
         ['Loop', '1 kHz, four corners plus both steer axes'],
         ['New terms', 'Roll model load term, rear camber map, yaw split'],
@@ -324,9 +471,10 @@ export const SYSTEM = {
         ['Mounting', 'Flange flat at y 0.3080, on interior-6\'s pad over the pack'],
         ['Role', 'Comfort coordinator, never a safety path'],
         ['Fail', 'Every actuator to its local default'],
+        ['Mass', '1.1 kg derived: 698 cm3 of die-cast enclosure, lid and fins at their drawn volume, which is what a sealed chassis ECU weighs; was 1'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'The box, the loop rate, the inputs and the demotion are all Gen 4\'s, and its whole architecture argument still holds: it commands comfort and coordination and never safety, the steering lanes close their own loops, the dampers hold local spool defaults, the collars spring locked, the air valves sit on their check seats and the rear-steer pins to center. Pull its connector at speed and the car becomes a well-tuned passive car mid-corner.\n\nThree things in its model changed, and they are named so nobody looks for a fourth. The roll model gains a payload term, because bars now carry 64 percent of front roll stiffness and bar rate does not scale with load while air spring rate does. The rear camber map is re-learned, because the rear links are 100 mm shorter and their arc is tighter even though their rates are identical. And the yaw split between front rack, rear steer and brake-based vectoring is re-weighted, because the front track lost 8.6 percent of its differential-braking lever. None of the three is a new capability and all three are re-calibrations, which is exactly what a chassis ECU is for: it is the part of a track change that ships as a file rather than as metal.',
+      how: 'Gen 16: the same kilogram, now 1.1, and three more numbers in its model: the corner loads it was tuned against are 7.7 percent lower and the damper bore is 44 mm.\n\nThe box, the loop rate, the inputs and the demotion are all Gen 4\'s, and its whole architecture argument still holds: it commands comfort and coordination and never safety, the steering lanes close their own loops, the dampers hold local spool defaults, the collars spring locked, the air valves sit on their check seats and the rear-steer pins to center. Pull its connector at speed and the car becomes a well-tuned passive car mid-corner.\n\nThree things in its model changed, and they are named so nobody looks for a fourth. The roll model gains a payload term, because bars now carry 64 percent of front roll stiffness and bar rate does not scale with load while air spring rate does. The rear camber map is re-learned, because the rear links are 100 mm shorter and their arc is tighter even though their rates are identical. And the yaw split between front rack, rear steer and brake-based vectoring is re-weighted, because the front track lost 8.6 percent of its differential-braking lever. None of the three is a new capability and all three are re-calibrations, which is exactly what a chassis ECU is for: it is the part of a track change that ships as a file rather than as metal.',
       why: 'The demotion is what makes a 1 kg single-lane box acceptable in a car that has just given away roll stiffness and roll-over margin, and it is worth restating in that context. Every rung of the fail ladder lands on a passive car, and a passive Gen 9 holds the same 2,384 Nm per degree a passive Gen 8 did, because the collars spring locked onto bars this module made bigger. It is about 9 percent down on roll damping and 0.9 percent down on roll gradient from the lower front roll center, and those are the two numbers the fault injection cases were re-run against rather than assumed unchanged.',
       fail: [
         'It is still a single point for ride quality, still obvious within one pothole, still safe by design.',
@@ -338,7 +486,7 @@ export const SYSTEM = {
     '48v-feeds': {
       name: '48 V by-wire feeds',
       tagline: 'The contract is honored exactly, and honoring it exactly is what proves it has to change.',
-      mass: 1,
+      mass: 0.7,
       count: 4,
       specs: [
         ['Boss centers', '(+/-1.30, 0.36, +/-0.70), contract exact'],
@@ -347,9 +495,10 @@ export const SYSTEM = {
         ['Rear status', '10.2 mm inside drivetrain-7 hub carrier bore'],
         ['Amendment', 'Stubs to |z| 0.58, both sides, one commit'],
         ['Explode', 'Pairs with hv-4 at [0, -0.25, 0]'],
+        ['Mass', '0.7 kg derived: 321 cm3 of jacketed lead and the bosses at 1,400 kg/m3, backshells and clips 0.2; was 1'],
         ['Maturity', 'Production practice, contract under amendment'],
       ],
-      how: 'The verification design/gen9.md asked for was run against hv-4\'s built geometry rather than its prose. Its four stubs are cylinders of r 0.012 and 28 mm length spanning x plus and minus 1.286 to 1.314, y 0.348 to 0.372, |z| 0.688 to 0.712, centered on the contract points exactly. The bosses here are 30 by 20 by 20 mm on those same four points, so the mated pair is geometrically exact and departs together on the shared explode vector. That part of the contract passes.\n\nThe rest of it does not, and the reason is this generation. A by-wire stub at |z| 0.70 was chosen in Gen 4 when both wheel centers sat at |z| 0.81 with tire inner faces at 0.7325 and the rear motor annulus ran |z| 0.72 to 0.80: the stub was 33 mm inboard of the nearest rotating part and entirely sensible. Gen 7 moved the rear centers to 0.74 and the annulus to 0.65 to 0.73, and Gen 9 moves the front centers to 0.74. Both tire inner faces are now at |z| 0.6625, so all four contract points are 40 mm inside their wheels. At the front the boss lands in the wheel dish: wheels-9\'s built front wheel carries its spoke web from r 0.0760 to 0.2453 across |z| 0.6995 to 0.7205, and the boss reaches r 0.1657 at |z| 0.710, so it is 10.5 mm inside it. At the rear it lands in the free pocket inside drivetrain-7\'s motor, and its forward outboard corner reaches r 0.1657 from the rear axle against a hub carrier inner radius of 0.1555, so 10.2 mm of the boss is inside the carrier.\n\nThe front leads are a separate question and they were re-routed, because unlike the boss they are free to move. A lead leaving that boss is inside the brake disc\'s steered path unless it is radially outside the ring\'s 0.1826 or axially clear of the band once the swing is added, and at the commanded 14 degrees of lock the disc swings 0.242 of its fore-and-aft offset in z. Drawn against the static disc they passed; swept against the steered one, the outboard lead was 12.3 mm inside the ring at 14 degrees and the branch to the front damper valve head was 16.8 mm inside it at minus 14. Both now hold |z| 0.688 out to r 0.210 before diving, and the branch runs at 0.505 to 0.545, which clears the swept band by construction. What is left inside the wheel is the boss and the 60 mm of lead in its own plane, 10.5 mm into the spoke web, and that is the contract\'s number rather than a routing choice. hv-4\'s own stub reaches r 0.1649 and is inside it by 9.4 mm, which is the decisive point: shrinking this module\'s side would hide half of a joint that does not fit.\n\nWorse than the overlap is the topology. Sweeping drivetrain-7\'s rear corner in cylindrical coordinates shows the pocket the rear stub sits in is sealed: carrier ring outboard at r 0.1555, stator from 0.127, rotor from 0.188, and a carrier flange closing r 0.069 to 0.144 across |z| 0.6395 to 0.6495. There is no radial path out and no axial path out. The rear leads drawn here therefore cross that flange between r 0.099 and 0.116, where a 24 mm feedthrough would have to exist and does not, and they are drawn that way and reported rather than routed through a fiction. The amendment is one line on each side: move all four stubs from |z| 0.70 to |z| 0.58, which keeps x, y, the rocker run, the boss size and the explode pairing, clears the front wheel dish by 82 mm and leaves the rear motor entirely. It costs hv-4 a 120 mm inboard kink at each end of each rocker run and costs this module nothing. It must be made on both sides in one commit, exactly as the Gen 8 area audit was applied to both rungs at once, because a stub moved on one side only is worse than a stub in the wrong place on both.',
+      how: 'Gen 16: the bosses hold the contract points exactly and the leads hold their routes; the ledger is the drawing\'s, 0.7.\n\nThe verification design/gen9.md asked for was run against hv-4\'s built geometry rather than its prose. Its four stubs are cylinders of r 0.012 and 28 mm length spanning x plus and minus 1.286 to 1.314, y 0.348 to 0.372, |z| 0.688 to 0.712, centered on the contract points exactly. The bosses here are 30 by 20 by 20 mm on those same four points, so the mated pair is geometrically exact and departs together on the shared explode vector. That part of the contract passes.\n\nThe rest of it does not, and the reason is this generation. A by-wire stub at |z| 0.70 was chosen in Gen 4 when both wheel centers sat at |z| 0.81 with tire inner faces at 0.7325 and the rear motor annulus ran |z| 0.72 to 0.80: the stub was 33 mm inboard of the nearest rotating part and entirely sensible. Gen 7 moved the rear centers to 0.74 and the annulus to 0.65 to 0.73, and Gen 9 moves the front centers to 0.74. Both tire inner faces are now at |z| 0.6625, so all four contract points are 40 mm inside their wheels. At the front the boss lands in the wheel dish: wheels-9\'s built front wheel carries its spoke web from r 0.0760 to 0.2453 across |z| 0.6995 to 0.7205, and the boss reaches r 0.1657 at |z| 0.710, so it is 10.5 mm inside it. At the rear it lands in the free pocket inside drivetrain-7\'s motor, and its forward outboard corner reaches r 0.1657 from the rear axle against a hub carrier inner radius of 0.1555, so 10.2 mm of the boss is inside the carrier.\n\nThe front leads are a separate question and they were re-routed, because unlike the boss they are free to move. A lead leaving that boss is inside the brake disc\'s steered path unless it is radially outside the ring\'s 0.1826 or axially clear of the band once the swing is added, and at the commanded 14 degrees of lock the disc swings 0.242 of its fore-and-aft offset in z. Drawn against the static disc they passed; swept against the steered one, the outboard lead was 12.3 mm inside the ring at 14 degrees and the branch to the front damper valve head was 16.8 mm inside it at minus 14. Both now hold |z| 0.688 out to r 0.210 before diving, and the branch runs at 0.505 to 0.545, which clears the swept band by construction. What is left inside the wheel is the boss and the 60 mm of lead in its own plane, 10.5 mm into the spoke web, and that is the contract\'s number rather than a routing choice. hv-4\'s own stub reaches r 0.1649 and is inside it by 9.4 mm, which is the decisive point: shrinking this module\'s side would hide half of a joint that does not fit.\n\nWorse than the overlap is the topology. Sweeping drivetrain-7\'s rear corner in cylindrical coordinates shows the pocket the rear stub sits in is sealed: carrier ring outboard at r 0.1555, stator from 0.127, rotor from 0.188, and a carrier flange closing r 0.069 to 0.144 across |z| 0.6395 to 0.6495. There is no radial path out and no axial path out. The rear leads drawn here therefore cross that flange between r 0.099 and 0.116, where a 24 mm feedthrough would have to exist and does not, and they are drawn that way and reported rather than routed through a fiction. The amendment is one line on each side: move all four stubs from |z| 0.70 to |z| 0.58, which keeps x, y, the rocker run, the boss size and the explode pairing, clears the front wheel dish by 82 mm and leaves the rear motor entirely. It costs hv-4 a 120 mm inboard kink at each end of each rocker run and costs this module nothing. It must be made on both sides in one commit, exactly as the Gen 8 area audit was applied to both rungs at once, because a stub moved on one side only is worse than a stub in the wrong place on both.',
       why: 'A contract that was correct when written and was invalidated by a later generation is the purest form of the drift this project keeps finding, and the right response is not to quietly move a boss. The connector face is where the drawing and the warranty change hands, so the point where it sits is not this module\'s to choose. Honor it exactly, measure what that costs, publish the number, and name the amendment. Everything else is a module editing a contract in the dark.',
       fail: [
         'As drawn, all four bosses are inside their wheels and the rear leads pass through a carrier flange with no feedthrough. This is a known, measured, reported defect in the shipped geometry, not an oversight, and it is the first thing an integrator should fix.',
@@ -769,8 +918,8 @@ function forgedLeg(a, b, r, mat, zSplit) {
    nobody can reach. See the bush() comment. */
 function aArm(i1, i2, bj, b1 = true, b2 = true) {
   const g = new THREE.Group();
-  g.add(forgedLeg(i1, bj, 0.015, M.alu, 0.575));
-  g.add(forgedLeg(i2, bj, 0.015, M.alu, 0.575));
+  g.add(forgedLeg(i1, bj, 0.015 * K3, M.alu, 0.575));
+  g.add(forgedLeg(i2, bj, 0.015 * K3, M.alu, 0.575));
   g.add(balljoint(bj, 0.024));
   if (b1) g.add(bush(i1));
   if (b2) g.add(bush(i2));
@@ -791,13 +940,13 @@ function frame(s, withTowers) {
      rails x s*1.31 to s*1.75 at |z| 0.46, crossmembers z +/-0.55 at
      x 1.36 and 1.70. */
   for (const zs of [-1, 1]) {
-    g.add(section(tubeShape(0.09, 0.09, 0.012, 0.009),
+    g.add(section(tubeShape(0.09, 0.09, 0.012, 0.009 * LOAD),
       [s * 1.31, 0.25, zs * 0.46], [s * 1.75, 0.25, zs * 0.46], M.alu));
   }
   for (const xm of [1.36, 1.70]) {
     const low = front && xm === 1.36;
     const y = low ? 0.21 : 0.25;
-    g.add(section(tubeShape(0.08, 0.07, 0.010, 0.008),
+    g.add(section(tubeShape(0.08, 0.07, 0.010, 0.008 * LOAD),
       [s * xm, y, -0.55], [s * xm, y, 0.55], M.alu));
     /* Fillet beads and a gusset at each of the four T joints onto the
        rails. The gusset runs toward MID rail, never outward: pointed the
@@ -837,7 +986,7 @@ function frame(s, withTowers) {
       /* The rear tower is a fabricated shear panel, so it is drawn as one:
          a web with two lightening holes between a top and a bottom flange.
          Same 0.26 by 0.20 by 0.05 envelope at (s*1.47, 0.40, +/-0.48). */
-      const web = holedPlate(0.26, 0.20, 0.010, [[-0.062, -0.012, 0.040], [0.062, -0.012, 0.040]], M.alu);
+      const web = holedPlate(0.26, 0.20, 0.010 * LOAD, [[-0.062, -0.012, 0.040], [0.062, -0.012, 0.040]], M.alu);
       web.position.set(s * 1.47, 0.40, zs * 0.48);
       g.add(web);
       for (const yf of [0.305, 0.495]) {
@@ -1034,6 +1183,13 @@ function frontUpright() {
   const cpad = lib.box(0.026, 0.078, 0.008, M.castAlu);
   cpad.position.set(1.427, 0.508, 0.6515);
   g.add(cpad);
+  /* GEN 17: the whole upright rides 20 mm inboard with its wheel. Every
+     figure in the comments above is the Gen 9 one and reads 20 mm inboard
+     here: body faces 0.531 and 0.563, hub flange on 0.6725, caliper pad on
+     0.6315, legs to ball joints at 0.62 and 0.61. A translation is the
+     honest drawing of a corner that kept its kinematics; the cost of that
+     choice is the upper arm, which is shortened in aArm above. */
+  g.position.z = -0.02;
   return g;
 }
 
@@ -1048,15 +1204,15 @@ function rearUpright() {
      landing so a joint has something to bolt into */
   for (const x of [-1.4215, -1.4785]) {
     const rib = lib.cbox(0.012, 0.300, 0.011, 0.002, M.castAlu);
-    rib.position.set(x, 0.400, 0.5785);
+    rib.position.set(x, 0.400, 0.5585);
     g.add(rib);
   }
   const cross = lib.cbox(0.075, 0.013, 0.011, 0.002, M.castAlu);
-  cross.position.set(-1.450, 0.400, 0.5785);
+  cross.position.set(-1.450, 0.400, 0.5585);
   g.add(cross);
   const barrel = lib.cyl(0.062, 0.024, M.castAlu, 20);
   barrel.rotation.x = Math.PI / 2;
-  barrel.position.set(-1.45, P.wheelY, 0.6275);
+  barrel.position.set(-1.45, P.wheelY, 0.6075);
   g.add(barrel);
   /* The mounting face on drivetrain-7's carrier flange at |z| 0.6395,
      machined with a spigot step and a chamfered rim, plus the four bolts
@@ -1066,7 +1222,7 @@ function rearUpright() {
     [0.030, 0], [0.086, 0], [0.086, 0.0085], [0.0825, 0.012], [0.030, 0.012],
   ], M.steel, 20);
   face.rotation.x = Math.PI / 2;
-  face.position.set(-1.45, P.wheelY, 0.6275);
+  face.position.set(-1.45, P.wheelY, 0.6075);
   g.add(face);
   /* Bolt circle at r 0.062, not 0.073. At 0.073 the heads came within
      0.06 mm of wheels-9's park brake, which reads as touching. Re-swept off
@@ -1087,7 +1243,7 @@ function rearUpright() {
      rather than traded for the clearance. */
   for (let i = 0; i < 4; i++) {
     const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
-    g.add(screw([-1.45 + Math.cos(a) * 0.062, P.wheelY + Math.sin(a) * 0.062, 0.6275],
+    g.add(screw([-1.45 + Math.cos(a) * 0.062, P.wheelY + Math.sin(a) * 0.062, 0.6075],
       [0, 0, -1], 0.007, M.steel));
   }
   return g;
@@ -1109,10 +1265,11 @@ function activeDamper(a, b, o = {}) {
      the other way round for the same answer: sliced about the front axle
      line, this part's innermost surface at z 0.505 is 5.5 mm out, inside a
      bar of 18.6. Only the ends gained shape. */
+  const RB = 0.021 * K2;   /* 44 mm bore, Gen 16: the force span fell with the load */
   g.add(lib.lathe([
-    [0, yb], [0.013, yb], [0.021, yb + 0.011],
-    [0.021, yt - 0.030], [0.0245, yt - 0.025], [0.0245, yt - 0.008],
-    [0.0210, yt - 0.004], [0.0092, yt],
+    [0, yb], [0.013, yb], [RB, yb + 0.011],
+    [RB, yt - 0.030], [RB + 0.0035, yt - 0.025], [RB + 0.0035, yt - 0.008],
+    [RB, yt - 0.004], [0.0092, yt],
   ], M.darkSteel, 16));
   const shaft = lib.cyl(0.008, L * 0.55, M.steel, 10);
   shaft.position.y = L * 0.2;
@@ -1245,8 +1402,8 @@ export function build() {
      The pivot sitting inside the beam is Gen 4 geometry and a detail pass may
      not move it, so the bush is not drawn. The forward pivot at x 1.36 stands
      in the riser clevis outside the crossmember and keeps its bush entire. */
-  fCorner.add(aArm([1.36, 0.25, LIP], [1.70, 0.25, LIP], [P.axleF, 0.235, 0.64], true, false));
-  fCorner.add(aArm([1.33, 0.55, UIP], [1.65, 0.55, UIP], [P.axleF, 0.565, 0.63]));
+  fCorner.add(aArm([1.36, 0.25, LIP], [1.70, 0.25, LIP], [P.axleF, 0.235, 0.62], true, false));
+  fCorner.add(aArm([1.33, 0.55, UIP], [1.65, 0.55, UIP], [P.axleF, 0.565, 0.61]));   /* Gen 17: the upper inner pivot holds, the ball joint comes in: a 270 mm arm */
   /* The upper inner pivots pick up on body-9's front casting rather than on
      this subframe, so they get the clevis and the bolt face that interface
      is made of. The pivot centers are the published (1.33 and 1.65, 0.55,
@@ -1319,21 +1476,21 @@ export function build() {
     [[-1.64, 0.25, 0.44], [-1.53, 0.26, RJ], 0.013, -1, 0.030, false],   /* lower trailing */
   ];
   for (const [inner, outer, r, sn, drop, open] of links) {
-    rCorner.add(section(ovalShape(r * 1.72, r * 2.36, r * 0.54), inner, outer, M.steel, { taper: 0.92 }));
+    rCorner.add(section(ovalShape(r * K3 * 1.72, r * K3 * 2.36, r * K3 * 0.54), inner, outer, M.steel, { taper: 0.92 }));
     if (open) rCorner.add(bush(inner, 0.018, 0.04));
     rCorner.add(clevis(inner, 0.018, 0.0295, 0.052, drop, M.alu, false, open));
     rCorner.add(joint(outer, [0, sn, 0], 0.017));
   }
   /* knuckle toe arm: the rear-steer tie rod lands on its outer point */
-  rCorner.add(rod([-1.44, 0.31, 0.616], [-1.39, 0.31, 0.625], 0.011, M.castAlu));
+  rCorner.add(rod([-1.44, 0.31, 0.596], [-1.39, 0.31, 0.605], 0.011, M.castAlu));
   rs.add(rCorner, lib.mirrorZ(rCorner));
   sys.add(rs);
 
   /* ── air springs: front translated with the corner, rear re-seated at
      |z| 0.539 to hold the 0.615 motion ratio ── */
   const air = lib.part('air-springs', [0, 0.62, 0.18]);
-  const fBell = bellows(0.27);
-  span(fBell, [1.479, 0.40, 0.493], [1.496, 0.66, 0.426]);
+  const fBell = bellows(0.27, 0.055 * K2);
+  span(fBell, [1.479, 0.40, 0.473], [1.496, 0.66, 0.426]);   /* Gen 17: the seat on the arm 20 mm in, the tower held */
   fBell.updateMatrixWorld(true);
   /* The supply line has to land ON the fitting, not near it, so the port
      is read out of the built strut rather than guessed from the seat. */
@@ -1358,15 +1515,15 @@ export function build() {
     [0.018, 0.229], [0.058, 0.229], [0.058, 0.2350],
     [0.040, 0.2390], [0.036, 0.2450], [0.018, 0.2450],
   ], M.steel, 16);
-  perch.position.set(-1.446, 0, 0.539);
+  perch.position.set(-1.446, 0, 0.526);   /* Gen 17: 0.44 + 0.615 of the link's 0.14, the motion ratio held */
   air.add(perch);
   for (let i = 0; i < 3; i++) {
     const a = (i / 3) * Math.PI * 2 + 1.1;
-    air.add(screw([-1.446 + Math.cos(a) * 0.049, 0.2350, 0.539 + Math.sin(a) * 0.049],
+    air.add(screw([-1.446 + Math.cos(a) * 0.049, 0.2350, 0.526 + Math.sin(a) * 0.049],
       [0, 1, 0], 0.0065, M.steel));
   }
-  const rBell = bellows(0.23, 0.052);
-  rBell.position.set(-1.447, 0.359, 0.539);
+  const rBell = bellows(0.23, 0.052 * K2);
+  rBell.position.set(-1.447, 0.359, 0.526);
   rBell.updateMatrixWorld(true);
   const rPort = rBell.userData.port.clone().applyMatrix4(rBell.matrixWorld);
   air.add(rBell);
@@ -1470,7 +1627,7 @@ export function build() {
     [1.88, 0.322, 0.42], [1.72, 0.325, 0.46], [1.42, 0.327, 0.505],
     [1.05, 0.327, 0.522], [0.70, 0.327, 0.575], [0, 0.327, 0.61],
     [-1.20, 0.327, 0.58], [-1.41, 0.31, 0.55],
-    [-1.4415, 0.42, 0.5425], [rPort.x, rPort.y, rPort.z],
+    [-1.4415, 0.42, 0.5295], [rPort.x, rPort.y, rPort.z],
   ], 0.0045, M.plasticLt));
   /* P-clips down the rocker trunk. The line is 3.3 m long and it used to
      float the whole way. Each foot lands on PACKLID, which is battery-7's
@@ -1486,7 +1643,7 @@ export function build() {
 
   /* ── active dampers: same ratios, both mounts moved ── */
   const dampF = lib.part('active-dampers', [0.1, 0.55, 0.3]);
-  const dF = activeDamper([1.47, 0.255, 0.53], [1.50, 0.72, 0.41]);
+  const dF = activeDamper([1.47, 0.255, 0.51], [1.50, 0.72, 0.41]);   /* Gen 17: the eye on the arm 20 mm in, the tower mount held: 14.9 to about 15.9 degrees */
   dF.updateMatrixWorld(true);
   /* the 48 V branch has to arrive at the connector, so read it off the
      built strut rather than aiming at where the valve used to be */
@@ -1494,7 +1651,7 @@ export function build() {
   dampF.add(dF);
   sys.add(dampF, lib.mirrorZ(dampF));
   const dampR = lib.part('active-dampers', [-0.2, 0.55, 0.3]);
-  const dR = activeDamper([-1.555, 0.258, 0.563], [-1.575, 0.67, 0.483]);
+  const dR = activeDamper([-1.555, 0.258, 0.548], [-1.575, 0.67, 0.483]);   /* Gen 17: the eye at 0.769 of a 0.14 link */
   dR.updateMatrixWorld(true);
   const dFeedR = dR.userData.feed.clone().applyMatrix4(dR.matrixWorld);
   dampR.add(dR);
@@ -1516,11 +1673,11 @@ export function build() {
      Gen 4 clutch architecture, drop links following the new arms ── */
   const arbF = lib.part('arb-decouplers', [0.45, -0.25, 0]);
   arbF.add(lib.tube([
-    [1.56, 0.33, 0.53], [1.63, 0.315, 0.43], [1.70, 0.305, 0.27], [1.70, 0.305, 0.10],
-  ], 0.01385, M.steel));
+    [1.56, 0.33, 0.51], [1.63, 0.315, 0.43], [1.70, 0.305, 0.27], [1.70, 0.305, 0.10],
+  ], 0.01385 * K4, M.steel));
   arbF.add(lib.tube([
-    [1.70, 0.305, -0.10], [1.70, 0.305, -0.27], [1.63, 0.315, -0.43], [1.56, 0.33, -0.53],
-  ], 0.01385, M.steel));
+    [1.70, 0.305, -0.10], [1.70, 0.305, -0.27], [1.63, 0.315, -0.43], [1.56, 0.33, -0.51],
+  ], 0.01385 * K4, M.steel));
   const fDrum = lib.cyl(0.039, 0.22, M.darkSteel, 18);
   fDrum.rotation.x = Math.PI / 2;
   fDrum.position.set(1.70, 0.305, 0);
@@ -1550,17 +1707,17 @@ export function build() {
       [0, 0, 1], 0.0065, M.steel));
   }
   for (const zs of [-1, 1]) {
-    arbF.add(dropLink([1.56, 0.33, zs * 0.53], [1.5375, 0.2415, zs * 0.552], 0.006));
-    arbF.add(arbBush(1.70, 0.305, zs * 0.20, 0.01385));
+    arbF.add(dropLink([1.56, 0.33, zs * 0.51], [1.5375, 0.2415, zs * 0.532], 0.006));
+    arbF.add(arbBush(1.70, 0.305, zs * 0.20, 0.01385 * K4));
   }
   sys.add(arbF);
   const arbR = lib.part('arb-decouplers', [-0.45, -0.25, 0]);
   arbR.add(lib.tube([
-    [-1.558, 0.326, 0.519], [-1.63, 0.315, 0.41], [-1.70, 0.305, 0.28], [-1.70, 0.305, 0.09],
-  ], 0.01115, M.steel));
+    [-1.558, 0.326, 0.506], [-1.63, 0.315, 0.41], [-1.70, 0.305, 0.28], [-1.70, 0.305, 0.09],
+  ], 0.01115 * K4, M.steel));
   arbR.add(lib.tube([
-    [-1.70, 0.305, -0.09], [-1.70, 0.305, -0.28], [-1.63, 0.315, -0.41], [-1.558, 0.326, -0.519],
-  ], 0.01115, M.steel));
+    [-1.70, 0.305, -0.09], [-1.70, 0.305, -0.28], [-1.63, 0.315, -0.41], [-1.558, 0.326, -0.506],
+  ], 0.01115 * K4, M.steel));
   const rDrum = lib.cyl(0.036, 0.20, M.darkSteel, 18);
   rDrum.rotation.x = Math.PI / 2;
   rDrum.position.set(-1.70, 0.305, 0);
@@ -1587,19 +1744,19 @@ export function build() {
       [0, 0, 1], 0.0065, M.steel));
   }
   for (const zs of [-1, 1]) {
-    arbR.add(dropLink([-1.558, 0.326, zs * 0.519], [-1.572, 0.256, zs * 0.539], 0.006));
-    arbR.add(arbBush(-1.70, 0.305, zs * 0.20, 0.01115));
+    arbR.add(dropLink([-1.558, 0.326, zs * 0.506], [-1.572, 0.256, zs * 0.526], 0.006));
+    arbR.add(arbBush(-1.70, 0.305, zs * 0.20, 0.01115 * K4));
   }
   sys.add(arbR);
 
   /* ── steering: 0.96 m rack, lanes still 0.76 m apart, tie rods carried ── */
   const st = lib.part('steering', [0.55, 0.12, 0]);
   const RY = 0.36;
-  const rack = lib.cyl(0.02, 0.96, M.steel, 14);
+  const rack = lib.cyl(0.015, 0.92, M.steel, 14);   /* 30 mm bar (Gen 16); 0.92 m, Gen 17: the lanes 20 mm in each */
   rack.rotation.x = Math.PI / 2;
   rack.position.set(1.22, RY, 0);
   st.add(rack);
-  const housing = lib.cyl(0.03, 0.62, M.castAlu, 16);
+  const housing = lib.cyl(0.03, 0.58, M.castAlu, 16);
   housing.rotation.x = Math.PI / 2;
   housing.position.set(1.22, RY, -0.05);
   st.add(housing);
@@ -1619,7 +1776,7 @@ export function build() {
   for (const zs of [-1, 1]) {
     const nut = lib.cyl(0.046, 0.09, M.castAlu, 18);
     nut.rotation.x = Math.PI / 2;
-    nut.position.set(1.22, RY, zs * 0.38);
+    nut.position.set(1.22, RY, zs * 0.36);
     st.add(nut);
     /* ball-nut drive motor: a can with end bells and a sealed connector */
     const mot = lib.lathe([
@@ -1627,32 +1784,32 @@ export function build() {
       [0.037, 0.051], [0.034, 0.060], [0.026, 0.070], [0, 0.070],
     ], M.darkSteel, 16);
     mot.rotation.x = Math.PI / 2;
-    mot.position.set(1.30, RY, zs * 0.44);
+    mot.position.set(1.30, RY, zs * 0.42);
     st.add(mot);
     const mcon = lib.cbox(0.018, 0.016, 0.014, 0.002, M.plastic);
-    mcon.position.set(1.30, RY + 0.043, zs * 0.44);
+    mcon.position.set(1.30, RY + 0.043, zs * 0.42);
     st.add(mcon);
     const cov = lib.cbox(0.120, 0.055, 0.030, 0.004, M.plastic);
-    cov.position.set(1.26, RY, zs * 0.415);
+    cov.position.set(1.26, RY, zs * 0.395);
     st.add(cov);
     /* lane ECU: a sealed die-cast box with cooling ribs and its connector */
     const ecu = lib.cbox(0.050, 0.030, 0.050, 0.004, M.sensor);
-    ecu.position.set(1.30, RY + 0.055, zs * 0.44);
+    ecu.position.set(1.30, RY + 0.055, zs * 0.42);
     st.add(ecu);
     const efins = lib.fins(0.044, 0.010, 0.044, 5, 0.003, M.alu);
-    efins.position.set(1.30, RY + 0.075, zs * 0.44);
+    efins.position.set(1.30, RY + 0.075, zs * 0.42);
     st.add(efins);
     const econ = lib.cbox(0.014, 0.014, 0.022, 0.002, M.plastic);
-    econ.position.set(1.3315, RY + 0.055, zs * 0.44);
+    econ.position.set(1.3315, RY + 0.055, zs * 0.42);
     st.add(econ);
     /* rack gaiter: convoluted, with a clip at each end */
     const bt = gaiter(0.021, 0.030, 0.10, 4, 10);
     bt.rotation.x = Math.PI / 2;
-    bt.position.set(1.22, RY, zs * 0.40);
+    bt.position.set(1.22, RY, zs * 0.38);
     st.add(bt);
-    st.add(rod([1.22, RY, zs * 0.475], [1.375, 0.305, zs * 0.635], 0.010, M.steel));
-    st.add(balljoint([1.22, RY, zs * 0.475], 0.015));
-    st.add(balljoint([1.375, 0.305, zs * 0.635], 0.014));
+    st.add(rod([1.22, RY, zs * 0.455], [1.375, 0.305, zs * 0.615], 0.010, M.steel));
+    st.add(balljoint([1.22, RY, zs * 0.455], 0.015));
+    st.add(balljoint([1.375, 0.305, zs * 0.615], 0.014));
     /* Tie rod length adjuster and its locknut, both held INBOARD of
        |z| 0.575: the outer half of this rod is the geometry whose crossing
        of wheels-9's disc web the steering panel publishes at 6.6 mm. */
@@ -1660,11 +1817,11 @@ export function build() {
     const q = new THREE.Quaternion().setFromUnitVectors(UP, dn);
     const adj = lib.cyl(0.0145, 0.020, M.steel, 6);
     adj.quaternion.copy(q);
-    adj.position.set(1.2907, 0.3349, zs * 0.5480);
+    adj.position.set(1.2907, 0.3349, zs * 0.5280);
     st.add(adj);
     const lock = lib.cyl(0.0135, 0.008, M.steel, 6);
     lock.quaternion.copy(q);
-    lock.position.set(1.2752, 0.3404, zs * 0.5320);
+    lock.position.set(1.2752, 0.3404, zs * 0.5120);
     st.add(lock);
   }
   sys.add(st);
@@ -1706,15 +1863,15 @@ export function build() {
     boot.rotation.x = Math.PI / 2;
     boot.position.set(-1.34, 0.19, zs * 0.30);
     rst.add(boot);
-    rst.add(rod([-1.34, 0.19, zs * 0.315], [-1.39, 0.31, zs * 0.625], 0.010, M.steel));
+    rst.add(rod([-1.34, 0.19, zs * 0.315], [-1.39, 0.31, zs * 0.605], 0.010, M.steel));
     rst.add(balljoint([-1.34, 0.19, zs * 0.315], 0.014));
-    rst.add(balljoint([-1.39, 0.31, zs * 0.625], 0.013));
+    rst.add(balljoint([-1.39, 0.31, zs * 0.605], 0.013));
     /* tie rod adjuster, held inboard of the pickup plane */
-    const dn = new THREE.Vector3(-0.05, 0.12, zs * 0.31).normalize();
+    const dn = new THREE.Vector3(-0.05, 0.12, zs * 0.29).normalize();
     const q = new THREE.Quaternion().setFromUnitVectors(UP, dn);
     const adj = lib.cyl(0.0145, 0.018, M.steel, 6);
     adj.quaternion.copy(q);
-    adj.position.set(-1.3610, 0.2406, zs * 0.4650);
+    adj.position.set(-1.3610, 0.2406, zs * 0.4550);
     rst.add(adj);
     /* mounting strap with its two bolts down onto the subframe */
     const strap = lib.cbox(0.016, 0.040, 0.030, 0.003, M.darkSteel);
@@ -1804,16 +1961,29 @@ export function build() {
          which is the x-inboard one. On the rear pair that face runs AWAY
          from the axle, so the backshell sits at r 0.135 falling to 0.115
          and adds nothing at all to the annulus. */
-      const boss = lib.box(0.03, 0.02, 0.02, M.hv);
-      boss.position.set(xs * 1.30, 0.36, zs * 0.70);
+      /* Gen 17: the FRONT bosses stand outboard of hv-15's stub faces with
+         their inboard faces ON |z| 0.5200, which is the contract closing. The
+         REAR bosses cannot: drivetrain-9's torque-vectoring controller fills
+         the space outboard of the rear stubs from |z| 0.522 (a 15 mm boss
+         went 10 mm into it), so they stand INBOARD of the stubs, 0.481 to
+         0.496, their outboard faces on the stubs' inboard ends, a joint met
+         from the wrong side and said so on the panel. The key is realized by
+         the front pair; the rear pair is the open item this rung names. */
+      const bossD = 0.015;
+      /* rear: 15 mm inboard of the stubs' inboard ends (0.496), because
+         drivetrain-9's torque-vectoring feed ends at (-1.302, 0.342, 0.504)
+         and a boss butting the stub met it; 0.466 to 0.481 is the air left */
+      const bz = xs > 0 ? 0.52 + bossD / 2 : 0.481 - bossD / 2;
+      const boss = lib.box(0.03, 0.02, bossD, M.hv);
+      boss.position.set(xs * 1.30, 0.36, zs * bz);
       feeds.add(boss);
       const back = lib.cyl(0.0092, 0.014, M.darkSteel, 10);
       back.rotation.z = Math.PI / 2;
-      back.position.set(xs * 1.30 - 0.022, 0.36, zs * 0.70);
+      back.position.set(xs * 1.30 - 0.022, 0.36, zs * bz);
       feeds.add(back);
       const gland = lib.cyl(0.0072, 0.010, M.darkSteel, 6);
       gland.rotation.z = Math.PI / 2;
-      gland.position.set(xs * 1.30 - 0.033, 0.36, zs * 0.70);
+      gland.position.set(xs * 1.30 - 0.033, 0.36, zs * bz);
       feeds.add(gland);
     }
   }
@@ -1826,8 +1996,8 @@ export function build() {
        clear of the band. This one runs out to r 0.210 while still at
        |z| 0.688, then dives inboard behind the ring. */
     feeds.add(lib.tube([
-      [1.30, 0.36, zs * 0.70], [1.268, 0.356, zs * 0.697], [1.240, 0.352, zs * 0.688],
-      [1.228, 0.344, zs * 0.58], [1.222, 0.352, zs * 0.48], [1.220, 0.360, zs * 0.42],
+      [1.30, 0.36, zs * 0.5275], [1.268, 0.356, zs * 0.525], [1.240, 0.352, zs * 0.52],
+      [1.228, 0.344, zs * 0.50], [1.222, 0.352, zs * 0.46], [1.220, 0.360, zs * 0.42],
     ], 0.008, M.hv));
     /* THE DAMPER BRANCH CLIMBS OVER THE HALFSHAFT INSTEAD OF THROUGH IT.
        It used to run [1.42, 0.350] straight to the valve connector, and the
@@ -1853,13 +2023,13 @@ export function build() {
     ], 0.008, M.hv));
     /* rear stub: inboard through the carrier bore at r 0.11, then down */
     feeds.add(lib.tube([
-      [-1.30, 0.36, zs * 0.70], [-1.34, 0.355, zs * 0.665], [-1.34, 0.35, zs * 0.60],
-      [-1.36, 0.34, zs * 0.55],
+      [-1.30, 0.36, zs * 0.4735], [-1.32, 0.375, zs * 0.50], [-1.345, 0.372, zs * 0.53],
+      [-1.36, 0.345, zs * 0.55],
     ], 0.008, M.hv));
   }
   /* front passenger stub also feeds the compressor */
   feeds.add(lib.tube([
-    [1.2285, 0.344, 0.583], [1.34, 0.318, 0.50], [1.50, 0.305, 0.43],
+    [1.228, 0.344, 0.50], [1.34, 0.318, 0.48], [1.50, 0.305, 0.43],
     [1.70, 0.305, 0.40], [1.84, 0.325, 0.38],
   ], 0.008, M.hv));
   /* rear driver stub also feeds the rear-steer actuator and the chassis ECU */

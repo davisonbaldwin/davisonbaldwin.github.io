@@ -1,6 +1,6 @@
 /* EV·01 runtime: assembles the vehicle, wires the UI. */
 
-import { assemble, buildVariant, SYSTEM_DEFS, VARIANTS, GENERATIONS } from './registry.js';
+import { STARTUP_GEN, assemble, buildVariant, SYSTEM_DEFS, VARIANTS, GENERATIONS } from './registry.js';
 import { createViewer } from './viewer.js';
 import { computeBudget, LOSS_NOTES } from './efficiency.js';
 import { compare, slotBaseName, rung, moduleLabel } from './compare.js';
@@ -74,7 +74,11 @@ window.__ev = { viewer, root, systems, index };
 
 /* ── Variants: one active system per slot; the rest stay hidden ── */
 
-const VARIANT_CHOICE = Object.fromEntries(VARIANTS.map((v) => [v.slot, v.options[0].sys]));
+/* The car opens on the TOP RUNG (js/registry.js STARTUP_GEN, the last entry
+   of GENERATIONS), at Davis's word on 2026-08-22; it opened on Gen 1 before.
+   The registry builds exactly that rung's nine modules eagerly, so this is
+   not a Gen 1 startup followed by a switch. */
+const VARIANT_CHOICE = Object.fromEntries(VARIANTS.map((v) => [v.slot, STARTUP_GEN.choices[v.slot] || v.options[0].sys]));
 
 /* the numbered ladder, excluding any side studies; buildRail reads this */
 const LADDER = GENERATIONS.filter((g) => g.id !== 'value');
@@ -1256,7 +1260,7 @@ if (GENERATIONS.length) {
      lengths: one rung against another, or all eleven in order with the reason
      each one happened. */
   tourBtn = el('button', 'gen-step tour', 'tour');
-  tourBtn.title = 'Walk the ladder, Gen 1 to Gen 11, with the argument for each rung';
+  tourBtn.title = 'Walk the ladder, Gen 1 to Gen 17, with the argument for each rung';
   tourBtn.onclick = () => setTour(!tourOn);
 
   wrap.append(genPrev, genDD, genBack, genNext, cmpBtn, cmpDD, tourBtn);
@@ -2032,14 +2036,21 @@ const PAINTS = [
   { id: 'signal',   label: 'Signal red',       hex: 0xc0281e, group: 'Warm', metal: 0.30 },
   { id: 'oxblood',  label: 'Oxblood',          hex: 0x8a2230, group: 'Warm' },
 ];
-/* THE CAR ARRIVES IN A FINISH, not in a base color. Alpine white under a
-   brass pearl at 80 percent: white reads as white face-on and goes warm gold
-   down the flanks and around every crease, which is the whole argument for
-   modeling paint as two coats rather than one, made by the car before
-   anybody opens the control. Davis's pick. */
-const PAINT_DEFAULT = 'alpine';
-const PEARL_DEFAULT = 'brass';
-const PEARL_AMT_DEFAULT = 0.8;
+/* THE CAR ARRIVES IN A FINISH, not in a base color. Ice blue, metallic,
+   under an alpine white pearl at 25 percent: the pearl lifts the face-on
+   blue toward silver and lets go at a glancing angle, so the car reads
+   cooler as it turns, and the heat-extraction covers on the Gen 3 and Gen 4
+   wheels stand out in silver. Davis's pick, 2026-08-22, settled after three
+   tries that day (alpine white under brass at 80; this blue under alpine at
+   20; under brass at 77; and this). The defaults below are what a first
+   visit opens to; a stored preference wins over them. */
+const PAINT_DEFAULT = 'ice';
+const PEARL_DEFAULT = 'alpine';
+const PEARL_AMT_DEFAULT = 0.25;
+/* per-part overrides a first visit opens with, keyed "sys/part" like the
+   stored ones; only used when nothing is stored, because an empty stored
+   object is a decision (every panel put back) and not a first visit */
+const PART_PAINTS_DEFAULT = { 'wheels-3/covers': 0xb4bcc3 };
 const paintById = (id) => PAINTS.find((p) => p.id === id) || null;
 /* per-part overrides are stored as a color rather than an id, so the finish
    type is recovered from the color; every paint in the table is distinct */
@@ -2095,8 +2106,11 @@ if (!PAINTS.some((p) => p.id === paintId)) paintId = PAINT_DEFAULT;
    means a color put on body-11's shoulder does not follow you to Gen 9,
    because that is a different part. Stored, like the body color, because a
    finish you chose is a preference and not a session. */
-let partPaints = {};
-try { partPaints = JSON.parse(localStorage.getItem('ev-paint-parts') || '{}'); } catch {}
+let partPaints = { ...PART_PAINTS_DEFAULT };
+try {
+  const stored = localStorage.getItem('ev-paint-parts');
+  if (stored !== null) partPaints = JSON.parse(stored);
+} catch {}
 /* the same reason the unit restore is guarded: a stored value that is not a
    color reaches setHex and the car comes back black with no way out */
 if (!partPaints || typeof partPaints !== 'object' || Array.isArray(partPaints)) partPaints = {};
@@ -2994,7 +3008,7 @@ function openComparePanel() {
     p.append(row);
   }
   p.append(el('div', 'cmp-foot',
-    `Wh/${U().d}, both rungs on one scale. These five ARE the total: they sum ` +
+    `Wh/${U().d}, both rungs on one scale. These five are the total: they sum ` +
     `to ${signed(asWh(c.totals.dWhMi), 1)} with ${asWh(Math.abs(c.residual.termWhMi)) < 0.005
       ? 'nothing' : signed(asWh(c.residual.termWhMi), 2)} left over, because a term is ` +
     `a share of where the energy went. The slot figures below are the same ` +
@@ -3031,7 +3045,7 @@ function openComparePanel() {
   if (c.changedCount) {
     p.append(el('h5', null, 'Reading the slot figures'));
     p.append(el('div', null, para(
-      `Each slot figure above is the ${c.a.label} car with ONLY that slot changed. ` +
+      `Each slot figure above is the ${c.a.label} car with only that slot changed. ` +
       `The mass column adds up to the ${signed(asMass(c.totals.dMass), 0)} ${massU()} ` +
       `total exactly, because mass is a sum.\n\n` +
       `The consumption column does not, and it cannot. Swapping two slots lands the ` +

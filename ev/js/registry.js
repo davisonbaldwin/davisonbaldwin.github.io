@@ -40,6 +40,16 @@ import * as body14 from './systems/body-14.js';
 import * as wheels14 from './systems/wheels-14.js';
 import * as interior14 from './systems/interior-14.js';
 import * as body15 from './systems/body-15.js';
+import * as body16 from './systems/body-16.js';
+import * as suspension16 from './systems/suspension-16.js';
+import * as autonomy16 from './systems/autonomy-16.js';
+import * as body17 from './systems/body-17.js';
+import * as wheels17 from './systems/wheels-17.js';
+import * as suspension17 from './systems/suspension-17.js';
+import * as drivetrain17 from './systems/drivetrain-17.js';
+import * as battery17 from './systems/battery-17.js';
+import * as autonomy17 from './systems/autonomy-17.js';
+import * as thermal17 from './systems/thermal-17.js';
 import * as hv15 from './systems/hv-15.js';
 import * as thermal15 from './systems/thermal-15.js';
 import * as autonomy15 from './systems/autonomy-15.js';
@@ -81,22 +91,22 @@ import * as interior6 from './systems/interior-6.js';
 /* The demoted value-study modules (body-5, battery-5, thermal-5,
    interior-5) exist on disk but are deliberately unregistered: the ladder
    shows only ascent, per Davis's unlimited-resources mandate. */
-const MODULES = [body, bodyAero, body3, body4, body6, body7, body8, body9, battery, battery2, battery3, battery6, battery7, battery10, drivetrain, drivetrain2, drivetrain3, drivetrain6, drivetrain7, drivetrain9, thermal, thermal6, thermal7, thermal9, hv, hv4, suspension, suspension4, suspension9, wheels, wheels2, wheels3, wheels6, wheels7, wheels9, wheels10, autonomy, autonomy4, autonomy10, autonomy11, interior, interior4, interior6, interior11, body11, battery11, wheels11, hv11, thermal11, body12, autonomy12, body13, wheels13, interior13, thermal13, autonomy13, body14, wheels14, interior14, body15, hv15, thermal15, autonomy15, interior15, wheels15];
+const MODULES = [body, bodyAero, body3, body4, body6, body7, body8, body9, battery, battery2, battery3, battery6, battery7, battery10, drivetrain, drivetrain2, drivetrain3, drivetrain6, drivetrain7, drivetrain9, thermal, thermal6, thermal7, thermal9, hv, hv4, suspension, suspension4, suspension9, wheels, wheels2, wheels3, wheels6, wheels7, wheels9, wheels10, autonomy, autonomy4, autonomy10, autonomy11, interior, interior4, interior6, interior11, body11, battery11, wheels11, hv11, thermal11, body12, autonomy12, body13, wheels13, interior13, thermal13, autonomy13, body14, wheels14, interior14, body15, hv15, thermal15, autonomy15, interior15, wheels15, body16, suspension16, autonomy16, body17, wheels17, suspension17, drivetrain17, battery17, autonomy17, thermal17];
 
 const byId = Object.fromEntries(MODULES.map((m) => [m.SYSTEM.id, m]));
 
 /* Shell/system variants: each slot lists interchangeable system ids.
    The first option is the default. main.js renders the switcher. */
 export const VARIANTS = [
-  { slot: 'body', options: [{ sys: 'body', label: 'Gen 1' }, { sys: 'body-aero', label: 'Gen 2 aero' }, { sys: 'body-3', label: 'Gen 3 monoform' }, { sys: 'body-4', label: 'Gen 4 active' }, { sys: 'body-6', label: 'Gen 5 apex' }, { sys: 'body-7', label: 'Gen 6 form' }, { sys: 'body-8', label: 'Gen 8 closed tail' }, { sys: 'body-9', label: 'Gen 9 flat flank' }, { sys: 'body-11', label: 'Gen 11 tandem' }, { sys: 'body-12', label: 'Gen 12 the shape' }, { sys: 'body-13', label: 'Gen 13 the floor' }, { sys: 'body-14', label: 'Gen 14 the outline' }, { sys: 'body-15', label: 'Gen 15 the flank' }] },
-  { slot: 'battery', options: [{ sys: 'battery', label: 'Gen 1' }, { sys: 'battery-2', label: 'Gen 2 solid-state' }, { sys: 'battery-3', label: 'Gen 3 cell-to-body' }, { sys: 'battery-6', label: 'Gen 5 bipolar' }, { sys: 'battery-7', label: 'Gen 7 max-energy' }, { sys: 'battery-10', label: 'Gen 10 notched corner' }, { sys: 'battery-11', label: 'Gen 11 structural sill' }] },
-  { slot: 'drivetrain', options: [{ sys: 'drivetrain', label: 'Gen 1' }, { sys: 'drivetrain-2', label: 'Gen 2 axial flux' }, { sys: 'drivetrain-3', label: 'Gen 3 in-wheel' }, { sys: 'drivetrain-6', label: 'Gen 5 apex' }, { sys: 'drivetrain-7', label: 'Gen 7 range' }, { sys: 'drivetrain-9', label: 'Gen 9 narrow front' }] },
-  { slot: 'wheels', options: [{ sys: 'wheels', label: 'Gen 1' }, { sys: 'wheels-2', label: 'Gen 2 low-loss' }, { sys: 'wheels-3', label: 'Gen 3 co-design' }, { sys: 'wheels-6', label: 'Gen 5 apex' }, { sys: 'wheels-7', label: 'Gen 7 narrow-track' }, { sys: 'wheels-9', label: 'Gen 9 matched track' }, { sys: 'wheels-10', label: 'Gen 10 the tire' }, { sys: 'wheels-11', label: 'Gen 11 rerouted harness' }, { sys: 'wheels-13', label: 'Gen 13 front pants' }, { sys: 'wheels-14', label: 'Gen 14 saddles' }, { sys: 'wheels-15', label: 'Gen 15 edges by the envelope' }] },
+  { slot: 'body', options: [{ sys: 'body', label: 'Gen 1' }, { sys: 'body-aero', label: 'Gen 2 aero' }, { sys: 'body-3', label: 'Gen 3 monoform' }, { sys: 'body-4', label: 'Gen 4 active' }, { sys: 'body-6', label: 'Gen 5 apex' }, { sys: 'body-7', label: 'Gen 6 form' }, { sys: 'body-8', label: 'Gen 8 closed tail' }, { sys: 'body-9', label: 'Gen 9 flat flank' }, { sys: 'body-11', label: 'Gen 11 tandem' }, { sys: 'body-12', label: 'Gen 12 the shape' }, { sys: 'body-13', label: 'Gen 13 the floor' }, { sys: 'body-14', label: 'Gen 14 the outline' }, { sys: 'body-15', label: 'Gen 15 the flank' }, { sys: 'body-16', label: 'Gen 16 the corner' }, { sys: 'body-17', label: 'Gen 17 the track' }] },
+  { slot: 'battery', options: [{ sys: 'battery', label: 'Gen 1' }, { sys: 'battery-2', label: 'Gen 2 solid-state' }, { sys: 'battery-3', label: 'Gen 3 cell-to-body' }, { sys: 'battery-6', label: 'Gen 5 bipolar' }, { sys: 'battery-7', label: 'Gen 7 max-energy' }, { sys: 'battery-10', label: 'Gen 10 notched corner' }, { sys: 'battery-11', label: 'Gen 11 structural sill' }, { sys: 'battery-17', label: 'Gen 17 the track' }] },
+  { slot: 'drivetrain', options: [{ sys: 'drivetrain', label: 'Gen 1' }, { sys: 'drivetrain-2', label: 'Gen 2 axial flux' }, { sys: 'drivetrain-3', label: 'Gen 3 in-wheel' }, { sys: 'drivetrain-6', label: 'Gen 5 apex' }, { sys: 'drivetrain-7', label: 'Gen 7 range' }, { sys: 'drivetrain-9', label: 'Gen 9 narrow front' }, { sys: 'drivetrain-17', label: 'Gen 17 the track' }] },
+  { slot: 'wheels', options: [{ sys: 'wheels', label: 'Gen 1' }, { sys: 'wheels-2', label: 'Gen 2 low-loss' }, { sys: 'wheels-3', label: 'Gen 3 co-design' }, { sys: 'wheels-6', label: 'Gen 5 apex' }, { sys: 'wheels-7', label: 'Gen 7 narrow-track' }, { sys: 'wheels-9', label: 'Gen 9 matched track' }, { sys: 'wheels-10', label: 'Gen 10 the tire' }, { sys: 'wheels-11', label: 'Gen 11 rerouted harness' }, { sys: 'wheels-13', label: 'Gen 13 front pants' }, { sys: 'wheels-14', label: 'Gen 14 saddles' }, { sys: 'wheels-15', label: 'Gen 15 edges by the envelope' }, { sys: 'wheels-17', label: 'Gen 17 the track' }] },
   { slot: 'hv', options: [{ sys: 'hv', label: 'Gen 1' }, { sys: 'hv-4', label: 'Gen 4 zonal' }, { sys: 'hv-11', label: 'Gen 11 tandem spine' }, { sys: 'hv-15', label: 'Gen 15 port in from the flank' }] },
-  { slot: 'suspension', options: [{ sys: 'suspension', label: 'Gen 1' }, { sys: 'suspension-4', label: 'Gen 4 active' }, { sys: 'suspension-9', label: 'Gen 9 matched track' }] },
-  { slot: 'autonomy', options: [{ sys: 'autonomy', label: 'Gen 1' }, { sys: 'autonomy-4', label: 'Gen 4 triplex' }, { sys: 'autonomy-10', label: 'Gen 10 asymmetric' }, { sys: 'autonomy-11', label: 'Gen 11 tandem' }, { sys: 'autonomy-12', label: 'Gen 12 re-seat' }, { sys: 'autonomy-13', label: 'Gen 13 re-seat' }, { sys: 'autonomy-15', label: 'Gen 15 re-seat' }] },
+  { slot: 'suspension', options: [{ sys: 'suspension', label: 'Gen 1' }, { sys: 'suspension-4', label: 'Gen 4 active' }, { sys: 'suspension-9', label: 'Gen 9 matched track' }, { sys: 'suspension-16', label: 'Gen 16 the corner' }, { sys: 'suspension-17', label: 'Gen 17 the track' }] },
+  { slot: 'autonomy', options: [{ sys: 'autonomy', label: 'Gen 1' }, { sys: 'autonomy-4', label: 'Gen 4 triplex' }, { sys: 'autonomy-10', label: 'Gen 10 asymmetric' }, { sys: 'autonomy-11', label: 'Gen 11 tandem' }, { sys: 'autonomy-12', label: 'Gen 12 re-seat' }, { sys: 'autonomy-13', label: 'Gen 13 re-seat' }, { sys: 'autonomy-15', label: 'Gen 15 re-seat' }, { sys: 'autonomy-16', label: 'Gen 16 the corner' }, { sys: 'autonomy-17', label: 'Gen 17 the track' }] },
   { slot: 'interior', options: [{ sys: 'interior', label: 'Gen 1' }, { sys: 'interior-4', label: 'Gen 4 control cabin' }, { sys: 'interior-6', label: 'Gen 5 apex' }, { sys: 'interior-11', label: 'Gen 11 tandem' }, { sys: 'interior-13', label: 'Gen 13 shells on the lid' }, { sys: 'interior-14', label: 'Gen 14 the yoke' }, { sys: 'interior-15', label: 'Gen 15 dash in with the flank' }] },
-  { slot: 'thermal', options: [{ sys: 'thermal', label: 'Gen 1' }, { sys: 'thermal-6', label: 'Gen 5 two-phase' }, { sys: 'thermal-7', label: 'Gen 7 long-haul' }, { sys: 'thermal-9', label: 'Gen 9 low-auxiliary' }, { sys: 'thermal-11', label: 'Gen 11 tandem loop' }, { sys: 'thermal-13', label: 'Gen 13 core out of the occupant' }, { sys: 'thermal-15', label: 'Gen 15 core in from the flank' }] },
+  { slot: 'thermal', options: [{ sys: 'thermal', label: 'Gen 1' }, { sys: 'thermal-6', label: 'Gen 5 two-phase' }, { sys: 'thermal-7', label: 'Gen 7 long-haul' }, { sys: 'thermal-9', label: 'Gen 9 low-auxiliary' }, { sys: 'thermal-11', label: 'Gen 11 tandem loop' }, { sys: 'thermal-13', label: 'Gen 13 core out of the occupant' }, { sys: 'thermal-15', label: 'Gen 15 core in from the flank' }, { sys: 'thermal-17', label: 'Gen 17 the track' }] },
 ];
 
 /* Generations: coordinated variant presets, the optimization ladder. */
@@ -233,12 +243,62 @@ export const GENERATIONS = [
     note: 'The flank: the cabin in from 1.20 to 1.12 m from the shoulder up, where nothing but plumbing stood, and the cowl break closed to 15 degrees; four tenants moved as planned forks. Every column against the rung below, no method revision',
     choices: { body: 'body-15', battery: 'battery-11', drivetrain: 'drivetrain-9', wheels: 'wheels-15', hv: 'hv-15', suspension: 'suspension-9', autonomy: 'autonomy-15', thermal: 'thermal-15', interior: 'interior-15' },
   },
+  {
+    /* THE CORNER. design/gen16.md: the mass column's real lever, taken, and
+       the coefficient's two last skin levers, taken, with the five-column
+       rule as written and no relaxation. suspension-16 is suspension-9
+       redrawn for the measured loads of a 1,269 kg car (every forged
+       section at LOAD to the one third, every wall at LOAD, the bars at
+       LOAD to the one quarter, the bellows and the rack bar at the square
+       root) and, for the first time on this slot, every kilogram derived
+       off the drawn geometry through tools/ledger.sh, which moved the
+       ledger BOTH ways: the structures and the knuckles had booked 30 kg
+       their drawings do not hold, and the decouplers and the rack had
+       booked 12 kg less than their own bars weigh. Net 176 to 161.0 kg, and
+       its half of every interface it lands on declared at last. body-16 is
+       body-15 with the canopy glass flush with the loft (0.009 m2 of area
+       the 8 mm step had been casting) and the tail's upper section shrunk
+       from x -2.300 aft until the upper stream touches the 15 degree limit
+       the method has always used, which is the tail lever retro-gen15
+       named; the luggage bay's walls follow the ceiling down and the panel
+       states what the bay lost. autonomy-16 re-seats the rear camera 45 mm
+       under the new Kamm crown. Three modules, six carried, no method
+       revision. */
+    id: 'gen16', label: 'Gen 16',
+    note: 'The corner: the suspension redrawn for the car it actually carries and its ledger derived off the drawing for the first time, both ways; the canopy glass flush; the tail\'s upper stream taken to the limit. Lightest car on the ladder and every column against the rung below',
+    choices: { body: 'body-16', battery: 'battery-11', drivetrain: 'drivetrain-9', wheels: 'wheels-15', hv: 'hv-15', suspension: 'suspension-16', autonomy: 'autonomy-16', thermal: 'thermal-15', interior: 'interior-15' },
+  },
+  {
+    /* THE TRACK. design/gen17.md: both axles 20 mm inboard, 1.48 to 1.44 m,
+       so the tire's 135 mm section sits centered on the sill's 120 mm
+       chambered section, which is the only reason the frontal outline
+       falls at all below the shoulder (one axle alone makes it worse); the
+       rear spat wall follows the tire in to 0.81; every corner translated
+       with the upper arm 20 mm shorter because its inner pivot already
+       sits 30 mm from the drive housing; the rear rings and the front
+       shafts follow; the pack's corner keep-out moves with the tire and
+       sixteen front-brick layers a side give 9.7 mm for it (189.8 kWh);
+       the compute handover plane moves 20 mm off the tire; and the by-wire
+       boss contract open since Gen 9 closes on hv-15's stub faces. Seven
+       modules, two carried, no method revision; the checker's rear annulus
+       band becomes a declaration. The stability budget re-derived by
+       tools/cg.sh: SSF 1.58 laden at 1.44 against 1.63. */
+    id: 'gen17', label: 'Gen 17',
+    note: 'The track: both axles in 20 mm so the tire sits centered on the sill, the spat wall following, every corner translated and the by-wire contract closed at last. Every column against the rung below, thin on the coefficient and said so',
+    choices: { body: 'body-17', battery: 'battery-17', drivetrain: 'drivetrain-17', wheels: 'wheels-17', hv: 'hv-15', suspension: 'suspension-17', autonomy: 'autonomy-17', thermal: 'thermal-17', interior: 'interior-15' },
+  },
 ];
 
-/* The variant set built eagerly at startup: every slot's default plus all
-   non-variant systems. */
+/* The variant set built eagerly at startup: the TOP RUNG's nine choices plus
+   all non-variant systems. Until 2026-08-22 this was every slot's FIRST
+   option, which is Gen 1, and main.js opened the car on Gen 1; Davis asked
+   for the model to start on the most advanced generation, so the last entry
+   of GENERATIONS (the 'value' study is never registered) is what builds at
+   startup and what main.js selects. A generation added at the end of the
+   table becomes the startup rung by being added; nothing else moves. */
+export const STARTUP_GEN = GENERATIONS[GENERATIONS.length - 1];
 const DEFAULT_ACTIVE = new Set(MODULES.map((m) => m.SYSTEM.id));
-for (const v of VARIANTS) for (const o of v.options.slice(1)) DEFAULT_ACTIVE.delete(o.sys);
+for (const v of VARIANTS) for (const o of v.options) if (o.sys !== STARTUP_GEN.choices[v.slot]) DEFAULT_ACTIVE.delete(o.sys);
 
 /* Every module's geometry passes through the static merge on its way out of
    here, so all 43 of them get the draw-call saving without a line changing

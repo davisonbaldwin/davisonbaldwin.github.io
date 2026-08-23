@@ -1,4 +1,37 @@
-/* Autonomy, Gen 13: autonomy-12 with every mount that is a function of a
+/* autonomy-16: autonomy-15 with ONE placement moved, the rear camera, down
+   45 mm to y 0.790, because body-16's tail shrink brought the Kamm face's
+   crown from 0.887 to 0.828 and the unit autonomy-15 seated at 0.835 read
+   8.5 mm inside the new paint on the first checker run of the gen16 set
+   (design/gen16.md section 12). A planned fork of one placement, in the
+   pattern of autonomy-15: everything below this paragraph is autonomy-15's
+   text and geometry, unchanged, and reads "autonomy-15" where it names
+   itself. ──────────────────────────────────────────────────────────────
+
+ Autonomy, Gen 15: autonomy-13 with the flank camera pads re-seated on
+   body-15's skin, planned before the first floating instance and not after.
+
+   body-15 brings the flank in from |z| 0.600 to 0.560 from the shoulder up.
+   autonomy-13 seats its two flank cameras on that surface at x 0.780 over
+   y 0.935 to 0.955: the pads at |z| 0.5770, their screws' heads to 0.5891
+   against a skin that measured 0.5900 at the pad's center. Ray-swept on the
+   built body-15, the skin at (0.780, 0.945) is 0.5536, at the pad's bottom
+   (0.935) 0.5548 and at its top (0.955) about 0.5525; the flank tumbles
+   0.12 mm per mm of height here where it tumbled 0.24 on body-13. So the
+   pads move 37.4 mm inboard to |z| 0.5396, the screws to 0.5436 with their
+   heads 2.0 mm off the skin at the pad's center and 0.8 at its top (a draft
+   1 mm further out put the top head 0.7 mm through the skin, where the
+   flank tumbles, and the checker said so), and the camera body with them
+   to 0.5106, still looking forward and outboard through its own aperture. The flank separation falls from 1.096 m to 1.023, 6.7 percent,
+   and the panel says so. Nothing else moves: the roof antennas on a crown
+   that did not move, the header frame on a canopy that did not, the DMS
+   on the cowl member, the radars in a held nose and a held tail, the rear
+   camera on a Kamm that did not move, the compute on the tail deck. Same
+   lanes, same duty, same 192 W: js/efficiency.js carries -75 W for this id
+   as for autonomy-13.
+
+   autonomy-13's header follows as the record of the re-seat on the floor. */
+
+/* (autonomy-13) Autonomy, Gen 13: autonomy-12 with every mount that is a function of a
    body surface re-seated against body-13, which brings the greenhouse, the
    cowl skin and the tail crown down 65 mm (design/gen13.md). Everything
    else, the triplex compute, the radar ring, the cameras' shared header, the
@@ -260,8 +293,8 @@ const DUTY = { cruise: 0.58, elevated: 0.30, dense: 0.12 };
    them, which is corroboration across modalities and nothing cleverer. */
 
 export const SYSTEM = {
-  id: 'autonomy-13',
-  name: 'Autonomy · Gen 13 re-seat',
+  id: 'autonomy-16',
+  name: 'Autonomy · Gen 16 the corner',
   color: 0x6ea8ff,
   explode: [0, 2.3, 0],
   /* THE ONE PLANE THIS MODULE HAS TO MEET, and it is met rather than
@@ -281,7 +314,7 @@ export const SYSTEM = {
       note: 'the saddle clamp that carries this module\'s two coolant hoses onto thermal-11\'s bulkhead. thermal-11/glycol-loop declares the same plane on the same axis with the same sign.',
     },
   },
-  blurb: 'The asymmetric triplex carries whole: one full-rate lane, one diverse checker, one in retention, 192 W typical and the 640 W peak held. Everything else is new, because every sensor on Gen 10 is aimed at a body 680 mm wider than this one. The compute leaves the centerline it shared with the rear occupant and goes behind them; the driver monitor leaves the header, because a tandem driver sits on the axis 260 mm from it; and the two baselines that did not change did not change for reasons that are measurements rather than luck.',
+  blurb: 'autonomy-13 with the two flank cameras re-seated on body-15\'s skin, 36 mm inboard, planned as a fork and not discovered from a floating instance; the pads 2 mm off a flank that now measures 0.554 at the pad where it measured 0.590, the separation 1.023 m against 1.096. Nothing else moves and nothing electrical changes: -75 W carried.\n\n' + 'The asymmetric triplex carries whole: one full-rate lane, one diverse checker, one in retention, 192 W typical and the 640 W peak held. Everything else is new, because every sensor on Gen 10 is aimed at a body 680 mm wider than this one. The compute leaves the centerline it shared with the rear occupant and goes behind them; the driver monitor leaves the header, because a tandem driver sits on the axis 260 mm from it; and the two baselines that did not change did not change for reasons that are measurements rather than luck.',
   parts: {
     compute: {
       name: 'Asymmetric triplex compute',
@@ -337,11 +370,11 @@ export const SYSTEM = {
         ['Imagers', '5x 12 MP HDR + 1 thermal, gen-locked'],
         ['Thermal', '640 x 512 microbolometer, 8 to 14 um'],
         ['Dynamic range', '140 dB split pixel'],
-        ['Flank separation', '1.096 m, against 1.800 on Gen 10'],
+        ['Flank separation', '1.023 m on body-15 (autonomy-13: 1.096; Gen 10: 1.800)'],
         ['Primary ingest', 'Foveated: full rate on the ROI, quarter elsewhere'],
         ['Checker ingest', 'Quarter rate, whole field'],
       ],
-      how: 'The imagers and the read-out contract are autonomy-10\'s: a 12 MP wide whose center crop reproduces a 50 degree main in software, a telephoto that resolves a vehicle at 300 m, two wide flank units, a rear camera, and a long-wave thermal imager in the nose. The primary lane ingests a foveated frame at 0.3625 of the pixel rate and the checker takes a quarter-rate whole field. None of that is reopened.\n\nThe forward wedge moves 2 mm and that is the whole of it. autonomy-10 dropped the shared header casting to y 1.290 to get the wedge out of body-9\'s canopy, and body-11\'s roof is 38 mm lower, so the first question was whether the whole assembly had to be redrawn. It did not, because the header sits at x 0.42 where the canopy is falling toward the windshield rather than at the crown: ray-swept, the glass measures 1.3189 at (0.3925, 0) and 1.3166 at (0.3925, 0.060). What it did need was 2 mm, and the reason is a graze rather than an intrusion: at 1.290 the wedge\'s upper front corner crosses body-11/skin by 0.09 mm over 6 triangle pairs at (0.429, 1.304, 0.057), which the shipped predicate counts as a penetrating part pair and which no amount of prose makes zero. At 1.288 that corner clears by 2.1 mm and the binding corner at the back of the wedge clears the canopy by 9.9 mm, against 7.74 mm on body-9. Move the header 60 mm forward instead and none of it works: the glass is 1.2940 at x 0.60.\n\nThe flank pair moves 352 mm inboard and it is the mount that changes, not the camera. Gen 10 stands them at (0.1, 1.0, plus and minus 0.9) on a body whose door skin was 71 mm outboard of the mount. On body-11 that is open air: tools/check-interfaces.sh reports both instances floating at 273.6 mm from body-11/doors, which is the exact failure mode HANDOFF.md records against three autonomy-4 instances and the reason this file measures every mount. The new station is x 0.780, which is the mirror position just ahead of the front occupant\'s shoulder at the built hip station of 0.700, and the flank there measures |z| 0.5901 at y 1.010. The surface tumbles 0.24 mm per mm of height through the camera\'s own 30 mm, from 0.5951 at y 0.990 to 0.5855 at 1.030, so the mount pads are 20 mm tall rather than 40 and their outer faces sit on |z| 0.5891, 1.0 mm off the skin at the pad\'s own height instead of 4 mm off at one end and buried at the other.\n\nThe thermal imager comes back 3 mm. body-11\'s nose at (y 0.530, z 0) measures x 2.3630 against body-9\'s 2.375, so the germanium window at Gen 10\'s station would stand 2.0 mm off the skin instead of the 3.30 it was drawn for. The casing moves to x 2.335 and the window face to 2.358, which is 5.0 mm of clear air.\n\nThe rear camera moves aft and down. Gen 10 sits at (-2.24, 0.96) under body-9\'s kamm flap; body-11\'s flap spans x -2.3672 to -2.1827 at y 0.9444 to 1.0182 and its tail cone measures x -2.4405 at (y 0.900, z 0), so the unit went to (-2.410, 0.900, 0) on Gen 11, and this fork carries it to (-2.658, 0.900, 0) against body-12\'s tail face at -2.688: the same 12.5 mm standoff off a face that moved 248 mm aft, which is the whole reason autonomy-12 exists as a module.',
+      how: 'Gen 16: the rear camera comes down 45 mm to y 0.790, under a Kamm crown that body-16 brought from 0.887 to 0.828 when it shrank the tail\'s upper section; its nozzle tops out 13 mm under the new crown and its body stands 7.5 mm over the rear light band. Nothing else in this module moves, and what follows is autonomy-15\'s account.\n\nThe imagers and the read-out contract are autonomy-10\'s: a 12 MP wide whose center crop reproduces a 50 degree main in software, a telephoto that resolves a vehicle at 300 m, two wide flank units, a rear camera, and a long-wave thermal imager in the nose. The primary lane ingests a foveated frame at 0.3625 of the pixel rate and the checker takes a quarter-rate whole field. None of that is reopened.\n\nThe forward wedge moves 2 mm and that is the whole of it. autonomy-10 dropped the shared header casting to y 1.290 to get the wedge out of body-9\'s canopy, and body-11\'s roof is 38 mm lower, so the first question was whether the whole assembly had to be redrawn. It did not, because the header sits at x 0.42 where the canopy is falling toward the windshield rather than at the crown: ray-swept, the glass measures 1.3189 at (0.3925, 0) and 1.3166 at (0.3925, 0.060). What it did need was 2 mm, and the reason is a graze rather than an intrusion: at 1.290 the wedge\'s upper front corner crosses body-11/skin by 0.09 mm over 6 triangle pairs at (0.429, 1.304, 0.057), which the shipped predicate counts as a penetrating part pair and which no amount of prose makes zero. At 1.288 that corner clears by 2.1 mm and the binding corner at the back of the wedge clears the canopy by 9.9 mm, against 7.74 mm on body-9. Move the header 60 mm forward instead and none of it works: the glass is 1.2940 at x 0.60.\n\nThe flank pair moves 352 mm inboard and it is the mount that changes, not the camera. Gen 10 stands them at (0.1, 1.0, plus and minus 0.9) on a body whose door skin was 71 mm outboard of the mount. On body-11 that is open air: tools/check-interfaces.sh reports both instances floating at 273.6 mm from body-11/doors, which is the exact failure mode HANDOFF.md records against three autonomy-4 instances and the reason this file measures every mount. The new station is x 0.780, which is the mirror position just ahead of the front occupant\'s shoulder at the built hip station of 0.700, and the flank there measures |z| 0.5901 at y 1.010. The surface tumbles 0.24 mm per mm of height through the camera\'s own 30 mm, from 0.5951 at y 0.990 to 0.5855 at 1.030, so the mount pads are 20 mm tall rather than 40 and their outer faces sit on |z| 0.5891, 1.0 mm off the skin at the pad\'s own height instead of 4 mm off at one end and buried at the other.\n\nThe thermal imager comes back 3 mm. body-11\'s nose at (y 0.530, z 0) measures x 2.3630 against body-9\'s 2.375, so the germanium window at Gen 10\'s station would stand 2.0 mm off the skin instead of the 3.30 it was drawn for. The casing moves to x 2.335 and the window face to 2.358, which is 5.0 mm of clear air.\n\nThe rear camera moves aft and down. Gen 10 sits at (-2.24, 0.96) under body-9\'s kamm flap; body-11\'s flap spans x -2.3672 to -2.1827 at y 0.9444 to 1.0182 and its tail cone measures x -2.4405 at (y 0.900, z 0), so the unit went to (-2.410, 0.900, 0) on Gen 11, and this fork carries it to (-2.658, 0.900, 0) against body-12\'s tail face at -2.688: the same 12.5 mm standoff off a face that moved 248 mm aft, which is the whole reason autonomy-12 exists as a module.',
       why: 'Consolidation against redundancy was Gen 4\'s trade and foveation was Gen 10\'s, and neither is reopened. What this generation has to answer for is the geometry, because a 1.20 m car is a smaller instrument.\n\nThe flank pair is the loss and it is measurable. Their separation goes from 1.800 m to 1.096 m, both figures taken off the mount station each module states, which is a 39.1 percent cut. Two cameras cross-fixing a target abeam the car resolve range as the baseline over the angular disparity, so at a fixed per-camera bearing noise the same target is resolved 1.64 times worse in range than it was on Gen 10. That is a ratio and not an accuracy claim, because this project has never published a bearing noise figure and inventing one to multiply it by would be arithmetic dressed as evidence.\n\nThe two baselines that did not move are the more interesting half, because both look like they should have. The lidar pair holds 0.600 m because it was never a function of the flank: the nose half-width at the puck station measures |z| 0.5103 at (2.320, 0.615) and the pucks sit at 0.300, so what binds them is the light band aperture, and a tandem narrows the greenhouse and not the nose. The GNSS pair holds 0.650 m because its baseline is longitudinal, and a car does not get shorter between the ears when it gets narrower between the shoulders. Two of the four baselines on this car survived the generation for reasons that are measurements, and saying so is what stops the width from being blamed for everything.',
       fail: [
         'The flank pair is 1.096 m apart instead of 1.800, and the 1.64x cross-range penalty falls exactly where a lane-change decision is made. The stack leans harder on corner radar, which measures range directly and does not care about baseline, and the honest cost is that a camera-only fallback abeam the car is now the weakest fix on the vehicle.',
@@ -835,7 +868,7 @@ export function build() {
     const bp = lib.part('cameras', [0, 0.2, 0.5 * s]);
     const bcam = camUnit(0.036, 0.030, 0.024, 0.009, 0.022);
     bcam.rotation.y = -1.15 * s;
-    bcam.position.set(0.780, 0.945, 0.5480 * s);
+    bcam.position.set(0.780, 0.945, 0.5106 * s);   /* Gen 15: 37.4 mm inboard with body-15's flank */
     bp.add(bcam);
     /* Two pads rather than one on the axis, because the camera's own harness
        tail leaves the back face on that axis. They are 20 mm tall, not 40:
@@ -844,33 +877,39 @@ export function build() {
     const foot = new THREE.Group();
     for (const fx of [1, -1]) {
       const pad = lib.cbox(0.010, 0.020, 0.0080, 0.0009, M.castAlu);
-      pad.position.set(0.780 + fx * 0.013, 0.945, s * 0.5770);
+      pad.position.set(0.780 + fx * 0.013, 0.945, s * 0.5396);
       foot.add(pad);
-      foot.add(screw([0.780 + fx * 0.013, 0.945, s * 0.5810], [0, 0, s], 0.0024, M.steel));
+      foot.add(screw([0.780 + fx * 0.013, 0.945, s * 0.5436], [0, 0, s], 0.0024, M.steel));
     }
     bp.add(foot);
     sys.add(bp);
   }
 
-  /* Rear camera in the Kamm face, 65 mm lower than autonomy-12 seated it.
-     body-13's tail face measures x -2.6879 at (y 0.835, z 0), the same plane
-     body-12 presented at 0.900 (the Kamm cap is a shallow cone and this is
-     its center line), and its kamm flap now spans y 0.893 to 0.955, so the
-     unit sits under the flap and behind nothing with the same 12.5 mm lens
-     standoff autonomy-11 measured against body-11. */
+  /* Rear camera in the Kamm face, GEN 16: 45 mm lower again, because body-16
+     shrinks the tail's upper section from x -2.300 aft (design/gen16.md
+     section 4) and the Kamm face's crown comes down from y 0.887 to 0.828.
+     autonomy-15 seated the unit at 0.835 with the washer nozzle to 0.860;
+     on body-16 that is 8.5 mm inside the paint, and tools/check-interfaces.sh
+     said so on the first run of the gen16 set. The unit sits at y 0.790 now:
+     its body spans 0.7775 to 0.8025, the nozzle tops out at 0.815, 13 mm
+     under the new crown, and the rear light band's top edge is at 0.785, so
+     the lens looks out over the lamp by 7.5 mm rather than through it. Same
+     x, same 12.5 mm standoff class off a cap that is a shallow cone about
+     this center line; the flap above it is at 0.92 now and it is still under
+     the flap and behind nothing. */
   const camRear = lib.part('cameras', [-0.5, 0.25, 0]);
   const rc = camUnit(0.035, 0.025, 0.02, 0.007, 0.018);
   rc.rotation.y = Math.PI;
-  rc.position.set(-2.658, 0.835, 0);
+  rc.position.set(-2.658, 0.790, 0);
   camRear.add(rc);
   /* Washer nozzle ABOVE the lens, carried from Gen 10 for the reason Gen 10
-     gives: hung underneath it lands in the flap below. */
+     gives: hung underneath it lands in the lamp below. */
   const nozBody = lib.cbox(0.012, 0.009, 0.010, 0.002, M.plasticLt);
-  nozBody.position.set(-2.6505, 0.8555, 0.022);
+  nozBody.position.set(-2.6505, 0.8105, 0.022);
   camRear.add(nozBody);
   const noz = lib.cyl(0.0022, 0.011, M.plasticLt, 8);
   noz.rotation.z = Math.PI / 2;
-  noz.position.set(-2.6620, 0.8555, 0.022);
+  noz.position.set(-2.6620, 0.8105, 0.022);
   camRear.add(noz);
   sys.add(camRear);
 

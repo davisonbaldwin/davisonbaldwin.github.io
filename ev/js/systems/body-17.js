@@ -1,4 +1,166 @@
-/* Gen 14 body: the outline.
+/* body-17: THE TRACK'S BODY. body-16 with the rear spat wall following the
+   rear tire in: its straight run from |z| 0.8400 to 0.8100 and its trailing
+   closure from 0.8000 to 0.7700, the rub lip with it, the leading blend
+   still rising from the shoulder's 0.7800. wheels-17 puts the rear tire's
+   face at 0.7875 (a 1.44 m track), so the wall stands 22.5 mm off the face
+   against body-16's 32.5 mm off a face at 0.8075; tools/envelope.sh on the
+   gen17 set is what decides the last ten, and design/gen17.md section 12
+   records what it read. The wall is the car's outline at the rear from y
+   0.18 to 0.52, which is why it follows: the track scenario with the wall
+   left at 0.84 reads 1.5846 m2 and with it at 0.81 reads 1.5739.
+   Everything else is body-16's, and its header follows; the venturi floor's
+   rear closeout was re-measured against the tire at 0.6525 and is clear.
+
+   ── body-16's own header follows, unchanged ──────────────────────────
+
+/* body-16: THE CORNER'S BODY. body-15 with the canopy glass flush with the
+   loft and the tail's upper stream taken to the limit the method has always
+   used, which are the two skin levers design/retro-gen15.md section 5 said
+   were the last a body could take on this package without reopening it.
+   design/gen16.md is the brief; the suspension is the rung's mass lever and
+   this body is its area and coefficient levers, and the three of them with
+   autonomy-16's one re-seated camera are the rung.
+
+   WHAT CHANGES, measured by the sweeps that own each number:
+
+   1. THE GLASS IS FLUSH. Every body from Gen 11 cut the canopy band from the
+      loft stations and stood it 8 mm proud in y. In the frontal projection
+      that band is the car's whole crown from belt seam to belt seam, 1.12 m
+      of it, and the 8 mm step is 0.0089 m2 of frontal area that nothing
+      needed: 1.6064 to 1.5975 m2 on wheels-15, nothing else moved. Alone it
+      reads Cd 0.1145 against 0.1140, the trap of Gen 13, 14 and 15 a fourth
+      time (friction and the wheel term charged against a smaller reference
+      area), and CdA 0.1830 against 0.1832, so by itself it buys a column and
+      not a rung. The cowl break the finder reads goes 15.1 to 13.0 degrees
+      because the glass no longer stands proud of the cowl ring; both score
+      zero.
+
+   2. THE TAIL'S UPPER STREAM GOES TO THE LIMIT. body-15's upper stream ran
+      to the Kamm face at 13.6 degrees of equivalent cone against 15; the
+      lower stream, the venturi floor's and the diffuser's, at 15.3 and not
+      touched. From x -2.300 aft the upper four profile points and the crown
+      of every tail station shrink about the waterline (point 3) by a factor
+      growing linearly to 0.22 at the Kamm face, y toward the waterline and
+      z toward the centerline in full. Swept with the shipped buildup over
+      nine start-station and depth combinations (design/gen16.md section 4):
+      from -1.950 or -2.100 the cone passes 15 before the base has fallen
+      far; from -2.350 the stream separates at x -2.46; from -2.300 at 0.22
+      it reaches the Kamm at 14.89 degrees on the bare loft with the upper
+      base from 0.4132 to 0.3332 m2; BUILT, with the blade on its struts and
+      the bay's tapered walls standing in the sections (they always have: the
+      body module is what the walk sees), it reads 14.57 degrees and 0.3470,
+      and the base term goes from 0.0201 to 0.0162. The Kamm face
+      spans y 0.265 to 0.828 and is 0.48 m wide at its top against 0.887 and
+      0.62. With the glass: Cd 0.1104 against 0.1140 on wheels-15, CdA
+      0.1764 against 0.1832, -3.7 percent.
+
+   3. WHAT THE TAIL TAKES WITH IT, each followed rather than left: the
+      luggage bay's walls follow the ceiling down aft of -2.300 (a tapered
+      panel read off the loft at |z| 0.330 less 10 mm; the skin over the
+      bay's last 200 mm comes down to y 0.907 over walls that stood to 0.925,
+      and the bay panel states what the bay lost); the Kamm spoiler's blade
+      height is read off the new deck and its span comes 0.70 to 0.56 m
+      because a blade wider than the deck it stands on is a blade in the
+      wake; the rear light band comes 0.70 to 0.48 m because the face at
+      y 0.760 is 0.52 m wide now; and autonomy-16 re-seats the rear camera
+      45 mm lower under a crown that came down 59. The decklid's cut lines
+      (-1.160 and -2.100) are ahead of the shrink and do not move; the
+      diffuser and the lower four points of every station do not move.
+
+   4. THE LEDGER: tail cone 10.3 to 9.9 kg (its drawn area 0.9601 of
+      body-15's, tools measured), the blade 4 to 3.5 (3.2 by span, 0.3 of
+      taller struts), the light bands 3 to 2.8 (the rear guide 0.22 m
+      shorter of 1.56), the canopy held at 13.1 (its developed area is the
+      same to four places flush or proud). 269.9 kg against 271.0.
+
+   Everything else is body-15's: the flank at 0.560, the cowl at 15.1 on the
+   loft (13.0 as read with the glass flush), the floor, the roof, the sill,
+   the pan, the castings, the cage, the doors, the hood. Read "body-15" for
+   "this body" below wherever the text names itself; the account that
+   follows is body-15's, unchanged, and the Gen 16 notes in each part's
+   panel say what moved.
+
+   ── body-15's own header follows ──────────────────────────────────────
+
+/* Gen 15 body: the flank.
+
+   body-14 with its flank brought in from |z| 0.600 to 0.560 from the
+   shoulder up, at every station from the front arch to the port, and its
+   hood brought down to meet the glass at the angle the drag method scores
+   at zero. design/retro-gen14.md section 5 probed the gen14 preset over
+   |z| 0.44 to 0.60, y 0.60 to 1.05, and found nothing in the flank band
+   that the occupant needs: the occupant model's widest box is 0.520 across
+   and the cabin was 1.200. What stands there is plumbing (thermal-13's
+   recovery core, hv-11's port and front zone drops, autonomy-13's camera
+   pads) and this body's own pillars; the hardest thing is the front
+   casting, whose upper corners stand at |z| 0.550 over y 0.725 to 0.765,
+   and that is the number: 0.560, 10 mm of skin outside the casting. Below
+   the shoulder the cabin is the occupant's (the rear foot channels run to
+   |z| 0.528) and the shoulder flares to the sill at 0.78 as before.
+
+   WHAT MOVES, station by station: profile point 4 (the belt seam and flank
+   top) from 0.600 to 0.560 at stations 3 to 15b; the ARCH return at the
+   wheel stations from 0.59 to 0.60 over y 0.608 to 0.62 to 0.55 to 0.56;
+   SHLD's top from (0.62, 0.60) to (0.62, 0.56) with its two middle points
+   eased so the shoulder turns as before; point 5 at stations 7b to 13
+   brought in where it would otherwise stand outboard of the new seam, so
+   the greenhouse keeps the shape body-14 drew against the head; stations 16
+   on hold, because the tail's flank is already inside 0.56. The cage's
+   hinge pillar and rear leg move inboard with the skin at their mid points,
+   (1.000, 0.64) from |z| 0.53 to 0.50, to keep 40 mm of skin outside them;
+   their feet hold at 0.645 under a shoulder that did not move (a draft with
+   the feet at 0.615 met autonomy's compute coolant hose by 7.3 mm and the
+   checker said so); the A-pillar, roof rails and C-pillar are inside
+   already.
+   THE COWL: hood stations 3 and 4 (x 1.82, 1.45) come down in crown and
+   upper profile, 0.972 to 0.940 and 0.990 to 0.950, so the hood runs level
+   from station 2 and its last 200 mm rise at 15 degrees into a glass that
+   rises at 25. A first draft at 0.952 and 0.970 (the design doc's 20 mm)
+   measured the break at 20.1 degrees, not 15, and a second at 0.945 and
+   0.955 read 16.6, because the finder reads the crown of the loft with the
+   glass standing 8 mm proud from the cowl ring; the third is what the
+   finder scores. Station 2 holds at 0.940 over the heat pump's 0.892 and
+   station 3 is 48 mm over its aft end, the same margin; the nose holds as
+   crash budget. And the venturi floor's front closeout is notched to |z| 0.565
+   over x 1.55 to 1.85, the front pant nose cap's swept zone at full lock,
+   because tools/envelope.sh read 1.7 mm between the cap's bottom corner and
+   the plate body-13 held at 0.620 for a tire at 0.6725. Everything else is
+   body-14's to the vertex.
+
+   WHAT IT MEASURES, by the sweeps that own each number (tools/area.sh,
+   tools/aero.sh, tools/occupant.sh, tools/check-interfaces.sh), filled in
+   from the runs and not from the drawing:
+     frontal area     1.6064 m2 on wheels-15 against body-14's 1.6398 on
+                      wheels-14: the flank is worth the whole of it
+     Cd               0.1140 on wheels-15 under the third revision, against
+                      body-14's 0.1151; CdA 0.1831 against 0.1888; the cowl
+                      break 15.1 degrees against 24.9
+     the walk         both streams to the Kamm, upper base 0.4132 m2 to x -2.68 at 13.6 degrees, lower 0.0770 to x -2.68 at 15.3
+     wetted           23.558 m2 with wheels-15 and battery-11 (body-14: 23.613)
+     maximum section  1.4412 m2 at x -0.45 (body-14: 1.4825)
+     parked           5.077 m long, 1.684 m wide at the spats, 1.274 m tall
+     mass             271.0 kg (body-14: 271.5): canopy, skin, shoulder and
+                      cage re-priced off their drawn areas at body-14's own
+                      areal densities (0.9667, 0.9736, 1.1351 and 1.0020: 13.1,
+                      34.8, 5.7 and 51.3 kg; the shoulder GREW, because it now
+                      lofts from 0.78 to 0.56), every other part carried
+
+   THE FOUR TENANTS OF THE OLD FLANK BAND move in their own modules, each a
+   planned fork: thermal-15 takes the recovery core 40 mm inboard, hv-15
+   takes the port assembly 40 mm inboard and the front drops 25, autonomy-15
+   re-seats the camera pads on the measured skin, interior-15 moves the
+   dashboard's side panels with the drops. Nothing on this body is drawn
+   around a tenant that has not moved.
+
+   CARRIED FROM body-14 AND STILL TRUE: the greenhouse drawn to the head,
+   the cabin on the lid, the luggage bay, the tail against the cone walk,
+   the spat wall, the two lids and the canopy door, the occupant gate and
+   the closures.
+
+   ── body-14's header follows, as the record of the outline. ──
+*/
+
+/* (body-14) Gen 14 body: the outline.
 
    body-13 with its greenhouse drawn against the head it holds rather than
    the flank it stands on. design/retro-gen13.md section 5 decomposed Gen 13's
@@ -400,7 +562,7 @@ import { mirrorZ } from './body.js';
 /* Gen 11's envelope, declared LOCALLY. Not one P constant is touched, the
    way body-9 declared its own FRONTZ rather than editing P.wheelZ. */
 const FRONTZ = 0.74;          /* front wheel center, track HELD at 1.48 */
-const CABIN = 0.600;          /* greenhouse half-width, 1.20 m built */
+const CABIN = 0.560;          /* greenhouse half-width, 1.12 m built (Gen 11 to 14: 0.600) */
 const ROOF = 1.265;           /* built roof: Gen 11's 1.330 down 65 mm, design/gen13.md section 4 */
 const SILL_Z = 0.7800;        /* battery-11 sill outer face */
 const SILL_TOP = 0.4200;      /* battery-11 sill top face */
@@ -430,12 +592,41 @@ const KAMM = -2.6900;         /* tail station: 5.097 m built, the length the
                                  taper needed rather than the length the old
                                  tail happened to have */
 
+/* THE TAIL'S UPPER STREAM, TAKEN TO THE LIMIT. design/gen16.md section 4.
+   body-15's upper stream ran to the Kamm at 13.6 degrees of equivalent cone
+   against the 15 degree limit tools/aero.js has always used, and
+   design/retro-gen15.md section 5 named the 1.4 degrees as the one
+   coefficient lever left to a body. So from station TAILX aft the upper
+   four profile points and the crown of every tail station shrink about the
+   waterline (profile point 3, the underbody's side wall, which does not
+   move) by a factor that grows linearly to TAILK at the Kamm face: y toward
+   the waterline, z toward the centerline, the lower four points untouched
+   because the lower stream is the venturi floor's and the diffuser's and
+   already reads 15.3. TAILK and TAILX were swept with the shipped buildup
+   (nine combinations in design/gen16.md section 4): starting the shrink at
+   -1.950 or -2.100 puts the equivalent cone over 15 before the base has
+   fallen far, starting at -2.350 separates the stream at x -2.46, and
+   -2.300 at 0.22 reaches the Kamm at 14.89 degrees with the upper base
+   from 0.4132 to 0.3332 m2 on the bare loft (14.57 and 0.3470 as built,
+   with the blade and the bay walls in the sections). The Kamm face
+   therefore spans y 0.265 to
+   0.828 and is 0.48 m wide at its top against 0.887 and 0.62; what it
+   costs the luggage bay is in that part's panel, measured. */
+const TAILK = 0.22;           /* the shrink at the Kamm face */
+const TAILX = -2.300;         /* the station the shrink begins at */
+const TAILWY = 1.0, TAILWZ = 1.0;   /* y toward the waterline, z toward the centerline, both in full */
+const tl = (x, pts, crown) => {
+  const f = TAILK * Math.max(0, (TAILX - x) / (TAILX - KAMM));
+  const y3 = pts[3][0];
+  const up = pts.map((q, k) => k < 4 ? q : [y3 + (q[0] - y3) * (1 - f * TAILWY), q[1] * (1 - f * TAILWZ)]);
+  return [x, up, y3 + (crown - y3) * (1 - f * TAILWY)];
+};
 export const SYSTEM = {
-  id: 'body-14',
-  name: 'Body · Gen 14 the outline',
+  id: 'body-17',
+  name: 'Body · Gen 17 the track',
   color: 0xdcf2fb,
   explode: [0, 1.7, 0],
-  blurb: 'body-13 with its greenhouse drawn against the head it holds instead of the flank it stands on. design/retro-gen13.md measured the side glass at 1.15 m wide at y 1.125 beside a 0.165 m head on the centerline of a tandem cabin, with the A-pillar 200 mm inboard of it, and found it to be the one dimension of the frontal outline set by nothing: body-11 carried the flank\'s width up to the belt and two bodies moved that section down without asking. So the band between the belt seam and the deck shoulder comes in at the cabin stations, point 5 from (1.125, 0.575) to (1.040, 0.585) and point 6 from (1.230, 0.390) to (1.215, 0.380), eased into the tail; the flank, the belt seam, the deck and the crown hold, so the flank cameras, the port rim, the roof antennas, the bows and the liner stay where they were, and the occupant keeps 50.1 mm and every upward sightline. Measured by the sweeps that own each number: frontal area 1.6398 m2 on wheels-14 against 1.6687, the greenhouse worth -0.026 of it; Cd 0.1151 under the third revision against 0.1327, CdA 0.1887 against 0.2215; 271.5 kg against 272.3, the canopy and the skin re-priced off their drawn areas at 0.9642 and 0.9919 of body-13\'s. The door hinge follows the deck shoulder and the closure sweep re-measures the leaf. The spat wall is body-13\'s and stays: wheels-14 fairs the rear crown on the hub.\n\n' + 'body-12 brought down to the floor it already had. design/retro-gen12.md measured what the roof was floored by and it was a seat riser, not the pack: battery-11\'s lid at y 0.3020 is the floor, interior-11 stood a 150 mm pan on tracks on it, and the head sat under a 1.3220 crown. interior-13 puts both seats on the lid as shells, H-point 0.3420, and this body follows: every crown and upper profile point from the glass base aft is body-12\'s less 65 mm, the cowl 1.0050 over a dashboard at 0.9850 and under an eye at 1.0270, the crown 1.2570, the Kamm face to 0.887. The sill, the pan, the tires and the nose do not move. Measured by the sweeps that own each number: frontal area 1.6381 m2 on wheels-11 and 1.6687 with wheels-13\'s front pants, against body-12\'s 1.7162; Cd 0.1326 under the third revision of the drag buildup against 0.1788, CdA 0.2213 against 0.3068, both streams still to the Kamm at 13.5 degrees; 272.3 kg against 276.0, the cage, skin, doors and tail cone re-priced off their drawn areas. Three things were measured and declined: the spat wall at 0.62 and 0.71 (the second separates the tail), a relieved front arch (the steering foul is the tire into the pack corner, not into the flank), and a rear pant. One thing was added: a luggage bay on a floor at y 0.7750 under the decklid, 250 liters of swept free air and a 105 liter clear box, which is what body-12 said was owed and what interior-13 deletes its cabin locker into.',
+  blurb: 'body-16 with the rear spat wall following wheels-17\'s rear tire in, 0.84 to 0.81 on its straight run, the trailing closure and the rub lip with it, because the wall is the car\'s outline at the rear below the shoulder and a wall 72 mm off its tire is a wall in the wake. Measured on the gen17 set: 1.5739 m2 on wheels-17 against 1.5975 on wheels-15.\n\n' + 'body-16: body-15 with the canopy glass flush with the loft and the tail\'s upper stream taken to the 15 degree limit the drag method has always used: the two skin levers design/retro-gen15.md named as the last a body could take on this package. The 8 mm the glass stood proud was the car\'s whole crown in the frontal projection, 0.0089 m2 of area nothing needed, and alone it reads Cd worse, the trap a fourth time; from x -2.300 aft the tail\'s upper section shrinks about its waterline until the upper stream reaches the Kamm at 14.89 degrees on the bare loft (14.57 as built, with the blade and the bay walls in the sections), the upper base from 0.4132 to 0.3470 m2, and that is what buys the coefficient. Measured by the sweeps that own each number: frontal area 1.5975 m2 on wheels-15 against 1.6064; Cd 0.1104 against 0.1140, CdA 0.1764 against 0.1832; 269.9 kg against 271.0. The luggage bay\'s walls follow the ceiling down and its panel states the cost; the blade and the light band narrow with the face; autonomy-16 re-seats the rear camera.\n\n' + 'body-15: body-14 with its flank brought in from 1.20 m to 1.12 m from the shoulder up, at every station from the front arch to the port, and its hood brought down to meet the glass at the angle the drag method scores at zero. design/retro-gen14.md probed the flank band and found nothing in it the occupant needs: a 0.52 m pair of shoulders in a 1.20 m cabin, and for company a recovery core, a charge port, two zone drops, two camera pads and this body\'s own pillars. The front casting\'s corners at |z| 0.550 set the number at 0.560. The four tenants move in their own modules, each a planned fork; the cage\'s hinge pillar and rear leg move inboard with the skin; below the shoulder the cabin is the rear occupant\'s feet\' and does not move. Measured by the sweeps that own each number: frontal area 1.6064 m2 on wheels-15 against 1.6398; Cd 0.1140 against 0.1151, CdA 0.1831 against 0.1888, the cowl break 15.1 degrees against 24.9; 271.0 kg against 271.5, canopy, skin, shoulder and cage re-priced off their drawn areas.\n\n' + 'body-13 with its greenhouse drawn against the head it holds instead of the flank it stands on. design/retro-gen13.md measured the side glass at 1.15 m wide at y 1.125 beside a 0.165 m head on the centerline of a tandem cabin, with the A-pillar 200 mm inboard of it, and found it to be the one dimension of the frontal outline set by nothing: body-11 carried the flank\'s width up to the belt and two bodies moved that section down without asking. So the band between the belt seam and the deck shoulder comes in at the cabin stations, point 5 from (1.125, 0.575) to (1.040, 0.585) and point 6 from (1.230, 0.390) to (1.215, 0.380), eased into the tail; the flank, the belt seam, the deck and the crown hold, so the flank cameras, the port rim, the roof antennas, the bows and the liner stay where they were, and the occupant keeps 50.1 mm and every upward sightline. Measured by the sweeps that own each number: frontal area 1.6398 m2 on wheels-14 against 1.6687, the greenhouse worth -0.026 of it; Cd 0.1151 under the third revision against 0.1327, CdA 0.1887 against 0.2215; 271.5 kg against 272.3, the canopy and the skin re-priced off their drawn areas at 0.9642 and 0.9919 of body-13\'s. The door hinge follows the deck shoulder and the closure sweep re-measures the leaf. The spat wall is body-13\'s and stays: wheels-14 fairs the rear crown on the hub.\n\n' + 'body-12 brought down to the floor it already had. design/retro-gen12.md measured what the roof was floored by and it was a seat riser, not the pack: battery-11\'s lid at y 0.3020 is the floor, interior-11 stood a 150 mm pan on tracks on it, and the head sat under a 1.3220 crown. interior-13 puts both seats on the lid as shells, H-point 0.3420, and this body follows: every crown and upper profile point from the glass base aft is body-12\'s less 65 mm, the cowl 1.0050 over a dashboard at 0.9850 and under an eye at 1.0270, the crown 1.2570, the Kamm face to 0.887. The sill, the pan, the tires and the nose do not move. Measured by the sweeps that own each number: frontal area 1.6381 m2 on wheels-11 and 1.6687 with wheels-13\'s front pants, against body-12\'s 1.7162; Cd 0.1326 under the third revision of the drag buildup against 0.1788, CdA 0.2213 against 0.3068, both streams still to the Kamm at 13.5 degrees; 272.3 kg against 276.0, the cage, skin, doors and tail cone re-priced off their drawn areas. Three things were measured and declined: the spat wall at 0.62 and 0.71 (the second separates the tail), a relieved front arch (the steering foul is the tire into the pack corner, not into the flank), and a rear pant. One thing was added: a luggage bay on a floor at y 0.7750 under the decklid, 250 liters of swept free air and a 105 liter clear box, which is what body-12 said was owed and what interior-13 deletes its cabin locker into.',
   interfaces: {
     /* ── THE SILL, DECLARED ON BOTH FACES. design/gen11.md section 7 gives
        this joint to battery-11 and body-11 jointly and says neither can make
@@ -689,7 +880,7 @@ export const SYSTEM = {
     cage: {
       name: 'Tandem safety cage',
       tagline: 'Two occupants in line means no B-pillar and one door aperture a side, so the cage is a tube rather than a frame. It lands on the pan flange at y 0.4500.',
-      mass: 51.2,
+      mass: 51.3,   /* 51.2 x 1.0020: the drawn area on this loft over body-14's, tools measured */
       specs: [
         ['Counterpart', 'body-9 cage, 69 kg: same material, new topology'],
         ['Material', '22MnB5 hot stamped, 1,500 MPa after die quench'],
@@ -712,7 +903,7 @@ export const SYSTEM = {
     skin: {
       name: 'Gen 12 skin',
       tagline: 'The tub, with its tail back. One surface at |z| 0.600 through the whole greenhouse, and the highlight line now runs 5.10 m to a Kamm the flow actually reaches.',
-      mass: 35.7,   /* 36 x 0.9919: the skin's drawn area on this loft over body-13's, tools measured */
+      mass: 34.8,   /* 35.7 x 0.9736: the drawn area on this loft over body-14's, tools measured */   /* 36 x 0.9919: the skin's drawn area on this loft over body-13's, tools measured */
       specs: [
         ['Counterpart', 'body-9 skin, 46 kg: same laminate, new loft'],
         ['Construction', 'Thin-ply CFRP 1.1 mm, AFP laid, bonded to the cage'],
@@ -734,7 +925,7 @@ export const SYSTEM = {
     shoulder: {
       name: 'Shoulder fairing',
       tagline: 'The generation, in one panel: 170 mm of surface that closes a 180 mm step and costs about a thousandth of a square meter because it never leaves the tire shadow.',
-      mass: 5,
+      mass: 5.7,   /* 5 x 1.1351: the drawn area on this loft over body-14's, tools measured */
       specs: [
         ['Counterpart', 'None. No body on this ladder has had a shoulder'],
         ['Span', 'x -1.120 to 1.120 built; full section to 1.030, 68.0 mm clear of the nearest tire vertex at |x| 1.0980'],
@@ -767,7 +958,7 @@ export const SYSTEM = {
         ['Gen 13 ledger', 'The wall was measured at 0.52, 0.62 and 0.71 on this body with wheels-13: CdA 0.2213, 0.2203 and 0.2863, the last separating the tail. It stays at 0.52. See the SPAT_TOP constant'],
         ['Maturity', 'Production practice: enclosed rear wheels ship on land-speed and record-economy cars and nothing in this panel is speculative'],
       ],
-      how: 'One lofted wall per side at |z| 0.8400, and it is not a slice of the master grid, which is the ledger of a design that was measured three times before it shipped. The first drawing blended the master loft itself from 0.8400 back to the flank at y 0.52; every station cleared the tire and the penetration sweep still put the surface 18.3 mm inside it at x -1.191, because the loft interpolates between stations and a tire is a circle while a loft is a line. The second drawing enclosed the wheel outright, holding 0.8400 above the tire\'s bump-travel top per station the way a record car\'s haunch does; the sweeps priced it at +0.114 m2 of frontal area with the maximum section moved aft into the haunch and its closure separating, CdA 0.2831 against the wall\'s 0.2343. The enclosure costs more than the crown it covers is worth, and that sentence is a measurement, run twice.\n\nSo the spat is a wall from y 0.1800 to 0.5200, its surface never entering the tire\'s z band at any x where rubber exists: the leading blend rises from the shoulder\'s own 0.7800 over x -1.050 to -1.130, the trailing closure returns to 0.6600 over -1.900 to -2.060, and the rubber\'s built span is -1.0980 to -1.8020, so both crossings happen in air. The tire face is 0.8075, the standing clearance 32.5 mm, and bump travel moves the tire in y along a wall that is constant in y, so travel never closes the gap. The crown stands over the open top edge and its remaining shadow is charged to the wheels term honestly: 0.1991 m2 of exposed wheel becomes 0.1317.\n\nThe closure is what makes it A fairing rather than A fence. An edge-on wall casts no shadow of its own, so with the wall alone the union still attributed the whole tire band to the wheels and the buildup kept charging Fackrell and Harvey\'s coefficient on it. The trailing closure is bodywork standing in the airstream at the tire\'s own band, which is the geometric statement that the wheelhouse now ends in body rather than in wake, and the inner edge stops at 0.6600, 12.5 mm inboard of the tire face, leaving the flank gap open as the wheelhouse vent.\n\nThe skirt is for the other stream. An earlier draw stopped it at y 0.3000 and the lower-stream walk separated at x -0.96 with a 0.39 m2 base, exactly where body-11\'s did, because below the sill the underbody still stepped inboard the moment the pack ended. At 0.1800 the skirt is the side wall of the underbody channel from the sill\'s end at x -1.06 to the diffuser hinge at -1.90, and the measured lower stream rides to the ramp: separation at x -2.68, base 0.0770 m2.',
+      how: 'Gen 17: the wall follows the rear tire of the 1.44 m track: |z| 0.8100 over its straight run (was 0.8400), the trailing closure 0.7700 (was 0.8000), the rub lip at 0.798, the leading blend still from the shoulder\'s 0.7800. 22.5 mm off the tire\'s face at 0.7875; the envelope tool sweeps the saddle against it at 3 degrees of rear steer and full rebound before the rung ships.\n\nOne lofted wall per side at |z| 0.8400, and it is not a slice of the master grid, which is the ledger of a design that was measured three times before it shipped. The first drawing blended the master loft itself from 0.8400 back to the flank at y 0.52; every station cleared the tire and the penetration sweep still put the surface 18.3 mm inside it at x -1.191, because the loft interpolates between stations and a tire is a circle while a loft is a line. The second drawing enclosed the wheel outright, holding 0.8400 above the tire\'s bump-travel top per station the way a record car\'s haunch does; the sweeps priced it at +0.114 m2 of frontal area with the maximum section moved aft into the haunch and its closure separating, CdA 0.2831 against the wall\'s 0.2343. The enclosure costs more than the crown it covers is worth, and that sentence is a measurement, run twice.\n\nSo the spat is a wall from y 0.1800 to 0.5200, its surface never entering the tire\'s z band at any x where rubber exists: the leading blend rises from the shoulder\'s own 0.7800 over x -1.050 to -1.130, the trailing closure returns to 0.6600 over -1.900 to -2.060, and the rubber\'s built span is -1.0980 to -1.8020, so both crossings happen in air. The tire face is 0.8075, the standing clearance 32.5 mm, and bump travel moves the tire in y along a wall that is constant in y, so travel never closes the gap. The crown stands over the open top edge and its remaining shadow is charged to the wheels term honestly: 0.1991 m2 of exposed wheel becomes 0.1317.\n\nThe closure is what makes it A fairing rather than A fence. An edge-on wall casts no shadow of its own, so with the wall alone the union still attributed the whole tire band to the wheels and the buildup kept charging Fackrell and Harvey\'s coefficient on it. The trailing closure is bodywork standing in the airstream at the tire\'s own band, which is the geometric statement that the wheelhouse now ends in body rather than in wake, and the inner edge stops at 0.6600, 12.5 mm inboard of the tire face, leaving the flank gap open as the wheelhouse vent.\n\nThe skirt is for the other stream. An earlier draw stopped it at y 0.3000 and the lower-stream walk separated at x -0.96 with a 0.39 m2 base, exactly where body-11\'s did, because below the sill the underbody still stepped inboard the moment the pack ended. At 0.1800 the skirt is the side wall of the underbody channel from the sill\'s end at x -1.06 to the diffuser hinge at -1.90, and the measured lower stream rides to the ramp: separation at x -2.68, base 0.0770 m2.',
 
       why: 'design/cd-rezero.md measured the wheels at 22 percent of Gen 11\'s drag, 0.1991 m2 of tire standing in clean air on the narrowest car this ladder has built, and named the fairing as the largest single measured lever on the vehicle. It is nearly free in frontal area because the tires already own that shadow: bodywork drawn against their column adds skin thickness and nothing else, and tools/area.sh prices the whole spat at 0.0304 m2. The front wheels are not enclosed, on the record and on a measurement: they steer, and Gen 11 carries a recorded steering-lock foul of 3.0 degrees against 14 commanded. A front spat drawn today would convert an open defect into a designed one, so the fronts keep the open arch and the buildup charges the car for them honestly.',
       fail: [
@@ -801,17 +992,17 @@ export const SYSTEM = {
     'tail-cone': {
       name: 'Boat tail, full length',
       tagline: 'The tail the package paid for twice, given back. 740 mm longer than body-11\'s, drawn station by station against the cone walk, and the flow reaches the Kamm',
-      mass: 10.3,
+      mass: 9.9,
       specs: [
         ['Counterpart', 'body-11 tail-cone, 8 kg: the compressed tail this one retires'],
         ['Closure begins', 'x -1.950, where the spat truncation lands and the flank owns the width'],
         ['Flank', '0.575 at x -1.950 to 0.4050 at the Kamm face, 12.9 degrees in plan'],
-        ['Kamm face', 'x -2.6900, 0.810 m wide by y 0.265 to 0.887 (body-12: to 0.952; the tail scaled above its waterline with the cabin)'],
+        ['Kamm face', 'x -2.6900, 0.77 m wide at the waterline and 0.48 at its top, y 0.265 to 0.828 (body-15: 0.810 wide by 0.265 to 0.887; the upper section shrinks from x -2.300 aft)'],
         ['Overall length', '5.0966 m built and measured (body-11: 4.8288)'],
         ['Cone walk', 'both streams attached to x -2.68; upper base 0.4590, lower 0.0770 m2'],
         ['Maturity', 'Production practice: boat tails and Kamm truncation are old'],
       ],
-      how: 'The stations are generated against the walk in tools/aero.js rather than against a styling buck, and the drawing rule is one sentence: no 200 mm window of the equivalent cone may exceed 15 degrees anywhere aft of the maximum section, on either stream. That rule sized everything. The tail is 740 mm longer than body-11\'s because the taper needs the run: closing a 1.586 m2 maximum section to a half-square-meter base inside 15 degrees takes 1.57 m of car, and body-11 gave the job 0.59. The crown falls 1.322 at x -1.120 to 0.952 at the face, 13.3 degrees along its whole length, which deliberately stays out of the 20 to 30 degree band where the Ahmed body\'s slant vortices live: tools/aero-validate.js carries that measurement and its 30 degree case is the method\'s own stated failure. The flank runs 0.575 at the spat closure to 0.4050 at the face, 12.9 degrees in plan against the 19 to 27 that condemned body-7\'s tail in its audit. The lower edge is the diffuser\'s: the ramp exit rose from x -2.412 to -2.660 with the tail, so its angle fell from 22.9 to 12.8 degrees, and a longer car got a gentler diffuser for free.\n\nMeasured, not aspired to: the sweep that prices every body on this ladder puts both streams attached to x -2.68, two stations short of the face, with a summed base of 0.5360 m2 against the 1.5699 body-11 separated onto. That single number is most of the generation.',
+      how: 'Gen 16: the upper four profile points and the crown of stations 19 to 21 (x -2.400, -2.550, the Kamm) shrink about the waterline by 0.05, 0.13 and 0.22 of their height and half-width, stations 16 to 18 hold, and the lower four points of every station hold because the lower stream is the floor\'s and already reads 15.3 degrees. The walk: the upper stream reaches the Kamm at 14.89 degrees on the bare loft against body-15\'s 13.6 and the method\'s 15, and 14.57 as built with the blade on its struts and the bay\'s tapered walls in the sections (the body module is what the walk sees, on every rung); its base 0.3470 m2 against 0.4132; Cd 0.1104 on wheels-15 against 0.1140, the base term 0.0162 against 0.0201. Nine start-and-depth combinations were swept before this one was drawn: earlier starts pass 15 before the base has fallen far and a later one separates at x -2.46; -2.300 at 0.22 is the pair that touches the limit and no further, which is the sentence design/retro-gen15.md section 5 wrote. The tail cone\'s drawn area is 0.9601 of body-15\'s and its ledger follows, 9.9 kg.\n\nThe stations are generated against the walk in tools/aero.js rather than against a styling buck, and the drawing rule is one sentence: no 200 mm window of the equivalent cone may exceed 15 degrees anywhere aft of the maximum section, on either stream. That rule sized everything. The tail is 740 mm longer than body-11\'s because the taper needs the run: closing a 1.586 m2 maximum section to a half-square-meter base inside 15 degrees takes 1.57 m of car, and body-11 gave the job 0.59. The crown falls 1.322 at x -1.120 to 0.952 at the face, 13.3 degrees along its whole length, which deliberately stays out of the 20 to 30 degree band where the Ahmed body\'s slant vortices live: tools/aero-validate.js carries that measurement and its 30 degree case is the method\'s own stated failure. The flank runs 0.575 at the spat closure to 0.4050 at the face, 12.9 degrees in plan against the 19 to 27 that condemned body-7\'s tail in its audit. The lower edge is the diffuser\'s: the ramp exit rose from x -2.412 to -2.660 with the tail, so its angle fell from 22.9 to 12.8 degrees, and a longer car got a gentler diffuser for free.\n\nMeasured, not aspired to: the sweep that prices every body on this ladder puts both streams attached to x -2.68, two stations short of the face, with a summed base of 0.5360 m2 against the 1.5699 body-11 separated onto. That single number is most of the generation.',
       why: 'design/cd-rezero.md located Gen 11\'s drag in two places and this part answers the second: the widest structure on the car ended at x -1.07 and the upper stream left the body at -0.98, so 1.46 m of drawn tail did nothing at all. Gen 11 compressed the tail because a tandem cabin does not need the length; that argument priced the length and never priced the wake, which is exactly the class of error a frozen coefficient guarantees, and retro-gen11 names it. The length goes back in because the measurement says the wake was the bill. Gen 8 closed a tail once before and collected 50 miles; this one is that rung\'s lesson applied to a car with 24 percent less frontal area to close.',
       fail: [
         'The claim that this tail stays attached rests on an equivalent cone, and a moving-ground tunnel is still owed. It is now owed on a third body and the queue is not getting shorter.',
@@ -823,7 +1014,7 @@ export const SYSTEM = {
     canopy: {
       name: 'Glass canopy band',
       tagline: 'The same stack over a cabin 325 mm narrower, and the roof band is now flat enough to sit under.',
-      mass: 13.5,   /* 14 x 0.9642: the canopy's drawn area on this loft over body-13's, tools measured */
+      mass: 13.1,   /* 13.5 x 0.9667: the drawn area on this loft over body-14's, tools measured */   /* 14 x 0.9642: the canopy's drawn area on this loft over body-13's, tools measured */
       specs: [
         ['Counterpart', 'body-9 canopy, 21 kg: identical stack, 0.65 x the area'],
         ['Glazing', 'Chemically strengthened aluminosilicate, 1.1 + PVB + 0.7 mm'],
@@ -832,7 +1023,7 @@ export const SYSTEM = {
         ['Widest vertex', '|z| 0.5976, inset 0.4 percent, so it is inside the 0.6000 flank'],
         ['Maturity', 'Production practice for the glass; mirrorless is legal in most markets, not all'],
       ],
-      how: 'The band is cut from the same loft stations as the skin, 8 mm proud of them, and carries body-7\'s stack unchanged: a 1.1 mm ion-exchanged outer ply that resists the same stone strike as 2.1 mm of annealed soda-lime, a 0.7 mm inner, and an electrochromic interlayer scheduled between 20 and 1 percent transmittance. body-3\'s codified lesson is carried too, the near-flat roof band from the centerline out to |z| 0.30 so the glass wraps the cage rails rather than dipping under them.\n\nWhat this generation does to the glass is arithmetic rather than design. The cabin is 1.20 m wide instead of 1.85 and 0.593 m shorter overall, so the band\'s developed area falls by about 35 percent and the mass with it, 21 kg to 14. The one thing worth checking rather than assuming was whether the roof band is still flat enough to clear the rails after the roof came down 38 mm to 1.330: the rails moved inboard to |z| 0.300 with the cabin, the loft at that half-width measures y 1.319, and the rail tops are at 1.313, so the glass clears them by 6 mm, which is body-9\'s own margin at that joint.\n\nAnd the band is now inside the paint in Z, which is A correction. A band 8 mm proud in y and 1.2 percent outboard in z puts its widest vertex at |z| 0.6072 and the built width of this car at 1.2144 m against a contract that binds 1.20 m built. The offset in z is now 0.4 percent inboard, so the widest glass vertex is 0.5976, the two surfaces still cannot z-fight, and swept over the whole module the widest vertex above y 0.6200 is the painted flank at exactly 0.6000. The contract does not move; the geometry came to it.',
+      how: 'Gen 16: the band sits on the loft stations instead of 8 mm proud of them. In the frontal projection the band is the car\'s whole crown from belt seam to belt seam, 1.12 m wide, and the 8 mm step was 0.0089 m2 of area nothing needed: 1.6064 to 1.5975 m2 on wheels-15 with nothing else moved. Flush, its edge meets the flank panels at the seam column where the shell draws no paint under it, so nothing z-fights; the cage bows\' crowns touch the loft from below at 1.2540 and the glass bonds to them; the rails at |z| 0.300 keep their 6 mm. The z inset of 0.4 percent, body-11\'s correction, stays: the widest glass vertex is 0.5576 inside a flank at 0.5600. Its developed area is the same to four places, so the 13.1 kg carries. Alone this lever reads Cd 0.1145 on the smaller area, the trap a fourth time, and the tail is what pays for it.\n\nThe band is cut from the same loft stations as the skin, 8 mm proud of them, and carries body-7\'s stack unchanged: a 1.1 mm ion-exchanged outer ply that resists the same stone strike as 2.1 mm of annealed soda-lime, a 0.7 mm inner, and an electrochromic interlayer scheduled between 20 and 1 percent transmittance. body-3\'s codified lesson is carried too, the near-flat roof band from the centerline out to |z| 0.30 so the glass wraps the cage rails rather than dipping under them.\n\nWhat this generation does to the glass is arithmetic rather than design. The cabin is 1.20 m wide instead of 1.85 and 0.593 m shorter overall, so the band\'s developed area falls by about 35 percent and the mass with it, 21 kg to 14. The one thing worth checking rather than assuming was whether the roof band is still flat enough to clear the rails after the roof came down 38 mm to 1.330: the rails moved inboard to |z| 0.300 with the cabin, the loft at that half-width measures y 1.319, and the rail tops are at 1.313, so the glass clears them by 6 mm, which is body-9\'s own margin at that joint.\n\nAnd the band is now inside the paint in Z, which is A correction. A band 8 mm proud in y and 1.2 percent outboard in z puts its widest vertex at |z| 0.6072 and the built width of this car at 1.2144 m against a contract that binds 1.20 m built. The offset in z is now 0.4 percent inboard, so the widest glass vertex is 0.5976, the two surfaces still cannot z-fight, and swept over the whole module the widest vertex above y 0.6200 is the painted flank at exactly 0.6000. The contract does not move; the geometry came to it.',
       why: 'A monoform with a deleted backlight depends on its sensor suite for everything behind the occupants, and that was Gen 8\'s decision taken for a tolerance reason rather than a styling one. Gen 11 does not reopen it, and design/gen11.md section 9 item 4 already books the further cost: rear visibility past a reclined front occupant in a narrow tube is worse than a four-seat cabin\'s. What is worth saying here is that the glass is the only part of this body whose mass fell for a purely geometric reason, with no argument and no risk attached, which is what a package generation is supposed to produce and mostly does not.',
       fail: [
         'One deep chip still condemns the band and the replacement must re-index to the loft within half a millimeter, carried unimproved.',
@@ -908,17 +1099,17 @@ export const SYSTEM = {
     lightbands: {
       name: 'Light bands',
       tagline: 'The front band does not move by a millimeter, and it is the only interface on this car that survived the package intact.',
-      mass: 3,
+      mass: 2.8,
       count: 2,
       specs: [
         ['Counterpart', 'body-9 lightbands, 4 kg: front identical, rear narrowed'],
         ['Front', '2 x 84-pixel matrix + lidar windows at z +-0.30, held'],
         ['Held coordinates', 'Front band face x 2.371, y 0.615, half-width 0.43'],
-        ['Rear', 'PMMA guide across the Kamm face at x -2.4387, 0.70 m'],
-        ['Kamm face', '0.806 m wide by 350 mm tall'],
+        ['Rear', 'PMMA guide across the Kamm face at x -2.4387, 0.48 m (body-15: 0.70; the face at y 0.760 is 0.52 m wide now)'],
+        ['Kamm face', '0.77 m wide at the waterline, 0.48 at the top, 563 mm tall'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'The front band is carried without a change to a single coordinate and that is a contract rather than a convenience. autonomy-4 mounts its flash lidar pucks at (2.33, 0.615, plus and minus 0.30) and its thermal camera at (2.345, 0.53, 0), all written against a band face at x 2.371, y 0.615, half-width 0.43. The nose loft at that station carries 0.487 half-width at y 0.615, so the band sits inside the surface with 57 mm to spare on each side and all three sensor points land. On a car that narrowed by 650 mm at the greenhouse and lost 333 mm of tail, exactly one partner interface came through untouched, and it is worth naming which one and why: the nose was held as crash budget, and holding a length held a set of coordinates that nothing else on the car could have preserved.\n\nThe rear band narrows to 0.70 m with the Kamm face, which closes to 0.806 m wide on the 18.4 degree taper. Its back face at x -2.4457 is the rearmost geometry on the car and it is what sets the built overall length. The forward-most vertex is the intake gates\' actuator boss, and swept it is at x 2.383143, not the 2.3843 an earlier note transcribed, so the built car is 4.82884 m. design/gen11.md books 4.83 and 4.8288 rounds to it; the difference is 1.2 mm and the point of writing it down is that the earlier figure was a number typed into a comment and this one is a number read off the mesh.',
+      how: 'Gen 16: the rear guide comes from 0.70 to 0.48 m because the Kamm face at its height, y 0.735 to 0.785, is 0.52 m wide on the shrunken tail and a lamp wider than the face it sits in is a lamp in the air. The front band and every sensor point on it do not move. 2.8 kg: the rear guide is 0.22 m shorter of 1.56 m of guide and the housings carry.\n\nThe front band is carried without a change to a single coordinate and that is a contract rather than a convenience. autonomy-4 mounts its flash lidar pucks at (2.33, 0.615, plus and minus 0.30) and its thermal camera at (2.345, 0.53, 0), all written against a band face at x 2.371, y 0.615, half-width 0.43. The nose loft at that station carries 0.487 half-width at y 0.615, so the band sits inside the surface with 57 mm to spare on each side and all three sensor points land. On a car that narrowed by 650 mm at the greenhouse and lost 333 mm of tail, exactly one partner interface came through untouched, and it is worth naming which one and why: the nose was held as crash budget, and holding a length held a set of coordinates that nothing else on the car could have preserved.\n\nThe rear band narrows to 0.70 m with the Kamm face, which closes to 0.806 m wide on the 18.4 degree taper. Its back face at x -2.4457 is the rearmost geometry on the car and it is what sets the built overall length. The forward-most vertex is the intake gates\' actuator boss, and swept it is at x 2.383143, not the 2.3843 an earlier note transcribed, so the built car is 4.82884 m. design/gen11.md books 4.83 and 4.8288 rounds to it; the difference is 1.2 mm and the point of writing it down is that the earlier figure was a number typed into a comment and this one is a number read off the mesh.',
       why: 'A monoform leaves nowhere else for light to live and nowhere better for a lidar: the front face is the one flat, forward, washable, heated surface on the car, sitting in the stagnation region where a window costs no drag. autonomy-11 is a redraw and will re-seat everything against this built body, and the useful thing this panel does is guarantee that at least one of its mounting families does not have to move. design/retro-gen4.md\'s rule is to move geometry around an interface rather than moving the interface; this is the one place on the rung where that was free.',
       fail: [
         'One part per face: a parking tap costs the whole band, and at the front possibly a lidar recalibration with it.',
@@ -941,7 +1132,7 @@ export const SYSTEM = {
         ['Mass', '0.88 m2 of floor at 2.5 kg/m2, 0.5 m2 of wall and bulkhead at 1.5, four rings: 3.3 kg, derived'],
         ['Maturity', 'Production practice'],
       ],
-      how: 'A floor is what turns measured air into a place to put something, and the floor was the whole design: high enough to clear what the tail already carries, low enough to leave height under a roof that just came down 65 mm. Rayed down through the decklid aperture, the tallest carried surfaces under it are the rear casting\'s top at y 0.740 over x -2.245 to -1.600 and autonomy-13\'s compute cold plate at 0.764 over x -1.53 to -0.86, so the floor sits at 0.7750, and its forward end at x -1.170 is 10 mm behind the lid\'s forward cut so the bulkhead stands under the shutline. The walls are at |z| 0.330 because hv-11\'s charge-port body begins at 0.363 on the passenger side and a symmetric liner is one part; the aft end stops at -2.500 because the Kamm spoiler\'s spindle drives enter the deck at -2.515.\n\nThe volume is swept, not asserted, the way interior-11 swept its locker: the region x -2.60 to -1.10, y 0.70 to 1.10, |z| 0.45 voxelized at 20 mm against every module a gen13 preset builds, every triangle marking every voxel its bounding box touches, so a voxel counted free is free. Inside the liner, above the floor: 250 liters. The largest axis-aligned box with nothing in it: 1,060 by 620 by 160 mm, 105 liters, from x -2.38 to -1.32. body-12 measured 156 in a clear box here under a crown 65 mm higher, and the difference is the roof: a bay whose ceiling is the tail skin loses height with the car, which is the one cost of this generation\'s thesis that lands in this part. Against that, interior-11\'s 61 liter locker is gone from the cabin, so the rung trades 217 liters in two places for 250 in one.',
+      how: 'Gen 16: the tail\'s upper section comes down from x -2.300 aft and the bay follows its ceiling rather than standing through it: the walls are two pieces, the full 150 mm from the bulkhead to -2.300 where the skin has not moved, and a tapered panel behind it whose top edge is read off the loft at |z| 0.330 less 10 mm, station by station, because the skin over the bay\'s last 200 mm comes down to y 0.907 at the aft end over walls that stood to 0.925. The floor, the bulkhead and the four rings do not move. What the bay loses, measured the same way its numbers were made: the skin over the 105 liter clear box\'s footprint (x -2.38 to -1.32, |z| 0.31) falls from 0.948 to 0.930 at its aft 80 mm, so the box keeps its 160 mm over x -2.30 to -1.32 (98 liters) or its length at about 150 mm tall, and the free air over the floor inside the walls, skin as ceiling, reads 277 liters against 279. Two liters and 8 percent of one box\'s height, stated here beside the 36 miles the tail bought the rung, because the panel is where a cost like that belongs and design/retro-gen15.md section 5 said so.\n\nA floor is what turns measured air into a place to put something, and the floor was the whole design: high enough to clear what the tail already carries, low enough to leave height under a roof that just came down 65 mm. Rayed down through the decklid aperture, the tallest carried surfaces under it are the rear casting\'s top at y 0.740 over x -2.245 to -1.600 and autonomy-13\'s compute cold plate at 0.764 over x -1.53 to -0.86, so the floor sits at 0.7750, and its forward end at x -1.170 is 10 mm behind the lid\'s forward cut so the bulkhead stands under the shutline. The walls are at |z| 0.330 because hv-11\'s charge-port body begins at 0.363 on the passenger side and a symmetric liner is one part; the aft end stops at -2.500 because the Kamm spoiler\'s spindle drives enter the deck at -2.515.\n\nThe volume is swept, not asserted, the way interior-11 swept its locker: the region x -2.60 to -1.10, y 0.70 to 1.10, |z| 0.45 voxelized at 20 mm against every module a gen13 preset builds, every triangle marking every voxel its bounding box touches, so a voxel counted free is free. Inside the liner, above the floor: 250 liters. The largest axis-aligned box with nothing in it: 1,060 by 620 by 160 mm, 105 liters, from x -2.38 to -1.32. body-12 measured 156 in a clear box here under a crown 65 mm higher, and the difference is the roof: a bay whose ceiling is the tail skin loses height with the car, which is the one cost of this generation\'s thesis that lands in this part. Against that, interior-11\'s 61 liter locker is gone from the cabin, so the rung trades 217 liters in two places for 250 in one.',
       why: 'Because "a measured claim and not yet luggage" is a sentence this ladder has now carried for two rungs, in body-11\'s words and then body-12\'s, and design/retro-gen12.md section 6 named it as one of the defects this rung closes or explains. A tandem car gave up a four-seat car\'s rear volume at Gen 11 and booked the loss; this is the first rung where something is drawn in the space that replaced it.',
       fail: [
         'It is a shelf the length of a pair of skis and 160 mm tall at its clear box, not a trunk: a roof that comes down 65 mm to buy area takes it off the bay first. What fits is long and flat, and the panel says so rather than rounding 250 liters of swept air up to a suitcase count.',
@@ -954,16 +1145,16 @@ export const SYSTEM = {
     'kamm-flap': {
       name: 'Deployable Kamm spoiler',
       tagline: 'Same mechanism on a base 28 percent smaller and a cantilever 59 percent shorter, and the module books nothing for either.',
-      mass: 4,
+      mass: 3.5,
       specs: [
         ['Counterpart', 'body-9 kamm-flap, 6 kg: identical drives and logic'],
         ['Blade', 'Carbon, 0.70 m span, 160 mm chord, drawn deployed'],
-        ['Travel', 'Flush to 62 mm proud, continuous; full-up airbrake'],
+        ['Travel', 'Flush to 62 mm proud, continuous; full-up airbrake; the blade height read off the Gen 16 deck'],
         ['Base it works on', '0.282 m2 (body-9: 0.394)'],
         ['Booked', 'Nothing. Cd is frozen project-wide by design/area-rezero.md'],
         ['Maturity', 'Production practice: multi-position wings have shipped for decades'],
       ],
-      how: 'Mechanism, actuation, control logic and fail position are carried without a change: two 48 V spindle drives on fused channels from the rear zonal controllers, continuous travel from flush to 62 mm proud, a spring return to flush because a spoiler that fails should cost counts and never control, stow below 80 km/h to restore the certified pedestrian geometry, and full-up in half a second on a hard brake-by-wire demand.\n\nEverything about its context changed and none of it is bookable. The base is 0.282 m2 against 0.394, the span comes to 0.70 m with the face, the chord to 160 mm in proportion, and the deck it stands on is 213 mm aft of the bolted rails instead of 525, so the couple into the rear casting falls from about 451 Nm to about 183. The download at 130 km/h scales with the blade area and comes to roughly 260 N against 365. Every one of those is a real number and not one of them is a range claim: this generation books no drag coefficient anywhere, which design/gen11.md states twice and design/area-rezero.md froze project-wide.',
+      how: 'Gen 16: the deck under the blade is the shrunken tail\'s, so the blade stands 62 mm over the crown at its own station by reading the loft rather than a typed height, and the span comes from 0.70 to 0.56 m with the struts at |z| 0.19, because the Kamm face\'s top is 0.48 m wide now and a blade wider than the deck it stands on is a blade in the wake beside the car. The base it works on is 0.424 m2 against 0.490 (upper 0.347, lower 0.077). 3.5 kg: 3.2 by the span, 0.3 for struts that grew 59 mm.\n\nMechanism, actuation, control logic and fail position are carried without a change: two 48 V spindle drives on fused channels from the rear zonal controllers, continuous travel from flush to 62 mm proud, a spring return to flush because a spoiler that fails should cost counts and never control, stow below 80 km/h to restore the certified pedestrian geometry, and full-up in half a second on a hard brake-by-wire demand.\n\nEverything about its context changed and none of it is bookable. The base is 0.282 m2 against 0.394, the span comes to 0.70 m with the face, the chord to 160 mm in proportion, and the deck it stands on is 213 mm aft of the bolted rails instead of 525, so the couple into the rear casting falls from about 451 Nm to about 183. The download at 130 km/h scales with the blade area and comes to roughly 260 N against 365. Every one of those is a real number and not one of them is a range claim: this generation books no drag coefficient anywhere, which design/gen11.md states twice and design/area-rezero.md froze project-wide.',
       why: 'A fixed truncation pays average-case drag every hour; a blade with travel buys the best case at speed, the legal case in town, and free download in the one maneuver where drag is an asset. Carrying it into a package generation is correct and the discipline is refusing to book anything for the cleaner base it now works against. body-8 was caught out in the opposite direction on its diffuser, where half a count was debited for an effect measurement showed went the other way, and the lesson is to price what can be measured and name what cannot.',
       fail: [
         'Ice can lock the blade flush; the cold-start sweep detects the torque spike, leaves it stowed, and the range estimate explains the missing counts.',
@@ -1095,8 +1286,8 @@ function ring(x, half, crownY) {
    The first draft of this module drew the shoulder from x 1.450 to -1.850,
    which is straight through both axles, and produced 7 penetrating part
    pairs against wheels-10 alone. */
-const SHLD = [[0.4500, 0.7800], [0.5000, 0.7500], [0.5600, 0.6900], [0.6200, 0.6000]];
-const ARCH = [[0.6080, 0.5900], [0.6120, 0.5935], [0.6160, 0.5968], [0.6200, 0.6000]];
+const SHLD = [[0.4500, 0.7800], [0.5000, 0.7500], [0.5600, 0.6950], [0.6200, 0.5600]];   /* Gen 15: the top to 0.560; the middle holds its cover over the rear tire and over autonomy's compute coolant hose at |z| 0.642, y 0.578 (a draft at 0.68 met the hose by 0.7 mm, an eased one at 0.74/0.66 exposed 0.002 m2 more tire) */
+const ARCH = [[0.6080, 0.5500], [0.6120, 0.5535], [0.6160, 0.5568], [0.6200, 0.5600]];   /* Gen 15: the 12 mm return under a flank base at 0.560 */
 /* THE SPAT IS A WALL, NOT AN ENCLOSURE, and both alternatives were drawn and
    measured before this one shipped. The first drawing blended the loft from
    0.8400 back to the flank at y 0.52 and the penetration sweep put the blend
@@ -1142,45 +1333,45 @@ const STATIONS = [
   /* 3  front arch, ARCH. The front tire reaches x 1.8020 and this station is
         18.0 mm ahead of it; crown 1.015 to 0.972 */
   [1.820, [...ARCH,
-           [0.790, 0.600], [0.880, 0.520], [0.940, 0.350], [0.963, 0.180]], 0.972],
+           [0.758, 0.560], [0.848, 0.510], [0.908, 0.345], [0.931, 0.178]], 0.940],
   /* 4  front axle, ARCH; crown 1.050 to 0.990 */
   [1.450, [...ARCH,
-           [0.810, 0.600], [0.905, 0.530], [0.962, 0.360], [0.981, 0.185]], 0.990],
+           [0.770, 0.560], [0.865, 0.520], [0.922, 0.355], [0.941, 0.183]], 0.950],
   /* 5  glass base, ARCH. x 1.250, crown 1.005 over interior-13's dashboard
         peak at 0.985 and 22 mm under the front eye at 1.027. Gen 12's cowl
         geometry carried 65 mm lower: the glass rises at 25 degrees from here */
   [1.250, [...ARCH,
-           [0.805, 0.600], [0.910, 0.540], [0.980, 0.370], [0.997, 0.190]], 1.005],
+           [0.805, 0.560], [0.910, 0.530], [0.980, 0.370], [0.997, 0.190]], 1.005],
   /* 6  front shoulder closure, ARCH, on the glass line */
   [ARCH_X, [...ARCH,
-           [0.826, 0.600], [0.945, 0.540], [1.040, 0.375], [1.059, 0.195]], 1.065],
+           [0.826, 0.560], [0.945, 0.530], [1.040, 0.375], [1.059, 0.195]], 1.065],
   /* 7  the first station at full shoulder, on the glass line */
   [SHOULDER_X, [...SHLD,
-           [0.835, 0.600], [0.975, 0.545], [1.075, 0.380], [1.100, 0.200]], 1.107],
+           [0.835, 0.560], [0.975, 0.535], [1.075, 0.380], [1.100, 0.200]], 1.107],
   /* 7  windshield base and the forward shutline */
   [0.850, [...SHLD,
-           [0.895, 0.600], [1.055, 0.560], [1.161, 0.390], [1.181, 0.200]], 1.191],
+           [0.895, 0.560], [1.055, 0.540], [1.161, 0.390], [1.181, 0.200]], 1.191],
   /* 8  front occupant, and the roof reaches its crown at 1.2570 */
   [0.300, [...SHLD,
-           [0.955, 0.600], [1.040, 0.585], [1.215, 0.380], [1.254, 0.300]], 1.257],
+           [0.955, 0.560], [1.040, 0.550], [1.215, 0.380], [1.254, 0.300]], 1.257],
   /* 9  maximum section, between the two occupants */
   [-0.450, [...SHLD,
-            [0.975, 0.600], [1.040, 0.588], [1.215, 0.388], [1.254, 0.300]], 1.257],
+            [0.975, 0.560], [1.040, 0.552], [1.215, 0.388], [1.254, 0.300]], 1.257],
   /* 10 rear shoulder closure, the aft end of the screw run and the flange */
   [-SHOULDER_X, [...SHLD,
-            [0.955, 0.600], [1.040, 0.583], [1.213, 0.380], [1.254, 0.298]], 1.257],
+            [0.955, 0.560], [1.040, 0.548], [1.213, 0.380], [1.254, 0.298]], 1.257],
   /* 11 rear arch, ARCH. The rear occupant's head is over this station */
   [-1.120, [...ARCH,
-            [0.955, 0.600], [1.040, 0.583], [1.213, 0.380], [1.254, 0.298]], 1.257],
+            [0.955, 0.560], [1.040, 0.548], [1.213, 0.380], [1.254, 0.298]], 1.257],
   /* 12 mid spat */
   [-1.280, [...ARCH,
-            [0.945, 0.598], [1.025, 0.580], [1.180, 0.375], [1.217, 0.295]], 1.220],
+            [0.945, 0.560], [1.025, 0.545], [1.180, 0.375], [1.217, 0.295]], 1.220],
   /* 13 rear axle */
   [-1.440, [...ARCH,
-            [0.935, 0.590], [1.005, 0.565], [1.145, 0.365], [1.180, 0.290]], 1.183],
+            [0.935, 0.560], [1.005, 0.540], [1.145, 0.365], [1.180, 0.290]], 1.183],
   /* 14 aft spat */
   [-1.620, [...ARCH,
-            [0.915, 0.578], [0.990, 0.545], [1.105, 0.358], [1.138, 0.283]], 1.141],
+            [0.915, 0.560], [0.990, 0.535], [1.105, 0.358], [1.138, 0.283]], 1.141],
   /* 15 spat closure begins, AND THE FLANK HOLDS THE PORT DATUM. hv-11's V2G
         port rim sits ON |z| 0.6000 over y 0.665 to 0.853 at x -1.845, and
         hv-11 is carried: the vertical flank is therefore held to y 0.900
@@ -1188,11 +1379,11 @@ const STATIONS = [
         tumblehome above it comes down. The rear tire's last vertex is at
         x -1.8020 and the lower band still clears it by 22.5 mm */
   [-1.800, [...ARCH,
-            [0.900, 0.6000], [0.985, 0.520], [1.068, 0.348], [1.096, 0.275]], 1.099],
+            [0.900, 0.5600], [0.985, 0.515], [1.068, 0.348], [1.096, 0.275]], 1.099],
   /* 15b the port's aft shoulder: the shroud reaches x -1.896 and the datum
         holds to -1.905 before the tail is allowed its taper */
   [-1.905, [...ARCH,
-            [0.880, 0.6000], [0.975, 0.505], [1.055, 0.342], [1.083, 0.270]], 1.075],
+            [0.880, 0.5600], [0.975, 0.503], [1.055, 0.342], [1.083, 0.270]], 1.075],
   /* ── THE TAIL, stations 16 to 21: body-12's tail scaled vertically above
      its own waterline (profile point 3) so the crown lands 65 mm lower and
      the section keeps its shape. The lower four points are the underbody's
@@ -1201,23 +1392,23 @@ const STATIONS = [
      the walk measures what that buys. ── */
   /* 16 the spat is closed: the raked truncation lands here and the flank
         owns the width from this station aft. tail-cone begins */
-  [-1.950, [[0.1380, 0.5550], [0.3000, 0.5750], [0.4600, 0.5700], [0.5200, 0.5650],
-            [0.5914, 0.5550], [0.6807, 0.5450], [0.9665, 0.5150], [1.0379, 0.4900]], 1.064],
+  tl(-1.950, [[0.1380, 0.5550], [0.3000, 0.5750], [0.4600, 0.5700], [0.5200, 0.5650],
+            [0.5914, 0.5550], [0.6807, 0.5450], [0.9665, 0.5150], [1.0379, 0.4900]], 1.064),
   /* 17 */
-  [-2.100, [[0.1550, 0.5250], [0.3200, 0.5450], [0.4600, 0.5380], [0.5400, 0.5300],
-            [0.6106, 0.5200], [0.7252, 0.5050], [0.9457, 0.4720], [0.9986, 0.4500]], 1.029],
+  tl(-2.100, [[0.1550, 0.5250], [0.3200, 0.5450], [0.4600, 0.5380], [0.5400, 0.5300],
+            [0.6106, 0.5200], [0.7252, 0.5050], [0.9457, 0.4720], [0.9986, 0.4500]], 1.029),
   /* 18 */
-  [-2.250, [[0.1760, 0.4950], [0.3400, 0.5100], [0.4800, 0.5020], [0.5600, 0.4950],
-            [0.6470, 0.4830], [0.7515, 0.4650], [0.9256, 0.4320], [0.9691, 0.4120]], 0.994],
+  tl(-2.250, [[0.1760, 0.4950], [0.3400, 0.5100], [0.4800, 0.5020], [0.5600, 0.4950],
+            [0.6470, 0.4830], [0.7515, 0.4650], [0.9256, 0.4320], [0.9691, 0.4120]], 0.994),
   /* 19 */
-  [-2.400, [[0.2010, 0.4650], [0.3600, 0.4750], [0.5000, 0.4680], [0.5800, 0.4600],
-            [0.6660, 0.4470], [0.7691, 0.4250], [0.8981, 0.3960], [0.9411, 0.3780]], 0.959],
+  tl(-2.400, [[0.2010, 0.4650], [0.3600, 0.4750], [0.5000, 0.4680], [0.5800, 0.4600],
+            [0.6660, 0.4470], [0.7691, 0.4250], [0.8981, 0.3960], [0.9411, 0.3780]], 0.959),
   /* 20 */
-  [-2.550, [[0.2310, 0.4300], [0.3800, 0.4400], [0.5200, 0.4320], [0.6000, 0.4200],
-            [0.6832, 0.4050], [0.7830, 0.3850], [0.8662, 0.3620], [0.9078, 0.3450]], 0.923],
+  tl(-2.550, [[0.2310, 0.4300], [0.3800, 0.4400], [0.5200, 0.4320], [0.6000, 0.4200],
+            [0.6832, 0.4050], [0.7830, 0.3850], [0.8662, 0.3620], [0.9078, 0.3450]], 0.923),
   /* 21 Kamm face, y 0.265 to 0.887 */
-  [KAMM, [[0.2650, 0.4000], [0.4000, 0.4050], [0.5400, 0.3950], [0.6200, 0.3850],
-          [0.6843, 0.3700], [0.7486, 0.3520], [0.8290, 0.3280], [0.8773, 0.3080]], 0.887],
+  tl(KAMM, [[0.2650, 0.4000], [0.4000, 0.4050], [0.5400, 0.3950], [0.6200, 0.3850],
+          [0.6843, 0.3700], [0.7486, 0.3520], [0.8290, 0.3280], [0.8773, 0.3080]], 0.887),
 ];
 
 const RINGS = STATIONS.map(([x, half, crownY]) => ring(x, half, crownY));
@@ -1307,16 +1498,24 @@ const COWL = 5;      /* ring index where the glass band starts, x 1.250 */
 const DECK = 12;     /* ring index where the glass ends, x -1.120 */
 const LAST = STATIONS.length - 1;
 
-/* THE GLASS IS PROUD IN Y AND INSET IN Z, and that is a correction rather
-   than a style. An earlier draft pushed the band 1.2 percent outboard as
-   well as 8 mm up, which put its widest vertex at |z| 0.6072 and made the
-   BUILT width of this car 1.2144 m against a contract that binds 1.20 m
-   BUILT. The band is now inset 0.4 percent, so its widest vertex is 0.5976,
-   2.4 mm inside the loft, the two surfaces still cannot z-fight, and the
-   widest thing on this car above y 0.6200 is the painted flank at exactly
-   0.6000. */
+/* THE GLASS IS FLUSH WITH THE LOFT, GEN 16. Every body from Gen 11 cut the
+   canopy band from the loft stations and stood it 8 mm proud in y, and the
+   8 mm was skin detail nobody had priced: in the frontal projection the band
+   is the car's whole crown from belt seam to belt seam, 1.12 m of it, and an
+   8 mm step across 1.12 m is 0.009 m2 of area (design/gen16.md section 4,
+   measured 1.6064 to 1.5975 on wheels-15 with nothing else moved). So the
+   band sits ON the stations now: its edge meets the flank panels at the
+   seam column, where there is no painted skin under it (the shell draws the
+   flanks outboard of the seam and nothing between RB and RC inboard of it),
+   so nothing can z-fight; the cage bows' crowns touch the loft from below
+   at 1.2540 and the glass bonds to them; the roof rails at |z| 0.300 clear
+   the loft by the same 6 mm they always did. The z inset of 0.4 percent is
+   body-11's correction and stays: the widest glass vertex is 0.5576 inside
+   a painted flank at exactly 0.5600. The cowl break the finder reads comes
+   from 15.1 to 13.0 degrees because the glass no longer stands proud of
+   the cowl ring; both are under the 15 the method scores at zero. */
 const glassBand = RINGS.slice(COWL, DECK + 1).map((r) =>
-  r.slice(SEAM, 2 * NPT + 1 - SEAM).map((p) => [p[0], p[1] + 0.008, p[2] * 0.996])
+  r.slice(SEAM, 2 * NPT + 1 - SEAM).map((p) => [p[0], p[1], p[2] * 0.996])
 );
 
 /* ── The crisp shell: one master grid ──────────────────────────────────
@@ -1668,7 +1867,7 @@ function buildStructure(sys) {
     /* hinge pillar: the sill rail up to the A-pillar foot, coming inboard
        fast because the loft is at |z| 0.6900 at y 0.560 and 0.6000 at 0.620 */
     [0.020, [[PAN_X - 0.020, 0.4625, 0.7016], [1.005, 0.5500, 0.6450],
-             [1.000, 0.6400, 0.5300], [0.99, 0.815, 0.4200]]],
+             [1.000, 0.6400, 0.5000], [0.99, 0.815, 0.4200]]],   /* Gen 15: the foot holds under the shoulder; the pillar's mid point 30 mm inboard for 40 mm of skin outside it at the new flank */
     [0.026, [[0.99, 0.815, 0.420], [0.90, 0.955, 0.402], [0.86, 1.075, 0.372],
              [0.80, 1.157, 0.340], [0.55, 1.225, 0.300]]],          /* A-pillar */
     [0.021, [[0.55, 1.225, 0.300], [-1.100, 1.227, 0.300]]],        /* roof rail */
@@ -1676,8 +1875,8 @@ function buildStructure(sys) {
              [-1.560, 0.923, 0.360], [-1.700, 0.700, 0.400]]],      /* C-pillar */
     /* rear leg: the sill rail up to the C-pillar's foot on the rear casting */
     [0.020, [[-(PAN_X - 0.020), 0.4625, 0.7016], [-1.015, 0.5500, 0.6450],
-             [-1.022, 0.6400, 0.5300], [-1.100, 0.7200, 0.4800],
-             [-1.700, 0.7000, 0.4000]]],
+             [-1.022, 0.6400, 0.5000], [-1.100, 0.7200, 0.4700],
+             [-1.700, 0.7000, 0.4000]]],   /* Gen 15: the foot holds (a draft at 0.615 met autonomy's compute coolant hose by 7.3 mm); the mid point inboard with the skin */
   ];
   for (const [r, m] of members) cageSide.add(lib.tube(m, r, M.darkSteel));
   cageSide.add(acbox(0.70, 0.016, 0.015, 0.003, M.plastic, -0.35, 1.205, 0.2825));
@@ -1801,8 +2000,8 @@ function buildShell(sys) {
        wheelhouse the tire used to end the car with. The inner edge stops
        at 0.6600, 12.5 mm inboard of the tire face, leaving the flank gap
        open as the wheelhouse vent. */
-    [-1.050, 0.7800, 0.4600], [-1.130, 0.8400, SPAT_TOP], [-1.440, 0.8400, SPAT_TOP],
-    [-1.780, 0.8400, SPAT_TOP], [-1.900, 0.8000, SPAT_TOP - 0.020], [-2.060, 0.6600, SPAT_TOP - 0.060],
+    [-1.050, 0.7800, 0.4600], [-1.130, 0.8200, SPAT_TOP], [-1.440, 0.8200, SPAT_TOP],
+    [-1.780, 0.8200, SPAT_TOP], [-1.900, 0.7800, SPAT_TOP - 0.020], [-2.060, 0.6600, SPAT_TOP - 0.060],
   ];
   for (const side of [-1, 1]) {
     const rows = SPAT.map(([x, hz, top]) => [
@@ -1812,7 +2011,7 @@ function buildShell(sys) {
     spats.add(wall);
     /* the bottom edge carries a 12 mm inward rub lip, the sacrificial edge
        the panel's own fail list prices */
-    spats.add(acbox(0.90, 0.003, 0.012, 0.0015, M.carbon, -1.50, 0.1815, side * 0.828));
+    spats.add(acbox(0.90, 0.003, 0.012, 0.0015, M.carbon, -1.50, 0.1815, side * 0.808));
   }
   sys.add(spats);
 
@@ -1858,10 +2057,34 @@ function buildShell(sys) {
   const bayFloor = lib.cbox(BAY.x1 - BAY.x0, 0.006, 2 * BAY.hz, 0.004, M.carbon);
   bayFloor.position.set((BAY.x0 + BAY.x1) / 2, BAY.y - 0.003, 0);
   bay.add(bayFloor);
+  /* THE WALLS FOLLOW THE CEILING. Gen 16 shrinks the tail's upper section
+     from x -2.300 aft (design/gen16.md section 4), and the skin over the
+     bay's last 200 mm comes down to y 0.907 at the aft end over walls that
+     stood to 0.925. So the wall is two pieces: the full 150 mm from the
+     bulkhead to x -2.300, where the skin has not moved, and a tapered panel
+     behind it whose top edge is read off the loft at |z| 0.330 less 10 mm
+     of clearance, station by station, so nothing of the liner can stand
+     in the paint. The floor, the bulkhead and the rings do not move. */
+  const WALL_X = -2.300;
   for (const sgn of [-1, 1]) {
-    const wall = lib.cbox(BAY.x1 - BAY.x0, BAY.h, 0.004, 0.003, M.carbon);
-    wall.position.set((BAY.x0 + BAY.x1) / 2, BAY.y + BAY.h / 2, sgn * (BAY.hz - 0.002));
+    const wall = lib.cbox(BAY.x1 - WALL_X, BAY.h, 0.004, 0.003, M.carbon);
+    wall.position.set((WALL_X + BAY.x1) / 2, BAY.y + BAY.h / 2, sgn * (BAY.hz - 0.002));
     bay.add(wall);
+    const NS = 8, wpts = [];
+    for (let i = 0; i <= NS; i++) {
+      const x = WALL_X + (BAY.x0 - WALL_X) * i / NS;
+      const top = Math.min(BAY.y + BAY.h, surfaceY(x, BAY.hz) - 0.010);
+      wpts.push([x, top]);
+    }
+    const ws = new THREE.Shape();
+    ws.moveTo(wpts[0][0], BAY.y);
+    for (const [x, top] of wpts) ws.lineTo(x, top);
+    ws.lineTo(wpts[NS][0], BAY.y);
+    ws.closePath();
+    const wg = new THREE.ExtrudeGeometry(ws, { depth: 0.004, bevelEnabled: false, steps: 1 });
+    const taper = lib.mesh(wg, M.carbon);
+    taper.position.set(0, 0, sgn * (BAY.hz - 0.002) - 0.002);
+    bay.add(taper);
   }
   const bulk = lib.cbox(0.004, BAY.h, 2 * BAY.hz, 0.003, M.carbon);
   bulk.position.set(BAY.x1 - 0.002, BAY.y + BAY.h / 2, 0);
@@ -1889,7 +2112,7 @@ function buildShell(sys) {
   lid.add(panel(LIDROW, LIDCOL));
   sys.add(lid);
 
-  /* ── glass canopy band, 8 mm proud of the same stations ── */
+  /* ── glass canopy band, ON the same stations (Gen 16: flush) ── */
   /* THE BAND PARTS AT THE DECK SHOULDER, so the tumblehome can travel with
      the door and the roof can stay bonded to the cage.
 
@@ -2050,9 +2273,26 @@ function buildShell(sys) {
   /* front closeout held at |z| 0.620 rather than taken out to the pack's own
      0.780: the front tires occupy |z| 0.6725 to 0.8075 from x 1.1835 to
      1.8050 and a wider plate would be inside them for half a meter */
-  const closeF = lib.plate(0.78, 1.24, 0.012, 0.04, M.carbon);
+  /* Gen 15: THE CLOSEOUT IS NOTCHED AT THE FRONT WHEEL STATION. body-13 held
+     this plate at |z| 0.620 for a tire at 0.6725; wheels-14's nose cap, which
+     rides the knuckle and runs to y 0.080, swings to |z| 0.603 at 14 degrees
+     of lock and tools/envelope.sh read 1.7 mm between its bottom inboard
+     corner and this plate's edge. So over the cap's swept x, 1.55 to 1.85,
+     the plate stops at 0.565 (a first notch to 0.580 still read 5.7 mm at
+     full lock plus full rebound; at 0.565 the sweep reads 20) and keeps
+     0.620 fore and aft of it; the strip it gives up is outside the
+     underbody roughness window, which runs between the axles. */
+  const closeF = lib.plate(0.78, 1.09, 0.012, 0.04, M.carbon);   /* Gen 17: |z| 0.545, 20 mm in with the pant (was 1.13: 0.565) */
   closeF.position.set(1.71, 0.10, 0);
   floorPart.add(lib.shell(closeF));
+  for (const s of [-1, 1]) {
+    const fwd = lib.plate(0.25, 0.055, 0.012, 0.01, M.carbon);
+    fwd.position.set(1.975, 0.10, s * 0.5925);
+    floorPart.add(lib.shell(fwd));
+    const aft = lib.plate(0.23, 0.055, 0.012, 0.01, M.carbon);
+    aft.position.set(1.435, 0.10, s * 0.5925);
+    floorPart.add(lib.shell(aft));
+  }
   const closeR = lib.plate(0.60, 1.24, 0.012, 0.04, M.carbon);
   closeR.position.set(-1.600, 0.10, 0);
   floorPart.add(lib.shell(closeR));
@@ -2095,19 +2335,26 @@ function buildShell(sys) {
   }
   sys.add(lbF);
   const lbR = lib.part('lightbands', [-1.15, 0.1, 0]);
-  lbR.add(acbox(0.014, 0.05, 0.70, 0.004, M.lampRed, KAMM + 0.0040, 0.760, 0));
+  /* Gen 16: 0.48 m, because the Kamm face at y 0.760 is 0.52 m wide now */
+  lbR.add(acbox(0.014, 0.05, 0.48, 0.004, M.lampRed, KAMM + 0.0040, 0.760, 0));
   sys.add(lbR);
 
   /* ── Kamm spoiler, drawn deployed on a base 28 percent smaller ── */
   const spoiler = lib.part('kamm-flap', [-0.9, 0.55, 0]);
-  const BX = KAMM + 0.155, BY = 0.935;
-  spoiler.add(acbox(0.16, 0.012, 0.70, 0.003, M.carbon, BX, BY, 0, 0.16));
+  /* Gen 16: the deck under the blade is the shrunken tail's, so the blade's
+     height is read off the loft rather than typed (62 mm proud of the crown
+     at its station, the published full-deploy travel), and the span comes
+     in from 0.70 to 0.56 m because the Kamm face's top is 0.48 m wide now
+     and a blade wider than the deck it stands on is a blade in the wake
+     beside the car. The struts move in with it. */
+  const BX = KAMM + 0.155, BY = surfaceY(BX, 0) + 0.062;
+  spoiler.add(acbox(0.16, 0.012, 0.56, 0.003, M.carbon, BX, BY, 0, 0.16));
   for (const s of [-1, 1]) {
-    const sx = BX + 0.02, sz = s * 0.24;
+    const sx = BX + 0.02, sz = s * 0.19;
     const deck = surfaceY(sx, Math.abs(sz));
     spoiler.add(acbox(0.016, BY - deck + 0.03, 0.05, 0.004, M.darkSteel, sx,
       (BY + deck - 0.03) / 2 + 0.005, sz));
-    spoiler.add(acbox(0.05, 0.035, 0.06, 0.006, M.plasticLt, BX + 0.08, deck + 0.02, s * 0.17));
+    spoiler.add(acbox(0.05, 0.035, 0.06, 0.006, M.plasticLt, BX + 0.08, deck + 0.02, s * 0.13));
   }
   sys.add(spoiler);
 
