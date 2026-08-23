@@ -2043,7 +2043,8 @@ const PAINTS = [
    wheels stand out in silver. Davis's pick, 2026-08-22, settled after three
    tries that day (alpine white under brass at 80; this blue under alpine at
    20; under brass at 77; and this). The defaults below are what a first
-   visit opens to; a stored preference wins over them. */
+   visit opens to; a stored preference wins over them, but see the stamp
+   below: a NEW default reaches every browser once. */
 const PAINT_DEFAULT = 'ice';
 const PEARL_DEFAULT = 'alpine';
 const PEARL_AMT_DEFAULT = 0.25;
@@ -2073,6 +2074,30 @@ const SOLID_METAL = 0.25;
    metallic keeps whatever common.js gave the material and gives the bronze
    that white under a brass pearl actually makes on an 0.88 surface. The
    toggle reaches the other one in a click. */
+/* A NEW DEFAULT REACHES EVERY BROWSER ONCE. Davis, 2026-08-23: the default
+   above was deployed and his own browser went on showing ice under brass at
+   38, because a stored finish wins over the default and, until this commit,
+   the two restore calls at the bottom of this section wrote the finish back
+   into storage on every load: a visit under any earlier default stamped that
+   default in as if it had been chosen, and a browser that tried a swatch once
+   kept it forever. So the default's own name is kept in storage, and when the
+   stored name is not the current one the stored finish is dropped and the
+   default applies, once; from then on a choice made in the finish panel
+   sticks across visits as before. Changing a default constant above changes
+   the name, so every browser resets once per new default, which is what a
+   deploy of a new default should have done all along. The solid/metallic
+   mode goes with the coats, since the finish is the three together. The
+   per-panel overrides are left alone: they are only ever written by a hand
+   on the control, and the stamp is read before ev-finish is restored, just
+   below, so the drop lands before the read. */
+const PAINT_STAMP = `${PAINT_DEFAULT}/${PEARL_DEFAULT}/${PEARL_AMT_DEFAULT}`;
+try {
+  if (localStorage.getItem('ev-paint-default') !== PAINT_STAMP) {
+    for (const k of ['ev-paint', 'ev-finish', 'ev-pearl', 'ev-pearl-amt']) localStorage.removeItem(k);
+    localStorage.setItem('ev-paint-default', PAINT_STAMP);
+  }
+} catch {}
+
 let finishMode = 'metallic';     // auto | solid | metallic
 try {
   const f = localStorage.getItem('ev-finish');
@@ -2173,20 +2198,24 @@ function refreshPaintBtn() {
                             : ` · ${n} panels in their own colors`);
 }
 
-function setPaint(id) {
+/* `save` is false only for the restore at load. A finish is stored when a
+   hand chooses it, never because the page opened: see the stamp note. */
+function setPaint(id, save = true) {
   const p = paintById(id) || PAINTS[0];
   paintId = p.id;
   viewer.setPaint(p.hex, metalOf(p));
   refreshPaintBtn();
+  if (!save) return;
   try { localStorage.setItem('ev-paint', p.id); } catch {}
 }
 
-function setPearl(id, amt) {
+function setPearl(id, amt, save = true) {
   pearlId = id;
   if (amt != null) pearlAmt = amt;
   const p = pearlId ? paintById(pearlId) : null;
   viewer.setPearl(p ? p.hex : null, pearlAmt);
   refreshPaintBtn();
+  if (!save) return;
   try {
     /* "none" is written, not removed: see the restore note */
     localStorage.setItem('ev-pearl', p ? p.id : 'none');
@@ -2350,8 +2379,8 @@ function buildFinishMenu() {
   });
   $('#pPaint').append(el('small', null, 'finish'), paintBtn);
 
-  setPaint(paintId);
-  setPearl(pearlId, pearlAmt);
+  setPaint(paintId, false);
+  setPearl(pearlId, pearlAmt, false);
   /* restore the overrides AFTER the coats, so a panel that carries one is not
      briefly repainted to the body color and back. setPartPaint records the
      override whether or not that system is built yet, and indexSystem reads
