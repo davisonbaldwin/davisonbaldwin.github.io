@@ -242,6 +242,7 @@ export const METRICS = {
   /* hv-15 carries hv-11's 820 W lump: the port and the front drops moved
      40 mm inboard with the flank and nothing electrical changed. */
   'hv-15': { auxW: 820 },
+  'hv-18': { auxW: 820 },       /* Gen 18: hv-15 with the port forward; the 820 W lump carries */
   /* thermal-15 re-folds the recovery core 40 mm shallower in z; the same
      1.67 m2 of membrane, nothing electrical changed: -306.5 W carries. */
   'thermal-15': { auxDelta: -306.5 },
@@ -278,6 +279,7 @@ export const METRICS = {
   'drivetrain-17': { driveEff: 0.958 },
   'wheels-17': { crr: 0.0038 },
   'autonomy-17': { auxDelta: -75 },
+  'autonomy-18': { auxDelta: -75 },   /* Gen 18: a fork of autonomy-17, its row carried (the drivetrain-17 lesson) */
   'thermal-17': { auxDelta: -306.5 },
 };
 
@@ -415,6 +417,7 @@ export const AREA = {
      against 1.5975; one axle alone reads larger (design/gen17.md section 4).
      Every cell measured by tools/area.sh's own integrator. */
   'body-17':     { 'wheels': 1.6888, 'wheels-2': 1.6232, 'wheels-3': 1.6221, 'wheels-6': 1.6278, 'wheels-7': 1.6475, 'wheels-9': 1.5671, 'wheels-10': 1.5565, 'wheels-11': 1.5565, 'wheels-13': 1.5908, 'wheels-14': 1.5879, 'wheels-15': 1.5879, 'wheels-17': 1.5805 },
+  'body-18':     { 'wheels': 1.6845, 'wheels-2': 1.6251, 'wheels-3': 1.6252, 'wheels-6': 1.6248, 'wheels-7': 1.6390, 'wheels-9': 1.5465, 'wheels-10': 1.5359, 'wheels-11': 1.5359, 'wheels-13': 1.5702, 'wheels-14': 1.5673, 'wheels-15': 1.5673, 'wheels-17': 1.5580 },
 };
 
 /* The body is whichever active id has a row, the wheels whichever has a cell
@@ -556,6 +559,7 @@ export const CD = {
      thinnest margin on the ladder, said so in design/gen17.md. Every cell
      measured by tools/aero.sh's buildup. */
   'body-17':       { 'wheels': 0.2615, 'wheels-2': 0.2317, 'wheels-3': 0.2317, 'wheels-6': 0.2299, 'wheels-7': 0.1927, 'wheels-9': 0.1903, 'wheels-10': 0.1814, 'wheels-11': 0.1814, 'wheels-13': 0.1302, 'wheels-14': 0.1106, 'wheels-15': 0.1107, 'wheels-17': 0.1100 },
+  'body-18':       { 'wheels': 0.2549, 'wheels-2': 0.2239, 'wheels-3': 0.2238, 'wheels-6': 0.2229, 'wheels-7': 0.1862, 'wheels-9': 0.1848, 'wheels-10': 0.1757, 'wheels-11': 0.1757, 'wheels-13': 0.1239, 'wheels-14': 0.1038, 'wheels-15': 0.1039, 'wheels-17': 0.1034 },
 };
 
 /* One lookup, one loud fallback, exactly as areaFor above and for the same

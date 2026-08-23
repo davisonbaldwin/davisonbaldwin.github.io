@@ -80,7 +80,7 @@ export const VIEWS = {
              paragraphs are actually about.
    `cite`    the document in design/ the prose comes from. Printed, because a
              claim about engineering that cannot be traced is decoration.
-   `xray`    fade the shell for this stop. Five of the nineteen ask for it,
+   `xray`    fade the shell for this stop. Five of the twenty ask for it,
              and they are the five whose argument is INSIDE the car: the
              nervous system, the 190 kWh pack, the tandem package, the
              corner and the track. On any
@@ -97,13 +97,13 @@ export const STOPS = [
      title explains it. */
   {
     id: 'open',
-    title: 'Seventeen rungs',
+    title: 'Eighteen rungs',
     theme: 'what this is',
-    gen: 'gen17', against: null, view: 'hero',
+    gen: 'gen18', against: null, view: 'hero',
     cite: 'design/app-brief.md',
     paras: [
-      'This model is a ladder. Seventeen generations of one car, each strictly better than the last, with the engineering argument for every step written into the parts themselves. The car on the stage is the seventeenth, the top rung.',
-      'The tour walks it end to end, from the first rung back up to this one. At each rung the car becomes that generation, the slots that changed stay lit while the ones that carry fade back, and every figure below is computed live from the same model the readout reads. Nothing here is typed in.',
+      'This is a place to learn how an electric car works, part by part: every component on the stage can be clicked, and each one explains what it does, why it is designed the way it is, and how it fails. The objective behind the whole model is the most efficient electric car that can be drawn, with no budget and no factory in the way, only physics and engineering.',
+      'So the model is a ladder. Eighteen generations of one car, each strictly better than the last on every measured column, with the argument for every step written into the parts themselves; the car on the stage is the eighteenth, the top rung. The tour walks it from the first rung back up to this one. At each rung the car becomes that generation, the slots that changed stay lit while the ones that carry fade back, and every figure below is computed live from the same model the readout reads. Nothing here is typed in.',
     ],
   },
 
@@ -115,7 +115,7 @@ export const STOPS = [
     cite: 'design/gen3.md',
     paras: [
       'Gen 1 is deliberately ordinary: an NMC 4680 pack, a radial permanent-magnet motor, a stamped and cast body. Nothing about it is clever, and that is its job. It is the reference every rung after it is measured against, so it has to be honest rather than good.',
-      '{range} at {rate}. Those two numbers are what the next sixteen generations move.',
+      '{range} at {rate}. Those two numbers are what the next seventeen generations move.',
     ],
   },
 
@@ -315,14 +315,26 @@ export const STOPS = [
   },
 
   {
+    id: 'gen18',
+    title: 'The single seat',
+    theme: 'Gen 18',
+    gen: 'gen18', against: 'gen17', view: 'rearQ', read: 'body-18',
+    cite: 'design/gen18.md',
+    paras: [
+      'The retrospective after Gen 17 wrote that the package was spent: no area lever left that did not reopen the cabin, the pack or the sill, and no coefficient lever left on the skin. It was true of a two-seat car. The lever it could not see was the second seat. A tandem rear head at x -0.63 held the roof flat at 1.257 for two meters behind the driver; with one occupant the roof descends from behind the single head at the limit the drag method has always used, eased where the lower body has its own steps, and the Kamm face\'s upper section closes from 0.347 to 0.238 m2. The belt seam comes in because a 0.52 m pair of shoulders needs nothing at 0.55 above the belt; the rear seat, its belts, its repeater and its liner go, the charge port and the roof instruments move off a flank and a roof that are no longer there, and the space behind the seat becomes a well the width of the cabin under a hatch.',
+      'The arithmetic was wrong twice before the march was run and the brief says where: the upper base floors near 0.23 because the pack\'s sidewall band is not the cabin\'s to move, and a sloping roof has more skin than a flat one, so the step is {dRange}, {dRate}, {dMass} on {slots}, not the 175 miles the estimate promised. Every column on Gen 17 and the walk clean to 15.0 degrees. The cost, stated as the rule requires: the car carries one person. What it hands Gen 19 is a tail that is mostly sidewall at the face, which is the boat tail\'s to close.',
+    ],
+  },
+
+  {
     id: 'close',
     title: 'What it cost, and what is open',
     theme: 'the end of the ladder',
-    gen: 'gen17', against: 'gen1', view: 'hero', read: 'interior-15',
-    cite: 'design/retro-gen17.md',
+    gen: 'gen18', against: 'gen1', view: 'hero', read: 'interior-18',
+    cite: 'design/gen18.md',
     paras: [
       'End to end: {dRange} and {dRate} over the reference car, on {slots}.',
-      'It is not finished, and the model says where. Every rung from Gen 13 on has improved every column against the rung below, and the last five did it with no change to the method that prices them; the seventeenth is the lightest car on the ladder and the best on all five. What is open is named rather than hidden: the air handler that stands 30 mm into the front occupant\'s thigh has been carried through six retrospectives; the regenerative braking constant is a cycle assumption nobody has booked per configuration; 202 W of low-voltage load has no owner; and the regen question and the 202 W remain his to call. The track was the last package lever, and it is spent.',
+      'It is not finished, and the model says where. Every rung from Gen 13 on has improved every column against the rung below, and the last six did it with no change to the method that prices them; the eighteenth is the lightest car on the ladder and the best on all five, and it carries one person. What is open is named rather than hidden: the air handler that stands 30 mm into the occupant\'s thigh has been carried through seven retrospectives; the regenerative braking constant is a cycle assumption nobody has booked per configuration; 202 W of low-voltage load has no owner; and the hood at 0.94 m is what caps the roof over the head. The plan after this rung is written: the boat tail, the wheels inside the body, three wheels.',
       'The rule that makes this a ladder rather than a list: a generation that does not correct or build on a specific lesson does not ship, and a number that cannot be traced to a document in design/ is decoration. Every figure in this tour is computed on arrival from the same model the readout uses, and every stop cites the document its argument comes from.',
     ],
   },
