@@ -788,6 +788,25 @@ export function createViewer(canvas, onPick) {
   const sph = new THREE.Spherical();
   sph.setFromVector3(new THREE.Vector3(HOME[0], HOME[1], HOME[2]).sub(target));
 
+  /* THE LENS IS 34 DEGREES TALL AND EVERY CAMERA STATION WAS AUTHORED ON A
+     LANDSCAPE WINDOW, where the horizontal field is the wider one. On a phone
+     held upright the horizontal field is the narrow one, 16 degrees at 375 by
+     812 against 34, and a five meter car framed to sit inside 34 overran the
+     width of the screen: Davis, 2026-08-23, "the car was zoomed in and looked
+     strange on my phone". So every AUTHORED radius (the home view, the tour's
+     stations, a framed part) is multiplied by the portrait factor: 1 on any
+     window at least as wide as it is tall, 1 / aspect below that, which gives
+     a narrow window across its width exactly the fit a square one has across
+     its height. The reader's own zoom is never touched: the wheel, a pinch and
+     the explode pull-back all mark the radius as the reader's, and only an
+     authored flight takes it back. On a rotation the last authored radius is
+     re-fitted to the new aspect, so a phone turned on its side does not keep
+     the upright distance. */
+  let portraitK = 1;
+  let authoredR = sph.radius;          // the last authored radius, before the factor
+  let readerZoom = false;              // the reader has zoomed since the last authored flight
+  const portraitFactor = () => (camera.aspect > 0 && camera.aspect < 1 ? 1 / camera.aspect : 1);
+
   let fly = null;
   const applyCam = () => {
     camera.position.setFromSpherical(sph).add(target);
@@ -818,6 +837,9 @@ export function createViewer(canvas, onPick) {
   function flyTo(pos, tgt, ms = 1050) {
     const toT = tgt.clone();
     const toS = new THREE.Spherical().setFromVector3(pos.clone().sub(toT));
+    /* an authored radius: remember it unscaled, and fit it to the window */
+    authoredR = toS.radius; readerZoom = false;
+    toS.radius = Math.min(MAX_R, toS.radius * portraitK);
     while (toS.theta - sph.theta > Math.PI) toS.theta -= Math.PI * 2;
     while (toS.theta - sph.theta < -Math.PI) toS.theta += Math.PI * 2;
     if (REDUCED) {
@@ -1032,6 +1054,7 @@ export function createViewer(canvas, onPick) {
     fly = null;
     idleT = 0;
     sph.radius = Math.max(MIN_R, Math.min(MAX_R, sph.radius * Math.pow(1.0016, e.deltaY)));
+    readerZoom = true;
     applyCam();
   }, { passive: false });
 
@@ -1058,6 +1081,7 @@ export function createViewer(canvas, onPick) {
       const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
                            e.touches[0].clientY - e.touches[1].clientY);
       sph.radius = Math.max(MIN_R, Math.min(MAX_R, sph.radius * (pinch / d)));
+      readerZoom = true;
       pinch = d;
       const mx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
       const my = (e.touches[0].clientY + e.touches[1].clientY) / 2;
@@ -1670,6 +1694,7 @@ export function createViewer(canvas, onPick) {
     explodeTarget = v;
     if (!selected) {
       sph.radius = Math.max(MIN_R, Math.min(MAX_R, sph.radius * k));
+      if (k !== 1) readerZoom = true;
       target.y = 0.55 + v * 1.35;
       applyCam();
     }
@@ -1960,6 +1985,14 @@ export function createViewer(canvas, onPick) {
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
+      /* the portrait factor follows the aspect, and an authored radius the
+         reader has not touched is re-fitted to it: the first real size after
+         the boot, and a phone rotated since the last flight */
+      const k = portraitFactor();
+      if (k !== portraitK) {
+        portraitK = k;
+        if (!readerZoom && !fly) { sph.radius = Math.max(MIN_R, Math.min(MAX_R, authoredR * portraitK)); applyCam(); }
+      }
       /* the cursor stayed put, so re-aim it at the canvas that moved under
          it before asking for the recompute */
       if (hasPointer) aimPointer();
@@ -2115,6 +2148,9 @@ export function createViewer(canvas, onPick) {
     },
     step: (dt = 0.016) => update(dt),
     view: (pos, tgt, ms = 900) => flyTo(new THREE.Vector3(...pos), new THREE.Vector3(...tgt), ms),
+    /* the portrait factor the authored radii are scaled by, for anything
+       outside that computes a world length from an authored distance */
+    fitFactor: () => portraitK,
     /* An arbitrary world point in CSS pixels, for anything that has to draw
        ON the scene without being in it. labelFor below answers the same
        question for a part; this one takes coordinates, which is what a

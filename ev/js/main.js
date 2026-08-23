@@ -1818,7 +1818,10 @@ function tourAim(v) {
      that would fly the camera into the floor. No measurement, no correction:
      the stop's authored aim is the honest fallback. */
   if (!(h > 0) || !(bar > 0) || bar > h) return v.tgt;
-  const dist = Math.hypot(v.pos[0] - v.tgt[0], v.pos[1] - v.tgt[1], v.pos[2] - v.tgt[2]);
+  /* the authored distance, times the viewer's portrait factor: on a phone held
+     upright the camera stands further back than the station says, and the
+     world height it sees grows with it */
+  const dist = Math.hypot(v.pos[0] - v.tgt[0], v.pos[1] - v.tgt[1], v.pos[2] - v.tgt[2]) * (viewer.fitFactor ? viewer.fitFactor() : 1);
   const worldH = 2 * dist * Math.tan((34 * Math.PI / 180) / 2);
   return [v.tgt[0], v.tgt[1] - worldH * (bar / h) * 0.5, v.tgt[2]];
 }
@@ -3325,7 +3328,18 @@ function setEffHidden(hidden) {
   try { localStorage.setItem('ev-eff-hidden', hidden ? '1' : '0'); } catch {}
 }
 effToggle.onclick = () => setEffHidden(!document.body.classList.contains('eff-hidden'));
-/* open on every load, see the rail above */
+/* open on every load, see the rail above. EXCEPT ON A PHONE. Davis,
+   2026-08-23, on his: "the two windows on the side and the car was zoomed in
+   and looked strange". Under 640 px the two plates cannot stand beside the
+   car, they stand on it: the rail and the readout shared one column over the
+   whole stage and the car was behind both. So a phone opens on the car, both
+   plates slid out, and the two latches (taller there, see the coarse-pointer
+   block in css/style.css) bring either back; the desktop rule is unchanged.
+   Read once at boot, which is the same moment the desktop rule applies. A
+   phone on its side is a phone too: 812 by 375 leaves 300 px of car between
+   two 248 px plates, so the height clause catches it. */
+const PHONE = matchMedia('(max-width: 640px), (max-height: 500px)').matches;
+if (PHONE) { setRailHidden(true); setEffHidden(true); }
 
 /* the slider's track fills to the thumb, so the control reads its own value
    at a glance the way a gauge does */

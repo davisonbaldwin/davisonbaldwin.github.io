@@ -2270,6 +2270,19 @@ body.tour #hint { display: none; }
      rather than being read through it */
   #panel.on ~ #tour { display: none; }
   body.tour #rail { max-height: min(calc(100vh - var(--barh) - 24px), 40vh); }
+  /* THE TOUR PLATE LEAVES THE CAR ITS HALF OF A PHONE. Davis, 2026-08-23: the
+     first stop's two paragraphs made a 492 px plate on an 812 px phone, and
+     with a 111 px bar above it the car had 200 px of window to stand in. The
+     plate is capped at half the window here and its text scrolls inside it;
+     the head and the controls stay where they are. The camera's own portrait
+     fit (js/viewer.js, portraitK) is the other half of the same report. */
+  #tour { max-height: 50vh; }
+  .t-body { overflow-y: auto; min-height: 0; -webkit-overflow-scrolling: touch; }
+  /* twenty marks at 17 px each wrapped the head to a third row; at 11 px the
+     scrubber is one row beside the theme and the x. Still 11 px of target,
+     and the arrows below are the way a thumb walks the tour anyway. */
+  .t-mark { width: 11px; }
+  .t-marks { gap: 2px; }
 
   /* THE SECTION STRIP WRAPS RATHER THAN SHRINKS. Trimmed to fit one row on
      a 375 px phone it still measured 410, and the parts that would have had
@@ -2499,6 +2512,15 @@ body.eff-hidden #eff { visibility: hidden; transition: transform 240ms var(--eas
   inset: -6px -6px -6px 0;
 }
 #effToggle::before { inset: -6px 0 -6px -6px; }
+/* ON A TOUCH SCREEN THE LATCHES ARE THE WAY THE PLATES COME BACK, because a
+   phone opens with both slid out (js/main.js, PHONE). An 18 by 32 glyph with
+   a 6 px halo is a mouse target; here each latch is 24 by 48 and reads as a
+   tab, and the halo stays. The readout's latch moves up off the bottom edge
+   so a thumb on the home indicator does not find it first. */
+@media (hover: none) and (pointer: coarse) {
+  #railToggle, #effToggle { width: 24px; height: 48px; font-size: 15px; color: var(--n80); background: var(--plate-hi); }
+  #effToggle { bottom: 24px; }
+}
 
 /* 4. Two pixels each, which is what it takes to reach 24 and no more than
    the 4 px grid allows. */
@@ -2553,8 +2575,18 @@ body.eff-hidden #eff { visibility: hidden; transition: transform 240ms var(--eas
    cheapest 160 px on the bar: the groups are already separated by hairlines
    and the controls read as what they are. Measured after this block the
    intrinsic width is 574 px against 785 before it, which clears iPad
-   portrait at 768 with 0 px of overflow and every desktop window. */
-@media (max-width: 820px) {
+   portrait at 768 with 0 px of overflow and every desktop window.
+
+   RE-MEASURED 2026-08-23, because the paint control, the DRIVE and HOME
+   switches and a wider rung dropdown joined the bar after those numbers were
+   taken: the untrimmed bar is 1,268 px and fits only from 1,280 up, the
+   1180 trim leaves 1,159, and this trim leaves 899. Between 900 and 1,279 px
+   (a laptop window beside another, an iPad either way up) the view switches
+   were clipped off the right edge. So the caption trim now starts at 1,279,
+   and the bar wraps at its break below 940 (the block after this one), which
+   is where even the trimmed bar no longer fits (940, measured: see that
+   block). Nothing downstream counts rows: every plate hangs off --barh. */
+@media (max-width: 1279px) {
   .grp > small { display: none; }
   .brand { padding: 0 12px; }
   .grp { gap: 8px; padding: 0 10px; }
@@ -2573,6 +2605,19 @@ body.eff-hidden #eff { visibility: hidden; transition: transform 240ms var(--eas
    measures itself now, which is why none of the old row arithmetic is left
    in this block. */
 .brk { display: none; }
+/* 1, continued. THE BAR WRAPS AT ITS BREAK FROM 900 DOWN: brand and the
+   generation controls on the first row, explode, paint and the view switches
+   on the second. The trimmed bar measures 899 to 920 px across this range
+   (the 1180 trim is still in force above 900, and the bar filled a 920 px
+   window to the last pixel), so 940 is the width at which one row stops
+   being safe, and the wrap is the same one the 580 block below has always
+   made for phones; that block keeps what only a phone needs, the groups
+   themselves wrapping. */
+@media (max-width: 940px) {
+  #topbar { flex-wrap: wrap; }
+  .brk { display: block; flex-basis: 100%; height: 0; }
+  #pExp { border-left: none; }
+}
 @media (max-width: 580px) {
   /* THE GROUPS WRAP ONLY HERE. The bar wraps at every width, but a group
      inside it was one unbreakable block: #pGen with compare open is the
@@ -2672,4 +2717,7 @@ body.eff-hidden #eff { visibility: hidden; transition: transform 240ms var(--eas
   body.eff-hidden #rail { max-height: calc(100vh - var(--barh) - 24px); }
   /* 176 = the rail's 140 px floor and the same 36 px of gaps */
   #eff { max-height: max(120px, calc(100vh - var(--barh) - 176px)); }
+  /* and with the rail slid out, which is how a phone opens now, the readout
+     has the whole column: nothing above it to leave 176 px for */
+  body.rail-hidden #eff { max-height: calc(100vh - var(--barh) - 24px); }
 }

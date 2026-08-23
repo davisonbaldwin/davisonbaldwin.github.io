@@ -280,6 +280,7 @@ export const METRICS = {
   'wheels-17': { crr: 0.0038 },
   'autonomy-17': { auxDelta: -75 },
   'autonomy-18': { auxDelta: -75 },   /* Gen 18: a fork of autonomy-17, its row carried (the drivetrain-17 lesson) */
+  'autonomy-19': { auxDelta: -75 },   /* Gen 19: a fork of autonomy-18, its row carried (the same lesson) */
   'thermal-17': { auxDelta: -306.5 },
 };
 
@@ -418,6 +419,7 @@ export const AREA = {
      Every cell measured by tools/area.sh's own integrator. */
   'body-17':     { 'wheels': 1.6888, 'wheels-2': 1.6232, 'wheels-3': 1.6221, 'wheels-6': 1.6278, 'wheels-7': 1.6475, 'wheels-9': 1.5671, 'wheels-10': 1.5565, 'wheels-11': 1.5565, 'wheels-13': 1.5908, 'wheels-14': 1.5879, 'wheels-15': 1.5879, 'wheels-17': 1.5805 },
   'body-18':     { 'wheels': 1.6845, 'wheels-2': 1.6251, 'wheels-3': 1.6252, 'wheels-6': 1.6248, 'wheels-7': 1.6390, 'wheels-9': 1.5465, 'wheels-10': 1.5359, 'wheels-11': 1.5359, 'wheels-13': 1.5702, 'wheels-14': 1.5673, 'wheels-15': 1.5673, 'wheels-17': 1.5580 },
+  'body-19':     { 'wheels': 1.6835, 'wheels-2': 1.6241, 'wheels-3': 1.6242, 'wheels-6': 1.6237, 'wheels-7': 1.6379, 'wheels-9': 1.5454, 'wheels-10': 1.5348, 'wheels-11': 1.5348, 'wheels-13': 1.5691, 'wheels-14': 1.5663, 'wheels-15': 1.5663, 'wheels-17': 1.5570 },
 };
 
 /* The body is whichever active id has a row, the wheels whichever has a cell
@@ -513,7 +515,7 @@ function warnOnce(msg) {
    tools/area.js, and the loud fallback below is what tells you if you
    forget. */
 export const CD = {
-  'body':          { 'wheels': 0.2611, 'wheels-2': 0.2511, 'wheels-3': 0.2506, 'wheels-6': 0.2489, 'wheels-7': 0.2404, 'wheels-9': 0.2388, 'wheels-10': 0.2358, 'wheels-11': 0.2360, 'wheels-13': 0.2266, 'wheels-14': 0.2238, 'wheels-15': 0.2239, 'wheels-17': 0.2234 },
+  'body':          { 'wheels': 0.2611, 'wheels-2': 0.2511, 'wheels-3': 0.2506, 'wheels-6': 0.2489, 'wheels-7': 0.2404, 'wheels-9': 0.2388, 'wheels-10': 0.2358, 'wheels-11': 0.2360, 'wheels-13': 0.2266, 'wheels-14': 0.2238, 'wheels-15': 0.2238, 'wheels-17': 0.2234 },
   'body-aero':     { 'wheels': 0.1685, 'wheels-2': 0.1581, 'wheels-3': 0.1577, 'wheels-6': 0.1585, 'wheels-7': 0.1494, 'wheels-9': 0.1473, 'wheels-10': 0.1446, 'wheels-11': 0.1447, 'wheels-13': 0.1390, 'wheels-14': 0.1365, 'wheels-15': 0.1365, 'wheels-17': 0.1359 },
   'body-3':        { 'wheels': 0.1915, 'wheels-2': 0.1771, 'wheels-3': 0.1766, 'wheels-6': 0.1734, 'wheels-7': 0.1624, 'wheels-9': 0.1554, 'wheels-10': 0.1514, 'wheels-11': 0.1517, 'wheels-13': 0.1383, 'wheels-14': 0.1357, 'wheels-15': 0.1357, 'wheels-17': 0.1343 },
   'body-4':        { 'wheels': 0.1844, 'wheels-2': 0.1734, 'wheels-3': 0.1727, 'wheels-6': 0.1714, 'wheels-7': 0.1602, 'wheels-9': 0.1560, 'wheels-10': 0.1522, 'wheels-11': 0.1525, 'wheels-13': 0.1387, 'wheels-14': 0.1360, 'wheels-15': 0.1360, 'wheels-17': 0.1344 },
@@ -521,9 +523,9 @@ export const CD = {
   'body-7':        { 'wheels': 0.2026, 'wheels-2': 0.1917, 'wheels-3': 0.1912, 'wheels-6': 0.1922, 'wheels-7': 0.1783, 'wheels-9': 0.1848, 'wheels-10': 0.1821, 'wheels-11': 0.1821, 'wheels-13': 0.1717, 'wheels-14': 0.1688, 'wheels-15': 0.1688, 'wheels-17': 0.1683 },
   'body-8':        { 'wheels': 0.1708, 'wheels-2': 0.1598, 'wheels-3': 0.1599, 'wheels-6': 0.1613, 'wheels-7': 0.1503, 'wheels-9': 0.1502, 'wheels-10': 0.1476, 'wheels-11': 0.1476, 'wheels-13': 0.1370, 'wheels-14': 0.1347, 'wheels-15': 0.1347, 'wheels-17': 0.1337 },
   'body-9':        { 'wheels': 0.1792, 'wheels-2': 0.1645, 'wheels-3': 0.1646, 'wheels-6': 0.1660, 'wheels-7': 0.1546, 'wheels-9': 0.1546, 'wheels-10': 0.1509, 'wheels-11': 0.1519, 'wheels-13': 0.1410, 'wheels-14': 0.1386, 'wheels-15': 0.1386, 'wheels-17': 0.1376 },
-  'body-11':       { 'wheels': 0.3432, 'wheels-2': 0.3215, 'wheels-3': 0.3222, 'wheels-6': 0.3173, 'wheels-7': 0.2831, 'wheels-9': 0.2849, 'wheels-10': 0.2766, 'wheels-11': 0.2766, 'wheels-13': 0.2258, 'wheels-14': 0.2077, 'wheels-15': 0.2082, 'wheels-17': 0.2065 },
-  'body-12':       { 'wheels': 0.2504, 'wheels-2': 0.2232, 'wheels-3': 0.2232, 'wheels-6': 0.2212, 'wheels-7': 0.1910, 'wheels-9': 0.1869, 'wheels-10': 0.1788, 'wheels-11': 0.1788, 'wheels-13': 0.1319, 'wheels-14': 0.1142, 'wheels-15': 0.1144, 'wheels-17': 0.1141 },
-  'body-13':       { 'wheels': 0.2565, 'wheels-2': 0.2282, 'wheels-3': 0.2282, 'wheels-6': 0.2262, 'wheels-7': 0.1945, 'wheels-9': 0.1904, 'wheels-10': 0.1818, 'wheels-11': 0.1818, 'wheels-13': 0.1327, 'wheels-14': 0.1142, 'wheels-15': 0.1144, 'wheels-17': 0.1141 },
+  'body-11':       { 'wheels': 0.3432, 'wheels-2': 0.3215, 'wheels-3': 0.3222, 'wheels-6': 0.3173, 'wheels-7': 0.2831, 'wheels-9': 0.2849, 'wheels-10': 0.2766, 'wheels-11': 0.2766, 'wheels-13': 0.2258, 'wheels-14': 0.2077, 'wheels-15': 0.2081, 'wheels-17': 0.2065 },
+  'body-12':       { 'wheels': 0.2504, 'wheels-2': 0.2231, 'wheels-3': 0.2231, 'wheels-6': 0.2212, 'wheels-7': 0.1910, 'wheels-9': 0.1869, 'wheels-10': 0.1787, 'wheels-11': 0.1787, 'wheels-13': 0.1318, 'wheels-14': 0.1142, 'wheels-15': 0.1143, 'wheels-17': 0.1141 },
+  'body-13':       { 'wheels': 0.2565, 'wheels-2': 0.2282, 'wheels-3': 0.2282, 'wheels-6': 0.2261, 'wheels-7': 0.1945, 'wheels-9': 0.1904, 'wheels-10': 0.1818, 'wheels-11': 0.1818, 'wheels-13': 0.1327, 'wheels-14': 0.1142, 'wheels-15': 0.1143, 'wheels-17': 0.1141 },
   /* body-14 on wheels-14, Gen 14: the rear saddles take the rear pair from
      0.0880 to 0.0341 m2 and the redrawn front pants the front from 0.0370 to
      0.0214, the wheel term 0.0337 to 0.0152; the narrower greenhouse takes
@@ -533,7 +535,7 @@ export const CD = {
      greenhouse alone makes Cd worse while CdA improves, design/gen14.md
      section 4 row 2). design/retro-gen13.md section 3: no method revision
      on this rung. */
-  'body-14':       { 'wheels': 0.2594, 'wheels-2': 0.2309, 'wheels-3': 0.2309, 'wheels-6': 0.2288, 'wheels-7': 0.1966, 'wheels-9': 0.1925, 'wheels-10': 0.1838, 'wheels-11': 0.1838, 'wheels-13': 0.1339, 'wheels-14': 0.1151, 'wheels-15': 0.1153, 'wheels-17': 0.1150 },
+  'body-14':       { 'wheels': 0.2594, 'wheels-2': 0.2308, 'wheels-3': 0.2309, 'wheels-6': 0.2287, 'wheels-7': 0.1966, 'wheels-9': 0.1925, 'wheels-10': 0.1838, 'wheels-11': 0.1838, 'wheels-13': 0.1339, 'wheels-14': 0.1151, 'wheels-15': 0.1152, 'wheels-17': 0.1150 },
   /* body-15 on wheels-15, Gen 15: the flank from 0.600 to 0.560 takes the
      maximum section 1.4825 to about 1.43 and the wetted soup down with it,
      and charges the wheel term against a smaller area, which is why body-15
@@ -552,14 +554,15 @@ export const CD = {
      area, the trap of Gen 13, 14 and 15 a fourth time; the tail is what
      buys the coefficient (design/gen16.md section 4). Every cell measured
      by tools/aero.sh's buildup. */
-  'body-16':       { 'wheels': 0.2580, 'wheels-2': 0.2286, 'wheels-3': 0.2287, 'wheels-6': 0.2266, 'wheels-7': 0.1935, 'wheels-9': 0.1892, 'wheels-10': 0.1803, 'wheels-11': 0.1803, 'wheels-13': 0.1295, 'wheels-14': 0.1103, 'wheels-15': 0.1104, 'wheels-17': 0.1096 },
+  'body-16':       { 'wheels': 0.2580, 'wheels-2': 0.2286, 'wheels-3': 0.2286, 'wheels-6': 0.2266, 'wheels-7': 0.1935, 'wheels-9': 0.1892, 'wheels-10': 0.1803, 'wheels-11': 0.1803, 'wheels-13': 0.1295, 'wheels-14': 0.1103, 'wheels-15': 0.1104, 'wheels-17': 0.1096 },
   /* body-17 on wheels-17, Gen 17: the track lever's coefficient companion is
      the wheel term on the narrower columns (0.0163 to 0.0153) and friction
      charged on a smaller area eats most of it: 0.1100 against 0.1104, the
      thinnest margin on the ladder, said so in design/gen17.md. Every cell
      measured by tools/aero.sh's buildup. */
   'body-17':       { 'wheels': 0.2615, 'wheels-2': 0.2317, 'wheels-3': 0.2317, 'wheels-6': 0.2299, 'wheels-7': 0.1927, 'wheels-9': 0.1903, 'wheels-10': 0.1814, 'wheels-11': 0.1814, 'wheels-13': 0.1302, 'wheels-14': 0.1106, 'wheels-15': 0.1107, 'wheels-17': 0.1100 },
-  'body-18':       { 'wheels': 0.2549, 'wheels-2': 0.2239, 'wheels-3': 0.2238, 'wheels-6': 0.2229, 'wheels-7': 0.1862, 'wheels-9': 0.1848, 'wheels-10': 0.1757, 'wheels-11': 0.1757, 'wheels-13': 0.1239, 'wheels-14': 0.1038, 'wheels-15': 0.1039, 'wheels-17': 0.1034 },
+  'body-18':       { 'wheels': 0.2550, 'wheels-2': 0.2239, 'wheels-3': 0.2238, 'wheels-6': 0.2229, 'wheels-7': 0.1862, 'wheels-9': 0.1848, 'wheels-10': 0.1757, 'wheels-11': 0.1757, 'wheels-13': 0.1239, 'wheels-14': 0.1038, 'wheels-15': 0.1039, 'wheels-17': 0.1034 },
+  'body-19':       { 'wheels': 0.2443, 'wheels-2': 0.2128, 'wheels-3': 0.2127, 'wheels-6': 0.2119, 'wheels-7': 0.1752, 'wheels-9': 0.1732, 'wheels-10': 0.1640, 'wheels-11': 0.1640, 'wheels-13': 0.1124, 'wheels-14': 0.0922, 'wheels-15': 0.0923, 'wheels-17': 0.0918 },
 };
 
 /* One lookup, one loud fallback, exactly as areaFor above and for the same
