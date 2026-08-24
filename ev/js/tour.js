@@ -63,6 +63,10 @@ export const VIEWS = {
      this car is a dark rectangle. Looking DOWN INTO it from 41 degrees keeps
      the flank, so the cabin, the pack and the flank read at once. */
   above:   { pos: [5.2, 6.4, 5.2],   tgt: [0, 0.5, 0] },
+  /* the exploded stack is a tower, not a car: at 55 percent the parts span
+     about y -0.5 to 2.7, so this station stands further out and aims at the
+     stack's own middle rather than the closed car's */
+  exploded: { pos: [7.2, 4.2, 7.2],  tgt: [0, 1.2, 0] },
   low:     { pos: [6.2, 0.55, 4.2],  tgt: [0.2, 0.45, 0] },
 };
 
@@ -76,6 +80,10 @@ export const VIEWS = {
              that differ, which is compare mode's ghosting without compare
              mode's panel.
    `view`    a camera station above.
+   `explode` 0 to 1: the staged explode the stop is shown at. Applied on
+             arrival and taken back down at the next stop that omits it;
+             the reader's own slider setting is parked for the whole tour
+             and restored on the way out, as it always was.
    `read`    a module id the stop offers to open, chosen as the one the
              paragraphs are actually about.
    `cite`    the document in design/ the prose comes from. Printed, because a
@@ -97,13 +105,25 @@ export const STOPS = [
      title explains it. */
   {
     id: 'open',
-    title: 'Nineteen rungs',
+    title: 'Twenty rungs',
     theme: 'what this is',
-    gen: 'gen19', against: null, view: 'hero',
+    gen: 'gen20', against: null, view: 'hero',
     cite: 'design/app-brief.md',
     paras: [
       'This is a place to learn how an electric car works, part by part: every component on the stage can be clicked, and each one explains what it does, why it is designed the way it is, and how it fails. The objective behind the whole model is the most efficient electric car that can be drawn, with no budget and no factory in the way, only physics and engineering.',
-      'So the model is a ladder. Nineteen generations of one car, each strictly better than the last on every measured column, with the argument for every step written into the parts themselves; the car on the stage is the nineteenth, the top rung. The tour walks it from the first rung back up to this one. At each rung the car becomes that generation, the slots that changed stay lit while the ones that carry fade back, and every figure below is computed live from the same model the readout reads. Nothing here is typed in.',
+      'So the model is a ladder. Twenty generations of one car, each strictly better than the last on every measured column, with the argument for every step written into the parts themselves; the car on the stage is the twentieth, the top rung. The tour walks it from the first rung back up to this one. At each rung the car becomes that generation, the slots that changed stay lit while the ones that carry fade back, and every figure below is computed live from the same model the readout reads. Nothing here is typed in.',
+    ],
+  },
+
+  {
+    id: 'explode',
+    title: 'The car, taken apart',
+    theme: 'the model',
+    gen: 'gen20', against: null, view: 'exploded', explode: 0.55,
+    cite: 'SPEC.md',
+    paras: [
+      'The explode control is at 55 percent here, and this is the whole claim of the model in one picture: every piece that lifts away is a real part with its own geometry, its own derived mass and its own panel, from the pack and its sills to the smallest washer nozzle. Nothing on the stage is a texture pretending to be a machine, and the checker tools that gate every generation sweep these same triangles for penetrations, floating parts and broken interfaces before a rung may ship.',
+      'The explode is staged: the shell parts company first, then the systems separate in the order a person would actually take the car apart, so the disassembly is itself an argument about how it goes together. Click any piece, here or anywhere, and its panel opens over the tour with what it does, why it is shaped that way, and how it fails; the slider on the faceplate does this at any time, at any rung, to any depth.',
     ],
   },
 
@@ -339,14 +359,26 @@ export const STOPS = [
   },
 
   {
+    id: 'gen20',
+    title: 'The wheels inside',
+    theme: 'Gen 20',
+    gen: 'gen20', against: 'gen19', view: 'low', read: 'wheels-20',
+    cite: 'design/gen20.md',
+    paras: [
+      'This is the rung you cannot see from up there, which is why this stop looks from down here. The plan said to put the wheels inside the body, and the first measurement said they mostly already were: everything above knee height has been faired since the pants and saddles, and what remained was the strip of tire between the fairings and the road. So the front disc and its nose cap run down to 45 mm now, the rear saddle wraps its tire in hoops to 39, everything rides the knuckle so steering and suspension travel never close a gap, and the exposed rotating silhouette falls from 0.0545 to 0.0400 m2. The full body-side enclosure was priced too, on the record: arches wide enough for 14 degrees of steering lock cost 0.090 m2 of frontal area and land 39 miles worse, which is the same lesson this ladder measured at Gen 12 and declined twice.',
+      'The other half of the rung is one surface doing two jobs. The rear spat wall had to keep its height, because cutting it separated the airflow at 18.8 degrees where the shoulder ends; but above the sill line it now leans inboard, inside the front fairing\'s own plane, so the silhouette integrator never sees it and the frontal area falls by 0.0085 m2 the airflow never feels. The step is {dRange}, {dRate}, {dMass} on {slots}. The costs, stated: skirts at 40 mm meet every curb first, and they are sacrificial and say so.',
+    ],
+  },
+
+  {
     id: 'close',
     title: 'What it cost, and what is open',
     theme: 'the end of the ladder',
-    gen: 'gen19', against: 'gen1', view: 'hero', read: 'interior-18',
+    gen: 'gen20', against: 'gen1', view: 'hero', read: 'interior-18',
     cite: 'design/gen18.md',
     paras: [
       'End to end: {dRange} and {dRate} over the reference car, on {slots}.',
-      'It is not finished, and the model says where. Every rung from Gen 13 on has improved every column against the rung below, and the last six did it with no change to the method that prices them; the nineteenth is the lightest car on the ladder and the best on all five, and it carries one person. What is open is named rather than hidden: the air handler that stands 30 mm into the occupant\'s thigh has been carried through seven retrospectives; the regenerative braking constant is a cycle assumption nobody has booked per configuration; 202 W of low-voltage load has no owner; and the hood at 0.94 m is what caps the roof over the head. The plan after this rung is written: the wheels fully inside the body, then three wheels.',
+      'It is not finished, and the model says where. Every rung from Gen 13 on has improved every column against the rung below, and the last six did it with no change to the method that prices them; the twentieth is the lightest car on the ladder and the best on all five, and it carries one person. What is open is named rather than hidden: the air handler that stands 30 mm into the occupant\'s thigh has been carried through seven retrospectives; the regenerative braking constant is a cycle assumption nobody has booked per configuration; 202 W of low-voltage load has no owner; and the hood at 0.94 m is what caps the roof over the head. The plan after this rung is written: three wheels.',
       'The rule that makes this a ladder rather than a list: a generation that does not correct or build on a specific lesson does not ship, and a number that cannot be traced to a document in design/ is decoration. Every figure in this tour is computed on arrival from the same model the readout uses, and every stop cites the document its argument comes from.',
     ],
   },

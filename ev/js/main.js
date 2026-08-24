@@ -1871,6 +1871,11 @@ function tourGo(i, manual = false) {
     /* the shell is a changed slot on every stop that asks for x-ray, so the
        ghosting leaves it solid over the thing the stop is about */
     setXray(!!s.xray);
+    /* a stop may show the staged explode; the next stop that omits it closes
+       the car again. The reader's own slider is parked for the whole tour
+       and restored on exit, unchanged below. */
+    const ex = Math.round((s.explode || 0) * 100);
+    if (+$('#exp').value !== ex) { $('#exp').value = ex; viewer.setExplode(ex / 100); setExplodeVal(ex); }
     /* the text goes in BEFORE the camera, because the camera is aimed off the
        height of the plate the text is sitting in and that height is the text */
     renderTour();
