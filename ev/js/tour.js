@@ -97,21 +97,24 @@ export const VIEWS = {
              The tour restores whatever the x-ray switch was set to when it
              opened, because a tour must not change the app it walked. */
 export const STOPS = [
-  /* THE OPENING STOP WEARS THE TOP RUNG. Davis, 2026-08-23: the app opens on
-     Gen 17 and the tour opens itself on a first visit, so an opening stop on
-     Gen 1 was a hard cut from the best car to the plainest one before a word
-     had been read. The opening holds the car the reader is already looking
-     at and says so; the step back to Gen 1 is the second stop, where the
-     title explains it. */
+  /* THE OPENING STOP WEARS THE RUNG THE APP OPENS ON, WHICH IS GEN 18.
+     Davis, 2026-08-23: the tour opens itself on a first visit, so an opening
+     stop on Gen 1 was a hard cut from the car the reader was looking at to
+     the plainest one before a word had been read. The opening holds that car
+     and says so; the step back to Gen 1 is the second stop, where the title
+     explains it. Davis, 2026-08-26: that car is Gen 18 now rather than the
+     top rung (js/registry.js STARTUP_GEN), so this stop follows it. Keep the
+     two in step: an opening stop wearing a rung the app did not open on is
+     the hard cut this comment exists to prevent. */
   {
     id: 'open',
-    title: 'Twenty rungs',
+    title: 'Twenty-two rungs',
     theme: 'what this is',
-    gen: 'gen20', against: null, view: 'hero',
+    gen: 'gen18', against: null, view: 'hero',
     cite: 'design/app-brief.md',
     paras: [
       'This is a place to learn how an electric car works, part by part: every component on the stage can be clicked, and each one explains what it does, why it is designed the way it is, and how it fails. The objective behind the whole model is the most efficient electric car that can be drawn, with no budget and no factory in the way, only physics and engineering.',
-      'So the model is a ladder. Twenty generations of one car, each strictly better than the last on every measured column, with the argument for every step written into the parts themselves; the car on the stage is the twentieth, the top rung. The tour walks it from the first rung back up to this one. At each rung the car becomes that generation, the slots that changed stay lit while the ones that carry fade back, and every figure below is computed live from the same model the readout reads. Nothing here is typed in.',
+      'So the model is a ladder. Twenty-two generations of one car, each strictly better than the last on every measured column, with the argument for every step written into the parts themselves. The car on the stage is the eighteenth, and it is here because it is the last rung that still looks like a car: the four above it are faster and stranger, and the tour ends on them. From here it walks to the first rung and climbs back through all twenty-two. At each one the car becomes that generation, the slots that changed stay lit while the ones that carry fade back, and every figure below is computed live from the same model the readout reads. Nothing here is typed in.',
     ],
   },
 
@@ -119,7 +122,7 @@ export const STOPS = [
     id: 'explode',
     title: 'The car, taken apart',
     theme: 'the model',
-    gen: 'gen20', against: null, view: 'exploded', explode: 0.55,
+    gen: 'gen22', against: null, view: 'exploded', explode: 0.55,
     cite: 'SPEC.md',
     paras: [
       'The explode control is at 55 percent here, and this is the whole claim of the model in one picture: every piece that lifts away is a real part with its own geometry, its own derived mass and its own panel, from the pack and its sills to the smallest washer nozzle. Nothing on the stage is a texture pretending to be a machine, and the checker tools that gate every generation sweep these same triangles for penetrations, floating parts and broken interfaces before a rung may ship.',
@@ -371,14 +374,38 @@ export const STOPS = [
   },
 
   {
+    id: 'gen21',
+    title: 'Three wheels',
+    theme: 'Gen 21',
+    gen: 'gen21', against: 'gen20', view: 'rearQ', read: 'wheels-21',
+    cite: 'design/gen21.md',
+    paras: [
+      'Count the wheels. The plan\'s last rung deletes the rear corner as a class: one rear wheel, centered, on a trailing swingarm where the five-link and its subframe used to be, because a centered wheel needs no camber held, no toe, no track, and no roll bar; a contact patch on the roll axis has no lever for a couple to work through. The stability tool ruled before anything was priced, and its case is the one a trike actually fails by: the lateral acceleration that lifts the inside front wheel about the axis from a front contact patch to the single rear patch. Measured on this built car, that is 0.99 g against a tire that slides at 0.71, so the car slides long before it lifts, by a wider margin than the four-wheel rung below it.',
+      'The corner\'s tenants all moved for the wheel: the converter a meter aft into the tail, the network ring forward of the tire, the compute deck split into two hulls flanking it, and the battery notched around its travel with zero cells touched. The fronts spend a reserve priced two rungs ago, 125-section tires with every wall following their plane, which is the whole area column; the center tire is a 155 sized by the load that did not leave with the corner. The step is {dRange}, {dRate}, {dMass} on {slots}. The costs, stated: the front tires carry the whole roll couple at 15 percent of casing margin, rear regen drops to 0.7 of the pair\'s, and one arm, one spindle and one drum are single load paths a corner pair never was.',
+    ],
+  },
+
+  {
+    id: 'gen22',
+    title: 'The overhang',
+    theme: 'Gen 22',
+    gen: 'gen22', against: 'gen21', view: 'hero', read: 'body-22',
+    cite: 'design/gen22.md',
+    paras: [
+      'The first rung after the plan, and the arithmetic chose it. The trike banked 180 mm of track the stability case would allow, and the pant plane owns the outline for most of a meter of height, so the obvious rung was the width; it was priced first and it fails, at every step, because friction is charged against the frontal area and narrowing this body always cuts wetted skin slower than it cuts silhouette. That refusal is on the record with its general form, so no future rung re-prices it by hope. What passes is the other direction: skin that leaves at constant section. The nose gives up 200 mm of overhang with the whole fascia translated as a block, so the crown rise, the pedestrian angles and the sensor-band contract carry to the digit, and the four forebody proxies measure identical to the parent.',
+      'The details are where the honesty lives. The crash rails keep their 55 kilojoules by force instead of stroke, 190 kN over 145 mm where 120 over 230 stood, and the panel states the stiffer pulse. The charge flap turns out to have been drawn open since it was drawn, billing the driving silhouette an open door, the widest thing on the car above the pant band; it closes, and it is a registered closure now, swept like any panel that opens. The roof antennas go conformal for the top band they owned. The step is {dRange}, {dRate}, {dMass} on {slots}, and the frunk pays 14 liters to the heat pump the shorter nose pushed aft: the capability cost, stated.',
+    ],
+  },
+
+  {
     id: 'close',
     title: 'What it cost, and what is open',
     theme: 'the end of the ladder',
-    gen: 'gen20', against: 'gen1', view: 'hero', read: 'interior-18',
+    gen: 'gen22', against: 'gen1', view: 'hero', read: 'interior-18',
     cite: 'design/gen18.md',
     paras: [
       'End to end: {dRange} and {dRate} over the reference car, on {slots}.',
-      'It is not finished, and the model says where. Every rung from Gen 13 on has improved every column against the rung below, and the last six did it with no change to the method that prices them; the twentieth is the lightest car on the ladder and the best on all five, and it carries one person. What is open is named rather than hidden: the air handler that stands 30 mm into the occupant\'s thigh has been carried through seven retrospectives; the regenerative braking constant is a cycle assumption nobody has booked per configuration; 202 W of low-voltage load has no owner; and the hood at 0.94 m is what caps the roof over the head. The plan after this rung is written: three wheels.',
+      'It is not finished, and the model says where. Every rung from Gen 13 on has improved every column against the rung below; the twenty-second is the lightest car on the ladder and the best on all five, it carries one person, and it rolls on three wheels. What is open is named rather than hidden: the air handler that stands 30 mm into the occupant\'s thigh has been carried through seven retrospectives; the regenerative braking constant is a cycle assumption nobody has booked per configuration; 202 W of low-voltage load has no owner; and the hood at 0.94 m is what caps the roof over the head. The plan that began at Gen 18 is delivered, the single seat, the boat tail, the wheels inside, three wheels, and the ladder has taken its first step past it: the overhang, chosen by pricing the alternatives and publishing the refusals. What comes after is chosen the same way.',
       'The rule that makes this a ladder rather than a list: a generation that does not correct or build on a specific lesson does not ship, and a number that cannot be traced to a document in design/ is decoration. Every figure in this tour is computed on arrival from the same model the readout uses, and every stop cites the document its argument comes from.',
     ],
   },

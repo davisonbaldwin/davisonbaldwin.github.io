@@ -74,10 +74,10 @@ window.__ev = { viewer, root, systems, index };
 
 /* ── Variants: one active system per slot; the rest stay hidden ── */
 
-/* The car opens on the TOP RUNG (js/registry.js STARTUP_GEN, the last entry
-   of GENERATIONS), at Davis's word on 2026-08-22; it opened on Gen 1 before.
-   The registry builds exactly that rung's nine modules eagerly, so this is
-   not a Gen 1 startup followed by a switch. */
+/* The car opens on the rung js/registry.js NAMES as STARTUP_GEN, which is
+   Gen 18 at Davis's word on 2026-08-26 (Gen 1 until 2026-08-22, then the
+   top rung until now). The registry builds exactly that rung's nine modules
+   eagerly, so this is not a Gen 1 startup followed by a switch. */
 const VARIANT_CHOICE = Object.fromEntries(VARIANTS.map((v) => [v.slot, STARTUP_GEN.choices[v.slot] || v.options[0].sys]));
 
 /* the numbered ladder, excluding any side studies; buildRail reads this */
@@ -1260,7 +1260,7 @@ if (GENERATIONS.length) {
      lengths: one rung against another, or all eleven in order with the reason
      each one happened. */
   tourBtn = el('button', 'gen-step tour', 'tour');
-  tourBtn.title = 'Walk the ladder, Gen 1 to Gen 17, with the argument for each rung';
+  tourBtn.title = 'Walk the ladder, Gen 1 to Gen 22, with the argument for each rung';
   tourBtn.onclick = () => setTour(!tourOn);
 
   wrap.append(genPrev, genDD, genBack, genNext, cmpBtn, cmpDD, tourBtn);
