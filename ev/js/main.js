@@ -1260,7 +1260,8 @@ if (GENERATIONS.length) {
      lengths: one rung against another, or all eleven in order with the reason
      each one happened. */
   tourBtn = el('button', 'gen-step tour', 'tour');
-  tourBtn.title = 'Walk the ladder, Gen 1 to Gen 22, with the argument for each rung';
+  /* derived, so a new rung cannot leave this reading one short: it did, twice */
+  tourBtn.title = 'Walk the ladder, Gen 1 to ' + GENERATIONS[GENERATIONS.length - 1].label + ', with the argument for each rung';
   tourBtn.onclick = () => setTour(!tourOn);
 
   wrap.append(genPrev, genDD, genBack, genNext, cmpBtn, cmpDD, tourBtn);

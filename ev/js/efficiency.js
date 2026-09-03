@@ -18,7 +18,40 @@ const V_MEAN = 19.4;       // m/s, cycle mean speed (70 km/h)
 export const CYCLE_KMH = V_MEAN * 3.6;
 const V_AERO = 24.0;       // m/s, aero-weighted effective speed (v^3 mean)
 const ACCEL_PER_KM = 0.9;  // significant accelerations per km
-const REGEN_RETURN = 0.65; // share of kinetic energy recovered on average
+/* THE REGEN RE-ZERO, 2026-08-27. This was `const REGEN_RETURN = 0.65`, one
+   number applied to every rung from Gen 1 to Gen 23, inside the largest
+   term on the car: at Gen 23 stop-go is 37.9 percent of the energy and it
+   is half m v squared times ONE MINUS this. design/retro-gen21.md named it
+   as a cycle assumption nobody had booked per configuration. It is booked
+   now, and design/regen-rezero.md is the account.
+
+   It is DERIVED per configuration rather than typed, because recovered
+   fraction is a property of hardware: what the machines can catch, what
+   the path back into the pack costs, and what is lost below the speed
+   regeneration fades. The first three are per-module numbers this file
+   already carries or the drivetrain publishes.
+
+   The insight that made it worth doing: authority in g is P / (m v g0), so
+   it improves every time the car gets LIGHTER, for free, and a typed
+   constant froze the mass of whatever rung it was written against.
+   drivetrain-9 publishes 130 kW giving 0.32 g at 100 km/h on a 1,388 kg
+   car; the same machines on Gen 23's 1,125.6 kg give far more.
+
+   0.65 survives as the FALLBACK for a configuration whose drivetrain has
+   no row, and it warns rather than passing silently. */
+const REGEN_FADE_KMH = 8;      // below this, regeneration fades and friction finishes the stop
+const REGEN_FRONT_SHARE = 0.70; // drivetrain-9: load transfer under braking
+const REGEN_MU = 0.714;         // the grip budget every tool in this project uses
+/* The share of a mixed cycle's kinetic energy in stops at or under a given
+   mean deceleration. THE PESSIMISTIC END of a band that was run three ways
+   (tools/regen.sh prints all three): every one of them clears the old 0.65
+   at the top rung, so the direction is measured and only the level is
+   assumed, and the level shipped is the conservative one. */
+const REGEN_DECEL = [
+  [0.10, 0.24], [0.15, 0.20], [0.20, 0.20], [0.25, 0.14],
+  [0.30, 0.10], [0.40, 0.08], [0.60, 0.04],
+];
+const REGEN_FALLBACK = 0.65;
 /* Pack round-trip overhead. This is a PER-PACK figure, not a constant:
    for a series string, loss = I^2 R with I = P/V and R = n * r_cell, and
    n rises in proportion to V, so loss scales with r_cell / V. Both terms
@@ -72,15 +105,15 @@ export const METRICS = {
   'battery-3': { kwh: 132, battLoss: 1.031 },  // 508 V, tray and interconnects deleted
   'battery-6': { kwh: 150, battLoss: 1.016 },  // 810 V bipolar, busbars deleted
   'battery-5': { kwh: 82,  battLoss: 1.055 },  // 360 V sodium, higher cell ASR
-  'drivetrain': { driveEff: 0.90 },
-  'drivetrain-2': { driveEff: 0.925 },
-  'drivetrain-3': { driveEff: 0.93 },
-  'drivetrain-6': { driveEff: 0.945 },
-  'drivetrain-7': { driveEff: 0.958 },  // part-load optimized, peak power traded away
+  'drivetrain': { driveEff: 0.90, regenKw: 45 },   /* ASSUMED: one conventional rear machine of the reference car; design/regen-rezero.md marks it assumed */
+  'drivetrain-2': { driveEff: 0.925, regenKw: 70 },   /* ASSUMED: axial flux, still one axle */
+  'drivetrain-3': { driveEff: 0.93, regenKw: 120 },   /* ASSUMED: in-wheel at four corners */
+  'drivetrain-6': { driveEff: 0.945, regenKw: 240 },   /* ASSUMED: the apex 480 kW class, half of it forward */
+  'drivetrain-7': { driveEff: 0.958, regenKw: 130 },   /* drivetrain-7 drops to 260 kW total and splits it: 130 forward */  // part-load optimized, peak power traded away
   /* drivetrain-9 is drivetrain-7 with the front halfshafts shortened to reach
      wheels-9's relocated hub face. Nothing electrical or geometric in the
      power path changed, so the efficiency is carried, not re-earned. */
-  'drivetrain-9': { driveEff: 0.958 },
+  'drivetrain-9': { driveEff: 0.958, regenKw: 130 },   /* drivetrain-9 publishes 130 kW at the front axle and 0.32 g at 100 km/h on Gen 9 mass, which regenFor reproduces */
   'wheels': { crr: 0.0072 },
   'wheels-2': { crr: 0.0052 },
   'wheels-3': { crr: 0.0052 },   // 5.2 kg/t, per wheels-6's ancestor ledger
@@ -287,24 +320,33 @@ export const METRICS = {
      machines, the same losses, the same row, because the slot HAS a row and
      a missing one hands the rung Gen 1's drive efficiency (the first ladder
      run of this rung read 1,872 miles for exactly that reason). */
-  'drivetrain-17': { driveEff: 0.958 },
+  'drivetrain-17': { driveEff: 0.958, regenKw: 130 },   /* Gen 17: drivetrain-9's machines moved, so its 130 kW front pair carries. See design/regen-rezero.md for why this is a power and not a fraction. */
   /* drivetrain-21 deletes the -z rear machine and translates the +z one to
      the centerline with its ring at 1.4 times the torque: the same machine
      family and the same loss maps, with each of three carrying what four
      did. The per-machine point moves up the load axis, where these maps
      flatten, so 0.958 carries and is the conservative end. */
-  'drivetrain-21': { driveEff: 0.958 },
+  'drivetrain-21': { driveEff: 0.958, regenKw: 130, regenRearShare: 0.7 },   /* Gen 21: the front pair is untouched at 130 kW; drivetrain-21 states rear regen drops to 0.7 of the pair it replaced, which costs only the rear share of a braking split that is 70 percent front. The trike loses less regen than it looks, and the mass it removed gives more back. */
   'wheels-17': { crr: 0.0038 },
   'wheels-20': { crr: 0.0038 },   /* Gen 20: the tires are wheels-17's untouched; the fairings do not touch rolling resistance */
   'wheels-21': { crr: 0.0038 },   /* Gen 21: three patches at 3.5 to 5.0 mm of deflection against the carried tire's 6.3; the deflection route reads about 2.4 kg/t and the count stays unbooked for CRR_BASIS's unchanged reason */
+  /* Gen 24: the 115 section at 6.1 bar. Patch length is load over pressure
+     over net width, so it scales as 1/(width x pressure) and 0.92 x 1.089 is
+     1.002: the front patch holds 99.7 mm and its deflection holds at 3.5 mm.
+     The tire changed and the rolling term did not, which is the arithmetic
+     rather than the caution. design/crr-findings.md is why no count is booked
+     on this ladder at all yet: the laden basis is not common across rungs. */
+  'wheels-24': { crr: 0.0038 },
   'wheels-22': { crr: 0.0038 },   /* Gen 22: the tires are wheels-21's untouched; a fairing wall is not rolling resistance */
   'autonomy-17': { auxDelta: -75 },
   'autonomy-18': { auxDelta: -75 },   /* Gen 18: a fork of autonomy-17, its row carried (the drivetrain-17 lesson) */
   'autonomy-19': { auxDelta: -75 },   /* Gen 19: a fork of autonomy-18, its row carried (the same lesson) */
   'autonomy-21': { auxDelta: -75 },   /* Gen 21: autonomy-19's sensors and compute re-homed to the catamaran hulls; nothing electrical moved, its row carried */
   'autonomy-22': { auxDelta: -75 },   /* Gen 22: the fascia suite translated and the antennas conformal; same silicon, same watts, its row carried */
+  'autonomy-23': { auxDelta: -125.5 },   /* Gen 23: THE ONE ELECTRICAL CHANGE ON THE LADDER SINCE Gen 19. autonomy-23 applies its own published cycle split to its own sensors: 119.4 W flat out becomes 68.9 weighted 0.40 cruise, 0.75 elevated, 1.00 dense over 58/30/12, so 50.5 W leaves and the carried -75 becomes -125.5. tools/watts.sh is the instrument that found it by putting the compute argument and the sensor draw side by side */
   'thermal-17': { auxDelta: -306.5 },
-  'thermal-22': { auxDelta: -306.5 },   /* Gen 22: thermal-17 with the front stack slid aft; a station is not a watt, its row carried. The first gen22 ladder run missed this row and read +6.7 Wh/mi: the additive aux path is the missing-row guard's one documented hole, and this is its second demonstration */
+  'thermal-22': { auxDelta: -306.5 },
+  'thermal-23': { auxDelta: -306.5 },   /* Gen 23: four mounting stations and a hose waypoint follow the flank; nothing thermodynamic moved, its row carried */   /* Gen 22: thermal-17 with the front stack slid aft; a station is not a watt, its row carried. The first gen22 ladder run missed this row and read +6.7 Wh/mi: the additive aux path is the missing-row guard's one documented hole, and this is its second demonstration */
 };
 
 /* additive entries stack on the slot baseline instead of replacing it */
@@ -388,64 +430,28 @@ const ADDITIVE = new Set(['autonomy-4']);
    shadow cannot sit here unnoticed. That guard is the whole point: standing
    rule 2 of design/area-rezero.md used to be a rule people had to remember. */
 export const AREA = {
-  'body':        { 'wheels': 2.4045, 'wheels-2': 2.3743, 'wheels-3': 2.3733, 'wheels-6': 2.3738, 'wheels-7': 2.3820, 'wheels-9': 2.3353, 'wheels-10': 2.3267, 'wheels-11': 2.3267, 'wheels-13': 2.3351, 'wheels-14': 2.3364, 'wheels-15': 2.3364, 'wheels-17': 2.3278, 'wheels-20': 2.3289, 'wheels-21': 2.3431, 'wheels-22': 2.3410 },
-  'body-aero':   { 'wheels': 2.4183, 'wheels-2': 2.3937, 'wheels-3': 2.3937, 'wheels-6': 2.3932, 'wheels-7': 2.3998, 'wheels-9': 2.3589, 'wheels-10': 2.3515, 'wheels-11': 2.3515, 'wheels-13': 2.3578, 'wheels-14': 2.3591, 'wheels-15': 2.3591, 'wheels-17': 2.3525, 'wheels-20': 2.3536, 'wheels-21': 2.3678, 'wheels-22': 2.3663 },
-  'body-3':      { 'wheels': 2.4392, 'wheels-2': 2.4137, 'wheels-3': 2.4124, 'wheels-6': 2.4135, 'wheels-7': 2.4218, 'wheels-9': 2.3769, 'wheels-10': 2.3678, 'wheels-11': 2.3677, 'wheels-13': 2.3769, 'wheels-14': 2.3782, 'wheels-15': 2.3782, 'wheels-17': 2.3680, 'wheels-20': 2.3691, 'wheels-21': 2.3789, 'wheels-22': 2.3766 },
-  'body-4':      { 'wheels': 2.3898, 'wheels-2': 2.3645, 'wheels-3': 2.3638, 'wheels-6': 2.3648, 'wheels-7': 2.3718, 'wheels-9': 2.3267, 'wheels-10': 2.3177, 'wheels-11': 2.3175, 'wheels-13': 2.3267, 'wheels-14': 2.3280, 'wheels-15': 2.3280, 'wheels-17': 2.3181, 'wheels-20': 2.3192, 'wheels-21': 2.3298, 'wheels-22': 2.3275 },
-  'body-6':      { 'wheels': 2.4439, 'wheels-2': 2.4163, 'wheels-3': 2.4125, 'wheels-6': 2.4155, 'wheels-7': 2.4302, 'wheels-9': 2.3824, 'wheels-10': 2.3734, 'wheels-11': 2.3734, 'wheels-13': 2.3825, 'wheels-14': 2.3838, 'wheels-15': 2.3838, 'wheels-17': 2.3735, 'wheels-20': 2.3746, 'wheels-21': 2.3829, 'wheels-22': 2.3806 },
-  'body-7':      { 'wheels': 2.2115, 'wheels-2': 2.1864, 'wheels-3': 2.1840, 'wheels-6': 2.1855, 'wheels-7': 2.2106, 'wheels-9': 2.1622, 'wheels-10': 2.1550, 'wheels-11': 2.1550, 'wheels-13': 2.1610, 'wheels-14': 2.1622, 'wheels-15': 2.1622, 'wheels-17': 2.1569, 'wheels-20': 2.1580, 'wheels-21': 2.1675, 'wheels-22': 2.1659 },
-  'body-8':      { 'wheels': 2.2253, 'wheels-2': 2.1998, 'wheels-3': 2.1976, 'wheels-6': 2.1990, 'wheels-7': 2.2114, 'wheels-9': 2.1741, 'wheels-10': 2.1670, 'wheels-11': 2.1670, 'wheels-13': 2.1729, 'wheels-14': 2.1742, 'wheels-15': 2.1742, 'wheels-17': 2.1676, 'wheels-20': 2.1686, 'wheels-21': 2.1788, 'wheels-22': 2.1772 },
-  'body-9':      { 'wheels': 2.1587, 'wheels-2': 2.1235, 'wheels-3': 2.1212, 'wheels-6': 2.1227, 'wheels-7': 2.1351, 'wheels-9': 2.0978, 'wheels-10': 2.0897, 'wheels-11': 2.0906, 'wheels-13': 2.0965, 'wheels-14': 2.0978, 'wheels-15': 2.0978, 'wheels-17': 2.0912, 'wheels-20': 2.0923, 'wheels-21': 2.1024, 'wheels-22': 2.1008 },
-  /* REGENERATED 2026-08-13 after body-11's four hood stations came down
-     under the driver's eye line. Every cell fell by 0.0005 to 0.0006 m2 and
-     no other body's row moved at all, which is the sweep confirming that the
-     change was local to the front deck. The prediction attached to that
-     change was that it would cost NOTHING; it was wrong by 6 cm2 and the
-     guard in tools/area.sh is what said so. Gen 11 goes 1.6920 to 1.6914. */
-  'body-11':     { 'wheels': 1.8327, 'wheels-2': 1.7657, 'wheels-3': 1.7616, 'wheels-6': 1.7702, 'wheels-7': 1.7904, 'wheels-9': 1.7088, 'wheels-10': 1.6915, 'wheels-11': 1.6914, 'wheels-13': 1.7334, 'wheels-14': 1.7303, 'wheels-15': 1.7303, 'wheels-17': 1.7123, 'wheels-20': 1.7134, 'wheels-21': 1.7127, 'wheels-22': 1.7079 },
-  /* body-12 pays 0.0248 m2 over body-11: the spat walls stand 32.5 mm
-     outside a tire column the union already charged, their trailing closures
-     add a sliver at the band, and nothing else moved. The tail got 740 mm
-     longer and the row barely notices: length is not area. */
-  'body-12':     { 'wheels': 1.8380, 'wheels-2': 1.7718, 'wheels-3': 1.7708, 'wheels-6': 1.7767, 'wheels-7': 1.7951, 'wheels-9': 1.7270, 'wheels-10': 1.7162, 'wheels-11': 1.7162, 'wheels-13': 1.7467, 'wheels-14': 1.7436, 'wheels-15': 1.7436, 'wheels-17': 1.7380, 'wheels-20': 1.7391, 'wheels-21': 1.7449, 'wheels-22': 1.7424 },
-  /* body-13, Gen 13: the cabin down 65 mm with the seats on the pack lid.
-     On wheels-11 it reads 1.6381 against body-12's 1.7162, which is the
-     -0.078 design/gen13.md section 4 priced for the roof; on wheels-13 the
-     front pants add 0.0306 back (the pod's band 45 mm over the tread and its
-     disc 18 mm outside the tire column) and the rung reads 1.6687. The
-     wheels-13 column on every other body is what the pants alone cost that
-     body, 0.030 to 0.042 m2. */
-  'body-13':     { 'wheels': 1.7599, 'wheels-2': 1.6937, 'wheels-3': 1.6927, 'wheels-6': 1.6987, 'wheels-7': 1.7170, 'wheels-9': 1.6489, 'wheels-10': 1.6382, 'wheels-11': 1.6381, 'wheels-13': 1.6687, 'wheels-14': 1.6656, 'wheels-15': 1.6656, 'wheels-17': 1.6600, 'wheels-20': 1.6611, 'wheels-21': 1.6669, 'wheels-22': 1.6643 },
-  /* body-14, Gen 14: the greenhouse drawn to the head. On wheels-13 it reads
-     1.6429 against body-13's 1.6687, which is the greenhouse alone, -0.026
-     m2 (design/gen14.md section 4 priced it at -0.018); on wheels-14 the
-     rear saddles' crowns add 0.006 back and the front bands' drop takes
-     0.009 off, and the rung reads 1.6398. The wheels-14 column on every
-     other body is what wheels-14 costs that body against wheels-13, about
-     -0.003: the saddle crowns and the front band nearly cancel. */
-  'body-14':     { 'wheels': 1.7342, 'wheels-2': 1.6680, 'wheels-3': 1.6670, 'wheels-6': 1.6729, 'wheels-7': 1.6913, 'wheels-9': 1.6232, 'wheels-10': 1.6124, 'wheels-11': 1.6124, 'wheels-13': 1.6429, 'wheels-14': 1.6398, 'wheels-15': 1.6398, 'wheels-17': 1.6343, 'wheels-20': 1.6353, 'wheels-21': 1.6411, 'wheels-22': 1.6386 },
-  /* body-15, Gen 15: the flank from 0.600 to 0.560 from the shoulder up.
-     On wheels-14 it reads 1.6064 against body-14's 1.6398, -0.033 m2, which
-     is the flank alone (design/gen15.md section 4 priced -0.036); wheels-15's
-     three fairing edges are worth -0.0002 on every body. The rung reads
-     1.6062. */
-  'body-15':     { 'wheels': 1.6988, 'wheels-2': 1.6329, 'wheels-3': 1.6320, 'wheels-6': 1.6378, 'wheels-7': 1.6562, 'wheels-9': 1.5892, 'wheels-10': 1.5784, 'wheels-11': 1.5784, 'wheels-13': 1.6092, 'wheels-14': 1.6064, 'wheels-15': 1.6064, 'wheels-17': 1.6025, 'wheels-20': 1.6036, 'wheels-21': 1.6076, 'wheels-22': 1.6050 },
-  /* body-16, Gen 16: the canopy glass flush with the loft. The 8 mm the band
-     stood proud was the car's whole crown from seam to seam, 1.12 m of it,
-     and 0.0087 m2 of the frontal union on wheels-15 (design/gen16.md
-     section 4). The tail shrink is behind the maximum section and casts
-     nothing new. Every cell measured by tools/area.sh's own integrator. */
-  'body-16':     { 'wheels': 1.6899, 'wheels-2': 1.6240, 'wheels-3': 1.6231, 'wheels-6': 1.6289, 'wheels-7': 1.6473, 'wheels-9': 1.5802, 'wheels-10': 1.5694, 'wheels-11': 1.5694, 'wheels-13': 1.6003, 'wheels-14': 1.5975, 'wheels-15': 1.5975, 'wheels-17': 1.5936, 'wheels-20': 1.5947, 'wheels-21': 1.5987, 'wheels-22': 1.5961 },
-  /* body-17 on wheels-17, Gen 17: both axles 20 mm in, the tire centered on
-     battery-11's 120 mm sill, the spat wall following to 0.82. 1.5805 m2
-     against 1.5975; one axle alone reads larger (design/gen17.md section 4).
-     Every cell measured by tools/area.sh's own integrator. */
-  'body-17':     { 'wheels': 1.6888, 'wheels-2': 1.6232, 'wheels-3': 1.6221, 'wheels-6': 1.6278, 'wheels-7': 1.6475, 'wheels-9': 1.5671, 'wheels-10': 1.5565, 'wheels-11': 1.5565, 'wheels-13': 1.5908, 'wheels-14': 1.5879, 'wheels-15': 1.5879, 'wheels-17': 1.5805, 'wheels-20': 1.5816, 'wheels-21': 1.5853, 'wheels-22': 1.5828 },
-  'body-18':     { 'wheels': 1.6845, 'wheels-2': 1.6251, 'wheels-3': 1.6252, 'wheels-6': 1.6248, 'wheels-7': 1.6390, 'wheels-9': 1.5465, 'wheels-10': 1.5359, 'wheels-11': 1.5359, 'wheels-13': 1.5702, 'wheels-14': 1.5673, 'wheels-15': 1.5673, 'wheels-17': 1.5580, 'wheels-20': 1.5591, 'wheels-21': 1.5632, 'wheels-22': 1.5607 },
-  'body-19':     { 'wheels': 1.6835, 'wheels-2': 1.6241, 'wheels-3': 1.6242, 'wheels-6': 1.6237, 'wheels-7': 1.6379, 'wheels-9': 1.5454, 'wheels-10': 1.5348, 'wheels-11': 1.5348, 'wheels-13': 1.5691, 'wheels-14': 1.5663, 'wheels-15': 1.5663, 'wheels-17': 1.5570, 'wheels-20': 1.5581, 'wheels-21': 1.5622, 'wheels-22': 1.5597 },
-  'body-20':     { 'wheels': 1.6835, 'wheels-2': 1.6241, 'wheels-3': 1.6242, 'wheels-6': 1.6237, 'wheels-7': 1.6379, 'wheels-9': 1.5441, 'wheels-10': 1.5268, 'wheels-11': 1.5268, 'wheels-13': 1.5691, 'wheels-14': 1.5663, 'wheels-15': 1.5663, 'wheels-17': 1.5474, 'wheels-20': 1.5485, 'wheels-21': 1.5525, 'wheels-22': 1.5500 },
-  'body-21':     { 'wheels': 1.6835, 'wheels-2': 1.6241, 'wheels-3': 1.6242, 'wheels-6': 1.6238, 'wheels-7': 1.6379, 'wheels-9': 1.5441, 'wheels-10': 1.5268, 'wheels-11': 1.5268, 'wheels-13': 1.5691, 'wheels-14': 1.5663, 'wheels-15': 1.5663, 'wheels-17': 1.5473, 'wheels-20': 1.5484, 'wheels-21': 1.5458, 'wheels-22': 1.5427 },
-  'body-22':     { 'wheels': 1.6835, 'wheels-2': 1.6241, 'wheels-3': 1.6242, 'wheels-6': 1.6238, 'wheels-7': 1.6379, 'wheels-9': 1.5441, 'wheels-10': 1.5268, 'wheels-11': 1.5268, 'wheels-13': 1.5691, 'wheels-14': 1.5663, 'wheels-15': 1.5663, 'wheels-17': 1.5473, 'wheels-20': 1.5484, 'wheels-21': 1.5458, 'wheels-22': 1.5411 },
+  'body':        { 'wheels': 2.4045, 'wheels-2': 2.3743, 'wheels-3': 2.3733, 'wheels-6': 2.3738, 'wheels-7': 2.3820, 'wheels-9': 2.3353, 'wheels-10': 2.3267, 'wheels-11': 2.3267, 'wheels-13': 2.3351, 'wheels-14': 2.3364, 'wheels-15': 2.3364, 'wheels-17': 2.3278, 'wheels-20': 2.3289, 'wheels-21': 2.3431, 'wheels-22': 2.3410, 'wheels-24': 2.3374 },
+  'body-aero':   { 'wheels': 2.4183, 'wheels-2': 2.3937, 'wheels-3': 2.3937, 'wheels-6': 2.3932, 'wheels-7': 2.3998, 'wheels-9': 2.3589, 'wheels-10': 2.3515, 'wheels-11': 2.3515, 'wheels-13': 2.3578, 'wheels-14': 2.3591, 'wheels-15': 2.3591, 'wheels-17': 2.3525, 'wheels-20': 2.3536, 'wheels-21': 2.3678, 'wheels-22': 2.3663, 'wheels-24': 2.3629 },
+  'body-3':      { 'wheels': 2.4392, 'wheels-2': 2.4137, 'wheels-3': 2.4124, 'wheels-6': 2.4135, 'wheels-7': 2.4218, 'wheels-9': 2.3769, 'wheels-10': 2.3678, 'wheels-11': 2.3677, 'wheels-13': 2.3769, 'wheels-14': 2.3782, 'wheels-15': 2.3782, 'wheels-17': 2.3680, 'wheels-20': 2.3691, 'wheels-21': 2.3789, 'wheels-22': 2.3766, 'wheels-24': 2.3735 },
+  'body-4':      { 'wheels': 2.3898, 'wheels-2': 2.3645, 'wheels-3': 2.3638, 'wheels-6': 2.3648, 'wheels-7': 2.3718, 'wheels-9': 2.3267, 'wheels-10': 2.3177, 'wheels-11': 2.3175, 'wheels-13': 2.3267, 'wheels-14': 2.3280, 'wheels-15': 2.3280, 'wheels-17': 2.3181, 'wheels-20': 2.3192, 'wheels-21': 2.3298, 'wheels-22': 2.3275, 'wheels-24': 2.3246 },
+  'body-6':      { 'wheels': 2.4439, 'wheels-2': 2.4163, 'wheels-3': 2.4125, 'wheels-6': 2.4155, 'wheels-7': 2.4302, 'wheels-9': 2.3824, 'wheels-10': 2.3734, 'wheels-11': 2.3734, 'wheels-13': 2.3825, 'wheels-14': 2.3838, 'wheels-15': 2.3838, 'wheels-17': 2.3735, 'wheels-20': 2.3746, 'wheels-21': 2.3829, 'wheels-22': 2.3806, 'wheels-24': 2.3753 },
+  'body-7':      { 'wheels': 2.2115, 'wheels-2': 2.1864, 'wheels-3': 2.1840, 'wheels-6': 2.1855, 'wheels-7': 2.2106, 'wheels-9': 2.1622, 'wheels-10': 2.1550, 'wheels-11': 2.1550, 'wheels-13': 2.1610, 'wheels-14': 2.1622, 'wheels-15': 2.1622, 'wheels-17': 2.1569, 'wheels-20': 2.1580, 'wheels-21': 2.1675, 'wheels-22': 2.1659, 'wheels-24': 2.1604 },
+  'body-8':      { 'wheels': 2.2253, 'wheels-2': 2.1998, 'wheels-3': 2.1976, 'wheels-6': 2.1990, 'wheels-7': 2.2114, 'wheels-9': 2.1741, 'wheels-10': 2.1670, 'wheels-11': 2.1670, 'wheels-13': 2.1729, 'wheels-14': 2.1742, 'wheels-15': 2.1742, 'wheels-17': 2.1676, 'wheels-20': 2.1686, 'wheels-21': 2.1788, 'wheels-22': 2.1772, 'wheels-24': 2.1723 },
+  'body-9':      { 'wheels': 2.1587, 'wheels-2': 2.1235, 'wheels-3': 2.1212, 'wheels-6': 2.1227, 'wheels-7': 2.1351, 'wheels-9': 2.0978, 'wheels-10': 2.0897, 'wheels-11': 2.0906, 'wheels-13': 2.0965, 'wheels-14': 2.0978, 'wheels-15': 2.0978, 'wheels-17': 2.0912, 'wheels-20': 2.0923, 'wheels-21': 2.1024, 'wheels-22': 2.1008, 'wheels-24': 2.0960 },
+  'body-11':     { 'wheels': 1.8327, 'wheels-2': 1.7657, 'wheels-3': 1.7616, 'wheels-6': 1.7702, 'wheels-7': 1.7904, 'wheels-9': 1.7088, 'wheels-10': 1.6915, 'wheels-11': 1.6914, 'wheels-13': 1.7334, 'wheels-14': 1.7303, 'wheels-15': 1.7303, 'wheels-17': 1.7123, 'wheels-20': 1.7134, 'wheels-21': 1.7127, 'wheels-22': 1.7079, 'wheels-24': 1.7024 },
+  'body-12':     { 'wheels': 1.8380, 'wheels-2': 1.7718, 'wheels-3': 1.7708, 'wheels-6': 1.7767, 'wheels-7': 1.7951, 'wheels-9': 1.7270, 'wheels-10': 1.7162, 'wheels-11': 1.7162, 'wheels-13': 1.7467, 'wheels-14': 1.7436, 'wheels-15': 1.7436, 'wheels-17': 1.7380, 'wheels-20': 1.7391, 'wheels-21': 1.7449, 'wheels-22': 1.7424, 'wheels-24': 1.7370 },
+  'body-13':     { 'wheels': 1.7599, 'wheels-2': 1.6937, 'wheels-3': 1.6927, 'wheels-6': 1.6987, 'wheels-7': 1.7170, 'wheels-9': 1.6489, 'wheels-10': 1.6382, 'wheels-11': 1.6381, 'wheels-13': 1.6687, 'wheels-14': 1.6656, 'wheels-15': 1.6656, 'wheels-17': 1.6600, 'wheels-20': 1.6611, 'wheels-21': 1.6669, 'wheels-22': 1.6643, 'wheels-24': 1.6590 },
+  'body-14':     { 'wheels': 1.7342, 'wheels-2': 1.6680, 'wheels-3': 1.6670, 'wheels-6': 1.6729, 'wheels-7': 1.6913, 'wheels-9': 1.6232, 'wheels-10': 1.6124, 'wheels-11': 1.6124, 'wheels-13': 1.6429, 'wheels-14': 1.6398, 'wheels-15': 1.6398, 'wheels-17': 1.6343, 'wheels-20': 1.6353, 'wheels-21': 1.6411, 'wheels-22': 1.6386, 'wheels-24': 1.6332 },
+  'body-15':     { 'wheels': 1.6988, 'wheels-2': 1.6329, 'wheels-3': 1.6320, 'wheels-6': 1.6378, 'wheels-7': 1.6562, 'wheels-9': 1.5892, 'wheels-10': 1.5784, 'wheels-11': 1.5784, 'wheels-13': 1.6092, 'wheels-14': 1.6064, 'wheels-15': 1.6064, 'wheels-17': 1.6025, 'wheels-20': 1.6036, 'wheels-21': 1.6076, 'wheels-22': 1.6050, 'wheels-24': 1.5996 },
+  'body-16':     { 'wheels': 1.6899, 'wheels-2': 1.6240, 'wheels-3': 1.6231, 'wheels-6': 1.6289, 'wheels-7': 1.6473, 'wheels-9': 1.5802, 'wheels-10': 1.5694, 'wheels-11': 1.5694, 'wheels-13': 1.6003, 'wheels-14': 1.5975, 'wheels-15': 1.5975, 'wheels-17': 1.5936, 'wheels-20': 1.5947, 'wheels-21': 1.5987, 'wheels-22': 1.5961, 'wheels-24': 1.5907 },
+  'body-17':     { 'wheels': 1.6888, 'wheels-2': 1.6232, 'wheels-3': 1.6221, 'wheels-6': 1.6278, 'wheels-7': 1.6475, 'wheels-9': 1.5671, 'wheels-10': 1.5565, 'wheels-11': 1.5565, 'wheels-13': 1.5908, 'wheels-14': 1.5879, 'wheels-15': 1.5879, 'wheels-17': 1.5805, 'wheels-20': 1.5816, 'wheels-21': 1.5853, 'wheels-22': 1.5828, 'wheels-24': 1.5769 },
+  'body-18':     { 'wheels': 1.6845, 'wheels-2': 1.6251, 'wheels-3': 1.6252, 'wheels-6': 1.6248, 'wheels-7': 1.6390, 'wheels-9': 1.5465, 'wheels-10': 1.5359, 'wheels-11': 1.5359, 'wheels-13': 1.5702, 'wheels-14': 1.5673, 'wheels-15': 1.5673, 'wheels-17': 1.5580, 'wheels-20': 1.5591, 'wheels-21': 1.5632, 'wheels-22': 1.5607, 'wheels-24': 1.5561 },
+  'body-19':     { 'wheels': 1.6835, 'wheels-2': 1.6241, 'wheels-3': 1.6242, 'wheels-6': 1.6237, 'wheels-7': 1.6379, 'wheels-9': 1.5454, 'wheels-10': 1.5348, 'wheels-11': 1.5348, 'wheels-13': 1.5691, 'wheels-14': 1.5663, 'wheels-15': 1.5663, 'wheels-17': 1.5570, 'wheels-20': 1.5581, 'wheels-21': 1.5622, 'wheels-22': 1.5597, 'wheels-24': 1.5550 },
+  'body-20':     { 'wheels': 1.6835, 'wheels-2': 1.6241, 'wheels-3': 1.6242, 'wheels-6': 1.6237, 'wheels-7': 1.6379, 'wheels-9': 1.5441, 'wheels-10': 1.5268, 'wheels-11': 1.5268, 'wheels-13': 1.5691, 'wheels-14': 1.5663, 'wheels-15': 1.5663, 'wheels-17': 1.5474, 'wheels-20': 1.5485, 'wheels-21': 1.5525, 'wheels-22': 1.5500, 'wheels-24': 1.5453 },
+  'body-21':     { 'wheels': 1.6835, 'wheels-2': 1.6241, 'wheels-3': 1.6242, 'wheels-6': 1.6238, 'wheels-7': 1.6379, 'wheels-9': 1.5441, 'wheels-10': 1.5268, 'wheels-11': 1.5268, 'wheels-13': 1.5691, 'wheels-14': 1.5663, 'wheels-15': 1.5663, 'wheels-17': 1.5473, 'wheels-20': 1.5484, 'wheels-21': 1.5458, 'wheels-22': 1.5427, 'wheels-24': 1.5381 },
+  'body-22':     { 'wheels': 1.6835, 'wheels-2': 1.6241, 'wheels-3': 1.6242, 'wheels-6': 1.6238, 'wheels-7': 1.6379, 'wheels-9': 1.5441, 'wheels-10': 1.5268, 'wheels-11': 1.5268, 'wheels-13': 1.5691, 'wheels-14': 1.5663, 'wheels-15': 1.5663, 'wheels-17': 1.5473, 'wheels-20': 1.5484, 'wheels-21': 1.5458, 'wheels-22': 1.5411, 'wheels-24': 1.5364 },
+  'body-23':     { 'wheels': 1.6673, 'wheels-2': 1.6079, 'wheels-3': 1.6080, 'wheels-6': 1.6075, 'wheels-7': 1.6217, 'wheels-9': 1.5279, 'wheels-10': 1.5105, 'wheels-11': 1.5105, 'wheels-13': 1.5529, 'wheels-14': 1.5501, 'wheels-15': 1.5501, 'wheels-17': 1.5310, 'wheels-20': 1.5321, 'wheels-21': 1.5296, 'wheels-22': 1.5248, 'wheels-24': 1.5202 },
+  'body-24':     { 'wheels': 1.6673, 'wheels-2': 1.6079, 'wheels-3': 1.6080, 'wheels-6': 1.6075, 'wheels-7': 1.6217, 'wheels-9': 1.5279, 'wheels-10': 1.5105, 'wheels-11': 1.5105, 'wheels-13': 1.5529, 'wheels-14': 1.5501, 'wheels-15': 1.5501, 'wheels-17': 1.5310, 'wheels-20': 1.5321, 'wheels-21': 1.5296, 'wheels-22': 1.5248, 'wheels-24': 1.5202 },
 };
 
 /* The body is whichever active id has a row, the wheels whichever has a cell
@@ -540,58 +546,36 @@ function warnOnce(msg) {
    change. A new body needs a row here, a row in AREA, and entries in
    tools/area.js, and the loud fallback below is what tells you if you
    forget. */
+/* COOLING IS SWAPPED OUT OF THESE CELLS BEFORE THEY ARE USED. Every value
+   below carries tools/aero.js's flat 0.008 cooling constant, and
+   computeBudget replaces it with the configuration's own derived term
+   (coolingFor above, design/cooling-rezero.md). A cell here is therefore
+   NOT the coefficient the car runs on: it is about 0.005 high on the
+   recent rungs. The app's readout resolves through computeBudget and shows
+   the corrected number. */
 export const CD = {
-  'body':          { 'wheels': 0.2611, 'wheels-2': 0.2511, 'wheels-3': 0.2506, 'wheels-6': 0.2489, 'wheels-7': 0.2404, 'wheels-9': 0.2388, 'wheels-10': 0.2358, 'wheels-11': 0.2360, 'wheels-13': 0.2266, 'wheels-14': 0.2238, 'wheels-15': 0.2238, 'wheels-17': 0.2234, 'wheels-20': 0.2148, 'wheels-21': 0.2079, 'wheels-22': 0.2080 },
-  'body-aero':     { 'wheels': 0.1685, 'wheels-2': 0.1581, 'wheels-3': 0.1577, 'wheels-6': 0.1585, 'wheels-7': 0.1494, 'wheels-9': 0.1473, 'wheels-10': 0.1446, 'wheels-11': 0.1447, 'wheels-13': 0.1390, 'wheels-14': 0.1365, 'wheels-15': 0.1365, 'wheels-17': 0.1359, 'wheels-20': 0.1292, 'wheels-21': 0.1238, 'wheels-22': 0.1238 },
-  'body-3':        { 'wheels': 0.1915, 'wheels-2': 0.1771, 'wheels-3': 0.1766, 'wheels-6': 0.1734, 'wheels-7': 0.1624, 'wheels-9': 0.1554, 'wheels-10': 0.1514, 'wheels-11': 0.1517, 'wheels-13': 0.1383, 'wheels-14': 0.1357, 'wheels-15': 0.1357, 'wheels-17': 0.1343, 'wheels-20': 0.1268, 'wheels-21': 0.1215, 'wheels-22': 0.1216 },
-  'body-4':        { 'wheels': 0.1844, 'wheels-2': 0.1734, 'wheels-3': 0.1727, 'wheels-6': 0.1714, 'wheels-7': 0.1602, 'wheels-9': 0.1560, 'wheels-10': 0.1522, 'wheels-11': 0.1525, 'wheels-13': 0.1387, 'wheels-14': 0.1360, 'wheels-15': 0.1360, 'wheels-17': 0.1344, 'wheels-20': 0.1267, 'wheels-21': 0.1208, 'wheels-22': 0.1209 },
-  'body-6':        { 'wheels': 0.2049, 'wheels-2': 0.1898, 'wheels-3': 0.1888, 'wheels-6': 0.1879, 'wheels-7': 0.1761, 'wheels-9': 0.1699, 'wheels-10': 0.1655, 'wheels-11': 0.1658, 'wheels-13': 0.1492, 'wheels-14': 0.1461, 'wheels-15': 0.1463, 'wheels-17': 0.1448, 'wheels-20': 0.1351, 'wheels-21': 0.1293, 'wheels-22': 0.1294 },
-  'body-7':        { 'wheels': 0.2026, 'wheels-2': 0.1917, 'wheels-3': 0.1912, 'wheels-6': 0.1922, 'wheels-7': 0.1783, 'wheels-9': 0.1848, 'wheels-10': 0.1821, 'wheels-11': 0.1821, 'wheels-13': 0.1717, 'wheels-14': 0.1688, 'wheels-15': 0.1688, 'wheels-17': 0.1683, 'wheels-20': 0.1600, 'wheels-21': 0.1560, 'wheels-22': 0.1561 },
-  'body-8':        { 'wheels': 0.1708, 'wheels-2': 0.1598, 'wheels-3': 0.1599, 'wheels-6': 0.1613, 'wheels-7': 0.1503, 'wheels-9': 0.1502, 'wheels-10': 0.1476, 'wheels-11': 0.1476, 'wheels-13': 0.1370, 'wheels-14': 0.1347, 'wheels-15': 0.1347, 'wheels-17': 0.1337, 'wheels-20': 0.1285, 'wheels-21': 0.1244, 'wheels-22': 0.1244 },
-  'body-9':        { 'wheels': 0.1792, 'wheels-2': 0.1645, 'wheels-3': 0.1646, 'wheels-6': 0.1660, 'wheels-7': 0.1546, 'wheels-9': 0.1546, 'wheels-10': 0.1509, 'wheels-11': 0.1519, 'wheels-13': 0.1410, 'wheels-14': 0.1386, 'wheels-15': 0.1386, 'wheels-17': 0.1376, 'wheels-20': 0.1322, 'wheels-21': 0.1279, 'wheels-22': 0.1279 },
-  'body-11':       { 'wheels': 0.3432, 'wheels-2': 0.3215, 'wheels-3': 0.3222, 'wheels-6': 0.3173, 'wheels-7': 0.2831, 'wheels-9': 0.2849, 'wheels-10': 0.2766, 'wheels-11': 0.2766, 'wheels-13': 0.2258, 'wheels-14': 0.2077, 'wheels-15': 0.2081, 'wheels-17': 0.2065, 'wheels-20': 0.2026, 'wheels-21': 0.1957, 'wheels-22': 0.1961 },
-  'body-12':       { 'wheels': 0.2504, 'wheels-2': 0.2231, 'wheels-3': 0.2231, 'wheels-6': 0.2212, 'wheels-7': 0.1910, 'wheels-9': 0.1869, 'wheels-10': 0.1787, 'wheels-11': 0.1787, 'wheels-13': 0.1318, 'wheels-14': 0.1142, 'wheels-15': 0.1143, 'wheels-17': 0.1141, 'wheels-20': 0.1103, 'wheels-21': 0.1036, 'wheels-22': 0.1036 },
-  'body-13':       { 'wheels': 0.2565, 'wheels-2': 0.2282, 'wheels-3': 0.2282, 'wheels-6': 0.2261, 'wheels-7': 0.1945, 'wheels-9': 0.1904, 'wheels-10': 0.1818, 'wheels-11': 0.1818, 'wheels-13': 0.1327, 'wheels-14': 0.1142, 'wheels-15': 0.1143, 'wheels-17': 0.1141, 'wheels-20': 0.1102, 'wheels-21': 0.1031, 'wheels-22': 0.1031 },
-  /* body-14 on wheels-14, Gen 14: the rear saddles take the rear pair from
-     0.0880 to 0.0341 m2 and the redrawn front pants the front from 0.0370 to
-     0.0214, the wheel term 0.0337 to 0.0152; the narrower greenhouse takes
-     the maximum section 1.5076 to 1.4825 and the wetted soup 23.767 to
-     23.613, and charges the wheel term against a smaller area, which is why
-     body-14 on wheels-13 reads HIGHER than body-13 on wheels-13 (the
-     greenhouse alone makes Cd worse while CdA improves, design/gen14.md
-     section 4 row 2). design/retro-gen13.md section 3: no method revision
-     on this rung. */
-  'body-14':       { 'wheels': 0.2594, 'wheels-2': 0.2308, 'wheels-3': 0.2309, 'wheels-6': 0.2287, 'wheels-7': 0.1966, 'wheels-9': 0.1925, 'wheels-10': 0.1838, 'wheels-11': 0.1838, 'wheels-13': 0.1339, 'wheels-14': 0.1151, 'wheels-15': 0.1152, 'wheels-17': 0.1150, 'wheels-20': 0.1110, 'wheels-21': 0.1038, 'wheels-22': 0.1038 },
-  /* body-15 on wheels-15, Gen 15: the flank from 0.600 to 0.560 takes the
-     maximum section 1.4825 to about 1.43 and the wetted soup down with it,
-     and charges the wheel term against a smaller area, which is why body-15
-     on wheels-14 reads higher than body-14 on wheels-14 by the flank alone
-     (design/gen15.md section 4 row 1); the cowl break closed from 24.9 to
-     15 degrees takes the forebody term to zero and is what makes the flank
-     a rung. wheels-15's three fairing edges move the wheel term by a few
-     square centimeters. No method revision. */
-  'body-15':       { 'wheels': 0.2605, 'wheels-2': 0.2316, 'wheels-3': 0.2316, 'wheels-6': 0.2294, 'wheels-7': 0.1965, 'wheels-9': 0.1924, 'wheels-10': 0.1836, 'wheels-11': 0.1836, 'wheels-13': 0.1330, 'wheels-14': 0.1139, 'wheels-15': 0.1140, 'wheels-17': 0.1132, 'wheels-20': 0.1091, 'wheels-21': 0.1018, 'wheels-22': 0.1019 },
-  /* body-16 on wheels-15, Gen 16: the tail's upper stream taken to the 15
-     degree limit from x -2.300 aft (the upper base from 0.4132 to 0.3470 m2
-     as built with the blade and the bay walls in the sections, the equivalent
-     cone at 14.57 degrees; the bare loft read 0.3332 at 14.89; base term
-     0.0201 to 0.0162) and
-     the glass flush. The flush glass ALONE reads Cd 0.1145 on a smaller
-     area, the trap of Gen 13, 14 and 15 a fourth time; the tail is what
-     buys the coefficient (design/gen16.md section 4). Every cell measured
-     by tools/aero.sh's buildup. */
-  'body-16':       { 'wheels': 0.2580, 'wheels-2': 0.2286, 'wheels-3': 0.2286, 'wheels-6': 0.2266, 'wheels-7': 0.1935, 'wheels-9': 0.1892, 'wheels-10': 0.1803, 'wheels-11': 0.1803, 'wheels-13': 0.1295, 'wheels-14': 0.1103, 'wheels-15': 0.1104, 'wheels-17': 0.1096, 'wheels-20': 0.1054, 'wheels-21': 0.0981, 'wheels-22': 0.0981 },
-  /* body-17 on wheels-17, Gen 17: the track lever's coefficient companion is
-     the wheel term on the narrower columns (0.0163 to 0.0153) and friction
-     charged on a smaller area eats most of it: 0.1100 against 0.1104, the
-     thinnest margin on the ladder, said so in design/gen17.md. Every cell
-     measured by tools/aero.sh's buildup. */
-  'body-17':       { 'wheels': 0.2615, 'wheels-2': 0.2317, 'wheels-3': 0.2317, 'wheels-6': 0.2299, 'wheels-7': 0.1927, 'wheels-9': 0.1903, 'wheels-10': 0.1814, 'wheels-11': 0.1814, 'wheels-13': 0.1302, 'wheels-14': 0.1106, 'wheels-15': 0.1107, 'wheels-17': 0.1100, 'wheels-20': 0.1058, 'wheels-21': 0.0987, 'wheels-22': 0.0987 },
-  'body-18':       { 'wheels': 0.2550, 'wheels-2': 0.2239, 'wheels-3': 0.2238, 'wheels-6': 0.2229, 'wheels-7': 0.1862, 'wheels-9': 0.1848, 'wheels-10': 0.1757, 'wheels-11': 0.1757, 'wheels-13': 0.1239, 'wheels-14': 0.1038, 'wheels-15': 0.1039, 'wheels-17': 0.1034, 'wheels-20': 0.0992, 'wheels-21': 0.0916, 'wheels-22': 0.0916 },
-  'body-19':       { 'wheels': 0.2443, 'wheels-2': 0.2128, 'wheels-3': 0.2127, 'wheels-6': 0.2119, 'wheels-7': 0.1752, 'wheels-9': 0.1732, 'wheels-10': 0.1640, 'wheels-11': 0.1640, 'wheels-13': 0.1124, 'wheels-14': 0.0922, 'wheels-15': 0.0923, 'wheels-17': 0.0918, 'wheels-20': 0.0876, 'wheels-21': 0.0801, 'wheels-22': 0.0800 },
-  'body-20':       { 'wheels': 0.2468, 'wheels-2': 0.2156, 'wheels-3': 0.2153, 'wheels-6': 0.2144, 'wheels-7': 0.1777, 'wheels-9': 0.1757, 'wheels-10': 0.1654, 'wheels-11': 0.1654, 'wheels-13': 0.1130, 'wheels-14': 0.0929, 'wheels-15': 0.0930, 'wheels-17': 0.0922, 'wheels-20': 0.0880, 'wheels-21': 0.0805, 'wheels-22': 0.0804 },
-  'body-21':       { 'wheels': 0.2498, 'wheels-2': 0.2187, 'wheels-3': 0.2185, 'wheels-6': 0.2175, 'wheels-7': 0.1806, 'wheels-9': 0.1791, 'wheels-10': 0.1686, 'wheels-11': 0.1686, 'wheels-13': 0.1161, 'wheels-14': 0.0957, 'wheels-15': 0.0962, 'wheels-17': 0.0935, 'wheels-20': 0.0893, 'wheels-21': 0.0816, 'wheels-22': 0.0816 },
-  'body-22':       { 'wheels': 0.2500, 'wheels-2': 0.2188, 'wheels-3': 0.2185, 'wheels-6': 0.2177, 'wheels-7': 0.1807, 'wheels-9': 0.1792, 'wheels-10': 0.1687, 'wheels-11': 0.1687, 'wheels-13': 0.1163, 'wheels-14': 0.0958, 'wheels-15': 0.0963, 'wheels-17': 0.0930, 'wheels-20': 0.0888, 'wheels-21': 0.0811, 'wheels-22': 0.0811 },
+  'body':          { 'wheels': 0.2611, 'wheels-2': 0.2511, 'wheels-3': 0.2506, 'wheels-6': 0.2489, 'wheels-7': 0.2404, 'wheels-9': 0.2388, 'wheels-10': 0.2358, 'wheels-11': 0.2360, 'wheels-13': 0.2266, 'wheels-14': 0.2238, 'wheels-15': 0.2238, 'wheels-17': 0.2234, 'wheels-20': 0.2148, 'wheels-21': 0.2079, 'wheels-22': 0.2080, 'wheels-24': 0.2076 },
+  'body-aero':     { 'wheels': 0.1685, 'wheels-2': 0.1581, 'wheels-3': 0.1577, 'wheels-6': 0.1585, 'wheels-7': 0.1494, 'wheels-9': 0.1473, 'wheels-10': 0.1446, 'wheels-11': 0.1447, 'wheels-13': 0.1390, 'wheels-14': 0.1365, 'wheels-15': 0.1365, 'wheels-17': 0.1359, 'wheels-20': 0.1292, 'wheels-21': 0.1238, 'wheels-22': 0.1238, 'wheels-24': 0.1233 },
+  'body-3':        { 'wheels': 0.1915, 'wheels-2': 0.1771, 'wheels-3': 0.1766, 'wheels-6': 0.1734, 'wheels-7': 0.1624, 'wheels-9': 0.1554, 'wheels-10': 0.1514, 'wheels-11': 0.1517, 'wheels-13': 0.1383, 'wheels-14': 0.1357, 'wheels-15': 0.1357, 'wheels-17': 0.1343, 'wheels-20': 0.1268, 'wheels-21': 0.1215, 'wheels-22': 0.1216, 'wheels-24': 0.1211 },
+  'body-4':        { 'wheels': 0.1844, 'wheels-2': 0.1734, 'wheels-3': 0.1727, 'wheels-6': 0.1714, 'wheels-7': 0.1602, 'wheels-9': 0.1560, 'wheels-10': 0.1522, 'wheels-11': 0.1525, 'wheels-13': 0.1387, 'wheels-14': 0.1360, 'wheels-15': 0.1360, 'wheels-17': 0.1344, 'wheels-20': 0.1267, 'wheels-21': 0.1208, 'wheels-22': 0.1209, 'wheels-24': 0.1204 },
+  'body-6':        { 'wheels': 0.2049, 'wheels-2': 0.1898, 'wheels-3': 0.1888, 'wheels-6': 0.1879, 'wheels-7': 0.1761, 'wheels-9': 0.1699, 'wheels-10': 0.1655, 'wheels-11': 0.1658, 'wheels-13': 0.1492, 'wheels-14': 0.1461, 'wheels-15': 0.1463, 'wheels-17': 0.1448, 'wheels-20': 0.1351, 'wheels-21': 0.1293, 'wheels-22': 0.1294, 'wheels-24': 0.1290 },
+  'body-7':        { 'wheels': 0.2026, 'wheels-2': 0.1917, 'wheels-3': 0.1912, 'wheels-6': 0.1922, 'wheels-7': 0.1783, 'wheels-9': 0.1848, 'wheels-10': 0.1821, 'wheels-11': 0.1821, 'wheels-13': 0.1717, 'wheels-14': 0.1688, 'wheels-15': 0.1688, 'wheels-17': 0.1683, 'wheels-20': 0.1600, 'wheels-21': 0.1560, 'wheels-22': 0.1561, 'wheels-24': 0.1557 },
+  'body-8':        { 'wheels': 0.1708, 'wheels-2': 0.1598, 'wheels-3': 0.1599, 'wheels-6': 0.1613, 'wheels-7': 0.1503, 'wheels-9': 0.1502, 'wheels-10': 0.1476, 'wheels-11': 0.1476, 'wheels-13': 0.1370, 'wheels-14': 0.1347, 'wheels-15': 0.1347, 'wheels-17': 0.1337, 'wheels-20': 0.1285, 'wheels-21': 0.1244, 'wheels-22': 0.1244, 'wheels-24': 0.1241 },
+  'body-9':        { 'wheels': 0.1792, 'wheels-2': 0.1645, 'wheels-3': 0.1646, 'wheels-6': 0.1660, 'wheels-7': 0.1546, 'wheels-9': 0.1546, 'wheels-10': 0.1509, 'wheels-11': 0.1519, 'wheels-13': 0.1410, 'wheels-14': 0.1386, 'wheels-15': 0.1386, 'wheels-17': 0.1376, 'wheels-20': 0.1322, 'wheels-21': 0.1279, 'wheels-22': 0.1279, 'wheels-24': 0.1276 },
+  'body-11':       { 'wheels': 0.3432, 'wheels-2': 0.3215, 'wheels-3': 0.3222, 'wheels-6': 0.3173, 'wheels-7': 0.2831, 'wheels-9': 0.2849, 'wheels-10': 0.2766, 'wheels-11': 0.2766, 'wheels-13': 0.2258, 'wheels-14': 0.2077, 'wheels-15': 0.2081, 'wheels-17': 0.2065, 'wheels-20': 0.2026, 'wheels-21': 0.1957, 'wheels-22': 0.1961, 'wheels-24': 0.1959 },
+  'body-12':       { 'wheels': 0.2504, 'wheels-2': 0.2231, 'wheels-3': 0.2231, 'wheels-6': 0.2212, 'wheels-7': 0.1910, 'wheels-9': 0.1869, 'wheels-10': 0.1787, 'wheels-11': 0.1787, 'wheels-13': 0.1318, 'wheels-14': 0.1142, 'wheels-15': 0.1143, 'wheels-17': 0.1141, 'wheels-20': 0.1103, 'wheels-21': 0.1036, 'wheels-22': 0.1036, 'wheels-24': 0.1031 },
+  'body-13':       { 'wheels': 0.2565, 'wheels-2': 0.2282, 'wheels-3': 0.2282, 'wheels-6': 0.2261, 'wheels-7': 0.1945, 'wheels-9': 0.1904, 'wheels-10': 0.1818, 'wheels-11': 0.1818, 'wheels-13': 0.1327, 'wheels-14': 0.1142, 'wheels-15': 0.1143, 'wheels-17': 0.1141, 'wheels-20': 0.1102, 'wheels-21': 0.1031, 'wheels-22': 0.1031, 'wheels-24': 0.1026 },
+  'body-14':       { 'wheels': 0.2594, 'wheels-2': 0.2308, 'wheels-3': 0.2309, 'wheels-6': 0.2287, 'wheels-7': 0.1966, 'wheels-9': 0.1925, 'wheels-10': 0.1838, 'wheels-11': 0.1838, 'wheels-13': 0.1339, 'wheels-14': 0.1151, 'wheels-15': 0.1152, 'wheels-17': 0.1150, 'wheels-20': 0.1110, 'wheels-21': 0.1038, 'wheels-22': 0.1038, 'wheels-24': 0.1033 },
+  'body-15':       { 'wheels': 0.2605, 'wheels-2': 0.2316, 'wheels-3': 0.2316, 'wheels-6': 0.2294, 'wheels-7': 0.1965, 'wheels-9': 0.1924, 'wheels-10': 0.1836, 'wheels-11': 0.1836, 'wheels-13': 0.1330, 'wheels-14': 0.1139, 'wheels-15': 0.1140, 'wheels-17': 0.1132, 'wheels-20': 0.1091, 'wheels-21': 0.1018, 'wheels-22': 0.1019, 'wheels-24': 0.1013 },
+  'body-16':       { 'wheels': 0.2580, 'wheels-2': 0.2286, 'wheels-3': 0.2286, 'wheels-6': 0.2266, 'wheels-7': 0.1935, 'wheels-9': 0.1892, 'wheels-10': 0.1803, 'wheels-11': 0.1803, 'wheels-13': 0.1295, 'wheels-14': 0.1103, 'wheels-15': 0.1104, 'wheels-17': 0.1096, 'wheels-20': 0.1054, 'wheels-21': 0.0981, 'wheels-22': 0.0981, 'wheels-24': 0.0976 },
+  'body-17':       { 'wheels': 0.2615, 'wheels-2': 0.2317, 'wheels-3': 0.2317, 'wheels-6': 0.2299, 'wheels-7': 0.1927, 'wheels-9': 0.1903, 'wheels-10': 0.1814, 'wheels-11': 0.1814, 'wheels-13': 0.1302, 'wheels-14': 0.1106, 'wheels-15': 0.1107, 'wheels-17': 0.1100, 'wheels-20': 0.1058, 'wheels-21': 0.0987, 'wheels-22': 0.0987, 'wheels-24': 0.0982 },
+  'body-18':       { 'wheels': 0.2550, 'wheels-2': 0.2239, 'wheels-3': 0.2238, 'wheels-6': 0.2229, 'wheels-7': 0.1862, 'wheels-9': 0.1848, 'wheels-10': 0.1757, 'wheels-11': 0.1757, 'wheels-13': 0.1239, 'wheels-14': 0.1038, 'wheels-15': 0.1039, 'wheels-17': 0.1034, 'wheels-20': 0.0992, 'wheels-21': 0.0916, 'wheels-22': 0.0916, 'wheels-24': 0.0910 },
+  'body-19':       { 'wheels': 0.2443, 'wheels-2': 0.2128, 'wheels-3': 0.2127, 'wheels-6': 0.2119, 'wheels-7': 0.1752, 'wheels-9': 0.1732, 'wheels-10': 0.1640, 'wheels-11': 0.1640, 'wheels-13': 0.1124, 'wheels-14': 0.0922, 'wheels-15': 0.0923, 'wheels-17': 0.0918, 'wheels-20': 0.0876, 'wheels-21': 0.0801, 'wheels-22': 0.0800, 'wheels-24': 0.0794 },
+  'body-20':       { 'wheels': 0.2468, 'wheels-2': 0.2156, 'wheels-3': 0.2153, 'wheels-6': 0.2144, 'wheels-7': 0.1777, 'wheels-9': 0.1757, 'wheels-10': 0.1654, 'wheels-11': 0.1654, 'wheels-13': 0.1130, 'wheels-14': 0.0929, 'wheels-15': 0.0930, 'wheels-17': 0.0922, 'wheels-20': 0.0880, 'wheels-21': 0.0805, 'wheels-22': 0.0804, 'wheels-24': 0.0797 },
+  'body-21':       { 'wheels': 0.2498, 'wheels-2': 0.2187, 'wheels-3': 0.2185, 'wheels-6': 0.2175, 'wheels-7': 0.1806, 'wheels-9': 0.1791, 'wheels-10': 0.1686, 'wheels-11': 0.1686, 'wheels-13': 0.1161, 'wheels-14': 0.0957, 'wheels-15': 0.0962, 'wheels-17': 0.0935, 'wheels-20': 0.0893, 'wheels-21': 0.0816, 'wheels-22': 0.0816, 'wheels-24': 0.0809 },
+  'body-22':       { 'wheels': 0.2500, 'wheels-2': 0.2188, 'wheels-3': 0.2185, 'wheels-6': 0.2177, 'wheels-7': 0.1807, 'wheels-9': 0.1792, 'wheels-10': 0.1687, 'wheels-11': 0.1687, 'wheels-13': 0.1163, 'wheels-14': 0.0958, 'wheels-15': 0.0963, 'wheels-17': 0.0930, 'wheels-20': 0.0888, 'wheels-21': 0.0811, 'wheels-22': 0.0811, 'wheels-24': 0.0804 },
+  'body-23':       { 'wheels': 0.2520, 'wheels-2': 0.2206, 'wheels-3': 0.2203, 'wheels-6': 0.2195, 'wheels-7': 0.1821, 'wheels-9': 0.1806, 'wheels-10': 0.1700, 'wheels-11': 0.1700, 'wheels-13': 0.1170, 'wheels-14': 0.0963, 'wheels-15': 0.0968, 'wheels-17': 0.0934, 'wheels-20': 0.0892, 'wheels-21': 0.0813, 'wheels-22': 0.0814, 'wheels-24': 0.0807 },
+  'body-24':       { 'wheels': 0.2519, 'wheels-2': 0.2205, 'wheels-3': 0.2202, 'wheels-6': 0.2194, 'wheels-7': 0.1820, 'wheels-9': 0.1805, 'wheels-10': 0.1699, 'wheels-11': 0.1699, 'wheels-13': 0.1169, 'wheels-14': 0.0961, 'wheels-15': 0.0966, 'wheels-17': 0.0932, 'wheels-20': 0.0890, 'wheels-21': 0.0812, 'wheels-22': 0.0813, 'wheels-24': 0.0806 },
 };
 
 /* One lookup, one loud fallback, exactly as areaFor above and for the same
@@ -663,6 +647,103 @@ export const LOSS_NOTES = {
    checkers. Nothing in the product may pass a value a reader chose: these are
    fixed steps stated beside their answer, not a slider over cars nobody
    built. See design/app-brief.md on inventing data. */
+/* REGEN_RETURN, derived. Two bounds and two efficiencies:
+     machine   P / (m v g0) at the cycle mean, which is why a lighter car
+               recovers more of its own kinetic energy for free
+     tire      mu times the share of weight on the driven wheels, which
+               under braking is the front share plus whatever the rear
+               still contributes
+   times the drive efficiency for the generating direction, times the pack
+   round trip from its own battLoss, less the energy under the fade speed. */
+export function regenFor(m, massKg) {
+  const kw = m.regenKw;
+  if (!kw) {
+    warnOnce('efficiency: no regenKw for this drivetrain, so REGEN_RETURN falls back to ' +
+      REGEN_FALLBACK + '. Add a row: see design/regen-rezero.md.');
+    return REGEN_FALLBACK;
+  }
+  const rear = m.regenRearShare === undefined ? 1 : m.regenRearShare;
+  const share = REGEN_FRONT_SHARE + (1 - REGEN_FRONT_SHARE) * rear;
+  const gMachine = (kw * 1000) / (massKg * V_MEAN * 9.81);
+  const gAuth = Math.min(gMachine, REGEN_MU * share) * share;
+  /* CUMULATIVE AND CONTINUOUS, not a sum over buckets. A step table makes
+     the mass lever discontinuous, because authority is P/(m v g0) and a
+     hundred kilograms can tip the car across a bucket edge, which
+     tools/levers.sh correctly reported as a CURVED rate on Gens 1 and 2.
+     The cliff is an artifact of tabulating a distribution that is smooth
+     in reality, so the table is read as a cumulative curve and
+     interpolated within the bucket the authority actually lands in. */
+  let capture = 0, prevG = 0;
+  for (const [g, sh] of REGEN_DECEL) {
+    if (gAuth >= g) { capture += sh; prevG = g; continue; }
+    const span = g - prevG;
+    if (span > 0) capture += sh * Math.max(0, Math.min(1, (gAuth - prevG) / span));
+    break;
+  }
+  const tail = Math.pow((REGEN_FADE_KMH / 3.6) / V_MEAN, 2);
+  return capture * m.driveEff * (1 / m.battLoss) * (1 - tail);
+}
+
+/* THE COOLING RE-ZERO, 2026-08-30. The fifth, and the argument is in
+   design/cooling-rezero.md and tools/cooling.js. The short form:
+   tools/aero.js charges every body a flat 0.008 of Cd for cooling flow,
+   on Hucho's authority, and Hucho's figure is a measurement of
+   CONVENTIONAL cars. A radiator on a combustion car is sized to reject
+   tens of kilowatts. This car at the cycle mean rejects 501 W, and it has
+   been billed as though it rejected 2,287, which is what Gen 1 rejects.
+
+   Cooling drag is the momentum thrown away by the air taken in to carry
+   the heat off, so it scales with the heat and inversely with the area it
+   is spread over. Both are known per configuration. The LEVEL stays
+   empirical and stays exactly the number already carried, anchored at
+   Gen 1 where Hucho's measurement actually applies; only the RATIO
+   between rungs is derived, and the ratio carries no judgment because the
+   two things a derivation would have to assume, the air-side temperature
+   rise and the fraction of heat leaving through the nose, are uniform
+   multipliers that cancel in it.
+
+   This sits here rather than in tools/aero.js for the same reason frontal
+   area and the drag coefficient sit here: it is a property of the
+   CONFIGURATION, not of a body, and aero.js is a geometry instrument that
+   has no business knowing a drivetrain's efficiency. aero.js keeps its
+   flat constant for its own absolute reporting and computeBudget swaps it
+   for the derived term below. THE PUBLISHED CD TABLE THEREFORE CARRIES
+   COOLING AT THE FLAT 0.008 AND THE BUDGET DOES NOT USE IT AS-IS. That is
+   stated again in the CD table's own header.
+
+   No generation may claim these miles. Same rule as the fourth re-zero. */
+const COOL_ANCHOR = 0.008;      // what aero.js bills, and Gen 1's true value
+const COOL_REF_Q = 2287;        // W, Gen 1's waste heat at the cycle mean
+const COOL_REF_AREA = 2.4045;   // m2, Gen 1's frontal area
+/* Both reference figures are Gen 1's, printed by tools/cooling.sh. They are
+   constants because Gen 1 is a fixed rung; regenerate them there if it ever
+   moves. */
+
+/* Waste heat at the cycle mean: what the drivetrain, the pack and the
+   auxiliary bus all end up rejecting. */
+function wasteHeatW(m, massKg, cd) {
+  const fAero = 0.5 * AIR * cd * m.area * V_AERO * V_AERO;
+  const fRoll = m.crr * massKg * G;
+  const pWheel = (fAero * (V_AERO / V_MEAN) + fRoll) * V_MEAN;
+  const pDrive = pWheel / m.driveEff;
+  const pBatt = pDrive + m.auxW;
+  return (pDrive - pWheel) + pBatt * (m.battLoss - 1) + m.auxW;
+}
+
+/* The cooling term this configuration actually earns. Cooling drag is part
+   of the drag that sets the heat, so this is a fixed point; it is reached
+   in two passes because the term is a few percent of Cd and the feedback
+   is a few percent of that. The third pass moves the fifth decimal. */
+export function coolingFor(m, massKg, cdWithFlat) {
+  let cd = cdWithFlat, cool = COOL_ANCHOR;
+  for (let i = 0; i < 2; i++) {
+    const q = wasteHeatW(m, massKg, cd);
+    cool = COOL_ANCHOR * (q / COOL_REF_Q) * (COOL_REF_AREA / m.area);
+    cd = cdWithFlat - COOL_ANCHOR + cool;
+  }
+  return cool;
+}
+
 export function computeBudget(activeIds, massKg, over) {
   const m = { ...BASE };
   let auxAdd = 0;
@@ -678,6 +759,11 @@ export function computeBudget(activeIds, massKg, over) {
      configuration and no single slot's entry is allowed to set either */
   m.area = areaFor(activeIds);
   m.cd = cdFor(activeIds);
+  /* swap aero.js's flat cooling constant for this configuration's own.
+     m.cd carries the corrected value from here on, so everything
+     downstream, the app's readout included, sees the real coefficient. */
+  const coolCd = coolingFor(m, massKg, m.cd);
+  m.cd = m.cd - COOL_ANCHOR + coolCd;
   /* after both, so an override can move the quantities the loop is not
      allowed to set */
   if (over) Object.assign(m, over);
@@ -688,7 +774,8 @@ export function computeBudget(activeIds, massKg, over) {
 
   const whKmAero = (fAero * 1000) / 3600 / m.driveEff;
   const whKmRoll = (fRoll * 1000) / 3600 / m.driveEff;
-  const whKmKin = (eKin * ACCEL_PER_KM * (1 - REGEN_RETURN)) / 3600 / m.driveEff;
+  const regen = regenFor(m, massKg);
+  const whKmKin = (eKin * ACCEL_PER_KM * (1 - regen)) / 3600 / m.driveEff;
   const whKmAux = m.auxW / (V_MEAN * 3.6);
   const subtotal = whKmAero + whKmRoll + whKmKin + whKmAux;
   const whKmBatt = subtotal * (m.battLoss - 1);
@@ -710,6 +797,7 @@ export function computeBudget(activeIds, massKg, over) {
        restating a number the modules own. Additive: nothing that existed
        before reads it. */
     inputs: { cd: m.cd, crr: m.crr, area: m.area, auxW: m.auxW,
-              battLoss: m.battLoss, driveEff: m.driveEff },
+              battLoss: m.battLoss, driveEff: m.driveEff, regen,
+              coolCd, cdFlat: cdFor(activeIds) },
   };
 }

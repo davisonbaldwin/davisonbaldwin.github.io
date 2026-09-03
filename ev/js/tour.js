@@ -108,13 +108,13 @@ export const STOPS = [
      the hard cut this comment exists to prevent. */
   {
     id: 'open',
-    title: 'Twenty-two rungs',
+    title: 'Twenty-four rungs',
     theme: 'what this is',
     gen: 'gen18', against: null, view: 'hero',
     cite: 'design/app-brief.md',
     paras: [
       'This is a place to learn how an electric car works, part by part: every component on the stage can be clicked, and each one explains what it does, why it is designed the way it is, and how it fails. The objective behind the whole model is the most efficient electric car that can be drawn, with no budget and no factory in the way, only physics and engineering.',
-      'So the model is a ladder. Twenty-two generations of one car, each strictly better than the last on every measured column, with the argument for every step written into the parts themselves. The car on the stage is the eighteenth, and it is here because it is the last rung that still looks like a car: the four above it are faster and stranger, and the tour ends on them. From here it walks to the first rung and climbs back through all twenty-two. At each one the car becomes that generation, the slots that changed stay lit while the ones that carry fade back, and every figure below is computed live from the same model the readout reads. Nothing here is typed in.',
+      'So the model is a ladder. Twenty-four generations of one car, each strictly better than the last on every measured column, with the argument for every step written into the parts themselves. The car on the stage is the eighteenth, and it is here because it is the last rung that still looks like a car: the six above it are faster and stranger, and the tour ends on them. From here it walks to the first rung and climbs back through all twenty-four. At each one the car becomes that generation, the slots that changed stay lit while the ones that carry fade back, and every figure below is computed live from the same model the readout reads. Nothing here is typed in.',
     ],
   },
 
@@ -122,7 +122,7 @@ export const STOPS = [
     id: 'explode',
     title: 'The car, taken apart',
     theme: 'the model',
-    gen: 'gen22', against: null, view: 'exploded', explode: 0.55,
+    gen: 'gen24', against: null, view: 'exploded', explode: 0.55,
     cite: 'SPEC.md',
     paras: [
       'The explode control is at 55 percent here, and this is the whole claim of the model in one picture: every piece that lifts away is a real part with its own geometry, its own derived mass and its own panel, from the pack and its sills to the smallest washer nozzle. Nothing on the stage is a texture pretending to be a machine, and the checker tools that gate every generation sweep these same triangles for penetrations, floating parts and broken interfaces before a rung may ship.',
@@ -398,14 +398,38 @@ export const STOPS = [
   },
 
   {
+    id: 'gen23',
+    title: 'The flank, and the column that changed',
+    theme: 'Gen 23',
+    gen: 'gen23', against: 'gen22', view: 'front', read: 'body-23',
+    cite: 'design/gen23.md',
+    paras: [
+      'This rung changed the rules, and it had to. The cabin flank had not moved since Gen 15, when it came in for a pair of shoulders; Gen 18 then put one person on the centerline and the surface never followed. Probed in the two bands it owns there was 42 mm of clear air behind it, so it comes in 30 mm a side and the tenants move with it: a camera, and a heat-exchanger frame that took the checker three tries to find because the part at fault was not the part that looked guilty. The step is {dRange}, {dRate}, {dMass} on {slots}.',
+      'And here is the interesting part. That move improves every physical measure and raises the drag coefficient, because a coefficient is drag divided by frontal area and this rung cuts the area. The ladder had been requiring area to fall and Cd to fall at the same time, which is a rule that gates on a product and on both of its factors at once, and forbids every trade between them. It went unnoticed for ten rungs because the car had slack. It has none now. So the column became CdA, the drag the car actually feels, and Cd is still printed with a note naming any rung that raises it. Two other things were drawn, measured and refused here: a narrower front tire, which turned out to be at 85 percent of its casing already, and a flush charge port, which buys nothing the area gate can even see.',
+    ],
+  },
+
+  {
+    id: 'gen24',
+    title: 'The pressure',
+    theme: 'Gen 24',
+    gen: 'gen24', against: 'gen23', view: 'front', read: 'wheels-24',
+    cite: 'design/gen24.md',
+    paras: [
+      'Asked where the outline of this car actually lives, the band table gave an answer nobody had drawn against: from knee height to the top of the wheel, 43 percent of the car\'s height, the widest thing on it is the front wheel fairing, at 1.586 m against a cabin of 1.10. So the tire is the rung. It goes from a 125 to a 105 section, and the rung below had already tried that and refused it in fifteen minutes, correctly: at 5.6 bar a 105 holds 595 kg against a 602 kg cornering load. What that refusal held fixed was the pressure. Casing capacity is pressure times width, contact patch is load over pressure, and the patch\'s length, which sets how far the tire deflects and therefore its rolling resistance, scales as one over the same product. Both things a tire owes the car are readings of a single number. Hold it, 125 by 5.6 is 700 and 105 by 6.7 is 703, and the twenty millimetres of width cost neither the load margin nor a tenth of a millimetre of deflection. The step is {dRange}, {dRate}, {dMass} on {slots}.',
+      'The track does not move, and the checker is why. Two drafts moved the wheel centers inboard; one put the tire fifteen millimetres into the battery because a clearance had been read off a box on a part that is a lathe, and the other cleared the pack and hit the knuckle, because the hub face is a contract two modules publish and a wheel cannot move without it. The nose is tapered on this rung because it was asked for, and it is free: every forebody term in the drag method has been clamped at zero since the eighteenth car, so the front of this car cannot be drawn more or less efficient, only better looking. What made the front cheaper was the intake. The model had charged every rung the same cooling drag, a figure measured on cars that reject tens of kilowatts; this one rejects five hundred watts, and that re-zero moved every rung on the ladder and is claimed by none of them.',
+    ],
+  },
+
+  {
     id: 'close',
     title: 'What it cost, and what is open',
     theme: 'the end of the ladder',
-    gen: 'gen22', against: 'gen1', view: 'hero', read: 'interior-18',
+    gen: 'gen24', against: 'gen1', view: 'hero', read: 'interior-18',
     cite: 'design/gen18.md',
     paras: [
       'End to end: {dRange} and {dRate} over the reference car, on {slots}.',
-      'It is not finished, and the model says where. Every rung from Gen 13 on has improved every column against the rung below; the twenty-second is the lightest car on the ladder and the best on all five, it carries one person, and it rolls on three wheels. What is open is named rather than hidden: the air handler that stands 30 mm into the occupant\'s thigh has been carried through seven retrospectives; the regenerative braking constant is a cycle assumption nobody has booked per configuration; 202 W of low-voltage load has no owner; and the hood at 0.94 m is what caps the roof over the head. The plan that began at Gen 18 is delivered, the single seat, the boat tail, the wheels inside, three wheels, and the ladder has taken its first step past it: the overhang, chosen by pricing the alternatives and publishing the refusals. What comes after is chosen the same way.',
+      'It is not finished, and the model says where. Every rung from Gen 13 on has improved every column against the rung below; the twenty-fourth is the lightest car on the ladder and the best on all five, it carries one person, and it rolls on three wheels. What is open is named rather than hidden: the air handler that stands 30 mm into the occupant\'s thigh has been carried through seven retrospectives; the rolling-resistance coefficient has been frozen at 3.8 kg per tonne since Gen 10 while rolling grew to the largest term on the car, and the tire loads it would be derived from are not on a common basis across rungs; 202 W of low-voltage load has no owner; and the hood at 0.94 m is what caps the roof over the head. The plan that began at Gen 18 is delivered, the single seat, the boat tail, the wheels inside, three wheels, and the ladder has taken its first step past it: the overhang, chosen by pricing the alternatives and publishing the refusals. What comes after is chosen the same way.',
       'The rule that makes this a ladder rather than a list: a generation that does not correct or build on a specific lesson does not ship, and a number that cannot be traced to a document in design/ is decoration. Every figure in this tour is computed on arrival from the same model the readout uses, and every stop cites the document its argument comes from.',
     ],
   },
