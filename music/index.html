@@ -68,6 +68,9 @@
     color: var(--ink); opacity: 0.9; font-size: 15px; line-height: 1.6; }
   .tools .lbl { display: block; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em;
     text-transform: uppercase; color: var(--acc); margin-bottom: 6px; }
+  /* On a phone the bar stacks, so the "you are here" link would sit right above the
+     tagline saying the same thing; hide it on this page only at that width. */
+  @media (max-width: 560px) { .bar .music-chip.on { display: none; } }
   @media (max-width: 720px) {
     .film-grid { grid-template-columns: 1fr; gap: 38px; }
     .film-meta h2 { font-size: 22px; }
@@ -83,7 +86,7 @@
 
 <header class="bar">
   <span><a class="who" href="./">Davis Baldwin</a> <a class="music-chip on" href="./">Music tech projects</a></span>
-  <span class="tagline">MUSIC TECHNOLOGY · GALLERY · <a href="../studies/music-technology.html">THE CHAPTERS</a></span>
+  <span class="tagline">MUSIC TECHNOLOGY · <a href="../studies/music-technology.html">THE CHAPTERS</a></span>
   <nav>
     <a href="../rooms.html">The worlds</a>
     <a href="../resume.html">Resume</a>
@@ -91,7 +94,7 @@
 </header>
 
 <section class="room-head">
-  <div class="eyebrow">MUSIC TECHNOLOGY · <b>GALLERY · SIX FILMS</b></div>
+  <div class="eyebrow">GALLERY · <b>SIX FILMS</b></div>
   <h1>Music technology</h1>
   <p class="dek">Original music composed, performed, produced, and engineered by Davis Baldwin.</p>
   <p class="cred">Carnegie Mellon University · BHA in Music Technology and Hispanic Studies</p>
