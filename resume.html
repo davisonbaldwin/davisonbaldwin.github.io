@@ -12,7 +12,7 @@
 <meta property="og:image" content="https://davisonbaldwin.github.io/assets/og.jpg">
 <meta property="og:url" content="https://davisonbaldwin.github.io/resume.html">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%E2%9C%B6%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="style.css?v=9">
+<link rel="stylesheet" href="style.css?v=12">
 <style>
   /* resume page - self-contained on top of the shared skeleton (style.css).
      Uses the site's tokens so it wears the same identity as the rest of the site. */
@@ -80,11 +80,13 @@
     .cv-sec { grid-template-columns: 1fr; gap: 12px; }
     .cv-label { padding-top: 0; }
     .cv-row { flex-direction: column; gap: 2px; }
+    .cv-links { font-size: 14px; }
+    .cv-links a { display: inline-block; padding: 8px 0; }
   }
 
   /* clean printable fallback if someone prints this page directly (Cmd+P) */
   @media print {
-    .tex, .bar nav, .cv-actions, .cv-foot { display: none !important; }
+    .tex, .bar nav, .bar .music-chip, .cv-actions, .cv-foot { display: none !important; }
     body { background: #fff !important; color: #111 !important; }
     .wrap { max-width: 100%; }
     .cv-label, .cv-eyebrow, .cv-date, .cv-sub, .cv-note, .cv-contact, .cv-contact a { color: #444 !important; }
@@ -103,8 +105,8 @@
 <div class="wrap">
 
 <header class="bar">
-  <span><a class="who" href="index.html">Davis Baldwin</a></span>
-  <span class="tagline">PRODUCT DESIGN · RESUME</span>
+  <span><a class="who" href="index.html">Davis Baldwin</a> <a class="music-chip" href="music/">Music tech projects</a></span>
+  <span class="tagline">RESUME · <a href="music/">MUSIC TECHNOLOGY</a></span>
   <nav>
     <a href="index.html">Home</a>
     <a href="rooms.html">The worlds</a>
@@ -114,18 +116,18 @@
 <section class="cv-head">
   <div class="cv-eyebrow">Resume <span class="cv-worlds" aria-hidden="true"><i></i><i></i><i></i></span></div>
   <h1>Davis Baldwin</h1>
-  <p class="cv-lead">I design and build interactive systems: a planetarium of the whole universe,
-  a live stock evaluator, and a body of music technology.</p>
+  <p class="cv-lead">Composer, engineer, and performer; product operations analyst at Lightspeed Systems;
+  builder of interactive systems with AI coding agents.</p>
   <div class="cv-contact">
     <a href="mailto:davison.baldwin@gmail.com">davison.baldwin@gmail.com</a><span class="sep">·</span>
     <a href="tel:+16304144137">630-414-4137</a><span class="sep">·</span>
     <span>Warrenville, IL 60555</span><span class="sep">·</span>
     <a href="https://www.linkedin.com/in/davisonbaldwin/" target="_blank" rel="noopener">linkedin.com/in/davisonbaldwin</a><span class="sep">·</span>
-    <a href="https://davisonbaldwin.github.io/" target="_blank" rel="noopener">davisonbaldwin.github.io</a>
+    <a href="music/">davisonbaldwin.github.io/music</a>
   </div>
   <div class="cv-actions">
     <a class="dl" href="davis-baldwin-resume.pdf" target="_blank" rel="noopener">Download PDF ↓</a>
-    <a class="alt2" href="rooms.html">Enter the worlds →</a>
+    <a class="alt2" href="music/">Music technology gallery →</a>
   </div>
 </section>
 
@@ -136,18 +138,17 @@
     <div class="cv-body">
       <div class="cv-entry">
         <div class="cv-row">
-          <span class="cv-title">BHA, Music Technology &amp; Hispanic Studies</span>
+          <span class="cv-title">BHA, Music Technology and Hispanic Studies</span>
           <span class="cv-date">May 2026</span>
         </div>
         <div class="cv-sub">Carnegie Mellon University · Pittsburgh, PA</div>
         <ul>
           <li>Phi Beta Kappa Inductee.</li>
-          <li>3.78 GPA · University Honors · College Honors.</li>
-          <li><em>Relevant coursework:</em> Concepts of Mathematics, Fundamentals of Programming and
-          Computer Science, Introduction to Data Structures, Principles of Computing, Reasoning with
-          Data, Nature of Reason.</li>
-          <li>Vice President, The Originals A Cappella.</li>
-          <li>Languages: English (fluent), Spanish (fluent).</li>
+          <li>3.78 GPA, University Honors, College Honors.</li>
+          <li><em>Relevant coursework</em>: Multitrack Recording, Sound Editing and Mastering, Sound Recording, Independent Study in Studio Recording Project, Concepts of Mathematics, Fundamentals of Programming and Computer Science.</li>
+          <li>Composer, engineer, and performer, Davis Baldwin Productions.</li>
+          <li>Vice President of The Originals A Cappella.</li>
+          <li>Languages: English (Fluent), Spanish (Fluent)</li>
         </ul>
       </div>
     </div>
@@ -158,34 +159,43 @@
     <div class="cv-body">
       <div class="cv-entry">
         <div class="cv-row">
+          <span class="cv-title">Product Operations Analyst</span>
+          <span class="cv-date">Aug 2026 – Present</span>
+        </div>
+        <div class="cv-sub">Lightspeed Systems · Austin, TX</div>
+        <ul>
+          <li>Maintain and improve the product analytics platform across all products through better tagging practices, stronger selectors, and tags set up with engineering from the start.</li>
+          <li>Build in-house tools for the product team with Claude Code.</li>
+          <li>Automate workflows with Claude Code to reduce manual work.</li>
+        </ul>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-row">
           <span class="cv-title">Research Fellow</span>
           <span class="cv-date">May – Aug 2025</span>
         </div>
         <div class="cv-sub">Carnegie Mellon University · Pittsburgh, PA</div>
         <ul>
-          <li>Conducted research in improvisational composition and reharmonization, investigating the
-          acquisition of music as a language.</li>
-          <li>Composed, performed, and produced a fully improvised, seven-movement piano suite as the
-          centerpiece of the research.</li>
+          <li>Conducted research in improvisational composition and reharmonization, investigating the acquisition of music as a language.</li>
+          <li>Composed, performed, and produced a fully improvised, seven-movement piano suite as the centerpiece of the research.</li>
           <li>Independently performed all mixing and mastering engineering for the recorded suite.</li>
         </ul>
         <div class="cv-links">
           <a href="https://www.youtube.com/watch?v=7EuehU9jKHM" target="_blank" rel="noopener">Listen ↗</a>
         </div>
       </div>
+
       <div class="cv-entry">
         <div class="cv-row">
           <span class="cv-title">Software Engineer Intern</span>
           <span class="cv-date">May – Aug 2024</span>
         </div>
-        <div class="cv-sub">Gamma Technologies LLC · Westmont, IL</div>
-        <div class="cv-note">Physics-based engineering simulation software serving the automotive,
-        energy, and data-center industries (TA Associates / Insight Partners portfolio company).</div>
+        <div class="cv-sub">Gamma Technologies LLC · TA Associates, Insight Partners portfolio company, Westmont IL</div>
+        <div class="cv-note">A physics-based engineering software solution serving automotive, energy, and data center industries</div>
         <ul>
           <li>Improved and optimized GUI components across the Gamma suite as a member of the GUI team.</li>
-          <li>Debugged and troubleshot Java application issues across the stack: sophisticated Java
-          applications, a custom distributed-computing solution, 3D graphics tooling, and
-          high-performance data storage.</li>
+          <li>Debugged and troubleshot Java application issues across the Gamma technology stack: sophisticated Java applications, a custom distributed-computing solution, 3D graphics tooling, and high-performance data storage.</li>
           <li>Validated and edited technical documentation.</li>
         </ul>
       </div>
@@ -193,81 +203,84 @@
   </section>
 
   <section class="cv-sec">
-    <div class="cv-label">Selected Work</div>
+    <div class="cv-label">Music Technology</div>
+    <div class="cv-body">
+      <div class="cv-entry">
+        <div class="cv-row">
+          <span class="cv-title"><a href="studies/sometimes-in-the-world.html">"Sometimes in the World" · Pop-Orchestral Ballad Scored with Software Instruments</a></span>
+        </div>
+        <ul>
+          <li>Composed the music and lyrics; performed lead vocals and piano, and played every other part on software instruments, including a full string section written part by part in Cinematic Studio Strings.</li>
+          <li>Arranged and produced the full orchestra with software instruments around a single lead vocal.</li>
+          <li>Delivered the final master with a mixing and mastering engineer; edited and animated the music video.</li>
+        </ul>
+        <div class="cv-links">
+          <a href="music/#sometimes-in-the-world">Watch in the gallery →</a>
+          <a href="studies/sometimes-in-the-world.html">Read the chapter →</a>
+        </div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-row">
+          <span class="cv-title"><a href="studies/a-souls-journey.html">"Rest My Soul" · Multitracked Choral Video in an Infinite 3D Environment</a></span>
+        </div>
+        <ul>
+          <li>Composed an original piece for one-man choir; performed and self-recorded every vocal part, building the full choir through layered multitrack overdubs.</li>
+          <li>Directed the video shoot and edit, placing the choir within a custom infinite 3D environment.</li>
+          <li>Coordinated post-production with a recording engineer and a mixing engineer through final delivery.</li>
+        </ul>
+        <div class="cv-links">
+          <a href="music/#rest-my-soul">Watch in the gallery →</a>
+          <a href="studies/a-souls-journey.html">Read the chapter →</a>
+        </div>
+      </div>
+
+      <div class="cv-entry">
+        <div class="cv-row">
+          <span class="cv-title"><a href="studies/you-wont-love-me-back.html">"You Won't Love Me Back" · Song and Film for Voice, Piano, and String Trio</a></span>
+        </div>
+        <ul>
+          <li>Composed the music and lyrics; performed vocals and piano; orchestrated the string trio for violin and cello.</li>
+          <li>Served as artistic director for the companion film with a principal videographer and editor, concept to final cut.</li>
+          <li>Delivered the final master in collaboration with a mixing and mastering engineer.</li>
+        </ul>
+        <div class="cv-links">
+          <a href="music/#you-wont-love-me-back">Watch in the gallery →</a>
+          <a href="studies/you-wont-love-me-back.html">Read the chapter →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cv-sec">
+    <div class="cv-label">AI-Built Projects</div>
     <div class="cv-body">
       <div class="cv-entry">
         <div class="cv-row">
           <span class="cv-title"><a href="studies/universe.html">Universe · Interactive 3D Planetarium</a><span class="cv-tag w1">World 01</span></span>
         </div>
         <ul>
-          <li>A JavaScript/Three.js planetarium rendering 119,625 HYG-catalog stars
-          across six connected scales: night sky, solar system, stellar neighborhood, Milky Way galaxy,
-          cosmic web, and free-flight deep space with Sagittarius A*.</li>
-          <li>Sky mode includes 88 IAU constellation figures, 85 classical constellation paintings,
-          deep-sky objects, an astrophysical phenomena catalog, and NASA's exoplanet archive with 4,689 real
-          planetary systems.</li>
-          <li>Solar system computes accurate positions from JPL Keplerian elements: planets with NASA-imagery
-          textures, 21 moons, named asteroids, seven comets with dynamic anti-solar tails, and
-          trans-Neptunian dwarf planets; time simulation spans the years 1000–3000.</li>
-          <li>Orientation-first design: guided nine-stop tour, universal search across every rendered
-          object, and data cards on click.</li>
-          <li>Holds 60 fps with adaptive resolution scaling, idle-time shader precompilation and GPU
-          warm-up, progressive 8K texture streaming behind a 2K first paint, and a single-draw-call
-          point shader for all 119,625 stars.</li>
+          <li>JavaScript/Three.js planetarium rendering 119,625 HYG-catalog stars across six connected scales, with 88 IAU constellation figures and NASA's exoplanet archive of 4,689 real planetary systems.</li>
+          <li>Computes solar system positions from JPL Keplerian elements with time simulation spanning 1000–3000; orientation-first design with universal search and progressive texture loading.</li>
+          <li>Ran an autonomous agent loop against a written quality bar and recorded vetoes (55 to 200 catalog entries in a day); reviewed every round and approved each deploy myself.</li>
         </ul>
         <div class="cv-links">
           <a href="studies/universe.html">Read the case study →</a>
-          <a href="https://davisonbaldwin.github.io/universe/" target="_blank" rel="noopener">Explore it live ↗</a>
+          <a href="https://davisonbaldwin.github.io/universe/">Explore it live ↗</a>
         </div>
       </div>
 
       <div class="cv-entry">
         <div class="cv-row">
-          <span class="cv-title"><a href="studies/stock-evaluator.html">Stock Evaluator · Index-Benchmarked Analysis</a><span class="cv-tag w2">World 02</span></span>
+          <span class="cv-title">EV·01 · Interactive 3D Electric Vehicle Model</span>
         </div>
         <ul>
-          <li>A Python/Flask web app that scores any US stock against a total-market
-          index-fund baseline, so every verdict answers the honest question: would this beat simply buying
-          the index?</li>
-          <li>Analysis engine combines block-bootstrap simulations, rolling entry-point windows, and reverse
-          discounted-cash-flow tests; compare mode benchmarks up to 10 tickers at once against a choice of
-          eight index funds.</li>
-          <li>Deployed live with an interactive terminal-styled interface.</li>
+          <li>Directed Claude Code agents through 24 generations of a clickable electric car in four weeks; each generation had to beat the last on measured mass, drag, and consumption, and every part explains how it works and how it fails.</li>
+          <li>Wrote the module contract, 44 design docs, and 21 retrospectives on what the agents got wrong; 34 automated checkers gate every build for part interference, triangle budgets, interface contracts, and prose rules.</li>
+          <li>Three.js explode view with part transparency and assembly animations.</li>
         </ul>
         <div class="cv-links">
-          <a href="studies/stock-evaluator.html">Read the case study →</a>
-          <a href="https://stock-evaluator-mp72.onrender.com" target="_blank" rel="noopener">Try it live ↗</a>
-        </div>
-      </div>
-
-      <div class="cv-entry">
-        <div class="cv-row">
-          <span class="cv-title"><a href="studies/music-technology.html">Music Technology · Six Works</a><span class="cv-tag w3">World 03</span></span>
-        </div>
-        <ul>
-          <li>A body of self-composed, self-produced music built inside custom visual worlds, including
-          <em>"Rest My Soul,"</em> a multitracked one-man choir performed and self-recorded across every
-          vocal part, set in a custom infinite 3D environment.</li>
-          <li>Directed the full pipeline end to end: composition, performance, recording, video direction,
-          and post-production coordination with recording and mixing engineers.</li>
-        </ul>
-        <div class="cv-links">
-          <a href="studies/music-technology.html">See the six chapters →</a>
-          <a href="https://www.youtube.com/watch?v=ZdAaofDbIfM" target="_blank" rel="noopener">Watch "Rest My Soul" ↗</a>
-        </div>
-      </div>
-
-      <div class="cv-entry">
-        <div class="cv-row">
-          <span class="cv-title">Sudoku Autosolver · Backtracking Puzzle Solver</span>
-        </div>
-        <ul>
-          <li>Built a Sudoku solver in Python using recursive backtracking, handling puzzles of varying
-          difficulty, with a built-in hint system that surfaces the candidate numbers in each square.</li>
-          <li>Automated detection of singleton, double, and triple candidate values to narrow the search space.</li>
-        </ul>
-        <div class="cv-links">
-          <a href="https://www.youtube.com/watch?v=7QvkMWuUWXc" target="_blank" rel="noopener">Watch the demo ↗</a>
+          <a href="ev/">Explore it live ↗</a>
         </div>
       </div>
     </div>
@@ -276,16 +289,16 @@
   <section class="cv-sec">
     <div class="cv-label">Skills</div>
     <div class="cv-body">
-      <p class="cv-skill"><b>Programming</b> · Python, Java, JavaScript, Data Structures &amp; Algorithms.</p>
-      <p class="cv-skill"><b>Music Production</b> · Composition, Performance, Mixing &amp; Mastering Engineering.</p>
+      <p class="cv-skill"><b>Music technology</b> · Logic Pro, virtual instrument libraries, audio plug-ins, producing, mixing, mastering, composition, improvisation, reharmonization, piano and vocal performance, music video production.</p>
+      <p class="cv-skill"><b>AI development</b> · Directing Claude Code agents end to end: written specs and handoff docs, measured generations with retrospectives, automated checkers and proof suites for AI output, autonomous improvement loops with human sign-off, multi-agent review; MCP integrations, browser agents, and deployment of AI-built apps.</p>
     </div>
   </section>
 
 </main>
 
 <footer class="cv-foot">
-  <span>DAVIS BALDWIN · PRODUCT DESIGN · 2026</span>
-  <span><a href="rooms.html">The worlds</a> · <a href="davis-baldwin-resume.pdf" target="_blank" rel="noopener">PDF</a> · <a href="mailto:davison.baldwin@gmail.com">davison.baldwin@gmail.com</a></span>
+  <span>DAVIS BALDWIN · RESUME · 2026</span>
+  <span><a href="music/">Music technology</a> · <a href="rooms.html">The worlds</a> · <a href="davis-baldwin-resume.pdf" target="_blank" rel="noopener">PDF</a> · <a href="mailto:davison.baldwin@gmail.com">davison.baldwin@gmail.com</a></span>
 </footer>
 
 </div>

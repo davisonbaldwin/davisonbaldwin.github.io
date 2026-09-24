@@ -191,6 +191,22 @@ a { color: var(--acc); }
 .bar .who { font-family: var(--ui); font-size: 13px; font-weight: 700;
   letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink);
   text-decoration: none; transition: color 0.5s ease; }
+/* site-wide route back to the music gallery, beside the wordmark (2026-09-23).
+   Set in the bar's own voice (spaced uppercase mono, like the tagline) with a thin
+   separator; the pill version looked like a stock web button over the star field. */
+.bar .music-chip { display: inline-block; margin-left: 16px; padding-left: 16px;
+  border-left: 1px solid var(--line); font-family: var(--mono); font-size: 10.5px;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--acc);
+  text-decoration: none; white-space: nowrap; vertical-align: 1px;
+  transition: color 0.2s ease, border-color 0.5s ease; }
+.bar .music-chip:hover { color: var(--ink); }
+.bar .music-chip.on { color: var(--ink); }
+@media (max-width: 560px) {
+  .bar .music-chip { display: block; margin: 10px 0 0; padding: 6px 0 0; border-left: 0; font-size: 11px; }
+  /* the tagline doubles as a world switcher and grew a GALLERY link; on a phone it
+     must wrap rather than push the page wider than the screen */
+  .bar .tagline { white-space: normal; line-height: 1.7; }
+}
 .bar .tagline { font-family: var(--mono); font-size: 10.5px; color: var(--sub);
   letter-spacing: 0.06em; transition: color 0.5s ease; }
 /* the tagline doubles as the world switcher on case-study pages */
