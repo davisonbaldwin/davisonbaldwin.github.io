@@ -202,7 +202,7 @@ a { color: var(--acc); }
 .bar .music-chip:hover { color: var(--ink); }
 .bar .music-chip.on { color: var(--ink); }
 @media (max-width: 560px) {
-  .bar .music-chip { display: block; margin: 10px 0 0; padding: 6px 0 0; border-left: 0; font-size: 11px; }
+  .bar .music-chip { display: inline-block; margin: 10px 18px 0 0; padding: 0; border-left: 0; font-size: 11px; }
   /* the tagline doubles as a world switcher and grew a GALLERY link; on a phone it
      must wrap rather than push the page wider than the screen */
   .bar .tagline { white-space: normal; line-height: 1.7; }
