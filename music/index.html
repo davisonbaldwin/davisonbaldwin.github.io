@@ -240,8 +240,10 @@ and each film has its own chapter in <a href="../studies/music-technology.html">
   function loadPlayer(box, autoplay) {
     if (box.querySelector('iframe')) return;
     var frame = document.createElement('iframe');
+    // the single film only: with the playlist attached, a finished film rolled into
+    // the next one inside a card whose title had not changed (Davis, 2026-09-24)
     frame.src = 'https://www.youtube-nocookie.com/embed/' + box.dataset.id
-      + '?rel=0&list=PLEkyrTSUwbNvaZ-jJPuQOU-WtwAf3quVc&index=' + box.dataset.index + (autoplay ? '&autoplay=1' : '');
+      + '?rel=0' + (autoplay ? '&autoplay=1' : '');
     frame.title = box.dataset.title + ' · Davis Baldwin';
     frame.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
     frame.setAttribute('allowfullscreen', '');
