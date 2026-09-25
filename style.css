@@ -191,15 +191,20 @@ a { color: var(--acc); }
 .bar .who { font-family: var(--ui); font-size: 13px; font-weight: 700;
   letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink);
   text-decoration: none; transition: color 0.5s ease; }
-/* project routes in the nav (2026-09-24): "Music tech projects" is a plain nav link
-   (class kept for its "on" state); "Live apps" is a click-open menu with Universe
-   and EV-01, so two more destinations cost one word of bar space. */
+/* project routes (2026-09-24): "Music tech projects" sits beside the wordmark as a
+   plain nav link, the same face, size, and gray as the links on the right (Davis:
+   "make it the same as the others"); "Live apps" on the right is a click-open
+   menu with Universe and EV-01, so two more destinations cost one word of bar space. */
 .bar .music-chip { display: inline-block; margin-left: 16px; padding-left: 16px;
   border-left: 1px solid var(--line); font-family: var(--mono); font-size: 10.5px;
-  letter-spacing: 0.16em; text-transform: uppercase; color: var(--acc);
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--sub);
   text-decoration: none; white-space: nowrap; vertical-align: 1px;
   transition: color 0.2s ease, border-color 0.5s ease; }
-.bar .music-chip:hover, .bar .music-chip.on { color: var(--ink); }
+.bar .music-chip:hover { color: var(--ink); }
+/* on the 3D pages the nav is restyled inline (spaced uppercase mono); the link follows it */
+body.world-on .bar .music-chip { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: #aab8d0; text-shadow: 0 0 8px rgba(4, 6, 11, 0.9); }
+body.world-on .bar .music-chip:hover { color: #eef2fa; text-shadow: 0 0 12px rgba(127, 180, 255, 0.5); }
 .bar nav details.apps { display: inline-block; position: relative; margin-left: 20px; }
 .bar nav details.apps summary { list-style: none; cursor: pointer; color: var(--sub);
   transition: color 0.5s ease; -webkit-user-select: none; user-select: none; }
