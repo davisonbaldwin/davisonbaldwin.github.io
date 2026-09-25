@@ -223,9 +223,11 @@ body.world-on .bar nav details.apps > div { background: #05070d; }
   /* the tagline doubles as a world switcher and grew a GALLERY link; on a phone it
      must wrap rather than push the page wider than the screen */
   .bar .tagline { white-space: normal; line-height: 1.7; }
-  .bar .music-chip { display: block; margin: 10px 0 0; padding: 6px 0 0; border-left: 0; font-size: 11px; }
+  .bar .music-chip { margin-left: 14px; padding-left: 0; border-left: 0; font-size: 11px; }
   .bar nav { flex-basis: 100%; text-align: left; }
   .bar nav a, .bar nav details.apps { margin: 0 18px 0 0; }
+  /* finger-sized targets: the links measured 19 px tall on a phone */
+  .bar nav a, .bar nav details.apps summary, .bar .music-chip { display: inline-block; padding-top: 8px; padding-bottom: 8px; }
   .bar nav details.apps > div { right: auto; left: 0; }
 }
 .bar .tagline { font-family: var(--mono); font-size: 10.5px; color: var(--sub);
