@@ -1974,7 +1974,21 @@ function init() {
     dragging = false;
     if (moved < 7) {
       const p2 = pick(e);
-      if (p2.core) goHref('ev/index.html');
+      if (p2.core) {
+        // the machine is a world like the slices: a mouse click enters, a
+        // first tap arms it (name up, planet held open) and a second enters
+        // (Davis, 2026-09-29: tapping it went straight in, unlike the slices)
+        if (!touchy) goHref('ev/index.html');
+        else if (armedWorld === 'core') {
+          if (performance.now() - armedAt > 400) goHref('ev/index.html');
+        } else {
+          armedWorld = 'core';
+          armedAt = performance.now();
+          hoverIdx = -1;
+          announce('THE MACHINE · ENTER', '#d4a24c');
+          caption.classList.add('lit');
+        }
+      }
       else if (p2.star) goHref('studies/universe.html');
       else if (p2.about) openAbout();
       else if (p2.mini) goHref('index.html');

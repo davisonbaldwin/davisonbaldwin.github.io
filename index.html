@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="style.css?v=21">
 <!-- three.js is 1.27 MB and sat at the end of a serial waterfall behind
      the module; preloading it lets it download alongside the page -->
-<link rel="modulepreload" href="vendor/three.module.js">
+<!-- (the preload is added by the head script below, and not on the phone home) -->
 <style>
   /* --- the machine of worlds: three generative slices in a clockwork gear ring --- */
   .landing-planet { perspective: 1000px; }
@@ -287,15 +287,53 @@
   @media (hover: none) and (pointer: coarse) {
     html.pre3d .doors, body.world-on .doors { bottom: 122px; }
   }
+  /* ---- the phone home (html.phone-home): the two doors as big type. The
+     landing stage, the desktop panel, the keyboard index, the about and the
+     background texture are all out of the way; the ground is plain. ---- */
+  .ph-poster { display: none; }
+  html.phone-home .landing, html.phone-home .world-index, html.phone-home .about, html.phone-home .doors,
+  html.phone-home .tex { display: none; }
+  html.phone-home, html.phone-home body { background: #07090f; }
+  html.phone-home .ph-poster { display: grid; grid-template-rows: 1fr 1fr auto;
+    height: var(--ph-h, calc(100svh - 120px)); padding: 6px 0 0; }
+  .ph-word { display: flex; flex-direction: column; justify-content: center; text-decoration: none; color: inherit;
+    padding: 6px 0; -webkit-tap-highlight-color: transparent; }
+  .ph-word + .ph-word { border-top: 1px solid rgba(216, 226, 242, 0.16); }
+  .ph-word-big { display: block; font-family: var(--face); font-size: clamp(84px, 27vw, 128px); line-height: 0.95;
+    letter-spacing: -0.02em; color: #eef2fa; transition: color 0.2s ease; }
+  .ph-word-mus:active .ph-word-big { color: #d9a96a; }
+  .ph-word-ai:active .ph-word-big { color: var(--acc); }
+  .ph-word-sub { display: block; margin-top: 12px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--sub); line-height: 1.6; max-width: 30ch; }
+  .ph-word-mus .ph-word-sub { color: #d9a96a; }
+  .ph-word-ai .ph-word-sub { color: var(--acc); }
+  .ph-foot { display: flex; justify-content: center; padding: 6px 0 0; }
+  .ph-foot a { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--sub); text-decoration: none; padding: 10px 0; }
   /* doors-css:end */
 </style>
 <script>
-  // decide before first paint: if WebGL is available the 3D world will
-  // take over, so hide the SVG landing now rather than flash it. A timer
-  // lifts the veil if the world somehow never arrives.
+  // decide before first paint. A PHONE (coarse pointer, narrow screen) gets
+  // the poster home: the two doors as big type, and the 3D module is not
+  // fetched at all (Davis, 2026-09-29: the flying ship is too complex a
+  // design for a phone). ?fly forces the scene, ?phone forces the poster,
+  // for testing either on any device.
+  // Otherwise, if WebGL is available the 3D world will take over, so hide the
+  // SVG landing now rather than flash it. A timer lifts the veil if the world
+  // somehow never arrives.
   try {
+    var q = location.search;
+    var phoneHome = /[?&]phone\b/.test(q) || (!/[?&]fly\b/.test(q)
+      && matchMedia('(pointer: coarse)').matches && Math.min(innerWidth, screen.width) <= 720);
+    if (phoneHome) document.documentElement.classList.add('phone-home');
+    else {
+      // three.js is 1.27 MB: preloaded from the head, as before the phone home
+      // existed, so it downloads alongside the page rather than after it
+      var pre = document.createElement('link'); pre.rel = 'modulepreload'; pre.href = 'vendor/three.module.js';
+      document.head.appendChild(pre);
+    }
     var glc = document.createElement('canvas');
-    if (glc.getContext('webgl2') || glc.getContext('webgl')) {
+    if (!phoneHome && (glc.getContext('webgl2') || glc.getContext('webgl'))) {
       document.documentElement.classList.add('pre3d');
       setTimeout(function () {
         if (!document.body.classList.contains('world-on'))
@@ -429,6 +467,27 @@
     </div>
   </div>
 </section>
+<section class="ph-poster" aria-label="The two doors">
+  <a class="ph-word ph-word-mus" href="music/">
+    <span class="ph-word-big">Music</span>
+    <span class="ph-word-sub">Six films, composed, performed, and produced</span>
+  </a>
+  <a class="ph-word ph-word-ai" href="ai/">
+    <span class="ph-word-big">AI</span>
+    <span class="ph-word-sub">Three live apps</span>
+  </a>
+  <p class="ph-foot"><a href="rooms.html">All worlds</a></p>
+</section>
+<script>
+  (function () {
+    var fit = function () {
+      var bar = document.querySelector('.bar');
+      var h = innerHeight - (bar ? bar.getBoundingClientRect().bottom : 120);
+      document.documentElement.style.setProperty('--ph-h', Math.max(420, Math.round(h)) + 'px');
+    };
+    fit(); addEventListener('resize', fit); addEventListener('load', fit);
+  })();
+</script>
 <!-- doors:end -->
 
 <section class="about" id="about">
@@ -639,6 +698,13 @@
      spinning planet) now lives on rooms.html; the SVG planet below remains
      the no-WebGL fallback for this page. -->
 <script src="doors.js?v=4"></script>
-<script type="module" src="home3d.js?v=97"></script>
+<script>
+  // the 3D module loads only when the scene will run (its three.js was
+  // preloaded from the head by the same decision)
+  if (!document.documentElement.classList.contains('phone-home')) {
+    var mod = document.createElement('script'); mod.type = 'module'; mod.src = 'home3d.js?v=97';
+    document.body.appendChild(mod);
+  }
+</script>
 </body>
 </html>
