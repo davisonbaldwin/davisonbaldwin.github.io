@@ -1200,6 +1200,7 @@ function init() {
     // auto-repeat must not toggle: holding F used to flip the mode thirty
     // times a second and shred the observer's framing
     if (e.repeat) return;
+    if (document.body.classList.contains('film-open')) return;   // the film box has the keyboard (Escape closes it)
     // Only the keys a focused control actually consumes are handed over.
     // Blanking every key here instead left a visitor who had Tabbed to any
     // link with no working flight controls and no way back to them.
@@ -1220,10 +1221,16 @@ function init() {
   addEventListener('keyup', (e) => heldKeys.delete(e.key.toLowerCase()));
   // F in and out of the observer's seat. Entering seeds the orbit from the
   // chase camera's own vantage, so the world never jumps under you.
+  // the doors panel on the page slides away whenever the stick is taken, and
+  // also while the pull (or its offer) has the screen and during the fade out
+  function paintMode() {
+    document.body.classList.toggle('flying', flyMode || pulling || pullOffer || leaving);
+  }
   function toggleObserve() {
     if (pulling) return;                             // the pull has the stick
     flyMode = !flyMode;
     orbitOwned = true;                               // the stick has been taken at least once
+    paintMode();
     if (!flyMode) {
       flyThrottle = false; flyCruise = false;
       padRelease();                                  // a held THRUST must not burn while parked
@@ -1609,12 +1616,14 @@ function init() {
     const d0 = Math.max(1, portals[0].abs.distanceTo(deep.pos));
     pullA = 2 * d0 / (PULL_TIME * PULL_TIME);
     pullV = 0;
+    paintMode();
     say(WORLDS[3].name + ' · PULLING YOU IN');
   }
   function keepFlying() {
     if (!pullOffer) return;
     pullOffer = false; pullOff = true;
     keepBtn.style.display = 'none';
+    paintMode();
     sayBriefly('STAYING OUT HERE · FLY ON', 2.5);
   }
   keepBtn.addEventListener('click', keepFlying);
@@ -1623,6 +1632,7 @@ function init() {
     if (leaving) return;
     leaving = true;
     flyThrottle = false; flyCruise = false; padRelease();
+    paintMode();
     say(WORLDS[i].name + ' · ENTERING');
     const fadeEl = document.createElement('div');
     fadeEl.style.cssText = 'position:fixed;inset:0;background:' + WORLDS[i].bg +
@@ -1699,11 +1709,19 @@ function init() {
         if (S) deep.pos.addScaledVector(_right, S * v);
       }
     }
-    // the one-minute pull: see the note at PULL_AFTER
-    if (!leaving && !committed && !pullOff) {
+    // the one-minute pull: see the note at PULL_AFTER. A film open in the
+    // doors' film box (body.film-open, painted by doors.js) holds the clock:
+    // nobody is yanked out of a song, and closing the box leaves at least
+    // twenty seconds before the door takes them.
+    const filmOpen = !pulling && document.body.classList.contains('film-open');
+    if (filmOpen) {
+      pullT = Math.min(pullT, PULL_AFTER - 20);
+      if (pullOffer) { pullOffer = false; keepBtn.style.display = 'none'; paintMode(); say(flyMode ? restCaption() : CAP_OBSERVE); }
+    }
+    if (!leaving && !committed && !pullOff && !filmOpen) {
       pullT += dt;
       if (!pulling && !pullOffer && pullT >= PULL_AFTER) {
-        if (returning) { pullOffer = true; offerT = OFFER_FOR; offerShown = -1; keepBtn.style.display = 'block'; }
+        if (returning) { pullOffer = true; offerT = OFFER_FOR; offerShown = -1; keepBtn.style.display = 'block'; paintMode(); }
         else startPull();
       }
       if (pullOffer) {

@@ -21,11 +21,11 @@
 <div class="wrap">
 
 <header class="bar">
-  <span><a class="who" href="../music/">Davis Baldwin</a> <a class="music-chip" href="../music/">Music tech projects</a></span>
+  <span><a class="who" href="../index.html">Davis Baldwin</a></span>
   <span class="tagline">CHAPTER 4 OF 6 · MUSIC TECHNOLOGY · <a href="../music/">GALLERY</a></span>
   <nav>
-    <details class="apps"><summary>Live apps</summary><div><a href="../universe/">Universe</a><a href="../ev/">EV·01</a></div></details>
-    <a href="../rooms.html">The worlds</a>
+    <a href="../music/">Music</a>
+    <a href="../ai/">AI projects</a>
     <a href="../resume.html">Resume</a>
   </nav>
 </header>
@@ -99,13 +99,5 @@
 </footer>
 
 </div>
-<script>
-  // the Live apps menu closes when you click anywhere else
-  document.addEventListener('click', function (e) {
-    document.querySelectorAll('details.apps[open]').forEach(function (d) {
-      if (!d.contains(e.target)) d.removeAttribute('open');
-    });
-  });
-</script>
 </body>
 </html>
